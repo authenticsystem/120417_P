@@ -1,0 +1,136 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-input-container.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="my-icons.html">
+
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+
+<dom-module id="my-signin">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                /* overflow: hidden; */
+            }
+
+            @media (min-width: 767px) {
+                .main-container {
+                    height: 100%;
+                    background-color: white;
+                    max-width: 370px;
+                    margin: 16px auto;
+                    padding: 40px;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                }
+
+            }
+
+            @media (max-width: 767px) {
+                :host {
+                    height: 100%;
+                }
+                .main-container {
+                    height: 100%;
+                    background-color: white;
+                    margin: 0 auto;
+                    padding: 40px;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                }
+
+            }
+
+            paper-button.green {
+                background-color: var(--paper-green-500);
+                color: white;
+                height: 38px;
+
+            }
+
+            .action {
+                /* display: inline-block; */
+                float: right;
+            }
+
+            .moreoption {
+                /* display: inline-block; */
+                float: left;
+            }
+
+            .footer {
+                height: 48px;
+                /* align-items: middle; */
+            }
+
+            .header {
+                font-size: 24px;
+                font-weight: 400;
+            }
+        </style>
+
+        <firebase-auth id="auth" user="{{user}}" provider="google" on-error="showError"></firebase-auth>
+
+        <div class="main-container">
+            <a href="/">
+                <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
+                    fade style="width:128px; height:128px;"></iron-image>
+            </a>
+            </br>
+            <div>
+                <div class="header">Sign in</div>
+                <div>to continue to Haven of Peace Memorial Garden inventory and reservation system</div>
+                </br>
+                <paper-input label="Email" value="demo@abc.com"></paper-input>
+                <paper-input label="Password" type="password" value="demo@abc.com"></paper-input>
+                </br>
+                </br>
+                <div class="footer">
+                    <div class="moreoption">
+                        <paper-menu-button>
+                            <div slot="dropdown-trigger" alt="menu" style="color: royalblue;">More options</div>
+                            <paper-listbox slot="dropdown-content">
+                                <a href="/register-signin">
+                                    <paper-item noink>Create Account</paper-item>
+                                </a>
+                                <paper-item>Forgot Password?</paper-item>
+                            </paper-listbox>
+                        </paper-menu-button>
+                    </div>
+                    <div class="action">
+                        <paper-button class="green" on-tap="_signIn">next</paper-button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-signin',
+
+            _signIn() {
+                this.$.auth.signInWithEmailAndPassword('hbs.auss@gmail.com', '123456');
+                // this.$.auth.sendEmailVerification(actionCodeSettings);
+                if (this.user) {
+                    if (this.user.emailVerified === false) {
+                        this.user.sendEmailVerification();
+                    }
+                }
+                
+                // console.log(this.user);
+                
+                
+               
+            }
+        })
+
+    </script>
+</dom-module>

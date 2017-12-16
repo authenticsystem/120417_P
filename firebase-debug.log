@@ -1,0 +1,23 @@
+[debug] [2017-12-15T09:34:59.420Z] ----------------------------------------------------------------------
+[debug] [2017-12-15T09:34:59.423Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\HECTOR\AppData\Roaming\npm\node_modules\firebase-tools\bin\firebase serve
+[debug] [2017-12-15T09:34:59.425Z] CLI Version:   3.15.1
+[debug] [2017-12-15T09:34:59.425Z] Platform:      win32
+[debug] [2017-12-15T09:34:59.425Z] Node Version:  v6.11.4
+[debug] [2017-12-15T09:34:59.426Z] Time:          Fri Dec 15 2017 17:34:59 GMT+0800 (Taipei Standard Time)
+[debug] [2017-12-15T09:34:59.426Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2017-12-15T09:34:59.442Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2017-12-15T09:34:59.442Z] > authorizing via signed-in user
+[debug] [2017-12-15T09:34:59.445Z] > refreshing access token with scopes: ["email","https://www.googleapis.com/auth/cloud-platform","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","openid"]
+[debug] [2017-12-15T09:34:59.445Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token { refresh_token: '1/KX2PJQ7NDF64rQ6X0uETN30zCEsPedmBqp8Yh6HgK2M',
+  client_id: '563584335869-fgrhgmd47bqnekij5i8b5pr03ho849e6.apps.googleusercontent.com',
+  client_secret: 'j9iVZfS8kkCEFUPaAeJV0sAi',
+  grant_type: 'refresh_token',
+  scope: 'email https://www.googleapis.com/auth/cloud-platform https://www.googleapis.com/auth/cloudplatformprojects.readonly https://www.googleapis.com/auth/firebase openid' } 
+ Fri Dec 15 2017 17:34:59 GMT+0800 (Taipei Standard Time)
+[debug] [2017-12-15T09:34:59.971Z] <<< HTTP RESPONSE 200
+[debug] [2017-12-15T09:34:59.977Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects/hpmg-56df3  
+ Fri Dec 15 2017 17:34:59 GMT+0800 (Taipei Standard Time)
+[debug] [2017-12-15T09:35:01.658Z] <<< HTTP RESPONSE 200
+[debug] [2017-12-15T09:35:01.659Z] >>> HTTP REQUEST GET https://admin.firebase.com/v1/database/hpmg-56df3/tokens  
+ Fri Dec 15 2017 17:35:01 GMT+0800 (Taipei Standard Time)
