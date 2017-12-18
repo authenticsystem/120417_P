@@ -214,8 +214,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.page = 'view404';
       }
 
-      _needToSignIn(e,f) {
-        if(f === true) {
+      _needToSignIn(e, f) {
+        if (f === true) {
           return e === null;
         }
         else {
@@ -223,13 +223,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _alreadySignedIn(e,f) {
-        if(f === true) {
+      _alreadySignedIn(e, f) {
+        if (f === true) {
+
+          if (e) {
+            if (e.emailVerified === false) {
+              console.log(e);
+              e.sendEmailVerification();
+            }
+          }
+
           return e !== null;
         }
         else {
           return false;
-        }        
+        }
       }
 
       _notifyNetworkStatus() {

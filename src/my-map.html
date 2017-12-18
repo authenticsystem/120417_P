@@ -152,25 +152,27 @@
         <firebase-document path="/statuscolor" data="{{statuscolor}}">
         </firebase-document>
 
-        <!-- <firebase-query id="query" path="/blocks" data="{{blocks}}">
-        </firebase-query> -->
+        <firebase-query id="query" path="/blocks" data="{{blocks}}">
+        </firebase-query>
 
         <google-map latitude="10.3006632" longitude="123.99903661" zoom="18" api-key="AIzaSyCT4PT1u_Yia3SLTiCj6XMoq0xZFGMfVWY" no-auto-tilt="true"
           fit-to-markers disable-street-view-control="true" additional-map-options='{"mapTypeControlOptions": {"position": 6},"fullscreenControl": false}'>
+
           <template is="dom-repeat" items="{{blocks}}" as='block'>
+
             <google-map-poly closed stroke-color="white" stroke-weight="1" stroke-opacity="1" fill-color="#cbe6a3" fill-opacity="1" id="{{block.$key}}"
               clickable="true" click-events="true" on-google-map-poly-click="polyBlocksClicked" mouse-events="true" on-google-map-poly-mouseover="polyMouseOver"
-              on-google-map-poly-mouseout="polyMouseOut">
+              on-google-map-poly-mouseout="polyMouseOut" id="{{block.$key}}">
               <template is="dom-repeat" items="{{block.map_points}}" as='point'>
                 <google-map-point longitude="{{point.longitude}}" latitude="{{point.latitude}}"></google-map-point>
               </template>
             </google-map-poly>
+
           </template>
 
 
-          <firebase-query id="query" path="/lots" data="{{lots}}"> 
+          <firebase-query id="query" path="/lots" data="{{lots}}" order-by-child="part" equal-to="{{selectedPart}}">
           </firebase-query>
-          <!-- order-by-child="status" equal-to="{{imhold}}" -->
 
           <template is="dom-repeat" items="{{lots}}" as='lot'>
 
@@ -277,7 +279,8 @@
 
       properties: {
         blocks: {
-          type: Object
+          type: Object,
+          observer: '_blocksLoaded'
         },
         lots: {
           type: Object,
@@ -291,7 +294,12 @@
           type: Object,
           observer: '_statusColorChanged'
         },
-        // imhold: {
+        selectedPart: {
+          type: Array,
+          value: ''
+        },
+        previousPartSelected: Object
+        // imhold: 
         //   type: String,
         //   value: "reserved"
         // }
@@ -313,17 +321,17 @@
           var argsReserved = Polymer.dom(this.root).querySelector("#legendReserved")
           if (argsReserved) {
             argsReserved.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsReserved.getAttribute("data-args")) + ";");
-          }     
+          }
 
           var argsHold = Polymer.dom(this.root).querySelector("#legendHold")
           if (argsHold) {
             argsHold.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsHold.getAttribute("data-args")) + ";");
-          }      
+          }
 
           var argsNotyetavailable = Polymer.dom(this.root).querySelector("#legendNotyetavailable")
           if (argsNotyetavailable) {
             argsNotyetavailable.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsNotyetavailable.getAttribute("data-args")) + ";");
-          }                        
+          }
 
         }
 
@@ -356,10 +364,32 @@
         // args.setAttribute("style", "display: block;");
         // args.setAttribute("uid", data_args);
 
-
         console.log(data_args);
 
         // Polymer.dom(this.root).querySelector("#my-map-main-adl").setAttribute("style", "width: calc(100% - 340px);");
+
+      },
+
+      polyBlocksClicked(e) {
+        var toast = Polymer.dom(this.root).querySelector("#toast");
+        toast.duration = 0;
+
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("id");
+        this.selectedPart = data_args;
+
+        toast.show({ text: 'Loading Lots for ' + this.selectedPart + '...' });
+
+        Polymer.dom(e).rootTarget.fillOpacity = 0;
+
+        if (this.previousPartSelected) {
+          var args = Polymer.dom(this.root).querySelector("#" + this.previousPartSelected);
+          args.fillOpacity = 1;
+        }
+
+        this.previousPartSelected = data_args;
+
+
+        // toast.close();
 
       },
 
@@ -398,9 +428,31 @@
       },
 
       _lotsLoaded() {
+        var toast = Polymer.dom(this.root).querySelector("#toast")
+
         if (this.lots.length > 0) {
-          var toast = Polymer.dom(this.root).querySelector("#toast")
           toast.close();
+        }
+        else {
+          if (toast) {
+            toast.duration = 1000;
+            toast.cancel(this);
+          }
+          
+        }        
+
+      },
+
+      _blocksLoaded() {
+        var toast = Polymer.dom(this.root).querySelector("#toast")
+
+        if (this.blocks.length > 0) {
+          toast.close();
+        }
+        else {
+          if (toast) {
+            toast.cancel(this);
+          }
         }
 
       }
