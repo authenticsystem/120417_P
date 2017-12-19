@@ -1,0 +1,74 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+
+<dom-module id="my-lot-details">
+  <template>
+    <style include="shared-styles">
+      @media (max-width: 767px) {
+        :host {
+          display: block;
+          position: absolute;
+          width: 340px;
+          right: 16px;
+          ;
+          top: 80px;
+          background: white;
+          /* border-radius: 3px; */
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        }
+      }
+
+      @media (min-width: 767px) {
+        :host {
+          display: block;
+          position: absolute;
+          width: 340px;
+          right: 200px;
+          top: 200px;
+          background: white;
+          /* border-radius: 3px; */
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+        }
+      }
+    </style>
+    <firebase-document path="/lots/{{selectedLot}}" data="{{selectedLotDetails}}">
+    </firebase-document>
+
+    <div style="background: #7B1FA2; padding:16px;color: white;">
+      <div style="display: inline;">Block {{selectedLotDetails.block}} - Lot {{selectedLotDetails.lot}}</div>
+      <paper-icon-button style="float:right; top: -8px" icon="my-icons:close" on-tap="_close"></paper-icon-button>
+    </div>
+
+    <div style="padding: 16px;">
+      <div>
+        <div>Block: {{selectedLotDetails.block}}   Lot: {{selectedLotDetails.lot}}   Plot: {{selectedLotDetails.plot}}</div>
+        <div>Area: {{selectedLotDetails.area}}</div>
+      </div>
+    </div>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-lot-details',
+      properties: {
+        selectedLot: {
+          type: String,
+          value: '',
+          notify: true
+        },
+        showElement: {
+          type: Boolean,
+          value: false,
+          notify: true
+        }
+      },
+      _close() {
+        this.selectedLot = '';
+        this.style.display = "none";
+      }
+    })
+  </script>
+</dom-module>

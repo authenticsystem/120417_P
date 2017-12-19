@@ -14,6 +14,8 @@
 <link rel="import" href="my-icons.html">
 
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="my-lot-details.html">
 
 <dom-module id="my-map">
   <template>
@@ -41,10 +43,11 @@
           margin: 11px;
           bottom: 70px;
           background: white;
-          height: 180px;
-          width: 16px;
-          opacity: 1;
+          height: 460px;
+          width: 52px;
+          opacity: .75;
           padding: 10px;
+          font-size: 10px;
         }
 
         div.displayBig {
@@ -68,10 +71,11 @@
           margin: 11px;
           bottom: 70px;
           background: white;
-          height: 180px;
-          width: 150px;
+          height: 480px;
+          width: 200px;
           opacity: 1;
           padding: 10px;
+          font-size: 12px;
         }
 
         div.displaySmall {
@@ -136,6 +140,10 @@
         max-height: 100%;
         overflow: auto;
       }
+
+      paper-dialog.colored {
+        background-color: #EEEEEE;
+      }
     </style>
 
     <app-header-layout fullbleed has-scrolling-region>
@@ -155,14 +163,14 @@
         <firebase-query id="query" path="/blocks" data="{{blocks}}">
         </firebase-query>
 
-        <google-map latitude="10.3006632" longitude="123.99903661" zoom="18" api-key="AIzaSyCT4PT1u_Yia3SLTiCj6XMoq0xZFGMfVWY" no-auto-tilt="true"
-          fit-to-markers disable-street-view-control="true" additional-map-options='{"mapTypeControlOptions": {"position": 6},"fullscreenControl": false}'>
+        <google-map latitude="10.3015672115449" longitude="123.998173749625" zoom="18" api-key="AIzaSyCT4PT1u_Yia3SLTiCj6XMoq0xZFGMfVWY"
+          no-auto-tilt="true" fit-to-markers disable-street-view-control="true" additional-map-options='{"mapTypeControlOptions": {"position": 6},"fullscreenControl": false}'>
 
           <template is="dom-repeat" items="{{blocks}}" as='block'>
-
-            <google-map-poly closed stroke-color="white" stroke-weight="1" stroke-opacity="1" fill-color="#cbe6a3" fill-opacity="1" id="{{block.$key}}"
-              clickable="true" click-events="true" on-google-map-poly-click="polyBlocksClicked" mouse-events="true" on-google-map-poly-mouseover="polyMouseOver"
-              on-google-map-poly-mouseout="polyMouseOut" id="{{block.$key}}">
+            <!-- #cbe6a3 -->
+            <google-map-poly closed stroke-color="{{_getStatusStrokeColor(block.type)}}" stroke-weight="1" stroke-opacity="1" fill-color="{{_getStatusColor(block.type)}}"
+              fill-opacity="1" id="{{block.$key}}" clickable="true" click-events="true" on-google-map-poly-click="polyBlocksClicked"
+              mouse-events="true" on-google-map-poly-mouseover="polyMouseOver" on-google-map-poly-mouseout="polyMouseOut" id="{{block.$key}}">
               <template is="dom-repeat" items="{{block.map_points}}" as='point'>
                 <google-map-point longitude="{{point.longitude}}" latitude="{{point.latitude}}"></google-map-point>
               </template>
@@ -176,9 +184,10 @@
 
           <template is="dom-repeat" items="{{lots}}" as='lot'>
 
-            <google-map-poly closed stroke-color="white" stroke-position="inside" stroke-opacity="1" stroke-weight="1" fill-color="{{_getStatusColor(lot.status)}}"
-              fill-opacity="1" clickable="true" click-events="true" on-google-map-poly-click="polyClicked" mouse-events="true"
-              on-google-map-poly-mouseover="polyMouseOver" on-google-map-poly-mouseout="polyMouseOut" id="{{lot.$key}}">
+            <google-map-poly closed stroke-color="{{_getStatusStrokeColor(lot.designation)}}" stroke-position="inside" stroke-opacity="1"
+              stroke-weight="1" fill-color="{{_getStatusColor(lot.status)}}" fill-opacity="1" clickable="true" click-events="true"
+              on-google-map-poly-click="polyClicked" mouse-events="true" on-google-map-poly-mouseover="polyMouseOver" on-google-map-poly-mouseout="polyMouseOut"
+              id="{{lot.$key}}">
 
               <template is="dom-repeat" items="{{lot.map_points}}" as='point'>
                 <google-map-point longitude="{{point.longitude}}" latitude="{{point.latitude}}"></google-map-point>
@@ -199,14 +208,164 @@
           </div>
 
           <div class="legendHeaderSmall">
-            <span>L:</span>
+            <span>LEGEND:</span>
             </br>
             <span>---</span>
           </div>
 
           <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="LAWN LOTS" id="legendLawnLots"></div>
+            <div class="displaySmall" style="margin-left: 0px;">LL</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Lawn Lots</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="WALL NICHE" id="legendWallNiche"></div>
+            <div class="displaySmall" style="margin-left: 0px;">WN</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Wall Niche</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="CINERARIUM" id="legendCinerarium"></div>
+            <div class="displaySmall" style="margin-left: 0px;">CN</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Cinerarium</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="BONE CHAMBER" id="legendBoneChamber"></div>
+            <div class="displaySmall" style="margin-left: 0px;">BC</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Bone Chamber</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 1" id="legendGardenLots1"></div>
+            <div class="displaySmall" style="margin-left: 0px;">GL1-A</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Garden Lots 1 (Area=12.52m²)</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 2" id="legendGardenLots2"></div>
+            <div class="displaySmall" style="margin-left: 0px;">GL1-B</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Garden Lots 1 (Area=12.43m²)</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 3" id="legendGardenLots3"></div>
+            <div class="displaySmall" style="margin-left: 0px;">GL1-C</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Garden Lots 1 (Irregular Lots)</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 4" id="legendGardenLots4"></div>
+            <div class="displaySmall" style="margin-left: 0px;">GL2-A</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Garden Lots 2 (Area=20.00m²)</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 5" id="legendGardenLots5"></div>
+            <div class="displaySmall" style="margin-left: 0px;">GL2-B</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Garden Lots 2 (Irregular Lots)</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 1" id="legendFamilyLots1"></div>
+            <div class="displaySmall" style="margin-left: 0px;">FL1-A</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Family Lots 1 (Area=53.27m²)</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 2" id="legendFamilyLots2"></div>
+            <div class="displaySmall" style="margin-left: 0px;">FL1-B</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Family Lots 1 (Area=52.83m²)</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 3" id="legendFamilyLots3"></div>
+            <div class="displaySmall" style="margin-left: 0px;">FL1-C</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Family Lots 1 (Irregular Lots)</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 4" id="legendFamilyLots4"></div>
+            <div class="displaySmall" style="margin-left: 0px;">FL2-A</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Family Lots 2 (Area=37.45m²)</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 5" id="legendFamilyLots5"></div>
+            <div class="displaySmall" style="margin-left: 0px;">FL2-B</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Family Lots 2 (Irregular Lots)</span>
+            </div>
+          </div>
+
+          <div class="legendHeader">
+            <span>-------------------------------</span>
+          </div>
+          <div class="legendHeaderSmall">
+            <span>---</span>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="regular" id="legendRegular"></div>
+            <div class="displaySmall" style="margin-left: 0px;">R</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Regular</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="special" id="legendSpecial"></div>
+            <div class="displaySmall" style="margin-left: 0px;">S</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Special</span>
+            </div>
+          </div>
+
+          <div style="display:flex;align-items:center;">
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="premium" id="legendPremium"></div>
+            <div class="displaySmall" style="margin-left: 0px;">P</div>
+            <div class="displayBig" style="margin-left: 8px;">
+              <span>Premium</span>
+            </div>
+          </div>
+
+          <div class="legendHeader">
+            <span>-------------------------------</span>
+          </div>
+          <div class="legendHeaderSmall">
+            <span>---</span>
+          </div>
+
+          <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="available" id="legendAvailable"></div>
-            <div class="displaySmall" style="margin-left: -13px;">A</div>
+            <div class="displaySmall" style="margin-left: 0px;">A</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Available</span>
             </div>
@@ -214,7 +373,7 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="sold" id="legendSold"></div>
-            <div class="displaySmall" style="margin-left: -13px;">S</div>
+            <div class="displaySmall" style="margin-left: 0px;">S</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Sold</span>
             </div>
@@ -222,7 +381,7 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="reserved" id="legendReserved"></div>
-            <div class="displaySmall" style="margin-left: -13px;">R</div>
+            <div class="displaySmall" style="margin-left: 0px;">R</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Reserved</span>
             </div>
@@ -230,7 +389,7 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="hold" id="legendHold"></div>
-            <div class="displaySmall" style="margin-left: -13px;">H</div>
+            <div class="displaySmall" style="margin-left: 0px;">H</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Hold</span>
             </div>
@@ -238,27 +397,11 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="notyetavailable" id="legendNotyetavailable"></div>
-            <div class="displaySmall" style="margin-left: -13px;">N</div>
+            <div class="displaySmall" style="margin-left: 0px;">N</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Not yet available</span>
             </div>
           </div>
-
-          <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="notyetavailable" id="legendNotyetavailable"></div>
-            <div class="displaySmall" style="margin-left: -13px;">N</div>
-            <div class="displayBig" style="margin-left: 8px;">
-              <span>gabriel</span>
-            </div>
-          </div>
-      
-          <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="notyetavailable" id="legendNotyetavailable"></div>
-            <div class="displaySmall" style="margin-left: -13px;">N</div>
-            <div class="displayBig" style="margin-left: 8px;">
-              <span>ardie</span>
-            </div>
-          </div>      
 
         </div>
 
@@ -284,8 +427,21 @@
         <span>VIEW MAP</span>
       </paper-button>
 
+      <!-- <paper-dialog id="dialog" allow-click-through>
+        <firebase-document path="/lots/{{selectedLot}}" data="{{selectedLotDetails}}">
+        </firebase-document>
+        <div style="top:0;background: violet;">Block {{selectedLotDetails.block}} - Lot {{selectedLotDetails.lot}}</div>
 
+        <div>
+          <div>Lot: {{selectedLotDetails.lot}}</div>
+          <div>Area: {{selectedLotDetails.area}}</div>
+        </div>
+      </paper-dialog> -->
+
+      <my-lot-details id="lotDetailsPane" selected-lot="{{selectedLot}}" style="display: none;"></my-lot-details>
     </app-header-layout>
+
+
 
   </template>
 
@@ -314,39 +470,121 @@
           type: Array,
           value: ''
         },
-        previousPartSelected: Object
-        // imhold: 
-        //   type: String,
-        //   value: "reserved"
-        // }
+        previousPartSelected: Object,
+        selectedLot: String
 
       },
 
       _statusColorChanged() {
         if (this.statuscolor) {
+          var argsLawnLots = Polymer.dom(this.root).querySelector("#legendLawnLots")
+          if (argsLawnLots) {
+            argsLawnLots.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsLawnLots.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px; border-color:" + this._getStatusStrokeColor(argsLawnLots.getAttribute("data-args")) + ";");
+          }
+
+          var argsWallNiche = Polymer.dom(this.root).querySelector("#legendWallNiche")
+          if (argsWallNiche) {
+            argsWallNiche.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsWallNiche.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px; border-color:" + this._getStatusStrokeColor(argsWallNiche.getAttribute("data-args")) + ";");
+          }
+
+          var argsCinerarium = Polymer.dom(this.root).querySelector("#legendCinerarium")
+          if (argsCinerarium) {
+            argsCinerarium.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsCinerarium.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsCinerarium.getAttribute("data-args")) + ";");
+          }
+
+          var argsBoneChamber = Polymer.dom(this.root).querySelector("#legendBoneChamber")
+          if (argsBoneChamber) {
+            argsBoneChamber.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsBoneChamber.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsBoneChamber.getAttribute("data-args")) + ";");
+          }
+
+          var argsGardenLots1 = Polymer.dom(this.root).querySelector("#legendGardenLots1")
+          if (argsGardenLots1) {
+            argsGardenLots1.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsGardenLots1.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsGardenLots1.getAttribute("data-args")) + ";");
+          }
+
+          var argsGardenLots2 = Polymer.dom(this.root).querySelector("#legendGardenLots2")
+          if (argsGardenLots2) {
+            argsGardenLots2.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsGardenLots2.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsGardenLots2.getAttribute("data-args")) + ";");
+          }
+
+          var argsGardenLots3 = Polymer.dom(this.root).querySelector("#legendGardenLots3")
+          if (argsGardenLots3) {
+            argsGardenLots3.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsGardenLots3.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsGardenLots3.getAttribute("data-args")) + ";");
+          }
+
+          var argsGardenLots4 = Polymer.dom(this.root).querySelector("#legendGardenLots4")
+          if (argsGardenLots4) {
+            argsGardenLots4.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsGardenLots4.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsGardenLots4.getAttribute("data-args")) + ";");
+          }
+
+          var argsGardenLots5 = Polymer.dom(this.root).querySelector("#legendGardenLots5")
+          if (argsGardenLots5) {
+            argsGardenLots5.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsGardenLots5.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsGardenLots5.getAttribute("data-args")) + ";");
+          }
+
+          var argsFamilyLots1 = Polymer.dom(this.root).querySelector("#legendFamilyLots1")
+          if (argsFamilyLots1) {
+            argsFamilyLots1.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsFamilyLots1.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsFamilyLots1.getAttribute("data-args")) + ";");
+          }
+
+          var argsFamilyLots2 = Polymer.dom(this.root).querySelector("#legendFamilyLots2")
+          if (argsFamilyLots2) {
+            argsFamilyLots2.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsFamilyLots2.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsFamilyLots2.getAttribute("data-args")) + ";");
+          }
+
+          var argsFamilyLots3 = Polymer.dom(this.root).querySelector("#legendFamilyLots3")
+          if (argsFamilyLots3) {
+            argsFamilyLots3.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsFamilyLots3.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsFamilyLots3.getAttribute("data-args")) + ";");
+          }
+
+          var argsFamilyLots4 = Polymer.dom(this.root).querySelector("#legendFamilyLots4")
+          if (argsFamilyLots4) {
+            argsFamilyLots4.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsFamilyLots4.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px; border-color:" + this._getStatusStrokeColor(argsFamilyLots4.getAttribute("data-args")) + ";");
+          }
+
+          var argsFamilyLots5 = Polymer.dom(this.root).querySelector("#legendFamilyLots5")
+          if (argsFamilyLots5) {
+            argsFamilyLots5.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsFamilyLots5.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsFamilyLots5.getAttribute("data-args")) + ";");
+          }
+
           var argsAvailable = Polymer.dom(this.root).querySelector("#legendAvailable")
           if (argsAvailable) {
-            argsAvailable.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsAvailable.getAttribute("data-args")) + ";");
+            argsAvailable.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsAvailable.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsAvailable.getAttribute("data-args")) + ";");
           }
 
           var argsSold = Polymer.dom(this.root).querySelector("#legendSold")
           if (argsSold) {
-            argsSold.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsSold.getAttribute("data-args")) + ";");
+            argsSold.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsSold.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px; border-color:" + this._getStatusStrokeColor(argsSold.getAttribute("data-args")) + ";");
           }
 
           var argsReserved = Polymer.dom(this.root).querySelector("#legendReserved")
           if (argsReserved) {
-            argsReserved.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsReserved.getAttribute("data-args")) + ";");
+            argsReserved.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsReserved.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px; border-color:" + this._getStatusStrokeColor(argsReserved.getAttribute("data-args")) + ";");
           }
 
           var argsHold = Polymer.dom(this.root).querySelector("#legendHold")
           if (argsHold) {
-            argsHold.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsHold.getAttribute("data-args")) + ";");
+            argsHold.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsHold.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsHold.getAttribute("data-args")) + ";");
           }
 
           var argsNotyetavailable = Polymer.dom(this.root).querySelector("#legendNotyetavailable")
           if (argsNotyetavailable) {
-            argsNotyetavailable.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsNotyetavailable.getAttribute("data-args")) + ";");
+            argsNotyetavailable.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsNotyetavailable.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsNotyetavailable.getAttribute("data-args")) + ";");
+          }
+
+          var argsRegular = Polymer.dom(this.root).querySelector("#legendRegular")
+          if (argsRegular) {
+            argsRegular.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background:  " + this._getStatusColor(argsRegular.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 2px;  border-color:" + this._getStatusStrokeColor(argsRegular.getAttribute("data-args")) + ";");
+          }
+
+          var argsSpecial = Polymer.dom(this.root).querySelector("#legendSpecial")
+          if (argsSpecial) {
+            argsSpecial.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsSpecial.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 2px;  border-color:" + this._getStatusStrokeColor(argsSpecial.getAttribute("data-args")) + ";");
+          }
+
+          var argsPremium = Polymer.dom(this.root).querySelector("#legendPremium")
+          if (argsPremium) {
+            argsPremium.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsPremium.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 2px;  border-color:" + this._getStatusStrokeColor(argsPremium.getAttribute("data-args")) + ";");
           }
 
         }
@@ -357,7 +595,12 @@
         if (e) {
           if (e) {
             if (this.statuscolor) {
-              return (this.statuscolor[e]).color;
+              if (this.statuscolor[e]) {
+                return (this.statuscolor[e]).color;
+              }
+              else {
+                return "gray";
+              }
             }
             else {
               return "gray";
@@ -373,16 +616,51 @@
 
       },
 
+      _getStatusStrokeColor(e) {
+        if (e) {
+          if (e) {
+            if (this.statuscolor) {
+              if (this.statuscolor[e]) {
+                if ((this.statuscolor[e]).stroke_color) {
+                  return (this.statuscolor[e]).stroke_color;
+                }
+                else {
+                  return "white";
+                }
+              }
+              else {
+                return "white";
+              }
+            }
+            else {
+              return "white";
+            }
+          }
+          else {
+            return "white";
+          }
+        }
+        else {
+          return "white";
+        }
+
+      },
+
       polyClicked(e) {
+
         var data_args = Polymer.dom(e).rootTarget.getAttribute("id");
-        // var args = Polymer.dom(this.root).querySelector("#rightdrawer")
 
-        // args.setAttribute("style", "display: block;");
-        // args.setAttribute("uid", data_args);
+        if (this.selectedLot) {
+          if (this.selectedLot != data_args) {
+            var prevSelectedLot = Polymer.dom(this.root).querySelector("#" + this.selectedLot);
+            prevSelectedLot.fillOpacity = 1;
+          }
+        }
 
-        console.log(data_args);
+        this.selectedLot = data_args;
 
-        // Polymer.dom(this.root).querySelector("#my-map-main-adl").setAttribute("style", "width: calc(100% - 340px);");
+        var args = Polymer.dom(this.root).querySelector("#lotDetailsPane")
+        args.setAttribute("style", "display: block;");
 
       },
 
@@ -391,30 +669,42 @@
         toast.duration = 0;
 
         var data_args = Polymer.dom(e).rootTarget.getAttribute("id");
-        this.selectedPart = data_args;
 
-        toast.show({ text: 'Loading Lots for ' + this.selectedPart + '...' });
+        if (data_args !== this.previousPartSelected) {
+          this.selectedPart = data_args;
 
-        Polymer.dom(e).rootTarget.fillOpacity = 0;
+          toast.show({ text: 'Loading Lots for ' + this.selectedPart + '...' });
+          Polymer.dom(e).rootTarget.poly.setVisible(false);
 
-        if (this.previousPartSelected) {
-          var args = Polymer.dom(this.root).querySelector("#" + this.previousPartSelected);
-          args.fillOpacity = 1;
+          if (this.previousPartSelected) {
+            var args = Polymer.dom(this.root).querySelector("#" + this.previousPartSelected);
+            args.poly.setVisible(true);
+          }
+
+          this.previousPartSelected = data_args;
+
+          this.selectedLot = null;
+
+          var args = Polymer.dom(this.root).querySelector("#lotDetailsPane")
+          args.setAttribute("style", "display: none;");
         }
-
-        this.previousPartSelected = data_args;
-
-
-        // toast.close();
 
       },
 
       polyMouseOver(e) {
-        Polymer.dom(e).rootTarget.setAttribute("stroke-color", "black");
+        // Polymer.dom(e).rootTarget.setAttribute("stroke-color", "black");
+        Polymer.dom(e).rootTarget.setAttribute("fill-opacity", ".5");
       },
 
       polyMouseOut(e) {
-        Polymer.dom(e).rootTarget.setAttribute("stroke-color", "white");
+        // Polymer.dom(e).rootTarget.setAttribute("stroke-color", "white");
+        // if(this.selectedLot!=)
+
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("id");
+        if (data_args != this.selectedLot) {
+          Polymer.dom(e).rootTarget.setAttribute("fill-opacity", "1");
+        }
+
       },
 
       _viewMap(e, f) {
@@ -451,11 +741,13 @@
         }
         else {
           if (toast) {
-            toast.duration = 1000;
-            toast.cancel(this);
+            if (toast.text != 'Loading Map.') {
+              toast.duration = 1000;
+              toast.cancel(this);
+            }
           }
-          
-        }        
+
+        }
 
       },
 
@@ -467,7 +759,10 @@
         }
         else {
           if (toast) {
-            toast.cancel(this);
+            if (toast.text != 'Loading Map.') {
+              toast.duration = 1000;
+              toast.cancel(this);
+            }
           }
         }
 
