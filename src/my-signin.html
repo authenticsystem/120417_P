@@ -120,7 +120,12 @@
                 // this.$.auth.createUserWithEmailAndPassword('hbsantillan@yahoo.com', '123456'); 
                 
 
-                this.$.auth.signInWithEmailAndPassword('hbs.auss@gmail.com', '123456'); 
+                this.$.auth.signInWithEmailAndPassword('hbs.auss@gmail.com', '123456')
+                .then(function (response) {
+      // Redirect upon success
+      app = this.document.querySelector('my-app');
+      app.set('route.path', '/');
+    });
                 // this.$.auth.sendEmailVerification();
 
                 // console.log(this.user);

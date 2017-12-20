@@ -28,6 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 
 
+<link rel="lazy-import" href="my-dashboard.html">
 <link rel="lazy-import" href="my-landing-page.html">
 <link rel="lazy-import" href="my-map.html">
 <link rel="lazy-import" href="my-signin.html">
@@ -225,7 +226,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _alreadySignedIn(e, f) {
         if (f === true) {
-
           if (e) {
             if (e.emailVerified === false) {
               console.log(e);
