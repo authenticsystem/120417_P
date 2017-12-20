@@ -28,11 +28,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 
 
-<link rel="lazy-import" href="my-dashboard.html">
 <link rel="lazy-import" href="my-landing-page.html">
 <link rel="lazy-import" href="my-map.html">
 <link rel="lazy-import" href="my-signin.html">
 <link rel="lazy-import" href="my-register-signin.html">
+<link rel="lazy-import" href="my-dashboard.html">
 <link rel="lazy-import" href="my-view1.html">
 <link rel="lazy-import" href="my-view2.html">
 <link rel="lazy-import" href="my-view3.html">
@@ -120,7 +120,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </app-header>
 
             <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-              <a name="dashboard" href="[[rootPath]]">
+              <a name="dashboard" href="[[rootPath]]dashboard">
                 <paper-icon-item toggles="true" class="menuSelected">
                   <iron-icon icon="my-icons:dashboard" slot="item-icon"></iron-icon>
                   <span>Dashboard</span>
@@ -175,7 +175,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get observers() {
         return [
-          '_routePageChanged(routeData.page)',
+          '_routePageChanged(routeData.page,user)',
         ];
       }
 
@@ -190,10 +190,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       }
 
-      _routePageChanged(page) {
+      _routePageChanged(page,user) {
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'view1' in that case.
-        this.page = page || 'landing-page';
+        //console.log(user);
+        if (user) {
+          this.page = page || 'dashboard';
+        }
+        else {
+          this.page = page || 'landing-page';
+        }
 
         // Close a non-persistent drawer when the page & route are changed.
         // if (!this.$.drawer.persistent) {
