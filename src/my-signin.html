@@ -72,9 +72,13 @@
                 font-size: 24px;
                 font-weight: 400;
             }
+
+            #errorMsgDiv {
+                color: red;
+            }
         </style>
 
-        <firebase-auth id="auth" user="{{user}}" provider="google" on-error="showError"></firebase-auth>
+        <firebase-auth id="auth" user="{{user}}" provider="password" on-error="handleError"></firebase-auth>
 
         <div class="main-container">
             <a href="/">
@@ -86,12 +90,13 @@
                 <div class="header">Sign in</div>
                 <div>to continue to Haven of Peace Memorial Garden inventory and reservation system</div>
                 </br>
-                <paper-input label="Email" value="demo@abc.com"></paper-input>
-                <paper-input label="Password" type="password" value="demo@abc.com"></paper-input>
+                <div id="errorMsgDiv" style="display: none;">{{validationMessage}}</div>
+                <paper-input label="Email" value="{{email}}" always-float-label required auto-validate error-message=""></paper-input>
+                <paper-input label="Password" type="password" value="{{password}}" always-float-label required auto-validate error-message=""></paper-input>
                 </br>
                 </br>
                 <div class="footer">
-                    <div class="moreoption">
+                    <!--<div class="moreoption">
                         <paper-menu-button>
                             <div slot="dropdown-trigger" alt="menu" style="color: royalblue;">More options</div>
                             <paper-listbox slot="dropdown-content">
@@ -101,7 +106,7 @@
                                 <paper-item>Forgot Password?</paper-item>
                             </paper-listbox>
                         </paper-menu-button>
-                    </div>
+                    </div>-->
                     <div class="action">
                         <paper-button class="green" on-tap="_signIn">next</paper-button>
                     </div>
@@ -116,28 +121,60 @@
         Polymer({
             is: 'my-signin',
 
+            handleError() {
+                var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
+                errormsg.setAttribute("style", "display: block;");
+                this.validationMessage = 'Invalid email/password.';
+            },
+
             _signIn() {
-                // this.$.auth.createUserWithEmailAndPassword('hbsantillan@yahoo.com', '123456'); 
-                
-
-                this.$.auth.signInWithEmailAndPassword('hbs.auss@gmail.com', '123456')
-                .then(function (response) {
-                // Redirect upon success
-                app = this.document.querySelector('my-app');
-                app.set('route.path', '/');
-                });
-                // this.$.auth.sendEmailVerification();
-
-                // console.log(this.user);
-
-                if (this.user) {
-                    if (this.user.emailVerified === false) {
-                        this.user.sendEmailVerification();
-                    }
+                // this.$.auth.createUserWithEmailAndPassword('hbsantillan@yahoo.com', '1'); 
+                if (!this.email || !this.password) {
+                    var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
+                    errormsg.setAttribute("style", "display: block;");
+                    this.validationMessage = 'Invalid empty email/password.';
                 }
-                
-                
+                else {
+                    this.$.auth.signInWithEmailAndPassword(this.email, this.password)
+                        .then(function (response) {
+                            app = this.document.querySelector('my-app');
+                            app.set('route.path', '/');
+                        })
+                        .catch(function (error) {
+                            // Handle Errors here.
+
+                            // var errorCode = error.code;
+                            // var errorMessage = error.message;
+
+                            // if (errorCode === 'auth/wrong-password') {
+                            //     // alert('Wrong password');
+                            //     this.validationMessage = 'Wrong password';
+                            // }
+                            // else if (errorCode === 'auth/user-not-found') {
+                            //     // alert('There is no user corresponding to the given email.');
+                            //     this.validationMessage = 'There is no user corresponding to the given email.';
+                            // }
+                            // else if (errorCode === 'auth/invalid-email') {
+                            //     //    alert('The email address is not valid.');
+                            //     this.validationMessage = 'The email address is not valid.';
+                            // }
+                            // else {
+                            //     // alert(errorMessage);
+                            //     this.validationMessage = errorMessage;
+                            // }
+                        });
+                }
             }
+
+            // this.$.auth.sendEmailVerification();
+
+            // console.log(this.user);
+
+            //if (this.user) {
+            //    if (this.user.emailVerified === false) {
+            //        this.user.sendEmailVerification();
+            //    }
+            //}
 
 
         })
