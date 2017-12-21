@@ -13,7 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
 
-<dom-module id="my-dashboard">
+<dom-module id="my-application">
   <template>
     <style include="shared-styles">
       :host {
@@ -53,7 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <app-header fixed slot="header">
         <app-toolbar primary>
           <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-          <div main-title>Dashboard</div>
+          <div main-title>Application</div>
         </app-toolbar>
       </app-header>
 
@@ -112,10 +112,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload fade style="width:200px; height:200px;"></iron-image></br>
 
           Content (later): </br>
-          1. Notices / Special Instructions / Meetings / etc.</br>
-          2. Sales Agent Activity Charts</br>
-          3. Statistics Charts (tbd)</br>
-          4. others (tbd)</br>
+            APPLICATION
         </div>
 
 
@@ -129,8 +126,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
-    class MyDashboard extends Polymer.Element {
-      static get is() { return 'my-dashboard'; }
+    class MyApplication extends Polymer.Element {
+      static get is() { return 'my-application'; }
 
       static get properties() {
         return {
@@ -156,6 +153,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 
-    window.customElements.define(MyDashboard.is, MyDashboard);
+    window.customElements.define(MyApplication.is, MyApplication);
   </script>
 </dom-module>
