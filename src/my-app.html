@@ -312,7 +312,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         drawerlayout.forceNarrow = e.detail.narrow;
       }
 
-      _routePageChanged(page, user) {
+      _routePageChanged(page,user) {
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'view1' in that case.
         //console.log(user);
@@ -400,10 +400,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _signOut() {
-        window.location.reload()
         this.$.auth.signOut();
-        this.set("route.path", ""); 
-
+        window.location = "/";
       }
 
     }
