@@ -18,6 +18,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="my-icons.html">
 <!-- <link rel="import" href="shared-styles.html"> -->
 
@@ -30,15 +33,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         display: flex;
         flex-direction: column;
-      }
-
-      .item {
-        @apply --layout-horizontal;
-        padding: 20px;
-        background-color: white;
-        border-bottom: 1px solid #ddd;
-        cursor: pointer;
-        /* margin-bottom: 10px; */
       }
 
       .avatar {
@@ -55,49 +49,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         @apply --layout-vertical;
       }
 
-      /* .vr {
-        @apply --layout-flex;
-        @apply --layout-horizontal;
-      } */
-
       .primary {
-        font-size: 16px;
-        font-weight: bold;
+        font-size: 18px;
         text-transform: capitalize;
-        display: inline-block;
-        vertical-align: top;
-        width:100px;
       }
 
       .shortText,
       .longText {
-        @apply --layout-horizontal;
         font-size: 12px;
-        display: inline-block;
-        width:100px;
       }
 
       .longText {
         color: gray;
-        display: none;
+        margin-bottom: -0.5em;
       }
-
-      /* .item:hover .shortText::after {
-        content: ' [+]';
-        color: gray;
-      }
-
-      .item.expanded:hover .shortText::after {
-        content: '';
-      }
-
-      .item.expanded .longText {
-        display: block;
-      }
-
-      .item.expanded:hover .longText::after {
-        content: ' [–]';
-      } */
 
       .spacer {
         @apply --layout-flex;
@@ -106,20 +71,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       @media (max-width: 768px) {
         iron-list {
           margin: 16px;
-          /* margin-top: 0px; */
+          /* margin-top: 16px; */
           display: flex;
           height: 100vh;
           flex-direction: column;
+          border-radius: 3px;
           box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-        }    
-
-        .primary {
-          @apply --layout-horizontal;
-        }
-
-        .shortText,
-        .longText {
-          @apply --layout-horizontal;
         }
       }
 
@@ -128,8 +85,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         iron-list {
           width: 765px;
           margin: 16px auto;
-          /* margin-top: 0px; */
+          /* margin-top: 16px; */
           height: 100vh;
+          border-radius: 3px;
           box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         }
       }
@@ -150,10 +108,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         right: 40px;
         bottom: 104px;
       }
+
       paper-icon-button.menu {
         margin-right: 16px;
       }
 
+
+      .item {
+        @apply --layout-horizontal;
+        /* padding: 20px; */
+        background-color: white;
+        border-bottom: 1px solid #ddd;
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
     </style>
 
     <iron-ajax auto url="src/data.json" last-response="{{items}}"></iron-ajax>
@@ -166,37 +134,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-icon-button icon="my-icons:search" on-tap="toggleSearch"></paper-icon-button>
         </app-toolbar>
       </app-header>
-      
-      <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold">
 
+      <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold">
         <iron-list items="[[items]]" as="item" selection-enabled multi-selection scroll-target="threshold">
           <template>
             <div class="divSeparator">
-              <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[tabIndex]]">
-                <!-- <iron-image class="avatar" sizing="contain" src="[[item.image]]"></iron-image> -->
+              <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[tabIndex]]" style="width: 100%;">
+                <!-- <iron-image class="avatar" sizing="contain" src="[[item.image]]"></iron-image>
                 <div class="pad">
-                  <div class="vr">
-                    <div class="shortText">Status</div>
-                    <div class="shortText">Date</div>
-                    <div class="shortText">Lot</div>
-                    <div class="shortText">Buyer</div>
-                    <div class="shortText">Agent</div>
-                    <div class="shortText">Expiry</div>
-                
-                    <div class="primary">[[item.status]]</div>
-                    <div class="primary">[[item.date]]</div>
-                    <div class="primary">[[item.lot]]</div>
-                    <div class="primary">[[item.buyer]]</div>
-                    <div class="primary">[[item.agent]]</div>
-                    <div class="primary">[[item.expiry]]</div>
-                  </div>
+                  <div class="primary">[[item.name]]</div>
+                  <div class="shortText">[[item.shortText]]</div>
+                  <div class="longText">[[item.longText]]</div>
                 </div>
-                <iron-icon icon$="[[iconForItem(item)]]"></iron-icon>
-              </div>
-            </div> 
+                <iron-icon icon$="[[iconForItem(item)]]"></iron-icon> -->
+
+                <!-- <div class="card" style="width: 100%;"> -->
+                  <div class="card-content" style="width: 100%;">
+                    <div class="cafe-header"  style="background-color: #2196F3;">
+                      <div style="padding: 16px;">Block 2 - Lot 1b - Plot XX</div>
+                    </div>
+                    <div style="padding: 16px;">
+                      asdasd
+                    </div>
+                  </div>
+                  
+                </div>                
+              <!-- </div> -->
+            </div>
           </template>
         </iron-list>
-       
       </iron-scroll-threshold>
 
     </app-header-layout>
