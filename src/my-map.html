@@ -24,17 +24,13 @@
         display: block;
       }
 
-      paper-toast {
-        float: right;
-      }
-
       @media (max-width: 767px) {
         iron-image.logo {
           width: 64px;
           height: 64px;
         }
 
-        div.legendHeader {
+        /* div.legendHeader {
           display: none;
         }
 
@@ -52,6 +48,20 @@
 
         div.displayBig {
           display: none;
+        } */
+        div.myLegend {
+          position: absolute;
+          margin: 11px;
+          bottom: 70px;
+          background: white;
+          height: 430px;
+          width: 210px;
+          opacity: 1;
+          padding: 10px;
+          font-size: 11px;
+          border-radius: 2px;
+          z-index: 10;
+          /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
         }
 
       }
@@ -62,7 +72,22 @@
           height: 128px;
         }
 
-        div.legendHeaderSmall {
+        div.myLegend {
+          position: absolute;
+          margin: 11px;
+          bottom: 70px;
+          background: white;
+          height: 430px;
+          width: 210px;
+          opacity: 1;
+          padding: 10px;
+          font-size: 12px;
+          border-radius: 2px;
+          z-index: 10;
+          /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
+        }
+
+        /* div.legendHeaderSmall {
           display: none;
         }
 
@@ -80,21 +105,24 @@
 
         div.displaySmall {
           display: none;
-        }
-
+        } */
       }
+
+
 
       div.myLegendLess {
         display: none;
         position: absolute;
-        margin: 11px;
+        margin: 10px;
         bottom: 70px;
         background: white;
-        height: 16px;
-        width: 210px;
+        height: 24px;
+        width: 86px;
         opacity: 1;
-        padding: 10px;
+        padding-top: 8px;
+        padding-left: 8px;
         font-size: 12px;
+        z-index: 0;
       }
 
 
@@ -168,7 +196,7 @@
 
       <template is="dom-if" if="{{_viewMap('true',viewMap)}}">
 
-        <paper-toast id="toast" text="Loading Map." duration=0 opened alwaysOnTop="true"></paper-toast>
+        <paper-toast id="toast" text="Loading Map." duration=0 opened></paper-toast>
 
         <firebase-document path="/statuscolor" data="{{statuscolor}}">
         </firebase-document>
@@ -225,15 +253,14 @@
             <span>--------------------------------------------------</span>
           </div>
 
-          <div class="legendHeaderSmall">
+          <!-- <div class="legendHeaderSmall">
             <span>LEGEND:</span>
             </br>
             <span>---</span>
-          </div>
+          </div> -->
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="LAWN LOTS" id="legendLawnLots"></div>
-            <div class="displaySmall" style="margin-left: 0px;">LL</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Lawn Lots</span>
             </div>
@@ -241,7 +268,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="WALL NICHE" id="legendWallNiche"></div>
-            <div class="displaySmall" style="margin-left: 0px;">WN</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Wall Niche</span>
             </div>
@@ -249,7 +275,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="CINERARIUM" id="legendCinerarium"></div>
-            <div class="displaySmall" style="margin-left: 0px;">CN</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Cinerarium</span>
             </div>
@@ -257,7 +282,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="BONE CHAMBER" id="legendBoneChamber"></div>
-            <div class="displaySmall" style="margin-left: 0px;">BC</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Bone Chamber</span>
             </div>
@@ -265,7 +289,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 1" id="legendGardenLots1"></div>
-            <div class="displaySmall" style="margin-left: 0px;">GL1-A</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Garden Lots 1 (Area=12.52m²)</span>
             </div>
@@ -273,7 +296,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 2" id="legendGardenLots2"></div>
-            <div class="displaySmall" style="margin-left: 0px;">GL1-B</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Garden Lots 1 (Area=12.43m²)</span>
             </div>
@@ -281,7 +303,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 3" id="legendGardenLots3"></div>
-            <div class="displaySmall" style="margin-left: 0px;">GL1-C</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Garden Lots 1 (Irregular Lots)</span>
             </div>
@@ -289,7 +310,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 4" id="legendGardenLots4"></div>
-            <div class="displaySmall" style="margin-left: 0px;">GL2-A</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Garden Lots 2 (Area=20.00m²)</span>
             </div>
@@ -297,7 +317,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 5" id="legendGardenLots5"></div>
-            <div class="displaySmall" style="margin-left: 0px;">GL2-B</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Garden Lots 2 (Irregular Lots)</span>
             </div>
@@ -305,7 +324,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 1" id="legendFamilyLots1"></div>
-            <div class="displaySmall" style="margin-left: 0px;">FL1-A</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Family Lots 1 (Area=53.27m²)</span>
             </div>
@@ -313,7 +331,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 2" id="legendFamilyLots2"></div>
-            <div class="displaySmall" style="margin-left: 0px;">FL1-B</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Family Lots 1 (Area=52.83m²)</span>
             </div>
@@ -321,7 +338,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 3" id="legendFamilyLots3"></div>
-            <div class="displaySmall" style="margin-left: 0px;">FL1-C</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Family Lots 1 (Irregular Lots)</span>
             </div>
@@ -329,7 +345,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 4" id="legendFamilyLots4"></div>
-            <div class="displaySmall" style="margin-left: 0px;">FL2-A</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Family Lots 2 (Area=37.45m²)</span>
             </div>
@@ -337,7 +352,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 5" id="legendFamilyLots5"></div>
-            <div class="displaySmall" style="margin-left: 0px;">FL2-B</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Family Lots 2 (Irregular Lots)</span>
             </div>
@@ -346,20 +360,18 @@
           <div class="legendHeader">
             <span>--------------------------------------------------</span>
           </div>
-          <div class="legendHeaderSmall">
+          <!-- <div class="legendHeaderSmall">
             <span>---</span>
-          </div>
+          </div> -->
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="available" id="legendAvailable"></div>
-            <div class="displaySmall" style="margin-left: 0px;">A</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Available</span>
             </div>
 
-            <div style="display:flex;align-items:center; margin-left: 40px;">
+            <div style="display:flex; left: 124px; position: absolute;">
               <div style="display: inline-block; height: 16px; width: 16px;" data-args="regular" id="legendRegular"></div>
-              <div class="displaySmall" style="margin-left: 0px;">R</div>
               <div class="displayBig" style="margin-left: 8px;">
                 <span>Regular</span>
               </div>
@@ -368,39 +380,34 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="sold" id="legendSold"></div>
-            <div class="displaySmall" style="margin-left: 0px;">S</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Sold</span>
             </div>
 
-            <div style="display:flex;align-items:center;margin-left: 64px;">
-                <div style="display: inline-block; height: 16px; width: 16px;" data-args="special" id="legendSpecial"></div>
-                <div class="displaySmall" style="margin-left: 0px;">S</div>
-                <div class="displayBig" style="margin-left: 8px;">
-                  <span>Special</span>
-                </div>
+            <div style="display:flex;left: 124px; position: absolute;">
+              <div style="display: inline-block; height: 16px; width: 16px;" data-args="special" id="legendSpecial"></div>
+              <div class="displayBig" style="margin-left: 8px;">
+                <span>Special</span>
               </div>
+            </div>
           </div>
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="soldlacking" id="legendSoldLacking"></div>
-            <div class="displaySmall" style="margin-left: 0px;">S/L</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Sold/Lacking</span>
             </div>
 
-            <div style="display:flex;align-items:center;margin-left: 18px;">
-                <div style="display: inline-block; height: 16px; width: 16px;" data-args="premium" id="legendPremium"></div>
-                <div class="displaySmall" style="margin-left: 0px;">P</div>
-                <div class="displayBig" style="margin-left: 8px;">
-                  <span>Premium</span>
-                </div>
+            <div style="display:flex;left: 124px; position: absolute;">
+              <div style="display: inline-block; height: 16px; width: 16px;" data-args="premium" id="legendPremium"></div>
+              <div class="displayBig" style="margin-left: 8px;">
+                <span>Premium</span>
               </div>
+            </div>
           </div>
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="reserved" id="legendReserved"></div>
-            <div class="displaySmall" style="margin-left: 0px;">R</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Reserved</span>
             </div>
@@ -408,7 +415,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="hold" id="legendHold"></div>
-            <div class="displaySmall" style="margin-left: 0px;">H</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>On-Hold</span>
             </div>
@@ -416,7 +422,6 @@
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="notyetavailable" id="legendNotyetavailable"></div>
-            <div class="displaySmall" style="margin-left: 0px;">N</div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Not yet available</span>
             </div>
@@ -460,17 +465,6 @@
         <iron-icon icon="my-icons:map" style="padding-right: 8px;"></iron-icon>
         <span>VIEW MAP</span>
       </paper-button>
-
-      <!-- <paper-dialog id="dialog" allow-click-through>
-        <firebase-document path="/lots/{{selectedLot}}" data="{{selectedLotDetails}}">
-        </firebase-document>
-        <div style="top:0;background: violet;">Block {{selectedLotDetails.block}} - Lot {{selectedLotDetails.lot}}</div>
-
-        <div>
-          <div>Lot: {{selectedLotDetails.lot}}</div>
-          <div>Area: {{selectedLotDetails.area}}</div>
-        </div>
-      </paper-dialog> -->
 
       <my-lot-details id="lotDetailsPane" selected-lot="{{selectedLot}}" statusColors="{{statuscolor}}" style="display: none;"></my-lot-details>
     </app-header-layout>
