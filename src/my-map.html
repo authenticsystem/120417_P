@@ -43,7 +43,7 @@
           margin: 11px;
           bottom: 70px;
           background: white;
-          height: 480px;
+          height: 580px;
           width: 52px;
           opacity: .75;
           padding: 10px;
@@ -71,8 +71,8 @@
           margin: 11px;
           bottom: 70px;
           background: white;
-          height: 500px;
-          width: 200px;
+          height: 430px;
+          width: 210px;
           opacity: 1;
           padding: 10px;
           font-size: 12px;
@@ -82,6 +82,19 @@
           display: none;
         }
 
+      }
+
+      div.myLegendLess {
+        display: none;
+        position: absolute;
+        margin: 11px;
+        bottom: 70px;
+        background: white;
+        height: 16px;
+        width: 210px;
+        opacity: 1;
+        padding: 10px;
+        font-size: 12px;
       }
 
 
@@ -199,12 +212,17 @@
 
         </google-map>
 
+        <div class="myLegendLess" id="myLegendLess">
+          <span>Legend:</span>
+          <paper-icon-button style="float: right;  top: -12px; right: 0px;" icon="my-icons:expand-less" on-tap="showLegend"></paper-icon-button>
+        </div>
 
-        <div class="myLegend">
+        <div class="myLegend" id="myLegend">
           <div class="legendHeader">
             <span>Legend:</span>
+            <paper-icon-button style="float: right;  top: -8px; right: 0px;" icon="my-icons:expand-more" on-tap="hideLegend"></paper-icon-button>
             </br>
-            <span>-------------------------------</span>
+            <span>--------------------------------------------------</span>
           </div>
 
           <div class="legendHeaderSmall">
@@ -326,38 +344,7 @@
           </div>
 
           <div class="legendHeader">
-            <span>-------------------------------</span>
-          </div>
-          <div class="legendHeaderSmall">
-            <span>---</span>
-          </div>
-
-          <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="regular" id="legendRegular"></div>
-            <div class="displaySmall" style="margin-left: 0px;">R</div>
-            <div class="displayBig" style="margin-left: 8px;">
-              <span>Regular</span>
-            </div>
-          </div>
-
-          <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="special" id="legendSpecial"></div>
-            <div class="displaySmall" style="margin-left: 0px;">S</div>
-            <div class="displayBig" style="margin-left: 8px;">
-              <span>Special</span>
-            </div>
-          </div>
-
-          <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="premium" id="legendPremium"></div>
-            <div class="displaySmall" style="margin-left: 0px;">P</div>
-            <div class="displayBig" style="margin-left: 8px;">
-              <span>Premium</span>
-            </div>
-          </div>
-
-          <div class="legendHeader">
-            <span>-------------------------------</span>
+            <span>--------------------------------------------------</span>
           </div>
           <div class="legendHeaderSmall">
             <span>---</span>
@@ -369,6 +356,14 @@
             <div class="displayBig" style="margin-left: 8px;">
               <span>Available</span>
             </div>
+
+            <div style="display:flex;align-items:center; margin-left: 40px;">
+              <div style="display: inline-block; height: 16px; width: 16px;" data-args="regular" id="legendRegular"></div>
+              <div class="displaySmall" style="margin-left: 0px;">R</div>
+              <div class="displayBig" style="margin-left: 8px;">
+                <span>Regular</span>
+              </div>
+            </div>
           </div>
 
           <div style="display:flex;align-items:center;">
@@ -377,6 +372,14 @@
             <div class="displayBig" style="margin-left: 8px;">
               <span>Sold</span>
             </div>
+
+            <div style="display:flex;align-items:center;margin-left: 64px;">
+                <div style="display: inline-block; height: 16px; width: 16px;" data-args="special" id="legendSpecial"></div>
+                <div class="displaySmall" style="margin-left: 0px;">S</div>
+                <div class="displayBig" style="margin-left: 8px;">
+                  <span>Special</span>
+                </div>
+              </div>
           </div>
 
           <div style="display:flex;align-items:center;">
@@ -385,6 +388,14 @@
             <div class="displayBig" style="margin-left: 8px;">
               <span>Sold/Lacking</span>
             </div>
+
+            <div style="display:flex;align-items:center;margin-left: 18px;">
+                <div style="display: inline-block; height: 16px; width: 16px;" data-args="premium" id="legendPremium"></div>
+                <div class="displaySmall" style="margin-left: 0px;">P</div>
+                <div class="displayBig" style="margin-left: 8px;">
+                  <span>Premium</span>
+                </div>
+              </div>
           </div>
 
           <div style="display:flex;align-items:center;">
@@ -509,6 +520,24 @@
           value: true,
           notify: true,
         }
+
+      },
+
+      hideLegend() {
+        var legend = Polymer.dom(this.root).querySelector("#myLegend");
+        legend.style.display = "none";
+
+        var legendless = Polymer.dom(this.root).querySelector("#myLegendLess");
+        legendless.style.display = "block";
+
+      },
+
+      showLegend() {
+        var legend = Polymer.dom(this.root).querySelector("#myLegend");
+        legend.style.display = "block";
+
+        var legendless = Polymer.dom(this.root).querySelector("#myLegendLess");
+        legendless.style.display = "none";
 
       },
 
