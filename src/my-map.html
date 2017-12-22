@@ -155,7 +155,7 @@
 
       <template is="dom-if" if="{{_viewMap('true',viewMap)}}">
 
-        <paper-toast id="toast" text="Loading Map." duration=0 opened></paper-toast>
+        <paper-toast id="toast" text="Loading Map." duration=0 opened alwaysOnTop="true"></paper-toast>
 
         <firebase-document path="/statuscolor" data="{{statuscolor}}">
         </firebase-document>
@@ -415,20 +415,35 @@
 
       </template>
 
-      <div class="logo">
-        <a href="/">
-          <iron-image class="logo" placeholder="images/manifest/icon-48x48.png" data-src="images/manifest/icon-48x48.png" sizing="contain"
-            preload fade></iron-image>
-        </a>
-      </div>
+      <template is="dom-if" if="{{_needToSignIn(user,statusKnown)}}">
+        <div class="logo">
+          <a href="/">
+            <iron-image class="logo" placeholder="images/manifest/icon-48x48.png" data-src="images/manifest/icon-48x48.png" sizing="contain"
+              preload fade></iron-image>
+          </a>
+        </div>
 
-      <paper-icon-button class="myToolbar_refresh" icon="my-icons:refresh" on-tap="_refreshMap"></paper-icon-button>
-      <!-- <paper-button class="myToolbar" raised>Sign In</paper-button> -->
-      <div class="myToolbar">
-        <a href="/signin" style="text-decoration: none;">
-          <paper-button raised noink class="myToolbarSignIn">Sign In</paper-button>
-        </a>
-      </div>
+        <paper-icon-button class="myToolbar_refresh" icon="my-icons:refresh" on-tap="_refreshMap"></paper-icon-button>
+
+        <div class="myToolbar">
+          <a href="/signin" style="text-decoration: none;">
+            <paper-button raised noink class="myToolbarSignIn">Sign In</paper-button>
+          </a>
+        </div>
+      </template>
+
+      <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
+        <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer" style="position: absolute; left: 16px; top: 16px; color: green;"></paper-icon-button>
+        <div style="position: absolute; float: right; right: 16px; padding: 16px;">
+          <a href="/">
+            <iron-image class="logo" placeholder="images/manifest/icon-48x48.png" data-src="images/manifest/icon-48x48.png" sizing="contain"
+              preload fade></iron-image>
+          </a>
+        </div>
+
+        <paper-icon-button style="position: absolute; float: left; left: 52px; color: green; top:16px;" icon="my-icons:refresh" on-tap="_refreshMap"></paper-icon-button>
+      </template>
+
 
       <paper-button class="myViewMap" id="myViewMap" raised on-click="_showMap">
         <iron-icon icon="my-icons:map" style="padding-right: 8px;"></iron-icon>
@@ -479,8 +494,40 @@
           value: ''
         },
         previousPartSelected: Object,
-        selectedLot: String
+        selectedLot: String,
+        narrow: {
+          type: Boolean,
+          notify: true
+        },
+        user: {
+          type: Object,
+          value: null,
+          notify: true
+        },
+        statusKnown: {
+          type: Boolean,
+          value: true,
+          notify: true,
+        }
 
+      },
+
+      _needToSignIn(e, f) {
+        if (f === true) {
+          return e === null;
+        }
+        else {
+          return false;
+        }
+      },
+
+      _alreadySignedIn(e, f) {
+        if (f === true) {
+          return e !== null;
+        }
+        else {
+          return false;
+        }
       },
 
       _statusColorChanged() {
@@ -568,7 +615,7 @@
           var argsSoldLacking = Polymer.dom(this.root).querySelector("#legendSoldLacking")
           if (argsSoldLacking) {
             argsSoldLacking.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background: " + this._getStatusColor(argsSoldLacking.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px; border-color:" + this._getStatusStrokeColor(argsSoldLacking.getAttribute("data-args")) + ";");
-          }          
+          }
 
           var argsReserved = Polymer.dom(this.root).querySelector("#legendReserved")
           if (argsReserved) {
@@ -733,11 +780,11 @@
         this.viewMap = true;
 
         if (this.viewMap) {
-          var args = Polymer.dom(this.root).querySelector("#myViewMap")
+          var args = Polymer.dom(this.root).querySelector("#myViewMap");
           args.setAttribute("style", "display: none;");
         }
         else {
-          var args = Polymer.dom(this.root).querySelector("#myViewMap")
+          var args = Polymer.dom(this.root).querySelector("#myViewMap");
           args.setAttribute("style", "display: block;");
         }
       },
@@ -747,7 +794,7 @@
       },
 
       _lotsLoaded() {
-        var toast = Polymer.dom(this.root).querySelector("#toast")
+        var toast = Polymer.dom(this.root).querySelector("#toast");
 
         if (this.lots.length > 0) {
           toast.close();
@@ -780,7 +827,16 @@
           }
         }
 
+      },
+      toggleDrawer() {
+        this.dispatchEvent(new CustomEvent('toggleDrawer', {
+          bubbles: true, composed: true, detail: {
+            narrow: this.$.narrow
+          }
+        }));
+        this.$.narrow = !this.$.narrow;
       }
+
 
 
     })

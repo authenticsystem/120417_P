@@ -46,7 +46,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="my-app">
   <template>
-      <style include="shared-styles">
+    <style include="shared-styles">
       :host {
         --app-primary-color: #FFFFFF;
         --app-secondary-color: #000000;
@@ -179,7 +179,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
-      
+
 
       <!-- <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
@@ -205,32 +205,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <span>Dashboard</span>
                 </paper-icon-item>
               </a>
-              <a name="briefcase" href="[[rootPath]]briefcase">
+              <a name="map" href="[[rootPath]]map">
                 <paper-icon-item toggles="true" class="menuSelected">
-                  <iron-icon icon="my-icons:work" slot="item-icon"></iron-icon>
-                  <span>Briefcase</span>
+                  <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
+                  <span>Map</span>
+                </paper-icon-item>
+              </a>              
+              <a name="application" href="[[rootPath]]application">
+                <paper-icon-item toggles="true" class="menuSelected">
+                  <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
+                  <span>Applications</span>
                 </paper-icon-item>
               </a>
-              <a name="application" href="[[rootPath]]application">
-                  <paper-icon-item toggles="true" class="menuSelected">
-                    <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
-                    <span>Application</span>
-                  </paper-icon-item>
-                </a>
-                <a on-tap="_signOut">
-                    <paper-icon-item toggles="true">
-                      <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
-                      <span>Sign-out</span>
-                    </paper-icon-item>
-                </a>
+              <a on-tap="_signOut">
+                <paper-icon-item toggles="true">
+                  <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
+                  <span>Sign-out</span>
+                </paper-icon-item>
+              </a>
             </iron-selector>
-            
+
           </div>
         </app-drawer>
 
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <my-dashboard name="dashboard"></my-dashboard>
-          <my-briefcase name="briefcase"></my-briefcase>
+          <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
           <my-application name="application"></my-application>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
@@ -293,7 +293,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // listen for online/offline
         Polymer.RenderStatus.afterNextRender(this, () => {
           window.addEventListener('online', (e) => this._notifyNetworkStatus(e));
-          window.addEventListener('offline', (e) => this._notifyNetworkStatus(e)); 
+          window.addEventListener('offline', (e) => this._notifyNetworkStatus(e));
         });
       }
 
@@ -402,7 +402,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _signOut() {
         window.location.reload()
         this.$.auth.signOut();
-        this.set("route.path", ""); 
+        this.set("route.path", "");
 
       }
 
