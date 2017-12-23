@@ -1,0 +1,554 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animatable.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="my-icons.html">
+
+<dom-module id="my-application-details">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+
+            app-header {
+                color: rgb(255, 255, 255);
+                background-color: #388E3C;
+            }
+
+            app-header paper-icon-button {
+                --paper-icon-button-ink-color: #000000;
+            }
+
+            app-drawer-layout:not([narrow]) [drawer-toggle] {
+                display: none;
+            }
+
+            app-drawer {
+                --app-drawer-content-container: {
+                    background-color: #F4F5F6;
+                }
+            }
+
+            paper-icon-button.menu {
+                margin-right: 16px;
+            }
+
+            paper-item {
+                height: 64px;
+            }
+
+            .mnu {
+                padding: 16px;
+            }
+
+            paper-fab {
+                background: #1976d2;
+            }
+
+            .labelitem {
+                padding: 0px;
+                margin: 0;
+            }
+
+
+
+            @media (min-width: 800px) {
+                .footer {
+                    position: absolute;
+                    bottom: 16px;
+                    width: 100%;
+                }
+                .paper-fab-0 {
+                    position: absolute;
+                    left: 48px;
+                    bottom: 48px;
+                }
+
+                .paper-fab-1 {
+                    position: absolute;
+                    right: 48px;
+                    bottom: 48px;
+                }
+
+            }
+
+            @media (max-width: 800px) {
+                .paper-fab-0 {
+                    position: absolute;
+                    left: 16px;
+                    bottom: 48px;
+                }
+
+                .paper-fab-1 {
+                    position: absolute;
+                    right: 16px;
+                    bottom: 48px;
+                }
+
+                .docu {
+                    margin-left: 16px;
+                    margin-right: 16px;
+                }
+
+            }
+
+
+            paper-button.green {
+                background-color: var(--paper-green-500);
+                color: white;
+            }
+        </style>
+
+        <!-- <app-route route="[[route]]" pattern="/:lot" data="{{routeData}}"></app-route> -->
+
+        <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
+        </firebase-document>
+
+        <firebase-document id='reservdoc' path="/reservations/[[routeData.lot]]" data="{{reservationdetailsAPP}}">
+        </firebase-document> -->
+
+        <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
+            <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
+                <div class="mnu" role="listbox">
+                    <!-- <iron-selector attr-for-selected="value" class="drawer-list"> -->
+                    <paper-item id="lotdetails" on-click="_selectPage" data-args="0">
+                        <div class="circle-mini-first" on-click="_selectPage" data-args="0">1</div>
+                        <span on-click="_selectPage" data-args="0">Lot Details</span>
+                    </paper-item>
+
+                    <paper-item id="buyersinformation" on-click="_selectPage" data-args="1">
+                        <div class="circle-mini" on-click="_selectPage" data-args="1">2</div>
+                        <span on-click="_selectPage" data-args="1">Buyer's Information</span>
+                    </paper-item>
+
+                    <paper-item id="samplecomputation" on-click="_selectPage" data-args="2">
+                        <div class="circle-mini" on-click="_selectPage" data-args="2">3</div>
+                        <span on-click="_selectPage" data-args="2">Agent's Information</span>
+                    </paper-item>
+
+                    <paper-item id="finalize" on-click="_selectPage" data-args="3">
+                        <div class="circle-mini" on-click="_selectPage" data-args="3">4</div>
+                        <span on-click="_selectPage" data-args="3">Finalize</span>
+                    </paper-item>
+
+                    <paper-item id="complete" on-click="_selectPage" data-args="4">
+                        <div class="circle-mini-last" on-click="_selectPage" data-args="4">5</div>
+                        <span on-click="_selectPage" data-args="4">Complete</span>
+                    </paper-item>
+
+                    <!-- </iron-selector> -->
+                </div>
+            </app-drawer>
+
+            <app-header-layout has-scrolling-region>
+                <app-header fixed slot="header">
+                    <app-toolbar>
+                        <paper-icon-button class="menu" icon="my-icons:menu" on-tap="toggleDrawer"></paper-icon-button>
+                        <div main-title>New Application</div>
+                        <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
+                        <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
+                    </app-toolbar>
+
+                </app-header>
+
+
+
+                <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
+                    <neon-animatable>
+                        <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}">
+                        </firebase-document>
+
+                        <div class="docu">
+                            <div class="docu-header">
+                                <span>1. Lot Details</span>
+                            </div>
+
+                            <div class="details">
+                                <center>
+                                    <paper-input label="Block" always-float-label value="{{block}}" style="display: inline-block; width: 80px;" required auto-validate
+                                        error-message=""></paper-input>
+                                    <paper-input label="Lot" always-float-label value="{{lot}}" style="display: inline-block; width: 80px;" required auto-validate
+                                        error-message=""></paper-input>
+                                    <paper-input label="Plot" always-float-label value="{{plot}}" style="display: inline-block; width: 80px;" required auto-validate
+                                        error-message=""></paper-input>
+
+                                    <div id="errorMsgDiv" style="display: none; color:red">{{validationMessage}}</div>
+
+                                </center>
+                                </br>
+
+                                <paper-input label="Area" always-float-label disabled value="[[fullLotData.area]]" style="display: inline-block; width: 370px; margin:10px"></paper-input>
+                                <paper-input label="Designation" always-float-label disabled value="[[fullLotData.designation]]" style="display: inline-block; width: 370px; margin:10px"></paper-input>
+                                </br>
+                                <paper-input label="Type" always-float-label disabled value="[[fullLotData.type]]" style="display: inline-block; width: 370px; margin:10px"></paper-input>
+                                <paper-input label="Status" always-float-label disabled value="[[fullLotData.status]]" style="display: inline-block; width: 370px; margin:10px"></paper-input>
+                                </br>
+                                <center>
+                                    <paper-radio-group selected="Reserve">
+                                        <paper-radio-button name="Hold">Hold</paper-radio-button>
+                                        <paper-radio-button name="Reserve">Reserve</paper-radio-button>
+                                        <paper-radio-button name="Buy">Buy</paper-radio-button>
+                                    </paper-radio-group>
+                                </center>
+
+                            </div>
+                        </div>
+                    </neon-animatable>
+
+                    <neon-animatable>
+                        <div class="docu">
+                            <div class="docu-header">2. Buyer's Information</div>
+
+                            <div class="details">
+                                <paper-input always-floats-after typing label="First Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
+                                    style="display: inline-block; width: 200px;margin-left:5px"></paper-input>
+                                <paper-input always-floats-after typing label="Middle Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
+                                    style="display: inline-block; width: 200px;margin-left:5px"></paper-input>
+                                <paper-input always-floats-after typing label="Last Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
+                                    style="display: inline-block; width: 200px;margin-left:5px"></paper-input>
+                                <paper-input always-floats-after typing label="Suffix" value="" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
+                                    style="display: inline-block; width: 100px;margin-left:5px"></paper-input>
+                                <paper-input always-floats-after typing label="Email" value="" style="display: inline-block; width: 250px;margin-left:5px"></paper-input>
+                                <paper-input always-floats-after typing label="Cellphone #" value="" style="display: inline-block; width: 250px;margin-left:5px"
+                                    type="number"></paper-input>
+                                <paper-input always-floats-after typing label="Telephone #" value="" style="display: inline-block; width: 250px;margin-left:5px"
+                                    type="number"></paper-input>
+                            </div>
+                        </div>
+                    </neon-animatable>
+
+                    <neon-animatable>
+                        <div class="docu">
+                            <div class="docu-header">3. Agent's Information</div>
+                            <paper-input always-floats after typing label="Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"></paper-input>
+                            <paper-input always-floats after typing label="Cellphone #" value="" type="number"></paper-input>
+                            <paper-input always-floats-after typing label="Email" value=""></paper-input>
+                        </div>
+                    </neon-animatable>
+                    <neon-animatable>
+                        <div class="docu">
+                            <div class="docu-header">4. Finalize</div>
+
+                            <paper-item-body>
+                                <div>
+                                    <paper-input always-float-label label="Start Date & Time" disabled value=""></paper-input>
+                                    <paper-input always-float-label label="Expiry" disabled value=""></paper-input>
+                                </div>
+                            </paper-item-body>
+
+
+                        </div>
+                    </neon-animatable>
+                    <neon-animatable>
+                        <div class="docu">
+                            <div class="docu-header">5. Completed</div>
+                            <div class="details">
+                                <paper-item>
+                                    <paper-item-body>
+                                        <div>
+                                            Your application is now for approval.
+                                        </div>
+                                    </paper-item-body>
+                                </paper-item>
+
+                            </div>
+                        </div>
+                    </neon-animatable>
+                </neon-animated-pages>
+
+
+
+                <!-- <template is="dom-if" if="{{_currentPage('lotdetails',selectedPage)}}">
+                        <div>Lot Details</div>
+                    </template> -->
+
+
+            </app-header-layout>
+
+            <div class="footer" hidden$="[[favrighthide]]">
+                <div hidden$="[[favlefthide]]">
+                    <paper-fab id="favleft" class="paper-fab-0" icon="my-icons:chevron-left" on-tap="_select1"></paper-fab>
+                </div>
+                <paper-fab style="background: #1976d2;" id="favright" class="paper-fab-1" icon="my-icons:chevron-right" on-tap="_select2"></paper-fab>
+            </div>
+
+        </app-drawer-layout>
+
+
+
+
+
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-application-details',
+
+            properties: {
+                blocklot: String,
+                details: Object,
+                narrow: {
+                    type: Boolean,
+                    notify: true
+                },
+                selectedPage: Number,
+                entryanimation: {
+                    type: String,
+                    value: "slide-from-right-animation"
+                },
+                exitanimation: {
+                    type: String,
+                    value: "slide-left-animation"
+                },
+                route: Object,
+
+                routeData: Object,
+                lotdetailsAPP: {
+                    type: Object,
+                    observer: '_ldChanged'
+                },
+                reservationdetailsAPP: {
+                    type: Object,
+                    observer: '_rdChanged'
+                },
+                favlefthide: {
+                    type: Boolean,
+                    value: true
+                },
+                favrighthide: {
+                    type: Boolean,
+                    value: false
+                },
+                block: {
+                    type: String,
+                    observer: 'blocklotplotChanged'
+                },
+                lot: {
+                    type: String,
+                    observer: 'blocklotplotChanged'
+                },
+                plot: {
+                    type: String,
+                    observer: 'blocklotplotChanged'
+                },
+                fullLot: String,
+                fullLotData: {
+                    type: Object,
+                }
+
+
+            },
+
+            observers: [
+                'fulllotDataChanged(fullLotData.*)'
+            ],
+
+            fulllotDataChanged() {
+                if (this.fullLotData) {
+                    if (this.fullLotData.area) {
+                        //ok we have value
+                        var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
+                        errormsg.setAttribute("style", "display: none;");
+                    }
+                    else {
+                        if(this.fullLot) {
+                            var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
+                            errormsg.setAttribute("style", "display: block;color:red");
+                            this.validationMessage = 'No record found!';
+                        }
+                    }
+                }
+                else {
+                    if (this.fullLot) {
+                        var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
+                        errormsg.setAttribute("style", "display: block;color:red");
+                        this.validationMessage = 'No record found!';
+                    }
+                }
+            },
+
+            blocklotplotChanged() {
+                if (this.block) { this.block = this.block.toString().toUpperCase(); }
+                if (this.lot) { this.lot = this.lot.toString().toUpperCase(); }
+                if (this.plot) { this.plot = this.plot.toString().toUpperCase(); }
+
+                this.fullLot = "block" + this.block + "lot" + this.lot + (this.plot ? "plot" + this.plot : "");
+            },
+
+            toggleDrawer() {
+                this.dispatchEvent(new CustomEvent('toggleDrawer', {
+                    bubbles: true, composed: true, detail: {
+                        narrow: this.$.narrow
+                    }
+                }));
+                this.$.narrow = !this.$.narrow;
+            },
+
+            _currentPage(e, s) {
+                return s === e;
+            },
+
+            _selectPage(e) {
+                // var currentselectedpage = parseInt(this.selectedPage);
+
+                var data_args = Polymer.dom(e).rootTarget.getAttribute("data-args");
+
+                this.selectedPage = parseInt(data_args);
+
+                // if (currentselectedpage > this.selectedPage) {
+                //     this.entryanimation = "slide-from-right-animation";
+                //     this.exitanimation = "slide-left-animation";
+                // }
+                // else if (currentselectedpage < this.selectedPage) {
+                //     this.entryanimation = "slide-from-left-animation";
+                //     this.exitanimation = "slide-right-animation";
+
+                // }
+
+
+                // console.log(e);
+
+                // console.log(currentselectedpage);
+                // console.log(this.selectedPage);
+
+
+                // if (e.detail !== null && e.detail!== 'undefined') {
+                //     this.selectedPage = e.detail.item.attributes.id.value;
+                // }
+
+
+            },
+
+
+            ready() {
+                // this.addEventListener('iron-select', (e) => this._selectPage(e));
+                this.selectedPage = 0;
+                // console.log(this.routeData.lot);
+            },
+
+            _select1(e) {
+                this.entryanimation = "slide-from-left-animation";
+                this.exitanimation = "slide-right-animation";
+
+                if (parseInt(this.selectedPage) <= 3) {
+                    if (parseInt(this.selectedPage) !== 0) {
+                        this.selectedPage = (parseInt(this.selectedPage) - 1);
+
+                        Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: #1976d2;");
+                        Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:chevron-right");
+
+
+                        if (this.selectedPage === 0) {
+                            this.favlefthide = true;
+                        }
+                    }
+                    else {
+                        this.favlefthide = true;
+                    }
+                }
+                else {
+                    this.selectedPage = 3;
+                }
+
+
+            },
+
+            _select2(e) {
+                this.entryanimation = "slide-from-right-animation";
+                this.exitanimation = "slide-left-animation";
+
+                if (parseInt(this.selectedPage) >= 0) {
+                    if (parseInt(this.selectedPage) == 3) {
+                        //complete
+                        var guid = this.guid();
+                        var today = new Date();
+                        var dd = today.getDate();
+                        var mm = today.getMonth() + 1; //January is 0!
+                        var yyyy = today.getFullYear();
+                        currentdate = mm + '/' + dd + '/' + yyyy;
+
+                        var mm2 = today.getMonth() + 1 + 1; //January is 0!
+                        expirationdate = mm2 + '/' + dd + '/' + yyyy;
+
+                        this.set('lotdetailsAPP.color', 'red');
+                        this.set('reservationdetailsAPP.agent', 'Mr. Marc Rizon');
+                        this.set('reservationdetailsAPP.datareserved', currentdate);
+                        this.set('reservationdetailsAPP.expirationdate', expirationdate);
+                        this.set('reservationdetailsAPP.refcode', guid);
+                        this.set('reservationdetailsAPP.status', 'active');
+                        this.set('reservationdetailsAPP.type', 'Reserved');
+
+                        this.favrighthide = true;
+                    }
+
+                    if (parseInt(this.selectedPage) !== 4) {
+                        this.selectedPage = (parseInt(this.selectedPage) + 1);
+
+                        if (this.selectedPage === 3) {
+                            //change color and icon here
+                            Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: green;");
+                            Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:done");
+                        }
+                    }
+
+                    this.favlefthide = false;
+                }
+                else {
+                    this.selectedPage = 0;
+                    this.favlefthide = true;
+                }
+
+
+
+            },
+            _rdChanged(newData, oldData) {
+                this.fromRD = true;
+
+                // this.isUserClicked = true;
+                // console.log('_rd');
+                // console.log(oldData);
+                // console.log(newData);
+            },
+            _ldChanged(newData, oldData) {
+                this.fromLD = true;
+
+                // this.isUserClicked = true;
+                // console.log('_rd');
+                // console.log(oldData);
+                // console.log(newData);
+            },
+            s4: function () {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
+            },
+            guid: function () {
+                return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
+                    this.s4() + '-' + this.s4() + this.s4() + this.s4();
+            }
+
+
+        })
+
+
+
+    </script>
+</dom-module>
