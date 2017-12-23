@@ -25,6 +25,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 
 <dom-module id="my-application">
   <template>
@@ -128,7 +130,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <iron-ajax auto url="src/data.json" last-response="{{items}}"></iron-ajax>
+    <firebase-query id="query" path="/applications" data="{{applications}}">
+    </firebase-query>
+
+    <!-- <iron-ajax auto url="src/data.json" last-response="{{items}}"></iron-ajax> -->
 
     <app-header-layout fullbleed has-scrolling-region>
       <app-header fixed slot="header">
@@ -140,10 +145,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </app-header>
 
       <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold">
-        <iron-list items="[[items]]" as="item" selection-enabled multi-selection scroll-target="threshold">
+        <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
           <template>
             <div class="divSeparator">
-              <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[tabIndex]]" style="width: 100%;">
+              <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
                 <!-- <iron-image class="avatar" sizing="contain" src="[[item.image]]"></iron-image>
                 <div class="pad">
                   <div class="primary">[[item.name]]</div>
@@ -156,17 +161,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 <div class="card-content" style="width: 100%;">
                   <div class="header" style="background-color: #2196F3; padding: 16px; padding-bottom: 5px;">
-                    <span style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">Buy</span>
+                    <span style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">[[item.type]]</span>
 
                     <div style="display:inline-block; margin-left: 24px;">
                       <iron-icon icon="my-icons:access-time" style="color: white;"></iron-icon>
                       <div class="longText" style="display:inline-block; color: white;">25 minutes ago</div>
+                      <div style="display:none" id="start">[[item.start]]</div>
+                      <div style="display:none" id="end">[[item.expiry]]</div>
                     </div>
 
-                    <paper-icon-button style=" display:inline-block;position: absolute;  right: 8px; color: white; top:8px;" icon="my-icons:more-vert"></paper-icon-button>
+                    <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
+                        <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
+                        <paper-listbox slot="dropdown-content">
+                            <paper-item>Lacking</paper-item>
+                            <paper-item>Complete</paper-item>
+                        </paper-listbox>
+                    </paper-menu-button>
 
-                    <div style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px;">Block 2 - Lot 1b - Plot XX</div>
-                    <div style="font-size: 10px; color: white;">&nbsp;Ref.: 110b5878-5298-4ce8-a52a-c961c437d91d</div>
+                    <div style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">[[item.lot]]</div>
+                    <div style="font-size: 10px; color: white;">&nbsp;Ref.: [[item.$key]]</div>
                   </div>
 
 
@@ -218,8 +231,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           , narrow: {
             type: Boolean,
             notify: true
-          }
+          },
+          applications: {
+            type: Object,
+            observer: '_logApp'
+          },
         };
+      }
+
+      _logApp(){
+        console.log(this.applications);
       }
 
       iconForItem(item) {
@@ -253,7 +274,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           ironScrollTheshold.clearTriggers();
         });
       }
-
+      
     }
 
     window.customElements.define(MyApplication.is, MyApplication);
