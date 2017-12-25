@@ -188,6 +188,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
         <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
           <div style="height: 100%; overflow: auto;">
+
+              <paper-toast id="toast" text=""></paper-toast>
+              
             <app-header fixed>
               <app-toolbar>
                 <iron-image class="avatar" sizing="contain" src="images/manifest/icon-512x512.png"></iron-image>
