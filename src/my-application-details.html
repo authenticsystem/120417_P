@@ -16,9 +16,13 @@
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
+
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 
 <dom-module id="my-application-details">
     <template>
@@ -119,10 +123,12 @@
         <!-- <app-route route="[[route]]" pattern="/:lot" data="{{routeData}}"></app-route> -->
 
         <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
+        </firebase-document> -->
+
+        <firebase-document id='newdata' path="applications/1234" data="{{newdata}}">
         </firebase-document>
 
-        <firebase-document id='reservdoc' path="/reservations/[[routeData.lot]]" data="{{reservationdetailsAPP}}">
-        </firebase-document> -->
+
 
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
@@ -168,45 +174,49 @@
 
                 </app-header>
 
-
-
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
                         <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}">
                         </firebase-document>
 
+
                         <div class="docu">
+
                             <div class="docu-header">
                                 <span>1. Lot Details</span>
                             </div>
-
                             <div class="details">
-                                <center>
-                                    <paper-input label="Block" always-float-label value="{{block}}" style="display: inline-block; width: 80px;" required auto-validate
-                                        error-message=""></paper-input>
-                                    <paper-input label="Lot" always-float-label value="{{lot}}" style="display: inline-block; width: 80px;" required auto-validate
-                                        error-message=""></paper-input>
-                                    <paper-input label="Plot" always-float-label value="{{plot}}" style="display: inline-block; width: 80px;" required auto-validate
-                                        error-message=""></paper-input>
+                                <paper-input label="Block" always-float-label value="{{block}}" style="display: inline-block; width: 20%;"></paper-input>
+                                <paper-input label="Lot" always-float-label value="{{lot}}" style="display: inline-block; width: 20%;"></paper-input>
+                                <paper-input label="Plot" always-float-label value="{{plot}}" style="display: inline-block; width: 20%;"></paper-input>
 
-                                    <div id="errorMsgDiv" style="display: none; color:red">{{validationMessage}}</div>
+                                <paper-spinner id="spinnerDetails" alt="Getting details...." style="height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
 
-                                </center>
-                                </br>
+                                <div id="errorMsgDiv" style="display: none; color:red; ">
+                                    <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}
+                                </div>
 
-                                <paper-input label="Area" always-float-label disabled value="[[fullLotData.area]]" style="display: inline-block; width: 370px; margin:10px"></paper-input>
-                                <paper-input label="Designation" always-float-label disabled value="[[fullLotData.designation]]" style="display: inline-block; width: 370px; margin:10px"></paper-input>
                                 </br>
-                                <paper-input label="Type" always-float-label disabled value="[[fullLotData.type]]" style="display: inline-block; width: 370px; margin:10px"></paper-input>
-                                <paper-input label="Status" always-float-label disabled value="[[fullLotData.status]]" style="display: inline-block; width: 370px; margin:10px"></paper-input>
-                                </br>
-                                <center>
-                                    <paper-radio-group selected="Reserve">
-                                        <paper-radio-button name="Hold">Hold</paper-radio-button>
-                                        <paper-radio-button name="Reserve">Reserve</paper-radio-button>
-                                        <paper-radio-button name="Buy">Buy</paper-radio-button>
-                                    </paper-radio-group>
-                                </center>
+                                
+                            </br>
+                                <div id="details">
+                                    <div>Result:</div>
+                                    <div>Area: [[fullLotData.area]]</div>
+                                    <div>Designation: [[fullLotData.designation]]</div>
+                                    <div>Type: [[fullLotData.type]]</div>
+                                    <div>Status: [[fullLotData.status]]</div>
+                                </div>
+
+                                <!-- <paper-input label="Area" always-float-label disabled value="[[fullLotData.area]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
+                                <paper-input label="Designation" always-float-label disabled value="[[fullLotData.designation]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
+                                <paper-input label="Type" always-float-label disabled value="[[fullLotData.type]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
+                                <paper-input label="Status" always-float-label disabled value="[[fullLotData.status]]" style="display: inline-block; width:45%; margin-left:5px "></paper-input> -->
+
+                                <paper-radio-group selected="Reserve">
+                                    <paper-radio-button name="Hold">Hold</paper-radio-button>
+                                    <paper-radio-button name="Reserve">Reserve</paper-radio-button>
+                                    <paper-radio-button name="Buy">Buy</paper-radio-button>
+                                </paper-radio-group>
 
                             </div>
                         </div>
@@ -215,21 +225,18 @@
                     <neon-animatable>
                         <div class="docu">
                             <div class="docu-header">2. Buyer's Information</div>
-
                             <div class="details">
                                 <paper-input always-floats-after typing label="First Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
-                                    style="display: inline-block; width: 200px;margin-left:5px"></paper-input>
+                                    style="width:49%; display:inline-block"></paper-input>
                                 <paper-input always-floats-after typing label="Middle Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
-                                    style="display: inline-block; width: 200px;margin-left:5px"></paper-input>
+                                    style="width:49%; display:inline-block"></paper-input>
                                 <paper-input always-floats-after typing label="Last Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
-                                    style="display: inline-block; width: 200px;margin-left:5px"></paper-input>
+                                    style="width:68%; display:inline-block"></paper-input>
                                 <paper-input always-floats-after typing label="Suffix" value="" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
-                                    style="display: inline-block; width: 100px;margin-left:5px"></paper-input>
-                                <paper-input always-floats-after typing label="Email" value="" style="display: inline-block; width: 250px;margin-left:5px"></paper-input>
-                                <paper-input always-floats-after typing label="Cellphone #" value="" style="display: inline-block; width: 250px;margin-left:5px"
-                                    type="number"></paper-input>
-                                <paper-input always-floats-after typing label="Telephone #" value="" style="display: inline-block; width: 250px;margin-left:5px"
-                                    type="number"></paper-input>
+                                    style="width:30%; display:inline-block"></paper-input>
+                                <paper-input always-floats-after typing label="Email" value=""></paper-input>
+                                <paper-input always-floats-after typing label="Cellphone #" value="" type="number" style="width:49%; display:inline-block"></paper-input>
+                                <paper-input always-floats-after typing label="Telephone #" value="" type="number" style="width:49%; display:inline-block"></paper-input>
                             </div>
                         </div>
                     </neon-animatable>
@@ -248,8 +255,10 @@
 
                             <paper-item-body>
                                 <div>
-                                    <paper-input always-float-label label="Start Date & Time" disabled value=""></paper-input>
-                                    <paper-input always-float-label label="Expiry" disabled value=""></paper-input>
+                                    <center>
+                                        <paper-input always-float-label label="Start Date & Time" disabled value="" style="width:40%; display:inline-block; margin:5px"></paper-input>
+                                        <paper-input always-float-label label="Expiry" disabled value="" style="width:40%; display:inline-block; margin:5px"></paper-input>
+                                    </center>
                                 </div>
                             </paper-item-body>
 
@@ -289,9 +298,9 @@
                 <paper-fab style="background: #1976d2;" id="favright" class="paper-fab-1" icon="my-icons:chevron-right" on-tap="_select2"></paper-fab>
             </div>
 
+
+
         </app-drawer-layout>
-
-
 
 
 
@@ -352,7 +361,8 @@
                 fullLot: String,
                 fullLotData: {
                     type: Object,
-                }
+                },
+                newdata: Object
 
 
             },
@@ -364,23 +374,37 @@
             fulllotDataChanged() {
                 if (this.fullLotData) {
                     if (this.fullLotData.area) {
+                        var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
+                        spinnerDetails.active =false;                        
                         //ok we have value
                         var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                         errormsg.setAttribute("style", "display: none;");
+
+
                     }
                     else {
-                        if(this.fullLot) {
+                        if (this.fullLot) {
+                            var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
+                            spinnerDetails.active =false;
+
                             var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
-                            errormsg.setAttribute("style", "display: block;color:red");
-                            this.validationMessage = 'No record found!';
+                            errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
+                            this.validationMessage = 'Not found!';
+
+
                         }
                     }
                 }
                 else {
                     if (this.fullLot) {
+                        
+                        var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
+                        spinnerDetails.active =false;
+
                         var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
-                        errormsg.setAttribute("style", "display: block;color:red");
-                        this.validationMessage = 'No record found!';
+                        errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
+                        this.validationMessage = 'Not found!';
+
                     }
                 }
             },
@@ -391,6 +415,14 @@
                 if (this.plot) { this.plot = this.plot.toString().toUpperCase(); }
 
                 this.fullLot = "block" + this.block + "lot" + this.lot + (this.plot ? "plot" + this.plot : "");
+
+                var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
+                spinnerDetails.active = true;
+
+                // var cont2 = Polymer.dom(this.root).querySelector("#container2");
+                // toast.duration = 0;
+                // toast.fitInto = cont2;
+                // toast.show({ text: 'Getting details...' });
             },
 
             toggleDrawer() {
@@ -471,6 +503,10 @@
 
             },
 
+            _computeNewDataPath() {
+                return '/applications/123';
+            },
+
             _select2(e) {
                 this.entryanimation = "slide-from-right-animation";
                 this.exitanimation = "slide-left-animation";
@@ -515,8 +551,8 @@
                     this.selectedPage = 0;
                     this.favlefthide = true;
                 }
-
-
+           
+             
 
             },
             _rdChanged(newData, oldData) {
