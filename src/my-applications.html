@@ -213,15 +213,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 
-      </app-header-layout>
+        </app-header-layout>
 
-      <a href="/applications/new" style="text-decoration: none;">
-        <paper-fab noink class="fab-menu" icon="my-icons:add"></paper-fab>
-      </a>
+        <a href="/applications/new" style="text-decoration: none;">
+          <paper-fab noink class="fab-menu" icon="my-icons:add" on-tap="_appsnew"></paper-fab>
+        </a>
       </div>
 
       <div name="/new">
-        <my-application-details></my-application-details>
+        <div id="appdetails"></div>
+        <my-application-details id="d23" path=""></my-application-details>
       </div>
 
       <div name="view404">Not found.</div>
@@ -250,6 +251,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         };
       }
 
+      _appsnew() {
+
+
+
+        var node = Polymer.dom(this.root).querySelector("#appdetails");
+        if (node) {
+
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+
+          var newDiv = document.createElement("my-application-details");
+          newDiv.setAttribute("id", "d23")
+          newDiv.setAttribute("block", "3")
+          //if open existing
+          var currentDiv = document.getElementById("appdetails");
+
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+        }
+
+      }
 
       iconForItem(item) {
         return item ? (item.integer < 50 ? 'my-icons:star-border' : 'my-icons:star') : '';

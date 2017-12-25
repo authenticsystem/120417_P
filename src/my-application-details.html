@@ -125,7 +125,7 @@
         <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
         </firebase-document> -->
 
-        <firebase-document id='newdata' path="applications/1234" data="{{newdata}}">
+        <firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}">
         </firebase-document>
 
 
@@ -197,8 +197,8 @@
                                 </div>
 
                                 </br>
-                                
-                            </br>
+
+                                </br>
                                 <div id="details">
                                     <div>Result:</div>
                                     <div>Area: [[fullLotData.area]]</div>
@@ -212,7 +212,7 @@
                                 <paper-input label="Type" always-float-label disabled value="[[fullLotData.type]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
                                 <paper-input label="Status" always-float-label disabled value="[[fullLotData.status]]" style="display: inline-block; width:45%; margin-left:5px "></paper-input> -->
 
-                                <paper-radio-group selected="Reserve">
+                                <paper-radio-group selected="{{newdata.type}}">
                                     <paper-radio-button name="Hold">Hold</paper-radio-button>
                                     <paper-radio-button name="Reserve">Reserve</paper-radio-button>
                                     <paper-radio-button name="Buy">Buy</paper-radio-button>
@@ -227,9 +227,9 @@
                             <div class="docu-header">2. Buyer's Information</div>
                             <div class="details">
                                 <paper-input always-floats-after typing label="First Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
-                                    style="width:49%; display:inline-block"></paper-input>
+                                    style="width:49%; display:inline-block" value={{newdata.buyer}}></paper-input>
                                 <paper-input always-floats-after typing label="Middle Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
-                                    style="width:49%; display:inline-block"></paper-input>
+                                    style="width:49%; display:inline-block" value={{newdata.buyerdetails}}></paper-input>
                                 <paper-input always-floats-after typing label="Last Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
                                     style="width:68%; display:inline-block"></paper-input>
                                 <paper-input always-floats-after typing label="Suffix" value="" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
@@ -362,7 +362,7 @@
                 fullLotData: {
                     type: Object,
                 },
-                newdata: Object
+                path: String
 
 
             },
@@ -371,11 +371,16 @@
                 'fulllotDataChanged(fullLotData.*)'
             ],
 
+            getpath() {
+                this.path = 'applications/' + this.guid();
+                return this.path;
+            },
+
             fulllotDataChanged() {
                 if (this.fullLotData) {
                     if (this.fullLotData.area) {
                         var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-                        spinnerDetails.active =false;                        
+                        spinnerDetails.active = false;
                         //ok we have value
                         var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                         errormsg.setAttribute("style", "display: none;");
@@ -385,7 +390,7 @@
                     else {
                         if (this.fullLot) {
                             var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-                            spinnerDetails.active =false;
+                            spinnerDetails.active = false;
 
                             var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                             errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
@@ -397,9 +402,9 @@
                 }
                 else {
                     if (this.fullLot) {
-                        
+
                         var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-                        spinnerDetails.active =false;
+                        spinnerDetails.active = false;
 
                         var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                         errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
@@ -414,7 +419,7 @@
                 if (this.lot) { this.lot = this.lot.toString().toUpperCase(); }
                 if (this.plot) { this.plot = this.plot.toString().toUpperCase(); }
 
-                this.fullLot = "block" + this.block + "lot" + this.lot + (this.plot ? "plot" + this.plot : "");
+                this.fullLot = "block" + this.block + "lot" + this.lot + (this.plot ? "plot"+this.plot : "");
 
                 var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
                 spinnerDetails.active = true;
@@ -503,10 +508,6 @@
 
             },
 
-            _computeNewDataPath() {
-                return '/applications/123';
-            },
-
             _select2(e) {
                 this.entryanimation = "slide-from-right-animation";
                 this.exitanimation = "slide-left-animation";
@@ -533,6 +534,7 @@
                         this.set('reservationdetailsAPP.type', 'Reserved');
 
                         this.favrighthide = true;
+
                     }
 
                     if (parseInt(this.selectedPage) !== 4) {
@@ -550,9 +552,13 @@
                 else {
                     this.selectedPage = 0;
                     this.favlefthide = true;
+
+                    
                 }
-           
-             
+
+                //create or update /lot & /isdraft values
+                this.$.idd.setStoredValue(this.path + '/lot', this.fullLot);
+                this.$.idd.setStoredValue(this.path + '/isdraft', true);
 
             },
             _rdChanged(newData, oldData) {
