@@ -153,7 +153,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </app-toolbar>
           </app-header>
 
-          <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold">
+
+          <iron-scroll-threshold id="scrollThreshold" lower-threshold="500" on-lower-threshold="loadMoreData">
+          <!-- <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold"> -->
             <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
               <template>
                 <div class="divSeparator">

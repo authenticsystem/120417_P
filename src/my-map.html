@@ -195,8 +195,7 @@
       </template>
 
       <template is="dom-if" if="{{_viewMap('true',viewMap)}}">
-
-        <paper-toast id="toast" text="Loading Map." duration=0 opened></paper-toast>
+        <paper-toast id="toast" text="Loading Map." duration=0 opened style="margin-left: calc(50vw - 150px);"></paper-toast>
 
         <firebase-document path="/statuscolor" data="{{statuscolor}}">
         </firebase-document>
@@ -843,6 +842,7 @@
         }
         else {
           if (toast) {
+
             if (toast.text != 'Loading Map.') {
               toast.duration = 1000;
               toast.cancel(this);
