@@ -11,18 +11,21 @@
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
 
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
 
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+
 
 <dom-module id="my-application-details">
     <template>
@@ -178,7 +181,7 @@
                     <neon-animatable>
                         <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}">
                         </firebase-document>
-
+                        <firebase-document id="query" path="applications/" data="{{applicationsData}}"></firebase-document>
 
                         <div class="docu">
 
@@ -196,27 +199,39 @@
                                     <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}
                                 </div>
 
-                                </br>
-                                
-                            </br>
-                                <div id="details">
-                                    <div>Result:</div>
-                                    <div>Area: [[fullLotData.area]]</div>
-                                    <div>Designation: [[fullLotData.designation]]</div>
-                                    <div>Type: [[fullLotData.type]]</div>
-                                    <div>Status: [[fullLotData.status]]</div>
-                                </div>
+                                <paper-card heading="" style="width:100%">
+
+                                    <div class="card-content" style="background-color: #2196F3">
+                                        <span style="color: white">Area: [[fullLotData.area]]</span>
+                                        </br>
+                                        <span style="color: white">Designation: [[fullLotData.designation]]</span>
+                                        </br>
+                                        <span style="color: white">Type: [[fullLotData.type]]</span>
+                                        </br>
+                                        <span style="color: white">Status: [[fullLotData.status]]</span>
+                                        </br>
+                                        <!-- <paper-radio-group selected="Reserve">
+                                            <paper-radio-button name="Reserve" >Reserve</paper-radio-button>
+                                            <paper-radio-button name="Buy">Buy</paper-radio-button>
+                                            <paper-radio-button name="Hold">Hold</paper-radio-button>
+                                        </paper-radio-group> -->
+                                    </div>
+                                    <div class="card-actions">
+                                            <paper-radio-group selected="Reserve">
+                                                    <paper-radio-button name="Reserve">Reserve</paper-radio-button>
+                                                    <paper-radio-button name="Hold">Hold</paper-radio-button>
+                                                    <paper-radio-button name="Buy">Buy</paper-radio-button>
+                                                  </paper-radio-group>
+                                    </div>
+                                </paper-card>
+
 
                                 <!-- <paper-input label="Area" always-float-label disabled value="[[fullLotData.area]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
                                 <paper-input label="Designation" always-float-label disabled value="[[fullLotData.designation]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
                                 <paper-input label="Type" always-float-label disabled value="[[fullLotData.type]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
                                 <paper-input label="Status" always-float-label disabled value="[[fullLotData.status]]" style="display: inline-block; width:45%; margin-left:5px "></paper-input> -->
 
-                                <paper-radio-group selected="Reserve">
-                                    <paper-radio-button name="Hold">Hold</paper-radio-button>
-                                    <paper-radio-button name="Reserve">Reserve</paper-radio-button>
-                                    <paper-radio-button name="Buy">Buy</paper-radio-button>
-                                </paper-radio-group>
+
 
                             </div>
                         </div>
@@ -362,8 +377,11 @@
                 fullLotData: {
                     type: Object,
                 },
-                newdata: Object
+                newdata: Object,
 
+                applicationsData:{
+                    type: Object,
+                }
 
             },
 
@@ -371,11 +389,15 @@
                 'fulllotDataChanged(fullLotData.*)'
             ],
 
+            add: function () {
+                this.$.query.ref.push();
+            },
+
             fulllotDataChanged() {
                 if (this.fullLotData) {
                     if (this.fullLotData.area) {
                         var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-                        spinnerDetails.active =false;                        
+                        spinnerDetails.active = false;
                         //ok we have value
                         var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                         errormsg.setAttribute("style", "display: none;");
@@ -385,7 +407,7 @@
                     else {
                         if (this.fullLot) {
                             var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-                            spinnerDetails.active =false;
+                            spinnerDetails.active = false;
 
                             var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                             errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
@@ -397,9 +419,9 @@
                 }
                 else {
                     if (this.fullLot) {
-                        
+
                         var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-                        spinnerDetails.active =false;
+                        spinnerDetails.active = false;
 
                         var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                         errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
@@ -551,8 +573,8 @@
                     this.selectedPage = 0;
                     this.favlefthide = true;
                 }
-           
-             
+
+
 
             },
             _rdChanged(newData, oldData) {
