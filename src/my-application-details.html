@@ -217,7 +217,7 @@
                                         </paper-radio-group> -->
                                     </div>
                                     <div class="card-actions">
-                                            <paper-radio-group selected="Reserve">
+                                            <paper-radio-group selected="{{newdata.type}}">
                                                     <paper-radio-button name="Reserve">Reserve</paper-radio-button>
                                                     <paper-radio-button name="Hold">Hold</paper-radio-button>
                                                     <paper-radio-button name="Buy">Buy</paper-radio-button>
@@ -231,11 +231,7 @@
                                 <paper-input label="Type" always-float-label disabled value="[[fullLotData.type]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
                                 <paper-input label="Status" always-float-label disabled value="[[fullLotData.status]]" style="display: inline-block; width:45%; margin-left:5px "></paper-input> -->
 
-                                <paper-radio-group selected="{{newdata.type}}">
-                                    <paper-radio-button name="Hold">Hold</paper-radio-button>
-                                    <paper-radio-button name="Reserve">Reserve</paper-radio-button>
-                                    <paper-radio-button name="Buy">Buy</paper-radio-button>
-                                </paper-radio-group>
+    
 
                             </div>
                         </div>
