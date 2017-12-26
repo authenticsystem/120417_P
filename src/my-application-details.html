@@ -16,9 +16,13 @@
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/datetime-picker/datetime-picker.html">
 
 <link rel="import" href="shared-styles.html">
@@ -143,9 +147,7 @@
         <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
         </firebase-document> -->
 
-<firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}"></firebase-document>
-
-
+        <firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}"></firebase-document>
 
 
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
@@ -200,6 +202,7 @@
 
                       <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}">
                         </firebase-document>
+
 
                         <firebase-document id="query" path="applications/" data="{{applicationsData}}"></firebase-document>
 
@@ -259,6 +262,7 @@
                                             </div>
                                         </div>
 
+
                                     </div>
                                 </paper-card>
 
@@ -268,36 +272,80 @@
                                 <paper-input label="Type" always-float-label disabled value="[[fullLotData.type]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
                                 <paper-input label="Status" always-float-label disabled value="[[fullLotData.status]]" style="display: inline-block; width:45%; margin-left:5px "></paper-input> -->
 
+
                             </div>
                         </div>
                     </neon-animatable>
 
                     <neon-animatable>
+                        <firebase-query path="/buyers" order-by-child='{{buyersCellphoneEmail}}' equal-to='{{buyersInputPhoneEmail}}' limit-to-first=1
+                            data="{{buyersList}}"></firebase-query>
+                        <!-- manipulate buyersList nga makuha ang data para ipakita sa  -->
+
                         <div class="docu">
                             <div class="docu-header">2. Buyer's Information</div>
                             <div class="details">
-                                <paper-input always-floats-after typing label="First Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
-                                    style="width:49%; display:inline-block" value={{newdata.buyer}}></paper-input>
-                                <paper-input always-floats-after typing label="Middle Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
-                                    style="width:49%; display:inline-block" value={{newdata.buyerdetails}}></paper-input>
 
-                                <paper-input always-floats-after typing label="Last Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
-                                    style="width:68%; display:inline-block"></paper-input>
-                                <paper-input always-floats-after typing label="Suffix" value="" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
-                                    style="width:30%; display:inline-block"></paper-input>
-                                <paper-input always-floats-after typing label="Email" value=""></paper-input>
-                                <paper-input always-floats-after typing label="Cellphone #" value="" type="number" style="width:49%; display:inline-block"></paper-input>
-                                <paper-input always-floats-after typing label="Telephone #" value="" type="number" style="width:49%; display:inline-block"></paper-input>
+                                <paper-dropdown-menu label="Select email/phone number" style="width:40%">
+                                    <paper-listbox slot="dropdown-content" selected="{{buyersCellphoneEmail}}" attr-for-selected="name">
+                                        <paper-item name="cellphone">
+                                            <iron-icon icon="my-icons:call">Phone number</iron-icon>
+                                        </paper-item>
+                                        <paper-item name="email">
+                                            <iron-icon icon="my-icons:email">Email</iron-icon>
+                                        </paper-item>
+                                    </paper-listbox>
+                                </paper-dropdown-menu>
+                                <paper-input always-floats-after typing label="" style="width:40%; display:inline-block" value={{buyersInputPhoneEmail}}></paper-input>
+                                <paper-spinner id="spinnerDetails2" alt="Getting details...." style="display:inline-block; height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
+                                </br>
+                                <paper-card heading="" style="width:100%;">
+                                    <div class="card-content" style="background-color:#2196F3">
+                                        <paper-input always-floats-after typing label="First Name" style="width:49%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"
+                                            value="{{newdata.buyerdetails.firstname}}"></paper-input>
+                                        <paper-input always-floats-after typing label="Middle Name" style="width:49%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"
+                                            value={{newdata.buyerdetails.middlename}}></paper-input>
+                                        <paper-input always-floats-after typing label="Last Name" style="width:68%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"
+                                            value={{newdata.buyerdetails.lastname}}></paper-input>
+                                        <paper-input always-floats-after typing label="Suffix" value={{newdata.buyerdetails.suffix}} style="width:30%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"></paper-input>
+                                        <paper-input type="number" always-floats-after typing label="Cellphone" value={{newdata.buyerdetails.cellphone}} style="width:49%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"></paper-input>
+                                        <paper-input type="email" always-floats-after typing label="Email" value={{newdata.buyerdetails.email}} style="width:49%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"></paper-input>
+                                    </div>
+                                </paper-card>
+
                             </div>
                         </div>
                     </neon-animatable>
 
                     <neon-animatable>
+                    <firebase-query path="/agents" order-by-child='{{agentsCellphoneEmail}}' equal-to='{{agentsInputPhoneEmail}}' limit-to-first=1
+                            data="{{agentsList}}"></firebase-query>
+
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
-                            <paper-input always-floats after typing label="Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"></paper-input>
-                            <paper-input always-floats after typing label="Cellphone #" value="" type="number"></paper-input>
-                            <paper-input always-floats-after typing label="Email" value=""></paper-input>
+                            <div class="detais">
+                            <paper-dropdown-menu label="Select email/phone number" style="width:40%">
+                                <paper-listbox slot="dropdown-content" selected="{{agentsCellphoneEmail}}" attr-for-selected="name">
+                                    <paper-item name="cellphone">
+                                        <iron-icon icon="my-icons:call">Phone number</iron-icon>
+                                    </paper-item>
+                                    <paper-item name="email">
+                                        <iron-icon icon="my-icons:email">Email</iron-icon>
+                                    </paper-item>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+                            <paper-input always-floats-after typing label="" style="width:40%; display:inline-block" value={{agentsInputPhoneEmail}}></paper-input>
+                            <paper-spinner id="spinnerDetails3" alt="Getting details...." style="display:inline-block; height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
+                            </br>
+                            <paper-card heading="" style="width:100%;">
+                                <div class="card-content" style="background-color:#2196F3">
+                                    <paper-input always-floats after typing label="Name" style="--paper-input-container-color:white; --paper-input-container-input-color:white"
+                                        auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!" value="{{newdata.agentdetails.name}}"></paper-input>
+                                    <paper-input always-floats after typing label="Email" style="--paper-input-container-color:white; --paper-input-container-input-color:white"
+                                     value="{{newdata.agentdetails.email}}"></paper-input>
+                                </div>
+                            </paper-card>
+                            </div>
                         </div>
                     </neon-animatable>
 
@@ -401,8 +449,37 @@
                 },
                 path: String,
                 newdata: Object,
-                applicationsData:{
+                applicationsData: {
                     type: Object,
+                },
+                buyersList: {
+                    type: Object,
+                    value: null,
+                    observer: 'buyersListChanged'
+                },
+                buyersCellphoneEmail: {
+                    type: String,
+                    value: 'cellphone',
+                    observer: 'buyersCellphoneEmailChanged'
+                },
+                buyersInputPhoneEmail: {
+                    type: String,
+                    value: '',
+                    observer: 'buyersInputPhoneEmailChanged'
+                },
+                agentsList:{
+                    type: Object,
+                    value: null,
+                    observer: 'agentsListChanged'
+                },agentsCellphoneEmail: {
+                    type: String,
+                    value: 'cellphone',
+                    observer: 'agentsCellphoneEmailChanged'
+                },
+                agentsInputPhoneEmail: {
+                    type: String,
+                    value: '',
+                    observer: 'agentsInputPhoneEmailChanged'
                 }
 
             },
@@ -410,6 +487,106 @@
             observers: [
                 'fulllotDataChanged(fullLotData.*)'
             ],
+            buyersInputPhoneEmailChanged() {
+                if (this.buyersInputPhoneEmail) {
+                    var spinnerDetails2 = Polymer.dom(this.root).querySelector("#spinnerDetails2");
+                    spinnerDetails2.active = true;
+                } else {
+                    var spinnerDetails2 = Polymer.dom(this.root).querySelector("#spinnerDetails2");
+                    spinnerDetails2.active = false;
+                }
+            },
+            agentsInputPhoneEmailChanged() {
+                if (this.agentsInputPhoneEmail) {
+                    var spinnerDetails3 = Polymer.dom(this.root).querySelector("#spinnerDetails3");
+                    spinnerDetails3.active = true;
+                } else {
+                    var spinnerDetails3 = Polymer.dom(this.root).querySelector("#spinnerDetails3");
+                    spinnerDetails3.active = false;
+                }
+            },
+
+            buyersCellphoneEmailChanged() {
+                if (this.buyersCellphoneEmail) {
+                    this.set('newdata.buyer', '');
+                    this.set('newdata.buyerdetails', '');
+
+                    this.buyersInputPhoneEmail = '';
+                    var spinnerDetails2 = Polymer.dom(this.root).querySelector("#spinnerDetails2");
+                    spinnerDetails2.active = false;
+                    // console.log(this.buyersList);
+                }
+            },
+            agentsCellphoneEmailChanged() {
+                if (this.agentsCellphoneEmail) {
+                    this.set('newdata.agent', '');
+                    this.set('newdata.agentdetails', '');
+
+                    this.agentsInputPhoneEmail = '';
+                    var spinnerDetails3 = Polymer.dom(this.root).querySelector("#spinnerDetails3");
+                    spinnerDetails3.active = false;
+                    // console.log(this.buyersList);
+                }
+            },
+
+            buyersListChanged() {
+                if (this.buyersList) {
+                    if (this.buyersList.length > 0) {
+                        this.set('newdata.buyer', this.buyersList[0].$key);
+                        this.set('newdata.buyerdetails', {
+                            firstname: this.buyersList[0].firstname,
+                            middlename: this.buyersList[0].middlename,
+                            lastname: this.buyersList[0].lastname,
+                            suffix: this.buyersList[0].suffix,
+                            cellphone: this.buyersList[0].cellphone,
+                            email: this.buyersList[0].email
+                        });
+
+
+                        var spinnerDetails2 = Polymer.dom(this.root).querySelector("#spinnerDetails2");
+                        spinnerDetails2.active = false;
+                        // console.log(this.buyersList);
+                    }
+                    else {
+                        this.set('newdata.buyer', '');
+                        this.set('newdata.buyerdetails', '');
+
+                        var spinnerDetails2 = Polymer.dom(this.root).querySelector("#spinnerDetails2");
+                        spinnerDetails2.active = false;
+                    }
+
+                }
+            },
+            agentsListChanged() {
+                if (this.agentsList) {
+                    if (this.agentsList.length > 0) {
+                        this.set('newdata.agent', this.agentsList[0].$key);
+                        this.set('newdata.agentdetails', {
+                            active: this.agentsList[0].active,
+                            broker: this.agentsList[0].broker,
+                            cellphone: this.agentsList[0].cellphone,
+                            email: this.agentsList[0].email,
+                            name: this.agentsList[0].name,
+                            parent: this.agentsList[0].parent,
+                            position: this.agentsList[0].position,
+                            type: this.agentsList[0].type,
+                        });
+
+
+                        var spinnerDetails3 = Polymer.dom(this.root).querySelector("#spinnerDetails3");
+                        spinnerDetails3.active = false;
+                        // console.log(this.buyersList);
+                    }
+                    else {
+                        this.set('newdata.agent', '');
+                        this.set('newdata.agentdetails', '');
+
+                        var spinnerDetails3 = Polymer.dom(this.root).querySelector("#spinnerDetails3");
+                        spinnerDetails3.active = false;
+                    }
+
+                }
+            },
 
             selectReserve(){
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
@@ -597,6 +774,9 @@
                         this.set('reservationdetailsAPP.status', 'active');
                         this.set('reservationdetailsAPP.type', 'Reserved');
 
+
+
+
                         this.favrighthide = true;
 
                     }
@@ -617,11 +797,14 @@
                     this.selectedPage = 0;
                     this.favlefthide = true;
 
+
                 }
 
                 //create or update /lot & /isdraft values
-                this.$.idd.setStoredValue(this.path + '/lot', this.fullLot);
-                this.$.idd.setStoredValue(this.path + '/isdraft', true);
+                // if (this.fullLot) {
+                //     this.$.idd.setStoredValue(this.path + '/lot', this.fullLot);
+                //     this.$.idd.setStoredValue(this.path + '/isdraft', true);
+                // }
 
             },
             _rdChanged(newData, oldData) {
