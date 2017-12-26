@@ -19,6 +19,7 @@
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/datetime-picker/datetime-picker.html">
 
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
@@ -121,6 +122,20 @@
                 background-color: var(--paper-green-500);
                 color: white;
             }
+
+
+            datetime-picker.begin {
+                --datetime-selected-background: #2362EC;
+                --datetime-background: #071533;
+                --datetime-color: #eeeeee;
+            }
+
+            datetime-picker.end {
+                --datetime-selected-background: #CC1C1C;
+                --datetime-background: #071533;
+                --datetime-color: #eeeeee;
+            }
+
         </style>
 
         <!-- <app-route route="[[route]]" pattern="/:lot" data="{{routeData}}"></app-route> -->
@@ -128,8 +143,8 @@
         <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
         </firebase-document> -->
 
-        <firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}">
-        </firebase-document>
+<firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}"></firebase-document>
+
 
 
 
@@ -152,6 +167,8 @@
                         <span on-click="_selectPage" data-args="2">Agent's Information</span>
                     </paper-item>
 
+
+
                     <paper-item id="finalize" on-click="_selectPage" data-args="3">
                         <div class="circle-mini" on-click="_selectPage" data-args="3">4</div>
                         <span on-click="_selectPage" data-args="3">Finalize</span>
@@ -159,6 +176,7 @@
 
                     <paper-item id="complete" on-click="_selectPage" data-args="4">
                         <div class="circle-mini-last" on-click="_selectPage" data-args="4">5</div>
+
                         <span on-click="_selectPage" data-args="4">Complete</span>
                     </paper-item>
 
@@ -179,8 +197,10 @@
 
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
-                        <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}">
+
+                      <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}">
                         </firebase-document>
+
                         <firebase-document id="query" path="applications/" data="{{applicationsData}}"></firebase-document>
 
                         <div class="docu">
@@ -216,12 +236,29 @@
                                             <paper-radio-button name="Hold">Hold</paper-radio-button>
                                         </paper-radio-group> -->
                                     </div>
+
                                     <div class="card-actions">
-                                            <paper-radio-group selected="{{newdata.type}}">
-                                                    <paper-radio-button name="Reserve">Reserve</paper-radio-button>
-                                                    <paper-radio-button name="Hold">Hold</paper-radio-button>
-                                                    <paper-radio-button name="Buy">Buy</paper-radio-button>
-                                                  </paper-radio-group>
+                                        </br>
+                                        <paper-radio-group selected="{{newdata.type}}">
+                                            <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button>
+                                            <paper-radio-button name="Hold" on-click="selectHold">Hold</paper-radio-button>
+                                            <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button>
+                                        </paper-radio-group>
+
+                                        </br>
+                                        <div id="timeStamp" style="padding-left: 10px; display: none">
+                                            <div id="start">
+                                                <iron-icon icon="my-icons:access-time" style="color: blue;"></iron-icon>
+                                                <span style="color: blue;">Start:</span>
+                                                <datetime-picker class="begin" datetime={{newdata.start}} hour12="true"></datetime-picker>
+                                            </div>
+                                            <div id="expiry">
+                                                <iron-icon icon="my-icons:alarm" style="color: rgba(255, 5, 5, 0.774);"></iron-icon>
+                                                <span style="color: rgba(255, 5, 5, 0.774);">Expiry:</span>
+                                                <datetime-picker class="end" datetime={{newdata.expiry}} hour12="true"></datetime-picker>
+                                            </div>
+                                        </div>
+
                                     </div>
                                 </paper-card>
 
@@ -230,8 +267,6 @@
                                 <paper-input label="Designation" always-float-label disabled value="[[fullLotData.designation]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
                                 <paper-input label="Type" always-float-label disabled value="[[fullLotData.type]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
                                 <paper-input label="Status" always-float-label disabled value="[[fullLotData.status]]" style="display: inline-block; width:45%; margin-left:5px "></paper-input> -->
-
-    
 
                             </div>
                         </div>
@@ -245,6 +280,7 @@
                                     style="width:49%; display:inline-block" value={{newdata.buyer}}></paper-input>
                                 <paper-input always-floats-after typing label="Middle Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
                                     style="width:49%; display:inline-block" value={{newdata.buyerdetails}}></paper-input>
+
                                 <paper-input always-floats-after typing label="Last Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
                                     style="width:68%; display:inline-block"></paper-input>
                                 <paper-input always-floats-after typing label="Suffix" value="" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
@@ -264,25 +300,11 @@
                             <paper-input always-floats-after typing label="Email" value=""></paper-input>
                         </div>
                     </neon-animatable>
-                    <neon-animatable>
-                        <div class="docu">
-                            <div class="docu-header">4. Finalize</div>
 
-                            <paper-item-body>
-                                <div>
-                                    <center>
-                                        <paper-input always-float-label label="Start Date & Time" disabled value="" style="width:40%; display:inline-block; margin:5px"></paper-input>
-                                        <paper-input always-float-label label="Expiry" disabled value="" style="width:40%; display:inline-block; margin:5px"></paper-input>
-                                    </center>
-                                </div>
-                            </paper-item-body>
-
-
-                        </div>
-                    </neon-animatable>
                     <neon-animatable>
                         <div class="docu">
                             <div class="docu-header">5. Completed</div>
+
                             <div class="details">
                                 <paper-item>
                                     <paper-item-body>
@@ -389,6 +411,30 @@
                 'fulllotDataChanged(fullLotData.*)'
             ],
 
+            selectReserve(){
+                var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
+                showStartExpiry.setAttribute("style", "padding-left: 10px; display: block");
+
+                var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
+                showExpiry.setAttribute("style", "display: block;");
+            },
+            selectHold(){
+                var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
+                showStartExpiry.setAttribute("style", "padding-left: 10px; display: block");
+
+                var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
+                showExpiry.setAttribute("style", "display: block;");
+            },
+            selectBuy(){
+                var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
+                showStartExpiry.setAttribute("style", "padding-left: 10px; display: block");
+
+                var hideExpiry = Polymer.dom(this.root).querySelector("#expiry");
+                hideExpiry.setAttribute("style", "display: none;");
+
+                this.set('newdata.expiry', '');
+            },                         
+
             getpath() {
                 this.path = 'applications/' + this.guid();
                 return this.path;
@@ -437,7 +483,7 @@
                 if (this.lot) { this.lot = this.lot.toString().toUpperCase(); }
                 if (this.plot) { this.plot = this.plot.toString().toUpperCase(); }
 
-                this.fullLot = "block" + this.block + "lot" + this.lot + (this.plot ? "plot"+this.plot : "");
+                this.fullLot = "block" + this.block + "lot" + this.lot + (this.plot ? "plot" + this.plot : "");
 
                 var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
                 spinnerDetails.active = true;
@@ -571,7 +617,6 @@
                     this.selectedPage = 0;
                     this.favlefthide = true;
 
-                    
                 }
 
                 //create or update /lot & /isdraft values
