@@ -184,7 +184,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <div id="errMsg" style="display:none">No record found!</div>
           
-          
+          <firebase-query id="query" path="/statuscolor" data="{{statuscolor}}">
+          </firebase-query>
 
           <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
             end-at="{{typeValue}}">
@@ -196,10 +197,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <template>
                 <div class="divSeparator">
                   <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
-                    <firebase-query id="query" path="/statuscolor/{{item.lotdetails.type}}" data="{{statuscolor}}">
-                    </firebase-query>
+                                        
                     <div class="card-content" style="width: 100%;">
-                      <div id="divHeader" class="header"  data-args="{{item.lotdetails.type}}">
+                      <div data-args="[[item.lotdetails.type]]" id="headerColor" class="header" style="background-color: #2196F3; padding: 16px; padding-bottom: 5px;">
                         <span style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
                           [[item.type]]
                         </span>
@@ -262,19 +262,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </iron-scroll-threshold> -->
           </iron-scroll-threshold>
 
-
-
         </app-header-layout>
-
         <a href="/applications/new" style="text-decoration: none;">
-          <paper-fab noink class="fab-menu" icon="my-icons:add" on-tap="_appsnew"></paper-fab>
+          <paper-fab noink class="fab-menu" icon="my-icons:add"></paper-fab>
         </a>
       </div>
       <!-- div -name -->
 
       <div name="/new">
-        <div id="appdetails"></div>
-        <my-application-details id="d23" path=""></my-application-details>
+        <my-application-details></my-application-details>
       </div>
 
       <div name="view404">Not found.</div>
@@ -293,13 +289,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             return [];
           }
         },
+        lotdetails: Object,
         narrow: {
           type: Boolean,
           notify: true
         },
         applications: {
           type: Object,
-          // observer: '_apps'
         },
         filterByChild: {
           type: Number,
@@ -327,49 +323,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           observer: '_statusChanged'
         }
       },
-      // _apps(){
-      //   return this.applications;
-      // },
 
       _statusChanged(){
         if (this.statuscolor) {
-          var argsHeader = Polymer.dom(this.root).querySelector("#divHeader");
-          var wa = argsHeader.getAttribute("data-args");
-          console.log(wa);
+          var argsHeader = Polymer.dom(this.root).querySelector("#headerColor");
+          console.log(this.statuscolor);
+          // var tryT = argsHeader.getAttribute("data-args");
+          // console.log(tryT);
           if (argsHeader) {
-            argsHeader.setAttribute("style", "background-color: " + this.__getStatusColor(argsHeader.getAttribute("data-args")) + "; padding: 16px; padding-bottom: 5px;");
+            argsHeader.setAttribute("style", "background-color: " + this._getStatusColor(argsHeader.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsHeader.getAttribute("data-args")) + ";");
           }
         }
       },
 
       __getStatusColor(e){
         console.log(e);
-        if (e) {
-          if (e) {
-            if (this.statuscolor) {
-              if (this.statuscolor[e]) {
-                return (this.statuscolor[e]).color;
-              }
-              else {
-                return "gray";
-              }
-            }
-            else {
-              return "gray";
-            }
-          }
-          else {
-            return "gray";
-          }
-        }
-        else {
-          return "gray";
-        }
       },
 
-      // _getStatusStrokeColor(){
+      _getStatusStrokeColor(){
 
-      // },
+      },
 
       toggleSearch() {
         var list = Polymer.dom(this.root).querySelector("#child");
@@ -424,27 +397,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             errormsg.setAttribute("style", "display: block;color:red; text-align:center");
           }
         }
-      },
-
-      _appsnew() {
-
-        var node = Polymer.dom(this.root).querySelector("#appdetails");
-        if (node) {
-
-          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
-          if (oldDiv) {
-            Polymer.dom(node.parentNode).removeChild(oldDiv);
-          }
-
-          var newDiv = document.createElement("my-application-details");
-          newDiv.setAttribute("id", "d23")
-          // newDiv.setAttribute("block", "3")
-          //if open existing
-          var currentDiv = document.getElementById("appdetails");
-
-          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-        }
-
       },
 
       iconForItem(item) {
