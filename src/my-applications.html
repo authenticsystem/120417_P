@@ -21,6 +21,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 
@@ -132,6 +134,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
 
       }
+
+      paper-input {
+        color: white;
+        display: inline-block;
+        width: 300px;
+        margin-top: -20px;
+        border-bottom-color: white;
+        display: none;
+      }
+
+      paper-dropdown-menu {
+        color: white;
+        margin-top: -20px;
+        display: none;
+      }
     </style>
 
     <app-route route="{{route}}" pattern="/:action" data="{{routeData}}"></app-route>
@@ -139,36 +156,57 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
 
       <div name="">
-        <firebase-query id="query" path="/applications" data="{{applications}}">
-        </firebase-query>
-
         <!-- <iron-ajax auto url="src/data.json" last-response="{{items}}"></iron-ajax> -->
-
         <app-header-layout fullbleed has-scrolling-region>
           <app-header fixed slot="header">
             <app-toolbar primary>
               <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
               <div main-title>Application</div>
+              <paper-dropdown-menu id="child">
+                <paper-listbox slot="dropdown-content" selected="{{filterByChild}}" style="cursor:pointer;">
+                  <paper-item>By Status</paper-item>
+                  <paper-item>By Lot</paper-item>
+                  <paper-item>By Buyer</paper-item>
+                </paper-listbox>
+              </paper-dropdown-menu>
+              <paper-dropdown-menu id="status">
+                <paper-listbox slot="dropdown-content" selected="{{filterByStatus}}" style="cursor:pointer;">
+                  <paper-item>All</paper-item>
+                  <paper-item>Buy</paper-item>
+                  <paper-item>On-Hold</paper-item>
+                  <paper-item>Reserve</paper-item>
+                </paper-listbox>
+              </paper-dropdown-menu>
+              <paper-input id="filterInput" label="Search" value={{inputtedValue}}></paper-input>
               <paper-icon-button icon="my-icons:search" on-tap="toggleSearch"></paper-icon-button>
             </app-toolbar>
           </app-header>
 
+          <div id="errMsg" style="display:none">No record found!</div>
+          
+          
+
+          <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
+            end-at="{{typeValue}}">
+          </firebase-query>
+
           <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold">
             <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
+              <paper-toast id="toast" text="" duration="0"></paper-toast>
               <template>
                 <div class="divSeparator">
                   <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
-
-
+                    <firebase-query id="query" path="/statuscolor/{{item.lotdetails.type}}" data="{{statuscolor}}">
+                    </firebase-query>
                     <div class="card-content" style="width: 100%;">
-                      <div class="header" style="background-color: #2196F3; padding: 16px; padding-bottom: 5px;">
-                        <span style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">[[item.type]]</span>
+                      <div id="divHeader" class="header"  data-args="{{item.lotdetails.type}}">
+                        <span style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
+                          [[item.type]]
+                        </span>
 
                         <div style="display:inline-block; margin-left: 24px;">
                           <iron-icon icon="my-icons:access-time" style="color: white;"></iron-icon>
-                          <div class="longText" style="display:inline-block; color: white;">25 minutes ago</div>
-                          <div style="display:none" id="start">[[item.start]]</div>
-                          <div style="display:none" id="end">[[item.expiry]]</div>
+                          <div style="display:inline-block; color: white; font-size: 12px;">{{item.start}}</div>
                         </div>
 
                         <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
@@ -179,46 +217,57 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                           </paper-listbox>
                         </paper-menu-button>
 
-                        <div style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">[[item.lot]]</div>
-                        <div style="font-size: 10px; color: white;">&nbsp;Ref.: [[item.$key]]</div>
+                        <div style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">
+                            <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
+                            <span id="plot">Plot {{item.lotdetails.plot}}</span>
+                        </div>
+                        <div style="font-size: 10px; color: white;">
+                          &nbsp;Ref.: [[item.$key]]
+                        </div>
                       </div>
-
 
                       <div style="padding: 16px;">
                         <div style="padding-bottom: 8px;">
                           <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">Buyer</div>
-                          <span style="font-weight: 400;">[[item.buyer]]</span>
+                          <span style="font-weight: 400;">
+                            [[item.buyerdetails.firstname]] [[item.buyerdetails.middlename]] [[item.buyerdetails.lastname]]
+                          </span>
                         </div>
                         <div>
                           <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">Agent</div>
-                          <span style="font-weight: 400;">[[item.agent]]</span>
+                          <span style="font-weight: 400;">[[item.agentdetails.name]]</span>
                         </div>
                       </div>
 
                       <div style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle;">
                         <div style="margin-left: 16px; margin-top: 8px;">
                           <iron-icon icon="my-icons:alarm" style="color: rgba(255, 5, 5, 0.774);"></iron-icon>
-                          <span style="color:rgba(255, 5, 5, 0.774); font-size: 12px;">24 days before expiry</span>
+                          <span style="color:rgba(255, 5, 5, 0.774); font-size: 12px;">{{item.expiry}}</span>
                         </div>
                       </div>
 
                     </div>
-
+                    <!-- card content -->
                   </div>
-                  <!-- </div> -->
+                  <!-- tab -->
                 </div>
+                <!-- divSeparator -->
+
               </template>
             </iron-list>
+            <!-- <iron-scroll-threshold id="scrollTheshold"
+              lower-threshold="500"
+              on-lower-threshold="_load"
+              scroll-target="document">
+            </iron-scroll-threshold> -->
           </iron-scroll-threshold>
 
-
-
-      </app-header-layout>
-
-      <a href="/applications/new" style="text-decoration: none;">
-        <paper-fab noink class="fab-menu" icon="my-icons:add"></paper-fab>
-      </a>
+        </app-header-layout>
+        <a href="/applications/new" style="text-decoration: none;">
+          <paper-fab noink class="fab-menu" icon="my-icons:add"></paper-fab>
+        </a>
       </div>
+      <!-- div -name -->
 
       <div name="/new">
         <my-application-details></my-application-details>
@@ -230,33 +279,156 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
-    class MyApplications extends Polymer.Element {
-      static get is() { return 'my-applications'; }
+    Polymer({
+      is: 'my-applications',
 
-      static get properties() {
-        return {
-          items: {
-            type: Array,
-            value: function () {
-              return [];
+      properties: {
+        items: {
+          type: Array,
+          value: function () {
+            return [];
+          }
+        },
+        narrow: {
+          type: Boolean,
+          notify: true
+        },
+        applications: {
+          type: Object,
+          // observer: '_apps'
+        },
+        filterByChild: {
+          type: Number,
+          observer: '_filterChild'
+        },
+        filterByStatus: {
+          type: Number,
+          observer: '_filterStatus'
+        },
+        inputtedValue: {
+          type: String,
+          value: '',
+          observer: '_filterInputVal'
+        },
+        typeValue: {
+          type: String,
+          value: ''
+        },
+        selectedType: {
+          type: String,
+          value: ''
+        },
+        statuscolor:{
+          type: Object,
+          observer: '_statusChanged'
+        }
+      },
+      // _apps(){
+      //   return this.applications;
+      // },
+
+      _statusChanged(){
+        if (this.statuscolor) {
+          var argsHeader = Polymer.dom(this.root).querySelector("#divHeader");
+          var wa = argsHeader.getAttribute("data-args");
+          console.log(wa);
+          if (argsHeader) {
+            argsHeader.setAttribute("style", "background-color: " + this.__getStatusColor(argsHeader.getAttribute("data-args")) + "; padding: 16px; padding-bottom: 5px;");
+          }
+        }
+      },
+
+      __getStatusColor(e){
+        console.log(e);
+        if (e) {
+          if (e) {
+            if (this.statuscolor) {
+              if (this.statuscolor[e]) {
+                return (this.statuscolor[e]).color;
+              }
+              else {
+                return "gray";
+              }
+            }
+            else {
+              return "gray";
             }
           }
-          , narrow: {
-            type: Boolean,
-            notify: true
-          },
+          else {
+            return "gray";
+          }
+        }
+        else {
+          return "gray";
+        }
+      },
+
+      // _getStatusStrokeColor(){
+
+      // },
+
+      toggleSearch() {
+        var list = Polymer.dom(this.root).querySelector("#child");
+        if (list.style.display === "block") {
+          list.style.display = "none";
+        } else {
+          list.style.display = "block";
+        }
+      },
+
+      _filterInputVal(e) {
+        this.typeValue = this.inputtedValue;
+      },
+
+      _filterChild(e) {
+        var list = Polymer.dom(this.root).querySelector("#status");
+        var input = Polymer.dom(this.root).querySelector("#filterInput");
+
+        if (parseInt(this.filterByChild) == 0) {
+          input.setAttribute("style", "display: none;");
+          list.setAttribute("style", "display: block;");
+          this.selectedType = 'type';
+        }
+        else {
+          list.setAttribute("style", "display: none;");
+          input.setAttribute("style", "display: block;");
+          if (parseInt(this.filterByChild) == 1) {
+            this.selectedType = 'lot';
+          }
+          else {
+            this.selectedType = 'buyerdetails';
+          }
+        }
+      },
 
 
-        };
-      }
-
+      _filterStatus(e) {
+        if (parseInt(this.filterByStatus) == 1) {
+          this.typeValue = "Buy";
+        }
+        else if (parseInt(this.filterByStatus) == 2) {
+          this.typeValue = "Hold";
+        }
+        else if (parseInt(this.filterByStatus) == 3) {
+          this.typeValue = "Reserve";
+        }
+        else {
+          this.typeValue = "";
+          if (this.applications == null) {
+            //console.log(this.applications);
+            var errormsg = Polymer.dom(this.root).querySelector("#errMsg");
+            errormsg.setAttribute("style", "display: block;color:red; text-align:center");
+          }
+        }
+      },
 
       iconForItem(item) {
         return item ? (item.integer < 50 ? 'my-icons:star-border' : 'my-icons:star') : '';
-      }
+      },
+
       getClassForItem(item, selected) {
         return selected ? 'item expanded' : 'item';
-      }
+      },
 
       toggleDrawer() {
         this.dispatchEvent(new CustomEvent('toggleDrawer', {
@@ -265,7 +437,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }));
         this.$.narrow = !this.$.narrow;
-      }
+      },
 
       loadMoreDat() {
         var self = this;
@@ -279,8 +451,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       }
 
-    }
+    })
 
-    window.customElements.define(MyApplications.is, MyApplications);
   </script>
 </dom-module>
