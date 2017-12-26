@@ -18,10 +18,8 @@
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/datetime-picker/datetime-picker.html">
-
 
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
@@ -125,6 +123,7 @@
                 color: white;
             }
 
+
             datetime-picker.begin {
                 --datetime-selected-background: #2362EC;
                 --datetime-background: #071533;
@@ -136,13 +135,16 @@
                 --datetime-background: #071533;
                 --datetime-color: #eeeeee;
             }
+
         </style>
 
         <!-- <app-route route="[[route]]" pattern="/:lot" data="{{routeData}}"></app-route> -->
 
         <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
         </firebase-document> -->
+
 <firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}"></firebase-document>
+
 
 
 
@@ -165,13 +167,16 @@
                         <span on-click="_selectPage" data-args="2">Agent's Information</span>
                     </paper-item>
 
-                    <!-- <paper-item id="finalize" on-click="_selectPage" data-args="3">
+
+
+                    <paper-item id="finalize" on-click="_selectPage" data-args="3">
                         <div class="circle-mini" on-click="_selectPage" data-args="3">4</div>
                         <span on-click="_selectPage" data-args="3">Finalize</span>
-                    </paper-item> -->
+                    </paper-item>
 
                     <paper-item id="complete" on-click="_selectPage" data-args="4">
-                        <div class="circle-mini-last" on-click="_selectPage" data-args="4">4</div>
+                        <div class="circle-mini-last" on-click="_selectPage" data-args="4">5</div>
+
                         <span on-click="_selectPage" data-args="4">Complete</span>
                     </paper-item>
 
@@ -192,7 +197,10 @@
 
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
-                        <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
+
+                      <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}">
+                        </firebase-document>
+
                         <firebase-document id="query" path="applications/" data="{{applicationsData}}"></firebase-document>
 
                         <div class="docu">
@@ -250,6 +258,7 @@
                                                 <datetime-picker class="end" datetime={{newdata.expiry}} hour12="true"></datetime-picker>
                                             </div>
                                         </div>
+
                                     </div>
                                 </paper-card>
 
@@ -258,8 +267,6 @@
                                 <paper-input label="Designation" always-float-label disabled value="[[fullLotData.designation]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
                                 <paper-input label="Type" always-float-label disabled value="[[fullLotData.type]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
                                 <paper-input label="Status" always-float-label disabled value="[[fullLotData.status]]" style="display: inline-block; width:45%; margin-left:5px "></paper-input> -->
-
-
 
                             </div>
                         </div>
@@ -270,9 +277,10 @@
                             <div class="docu-header">2. Buyer's Information</div>
                             <div class="details">
                                 <paper-input always-floats-after typing label="First Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
-                                    style="width:49%; display:inline-block" value=""></paper-input>
+                                    style="width:49%; display:inline-block" value={{newdata.buyer}}></paper-input>
                                 <paper-input always-floats-after typing label="Middle Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
-                                    style="width:49%; display:inline-block" value=""></paper-input>
+                                    style="width:49%; display:inline-block" value={{newdata.buyerdetails}}></paper-input>
+
                                 <paper-input always-floats-after typing label="Last Name" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
                                     style="width:68%; display:inline-block"></paper-input>
                                 <paper-input always-floats-after typing label="Suffix" value="" auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!"
@@ -292,16 +300,11 @@
                             <paper-input always-floats-after typing label="Email" value=""></paper-input>
                         </div>
                     </neon-animatable>
-                    <!-- <neon-animatable>
-                        <div class="docu">
-                            <div class="docu-header">4. Finalize</div>
 
-                        </div>
-
-                    </neon-animatable> -->
                     <neon-animatable>
                         <div class="docu">
-                            <div class="docu-header">4. Completed</div>
+                            <div class="docu-header">5. Completed</div>
+
                             <div class="details">
                                 <paper-item>
                                     <paper-item-body>
@@ -398,7 +401,7 @@
                 },
                 path: String,
                 newdata: Object,
-                applicationsData: {
+                applicationsData:{
                     type: Object,
                 }
 
@@ -436,6 +439,7 @@
                 this.path = 'applications/' + this.guid();
                 return this.path;
             },
+
             fulllotDataChanged() {
                 if (this.fullLotData) {
                     if (this.fullLotData.area) {
@@ -612,7 +616,6 @@
                 else {
                     this.selectedPage = 0;
                     this.favlefthide = true;
-
 
                 }
 

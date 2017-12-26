@@ -38,7 +38,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-register-signin.html">
 <link rel="lazy-import" href="my-dashboard.html">
 <link rel="lazy-import" href="my-briefcase.html">
-<link rel="lazy-import" href="my-application.html">
+<link rel="lazy-import" href="my-applications.html">
+<link rel="lazy-import" href="my-application-details.html">
 <link rel="lazy-import" href="my-view1.html">
 <link rel="lazy-import" href="my-view2.html">
 <link rel="lazy-import" href="my-view3.html">
@@ -187,6 +188,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
         <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
           <div style="height: 100%; overflow: auto;">
+
+              <paper-toast id="toast" text=""></paper-toast>
+              
             <app-header fixed>
               <app-toolbar>
                 <iron-image class="avatar" sizing="contain" src="images/manifest/icon-512x512.png"></iron-image>
@@ -210,14 +214,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
                   <span>Map</span>
                 </paper-icon-item>
-              </a>              
-              <a name="application" href="[[rootPath]]application">
+              </a>
+              <a name="applications" href="[[rootPath]]applications">
                 <paper-icon-item toggles="true" class="menuSelected">
                   <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
                   <span>Applications</span>
                 </paper-icon-item>
               </a>
-              <a on-tap="_signOut">
+              <a on-tap="_signOut" href="/">
                 <paper-icon-item toggles="true">
                   <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
                   <span>Sign-out</span>
@@ -231,7 +235,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <my-dashboard name="dashboard"></my-dashboard>
           <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
-          <my-application name="application"></my-application>
+          <my-applications name="applications" route="[[subroute]]"></my-applications>
           <my-view404 name="view404"></my-view404>
         </iron-pages>
 
@@ -400,10 +404,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _signOut() {
-        window.location.reload()
         this.$.auth.signOut();
+        window.location.reload()
         this.set("route.path", "");
-
       }
 
     }
