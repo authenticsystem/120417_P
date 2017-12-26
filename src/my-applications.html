@@ -136,7 +136,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       paper-input {
-        color: white;
+        /* color: white; */
         display: inline-block;
         width: 300px;
         margin-top: -20px;
@@ -145,7 +145,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       paper-dropdown-menu {
-        color: white;
+        /* color: white; */
         margin-top: -20px;
         display: none;
       }
@@ -162,11 +162,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <app-toolbar primary>
               <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
               <div main-title>Application</div>
-              <paper-dropdown-menu id="child">
+              <paper-dropdown-menu style="--paper-dropdown-menu-color:white;" id="child">
                 <paper-listbox slot="dropdown-content" selected="{{filterByChild}}" style="cursor:pointer;">
                   <paper-item>By Status</paper-item>
                   <paper-item>By Lot</paper-item>
-                  <paper-item>By Buyer</paper-item>
+                  <!-- <paper-item>By Buyer</paper-item> -->
                 </paper-listbox>
               </paper-dropdown-menu>
               <paper-dropdown-menu id="status">
@@ -177,18 +177,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <paper-item>Reserve</paper-item>
                 </paper-listbox>
               </paper-dropdown-menu>
-              <paper-input id="filterInput" label="Search" value={{inputtedValue}}></paper-input>
+              <paper-input id="filterInput" style="--paper-input-container-color:white; --paper-input-container-input-color:white;" label="Search" value={{inputtedValue}}></paper-input>
               <paper-icon-button icon="my-icons:search" on-tap="toggleSearch"></paper-icon-button>
             </app-toolbar>
           </app-header>
 
           <div id="errMsg" style="display:none">No record found!</div>
           
-          <firebase-query id="query" path="/statuscolor" data="{{statuscolor}}">
-          </firebase-query>
+          <!-- <firebase-query id="query" path="/statuscolor" data="{{statuscolor}}">
+          </firebase-query> -->
 
           <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
-            end-at="{{typeValue}}">
+            end-at="{{typeValue}}" limit-to-last="20">
           </firebase-query>
 
           <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold">
@@ -199,7 +199,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
                                         
                     <div class="card-content" style="width: 100%;">
-                      <div data-args="[[item.lotdetails.type]]" id="headerColor" class="header" style="background-color: #2196F3; padding: 16px; padding-bottom: 5px;">
+                      <div class="header" style="background-color: #2196F3; padding: 16px; padding-bottom: 5px;">
                         <span style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
                           [[item.type]]
                         </span>
@@ -219,7 +219,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                         <div style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">
                             <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
-                            <span id="plot">Plot {{item.lotdetails.plot}}</span>
+                            <span id="plot">- Plot {{item.lotdetails.plot}}</span>
                         </div>
                         <div style="font-size: 10px; color: white;">
                           &nbsp;Ref.: [[item.$key]]
@@ -289,7 +289,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             return [];
           }
         },
-        lotdetails: Object,
         narrow: {
           type: Boolean,
           notify: true
@@ -318,35 +317,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: ''
         },
-        statuscolor:{
-          type: Object,
-          observer: '_statusChanged'
-        }
-      },
-
-      _statusChanged(){
-        if (this.statuscolor) {
-          var argsHeader = Polymer.dom(this.root).querySelector("#headerColor");
-          console.log(this.statuscolor);
-          // var tryT = argsHeader.getAttribute("data-args");
-          // console.log(tryT);
-          if (argsHeader) {
-            argsHeader.setAttribute("style", "background-color: " + this._getStatusColor(argsHeader.getAttribute("data-args")) + "; opacity: 1; border-style: solid; border-width: 1px;  border-color:" + this._getStatusStrokeColor(argsHeader.getAttribute("data-args")) + ";");
-          }
-        }
-      },
-
-      __getStatusColor(e){
-        console.log(e);
-      },
-
-      _getStatusStrokeColor(){
-
       },
 
       toggleSearch() {
+        var listStat = Polymer.dom(this.root).querySelector("#status");
+        var input = Polymer.dom(this.root).querySelector("#filterInput");
         var list = Polymer.dom(this.root).querySelector("#child");
         if (list.style.display === "block") {
+          listStat.style.display = "none";
+          input.style.display = "none";
           list.style.display = "none";
         } else {
           list.style.display = "block";
@@ -369,12 +348,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         else {
           list.setAttribute("style", "display: none;");
           input.setAttribute("style", "display: block;");
-          if (parseInt(this.filterByChild) == 1) {
+          //if (parseInt(this.filterByChild) == 1) {
             this.selectedType = 'lot';
-          }
-          else {
-            this.selectedType = 'buyerdetails';
-          }
+          // }
+          // else {
+          //   this.selectedType = 'buyerdetails';
+          // }
         }
       },
 
