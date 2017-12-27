@@ -206,7 +206,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                         <div style="display:inline-block; margin-left: 24px;">
                           <iron-icon icon="my-icons:access-time" style="color: white;"></iron-icon>
-                          <div style="display:inline-block; color: white; font-size: 12px;">{{item.start}}</div>
+                          <span id="start" class$="[[timeVoid(item.start)]]" style="display:inline-block; color: white; font-size: 12px;">{{item.timeElapse}}</span>
                         </div>
 
                         <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
@@ -317,6 +317,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: ''
         },
+      },
+      timeVoid(e){
+        var time = Polymer.dom(this.root).querySelector("#start");
+        var startTime = new Date(e);
+        if(startTime == "Invalid Date"){
+                this.timeElapse = "No data.";
+              } else 
+              {
+                var endTime = new Date();
+                // time difference in ms
+                var timeDiff = endTime - startTime;
+                // strip the miliseconds
+                timeDiff /= 1000;
+                // get seconds
+                var seconds = Math.round(timeDiff % 60);
+                // remove seconds from the date
+                timeDiff = Math.floor(timeDiff / 60);
+                // get minutes
+                var minutes = Math.round(timeDiff % 60);
+                // remove minutes from the date
+                timeDiff = Math.floor(timeDiff / 60);
+                // get hours
+                var hours = Math.round(timeDiff % 24);
+                // remove hours from the date
+                timeDiff = Math.floor(timeDiff / 24);
+                // the rest of timeDiff is number of days
+                var days = timeDiff;
+              
+                if(days == 1){
+                  this.timeElapse = days + " day ago";
+                }
+                if(days >= 2){
+                  this.timeElapse = days + " days ago";
+                }
+                if(days == 0 && hours == 1){
+                  this.timeElapse = "an hour ago";
+                }
+                if(days == 0 && hours >= 2){
+                  this.timeElapse = hours + " hours ago";
+                }
+                if(days == 0 && minutes == 1){
+                  this.timeElapse = "a minute ago";
+                }
+                if(days == 0 && minutes >= 2){
+                  this.timeElapse = minutes + " minutes ago";
+                }
+                if(days == 0 && seconds == 1){
+                  this.timeElapse = "a second ago";
+                }
+                if(days == 0 && seconds >= 2){
+                  this.timeElapse = seconds + " seconds ago";
+                }
+              }
+            // }, 1000);
       },
 
       toggleSearch() {
