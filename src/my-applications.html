@@ -161,7 +161,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <app-header fixed slot="header">
             <app-toolbar primary>
               <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-              <div main-title>Application</div>
+              <div main-title>Applications</div>
               <paper-dropdown-menu style="--paper-dropdown-menu-color:white;" id="child">
                 <paper-listbox slot="dropdown-content" selected="{{filterByChild}}" style="cursor:pointer;">
                   <paper-item>By Status</paper-item>
@@ -177,7 +177,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <paper-item>Reserve</paper-item>
                 </paper-listbox>
               </paper-dropdown-menu>
-              <paper-input id="filterInput" style="--paper-input-container-color:white; --paper-input-container-input-color:white;" label="Search" value={{inputtedValue}}></paper-input>
+              <paper-input id="filterInput" style="--paper-input-container-color:white; --paper-input-container-input-color:white;" label="Search"
+                value={{inputtedValue}}></paper-input>
               <paper-icon-button icon="my-icons:search" on-tap="toggleSearch"></paper-icon-button>
             </app-toolbar>
           </app-header>
@@ -216,8 +217,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         </paper-menu-button>
 
                         <div style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">
-                            <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
-                            <span id="plot">- Plot {{item.lotdetails.plot}}</span>
+                          <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
+                          <span id="plot">- Plot {{item.lotdetails.plot}}</span>
                         </div>
                         <div style="font-size: 10px; color: white;">
                           &nbsp;Ref.: [[item.$key]]
@@ -262,13 +263,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         </app-header-layout>
         <a href="/applications/new" style="text-decoration: none;">
-          <paper-fab noink class="fab-menu" icon="my-icons:add"></paper-fab>
+          <paper-fab noink class="fab-menu" icon="my-icons:add" on-tap="_appsnew"></paper-fab>
         </a>
       </div>
       <!-- div -name -->
 
       <div name="/new">
-        <my-application-details></my-application-details>
+        <div id="appdetails"></div>
+        <my-application-details id="d23" path=""></my-application-details>
       </div>
 
       <div name="view404">Not found.</div>
@@ -361,7 +363,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           list.setAttribute("style", "display: none;");
           input.setAttribute("style", "display: block;");
           //if (parseInt(this.filterByChild) == 1) {
-            this.selectedType = 'lot';
+          this.selectedType = 'lot';
           // }
           // else {
           //   this.selectedType = 'buyerdetails';
@@ -419,7 +421,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         asyncStuff(function done() {
           ironScrollTheshold.clearTriggers();
         });
-      }
+      },
+
+      _appsnew() {
+        var node = Polymer.dom(this.root).querySelector("#appdetails");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-application-details");
+          newDiv.setAttribute("id", "d23")
+          // newDiv.setAttribute("block", "3")
+          //if open existing
+          var currentDiv = document.getElementById("appdetails");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+        }
+      }      
 
     })
 
