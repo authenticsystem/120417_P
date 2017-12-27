@@ -184,9 +184,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <div id="errMsg" style="display:none">No record found!</div>
           
-          <!-- <firebase-query id="query" path="/statuscolor" data="{{statuscolor}}">
-          </firebase-query> -->
-
           <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
             end-at="{{typeValue}}" limit-to-last="20">
           </firebase-query>
@@ -197,7 +194,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <template>
                 <div class="divSeparator">
                   <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
-                                        
+                      <firebase-query id="query" path="/statuscolor/{{item.type}}" data="{{statuscolor}}">
+                      </firebase-query>             
                     <div class="card-content" style="width: 100%;">
                       <div class="header" style="background-color: #2196F3; padding: 16px; padding-bottom: 5px;">
                         <span style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
@@ -317,6 +315,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: ''
         },
+        statuscolor:{
+          type: Object,
+          observer: '_colorChanged'
+        },
+        colorSelected: {
+          type: String,
+          value: ''
+        }
+      },
+
+      _colorChanged(){
+        // this.colorSelected = "LAWN LOTS";
+        // console.log(this.colorSelected);
+        console.log(this.statuscolor);
       },
 
       toggleSearch() {
@@ -383,6 +395,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       getClassForItem(item, selected) {
+        // this.colorSelected = item.type;
+        // console.log(this.colorSelected);
         return selected ? 'item expanded' : 'item';
       },
 
