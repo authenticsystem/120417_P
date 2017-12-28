@@ -211,7 +211,7 @@
                             <div class="details">
                                 <paper-input label="Block" always-float-label value="{{block}}" style="display: inline-block; width: 20%;"></paper-input>
                                 <paper-input label="Lot" always-float-label value="{{lot}}" style="display: inline-block; width: 20%;"></paper-input>
-                                <paper-input label="Plot" always-float-label value="{{plot}}" style="display: inline-block; width: 20%;"></paper-input>
+                                <paper-input label="Level" always-float-label value="{{level}}" style="display: inline-block; width: 20%;"></paper-input>
 
                                 <paper-spinner id="spinnerDetails" alt="Getting details...." style="height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
 
@@ -219,26 +219,44 @@
                                     <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}
                                 </div>
 
-                                <paper-card heading="" style="width:100%">
+                                <paper-card heading="" style="width:100%; margin-top: 16px;">
 
-                                    <div class="card-content" style="background-color: #2196F3">
-                                        <span style="color: white">Area: [[fullLotData.area]]</span>
-                                        </br>
-                                        <span style="color: white">Designation: [[fullLotData.designation]]</span>
-                                        </br>
-                                        <span style="color: white">Type: [[fullLotData.type]]</span>
-                                        </br>
-                                        <span style="color: white">Status: [[fullLotData.status]]</span>
-                                        </br>
-                                        <!-- <paper-radio-group selected="Reserve">
-                                            <paper-radio-button name="Reserve" >Reserve</paper-radio-button>
-                                            <paper-radio-button name="Buy">Buy</paper-radio-button>
-                                            <paper-radio-button name="Hold">Hold</paper-radio-button>
-                                        </paper-radio-group> -->
+                                    <div id="cardcontentlotDetails" class="card-content" style="height: 64px; background-color: rgb(122, 122, 122); color: white;">
+                                        <div style="position: absolute; padding-left: 16px; bottom: 5px; left: 0px; font-weight: 400; font-size: 20px;">
+                                            [[fullLotName]]
+                                        </div>
                                     </div>
+                                    <div class="card-content">
+                                        <div style="display: inline-block; padding-right: 24px;">
+                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{areaLabel}}</div>
+                                            <span style="font-weight: 400;">
+                                                [[fullLotData.area]]
+                                            </span>
+                                        </div>
 
-                                    <div class="card-actions">
-                                        </br>
+                                        <div style="display: inline-block; padding-left: 24px; padding-right: 24px;">
+                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{designationLabel}}</div>
+                                            <span style="font-weight: 400;">
+                                                [[fullLotData.maprenderdetails.designation_name]]
+                                            </span>
+                                        </div>
+
+                                        <div style="padding-top: 24px;">
+                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{typeLabel}}</div>
+                                            <span style="font-weight: 400;">
+                                                [[fullLotData.maprenderdetails.type_name]]
+                                            </span>
+                                        </div>
+
+                                        <div style="padding-top: 24px;">
+                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{statusLabel}}</div>
+                                            <span style="font-weight: 400;" id="statusValue">
+                                                [[fullLotData.maprenderdetails.status_name]]
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                    <div class="card-actions" style="display: none;" id="cardActions">
                                         <paper-radio-group selected="{{draftdata_type}}">
                                             <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button>
                                             <paper-radio-button name="Hold" on-click="selectHold">Hold</paper-radio-button>
@@ -246,15 +264,15 @@
                                         </paper-radio-group>
 
                                         </br>
-                                        <div id="timeStamp" style="padding-left: 10px; display: none">
+                                        <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
                                             <div id="start">
-                                                <iron-icon icon="my-icons:access-time" style="color: blue;"></iron-icon>
-                                                <span style="color: blue;">Start:</span>
+                                                <iron-icon icon="my-icons:access-time" style="color: blue; position: absolute; top: 69px;"></iron-icon>
+                                                <span style="color: blue; margin-left: 28px;">Date:</span>
                                                 <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker>
                                             </div>
                                             <div id="expiry">
-                                                <iron-icon icon="my-icons:alarm" style="color: rgba(255, 5, 5, 0.774);"></iron-icon>
-                                                <span style="color: rgba(255, 5, 5, 0.774);">Expiry:</span>
+                                                <iron-icon icon="my-icons:alarm" style="color: rgba(255, 5, 5, 0.774); position: absolute; top: 104px;"></iron-icon>
+                                                <span style="color: rgba(255, 5, 5, 0.774); margin-left: 28px;">Expiry:</span>
                                                 <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker>
                                             </div>
                                         </div>
@@ -263,13 +281,6 @@
                                     </div>
                                 </paper-card>
 
-
-                                <!-- <paper-input label="Area" always-float-label disabled value="[[fullLotData.area]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
-                                <paper-input label="Designation" always-float-label disabled value="[[fullLotData.designation]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
-                                <paper-input label="Type" always-float-label disabled value="[[fullLotData.type]]" style="display: inline-block; width:45%; margin-left:5px"></paper-input>
-                                <paper-input label="Status" always-float-label disabled value="[[fullLotData.status]]" style="display: inline-block; width:45%; margin-left:5px "></paper-input> -->
-
-
                             </div>
                         </div>
                     </neon-animatable>
@@ -277,7 +288,6 @@
                     <neon-animatable>
                         <firebase-query path="/buyers" order-by-child='{{buyersCellphoneEmail}}' equal-to='{{buyersInputPhoneEmail}}' limit-to-first=1
                             data="{{buyersList}}"></firebase-query>
-                        <!-- manipulate buyersList nga makuha ang data para ipakita sa  -->
 
                         <div class="docu">
                             <div class="docu-header">2. Buyer's Information</div>
@@ -297,7 +307,7 @@
                                 <paper-spinner id="spinnerDetails2" alt="Getting details...." style="display:inline-block; height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
                                 </br>
                                 <paper-card heading="" style="width:100%;">
-                                    <div class="card-content" style="background-color:#2196F3">
+                                    <div class="card-content" style="background-color:rgb(122, 122, 122)">
                                         <paper-input always-floats-after typing label="First Name" style="width:49%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"
                                             value="{{draftdata_buyerdetails_firstname}}"></paper-input>
                                         <paper-input always-floats-after typing label="Middle Name" style="width:49%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"
@@ -458,7 +468,7 @@
                     type: String,
                     observer: 'blocklotplotChanged'
                 },
-                plot: {
+                level: {
                     type: String,
                     observer: 'blocklotplotChanged'
                 },
@@ -606,21 +616,21 @@
 
             selectReserve() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
-                showStartExpiry.setAttribute("style", "padding-left: 10px; display: block");
+                showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
 
                 var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
                 showExpiry.setAttribute("style", "display: block;");
             },
             selectHold() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
-                showStartExpiry.setAttribute("style", "padding-left: 10px; display: block");
+                showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
 
                 var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
                 showExpiry.setAttribute("style", "display: block;");
             },
             selectBuy() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
-                showStartExpiry.setAttribute("style", "padding-left: 10px; display: block");
+                showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
 
                 var hideExpiry = Polymer.dom(this.root).querySelector("#expiry");
                 hideExpiry.setAttribute("style", "display: none;");
@@ -642,6 +652,29 @@
                         var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                         errormsg.setAttribute("style", "display: none;");
 
+                        var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
+                        cardcontentlotDetails.setAttribute("style", "height: 64px; background-color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_bg_color : "rgb(122, 122, 122)") + "; color: " + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_fore_color : "white") + ";");
+
+                        this.fullLotName = "Block " + this.fullLotData.block + " - Lot " + this.fullLotData.lot + (this.fullLotData.level ? " - Level " + this.fullLotData.level : "");
+                        this.areaLabel = "Area";
+                        this.designationLabel = "Designation";
+                        this.typeLabel = "Type";
+                        this.statusLabel = "Status";
+
+                        var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
+                        statusValue.setAttribute("style", "font-weight: 400; color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.fore_color : "black") + ";");
+
+
+                        var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
+                        if (this.fullLotData.status == 'available' || this.fullLotData.status == 'hold' || this.fullLotData.status == 'reserved' || this.fullLotData.status == 'notyetavailable') {
+                            cardActions.setAttribute("style", "display: block;");
+                            this.favrighthide = false;
+                        }
+                        else {
+                            cardActions.setAttribute("style", "display: none;");
+                            this.favrighthide = true;
+                        }
+
 
                     }
                     else {
@@ -653,9 +686,26 @@
                             errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
                             this.validationMessage = 'Not found!';
 
+                            var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
+                            cardcontentlotDetails.setAttribute("style", "height: 64px; background-color: rgb(122, 122, 122); color: white;");
 
+                            this.fullLotName = "";
+                            this.areaLabel = "";
+                            this.designationLabel = "";
+                            this.typeLabel = "";
+                            this.statusLabel = "";
+
+                            var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
+                            statusValue.setAttribute("style", "font-weight: 400;");
+
+                            var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
+                            cardActions.setAttribute("style", "display: none;");
+
+                            this.favrighthide = true;
                         }
                     }
+
+
                 }
                 else {
                     if (this.fullLot) {
@@ -667,16 +717,35 @@
                         errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
                         this.validationMessage = 'Not found!';
 
+
+                        var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
+                        cardcontentlotDetails.setAttribute("style", "height: 64px; background-color: rgb(122, 122, 122); color: white;");
+
+                        this.fullLotName = "";
+                        this.areaLabel = "";
+                        this.designationLabel = "";
+                        this.typeLabel = "";
+                        this.statusLabel = "";
+
+                        var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
+                        statusValue.setAttribute("style", "font-weight: 400;");
+
+                        var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
+                        cardActions.setAttribute("style", "display: none;");
+
+                        this.favrighthide = true;
                     }
+
+
                 }
             },
 
             blocklotplotChanged() {
                 if (this.block) { this.block = this.block.toString().toUpperCase(); }
                 if (this.lot) { this.lot = this.lot.toString().toUpperCase(); }
-                if (this.plot) { this.plot = this.plot.toString().toUpperCase(); }
+                if (this.level) { this.level = this.level.toString().toUpperCase(); }
 
-                this.fullLot = "block" + this.block + "lot" + this.lot + (this.plot ? "plot" + this.plot : "");
+                this.fullLot = "block" + this.block + "lot" + this.lot + (this.level ? "level" + this.level : "");
 
                 var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
                 spinnerDetails.active = true;
@@ -775,7 +844,7 @@
                 this.finalizeNote2 = "";
                 if (parseInt(this.selectedPage) >= 0) {
                     if (parseInt(this.selectedPage) == 2) {
-                        if (!this.fullLot) { this.finalizeNote1 =  'Lot is invalid!'; }
+                        if (!this.fullLot) { this.finalizeNote1 = 'Lot is invalid!'; }
                         if (!this.draftdata_type) { this.finalizeNote2 = 'Transaction Type is invalid!'; }
 
                         if (this.finalizeNote) {

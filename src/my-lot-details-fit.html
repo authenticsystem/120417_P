@@ -1,0 +1,31 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+
+<dom-module id="my-lot-details-fit">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+      }
+    </style>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-lot-details-fit',
+      properties: {
+        lot: {
+          type: String,
+          value: '',
+          notify: true
+        }
+
+      }
+
+    })
+  </script>
+</dom-module>
