@@ -39,7 +39,7 @@
 
     <div id="headerPanel" style="background: #7B1FA2; padding:16px;color: white;">
       <div style="display: inline;">Block {{selectedLotDetails.block}} - Lot {{selectedLotDetails.lot}}
-        <div id="plot" style="display: inline;"> - Plot {{selectedLotDetails.plot}}</div>
+        <div id="level" style="display: inline;"> - Level {{selectedLotDetails.plot}}</div>
       </div>
       <paper-icon-button style="float:right; top: -8px" icon="my-icons:close" on-tap="_close"></paper-icon-button>
     </div>
@@ -49,11 +49,11 @@
         <div>
           <span style="color: gray;">Status:&nbsp;</span>
           <div id="statusBox" style="display: inline-block; height: 16px; width: 16px;"></div>
-          <div id="status" style="display: inline;">&nbsp;{{lotStatus}}</div>
+          <div id="status" style="display: inline; color: black;">&nbsp;{{lotStatus}}</div>
         </div>
         <div style="display: inline;">
           <span style="color: gray;">Area:</span> {{selectedLotDetails.area}}</div>
-        <div style="float:right;">{{selectedLotDetails.designation}}</div>
+        <div style="float:right;">{{selectedLotDetails.maprenderdetails.designation_name}}</div>
 
       </div>
     </div>
@@ -74,7 +74,7 @@
           value: false,
           notify: true
         },
-        statusColors: Object,
+        // statusColors: Object,
         selectedLotDetails: {
           type: Object,
           observer: '_selectedLotDetailsChanged'
@@ -89,67 +89,66 @@
         this.selectedLot = '';
         this.style.display = "none";
       },
-      _getStatusColor(e) {
-        if (e) {
-          if (e) {
-            if (this.statuscolors) {
-              if (this.statuscolors[e]) {
-                return (this.statuscolors[e]).color;
-              }
-              else {
-                return "gray";
-              }
-            }
-            else {
-              return "gray";
-            }
-          }
-          else {
-            return "gray";
-          }
-        }
-        else {
-          return "gray";
-        }
-      },
+      // _getStatusColor(e) {
+      //   if (e) {
+      //     if (e) {
+      //       if (this.statuscolors) {
+      //         if (this.statuscolors[e]) {
+      //           return (this.statuscolors[e]).color;
+      //         }
+      //         else {
+      //           return "gray";
+      //         }
+      //       }
+      //       else {
+      //         return "gray";
+      //       }
+      //     }
+      //     else {
+      //       return "gray";
+      //     }
+      //   }
+      //   else {
+      //     return "gray";
+      //   }
+      // },
 
-      _getStatusName(e){
-        if (e) {
-          if (e) {
-            if (this.statuscolors) {
-              if (this.statuscolors[e]) {
-                return (this.statuscolors[e]).name;
-              }
-              else {
-                return "";
-              }
-            }
-            else {
-              return "";
-            }
-          }
-          else {
-            return "";
-          }
-        }
-        else {
-          return "";
-        }        
-      },
+      // _getStatusName(e) {
+      //   if (e) {
+      //     if (e) {
+      //       if (this.statuscolors) {
+      //         if (this.statuscolors[e]) {
+      //           return (this.statuscolors[e]).name;
+      //         }
+      //         else {
+      //           return "";
+      //         }
+      //       }
+      //       else {
+      //         return "";
+      //       }
+      //     }
+      //     else {
+      //       return "";
+      //     }
+      //   }
+      //   else {
+      //     return "";
+      //   }
+      // },
 
       _selectedLotDetailsChanged(newData, oldData) {
         if (this.selectedLotDetails) {
-          var color = this._getStatusColor(this.selectedLotDetails.type);
-          if (color) {
+          if (this.selectedLotDetails.maprenderdetails) {
             var args = Polymer.dom(this.root).querySelector("#headerPanel");
             if (args) {
-              args.setAttribute("style", "background:" + color + "; padding:16px;color: white;");
+              args.setAttribute("style", "background:" + this.selectedLotDetails.maprenderdetails.type_bg_color + "; padding:16px;color: " + this.selectedLotDetails.maprenderdetails.type_fore_color + ";");
             }
           }
 
 
-          var showhidePlot = Polymer.dom(this.root).querySelector("#plot");
-          if (this.selectedLotDetails.plot != '') {
+          var showhidePlot = Polymer.dom(this.root).querySelector("#level");
+          if (this.selectedLotDetails.level != '') {
             showhidePlot.setAttribute("style", "display: inline;");
           }
           else {
@@ -159,11 +158,12 @@
           if (this.selectedLotDetails.status) {
             var colorStatus = Polymer.dom(this.root).querySelector("#status");
             var colorStatusBox = Polymer.dom(this.root).querySelector("#statusBox");
-            var color2 = this._getStatusColor(this.selectedLotDetails.status);
+            var color2 = this.selectedLotDetails.maprenderdetails.fore_color ? this.selectedLotDetails.maprenderdetails.fore_color : 'white';
+            var color3 = this.selectedLotDetails.maprenderdetails.bg_color ? this.selectedLotDetails.maprenderdetails.bg_color : 'gray';
             colorStatus.setAttribute("style", "display: inline; color:" + color2 + ";");
-            colorStatusBox.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background:" + color2 + ";");
+            colorStatusBox.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background:" + color3 + ";");
 
-            this.lotStatus = this._getStatusName(this.selectedLotDetails.status);
+            this.lotStatus = this.selectedLotDetails.maprenderdetails.status_name;
 
           }
 

@@ -208,8 +208,8 @@
 
           <template is="dom-repeat" items="{{blocks}}" as='block'>
             <!-- #cbe6a3 -->
-            <google-map-poly closed stroke-color="{{_getStatusStrokeColor(block.type)}}" stroke-weight="1" stroke-opacity="1" fill-color="{{_getStatusColor(block.type)}}"
-              fill-opacity="1" id="{{block.$key}}" clickable="true" click-events="true" on-google-map-poly-click="polyBlocksClicked"
+            <google-map-poly closed stroke-color="{{block.maprenderdetails.stroke_color}}" stroke-weight="1" stroke-opacity="1" fill-color="{{block.maprenderdetails.bg_color}}"
+              fill-opacity="1" clickable="true" click-events="true" on-google-map-poly-click="polyBlocksClicked"
               mouse-events="true" on-google-map-poly-mouseover="polyMouseOver" on-google-map-poly-mouseout="polyMouseOut" id="{{block.$key}}">
               <template is="dom-repeat" items="{{block.map_points}}" as='point'>
                 <google-map-point longitude="{{point.longitude}}" latitude="{{point.latitude}}"></google-map-point>
@@ -224,8 +224,8 @@
 
           <template is="dom-repeat" items="{{lots}}" as='lot'>
 
-            <google-map-poly closed stroke-color="{{_getStatusStrokeColor(lot.designation)}}" stroke-position="inside" stroke-opacity="1"
-              stroke-weight="1" fill-color="{{_getStatusColor(lot.status)}}" fill-opacity="1" clickable="true" click-events="true"
+            <google-map-poly closed stroke-color="{{lot.maprenderdetails.stroke_color}}" stroke-position="inside" stroke-opacity="1"
+              stroke-weight="1" fill-color="{{lot.maprenderdetails.bg_color}}" fill-opacity="1" clickable="true" click-events="true"
               on-google-map-poly-click="polyClicked" mouse-events="true" on-google-map-poly-mouseover="polyMouseOver" on-google-map-poly-mouseout="polyMouseOut"
               id="{{lot.$key}}">
 
@@ -259,98 +259,98 @@
           </div> -->
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="LAWN LOTS" id="legendLawnLots"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="lawnlots" id="legendLawnLots"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Lawn Lots</span>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="WALL NICHE" id="legendWallNiche"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="wallniche" id="legendWallNiche"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Wall Niche</span>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="CINERARIUM" id="legendCinerarium"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="cinerarium" id="legendCinerarium"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Cinerarium</span>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="BONE CHAMBER" id="legendBoneChamber"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="bonechamber" id="legendBoneChamber"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Bone Chamber</span>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 1" id="legendGardenLots1"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="gardenlots1" id="legendGardenLots1"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Garden Lots 1 (Area=12.52m²)</span>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 2" id="legendGardenLots2"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="gardenlots2" id="legendGardenLots2"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Garden Lots 1 (Area=12.43m²)</span>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 3" id="legendGardenLots3"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="gardenlots3" id="legendGardenLots3"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Garden Lots 1 (Irregular Lots)</span>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 4" id="legendGardenLots4"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="gardenlots4" id="legendGardenLots4"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Garden Lots 2 (Area=20.00m²)</span>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="GARDEN LOTS 5" id="legendGardenLots5"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="gardenlots5" id="legendGardenLots5"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Garden Lots 2 (Irregular Lots)</span>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 1" id="legendFamilyLots1"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="familylots1" id="legendFamilyLots1"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Family Lots 1 (Area=53.27m²)</span>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 2" id="legendFamilyLots2"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="familylots2" id="legendFamilyLots2"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Family Lots 1 (Area=52.83m²)</span>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 3" id="legendFamilyLots3"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="familylots3" id="legendFamilyLots3"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Family Lots 1 (Irregular Lots)</span>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 4" id="legendFamilyLots4"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="familylots4" id="legendFamilyLots4"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Family Lots 2 (Area=37.45m²)</span>
             </div>
           </div>
 
           <div style="display:flex;align-items:center;">
-            <div style="display: inline-block; height: 16px; width: 16px;" data-args="FAMILY LOTS 5" id="legendFamilyLots5"></div>
+            <div style="display: inline-block; height: 16px; width: 16px;" data-args="familylots5" id="legendFamilyLots5"></div>
             <div class="displayBig" style="margin-left: 8px;">
               <span>Family Lots 2 (Irregular Lots)</span>
             </div>
@@ -465,7 +465,7 @@
         <span>VIEW MAP</span>
       </paper-button>
 
-      <my-lot-details id="lotDetailsPane" selected-lot="{{selectedLot}}" statusColors="{{statuscolor}}" style="display: none;"></my-lot-details>
+      <my-lot-details id="lotDetailsPane" selected-lot="{{selectedLot}}" style="display: none;"></my-lot-details>
     </app-header-layout>
 
 
@@ -678,7 +678,7 @@
           if (e) {
             if (this.statuscolor) {
               if (this.statuscolor[e]) {
-                return (this.statuscolor[e]).color;
+                return (this.statuscolor[e]).bg_color;
               }
               else {
                 return "gray";
