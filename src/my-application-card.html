@@ -1,0 +1,98 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="my-application-card">
+    <template>
+        <style>
+            :host {
+                display: block;
+                width: 100%;
+            }
+        </style>
+
+        <div class="card-content" style="width: 100%;">
+            <div id="header" class="header" style="background-color: gray; padding: 16px; padding-bottom: 5px;">
+                <span id="type" style="background: black; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
+                    [[item.type]]
+                </span>
+
+                <div style="display:inline-block; margin-left: 24px;">
+                    <iron-icon id="iconStart" icon="my-icons:access-time" style="color: white;"></iron-icon>
+                    <div id="startValue" style="display:inline-block; color: white; font-size: 12px;">
+                        <time-ago datetime$="{{item.start}}">{{item.start}}</time-ago>
+                    </div>
+                </div>
+
+                <!-- <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
+                    <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
+                    <paper-listbox slot="dropdown-content">
+                        <paper-item>Lacking</paper-item>
+                        <paper-item>Complete</paper-item>
+                    </paper-listbox>
+                </paper-menu-button> -->
+
+                <div id="lotName" style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">
+                    <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
+                    <span id="plot">- Level {{item.lotdetails.level}}</span>
+                </div>
+                <div id="refKey" style="font-size: 10px; color: white;">
+                    &nbsp;Ref.: [[item.$key]]
+                </div>
+            </div>
+
+            <div style="padding: 16px;">
+                <div style="padding-bottom: 8px;">
+                    <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">Buyer</div>
+                    <span style="font-weight: 400;">
+                        [[item.buyerdetails.firstname]] [[item.buyerdetails.middlename]] [[item.buyerdetails.lastname]]
+                    </span>
+                </div>
+                <div>
+                    <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">Agent</div>
+                    <span style="font-weight: 400;">[[item.agentdetails.firstname]] [[item.agentdetails.middlename]] [[item.agentdetails.lastname]]</span>
+                </div>
+            </div>
+
+            <div style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle;">
+                <div style="margin-left: 16px; margin-top: 8px;">
+                    <iron-icon icon="my-icons:alarm" style="color: rgba(255, 5, 5, 0.774);"></iron-icon>
+                    <span style="color:rgba(255, 5, 5, 0.774); font-size: 12px;">
+                        <time-until datetime$="{{item.expiry}}">{{item.expiry}}</time-until>
+                    </span>
+                </div>
+
+            </div>
+        </div>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-application-card',
+            properties: {
+                item: {
+                    type: Object,
+                    notify: true,
+                    observer: '_itemChanged'
+                }
+            },
+            _itemChanged() {
+                if (this.item) {
+                    if (this.item.lotdetails.maprenderdetails) {
+                        Polymer.dom(this.root).querySelector("#header").setAttribute("style", "background-color: " + this.item.lotdetails.maprenderdetails.type_bg_color + "; padding: 16px; padding-bottom: 5px;");
+                        Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: " + this.item.lotdetails.maprenderdetails.bg_color + "; border-radius: 2px; color: " + this.item.lotdetails.maprenderdetails.fore_color + "; padding-left: 2px;padding-right: 2px;");
+                        Polymer.dom(this.root).querySelector("#iconStart").setAttribute("style", "color: " + this.item.lotdetails.maprenderdetails.fore_color + ";");
+                        Polymer.dom(this.root).querySelector("#startValue").setAttribute("style", "display:inline-block; color: " + this.item.lotdetails.maprenderdetails.fore_color + ";font-size: 12px;");
+                        Polymer.dom(this.root).querySelector("#lotName").setAttribute("style", "margin-top: 24px; color: " + this.item.lotdetails.maprenderdetails.fore_color + ";font-weight: 400; font-size: 22px; text-transform:capitalize;");
+                        Polymer.dom(this.root).querySelector("#refKey").setAttribute("style", "font-size: 10px; color: " + this.item.lotdetails.maprenderdetails.fore_color + ";");
+                        
+                        
+                    }
+                }
+            }
+
+
+        })
+
+    </script>
+</dom-module>
