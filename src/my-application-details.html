@@ -615,7 +615,7 @@
                 this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
                     + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
 
-                console.log(this.startDateTimeValue)
+                // console.log(this.startDateTimeValue)
             },
             selectHold() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
@@ -803,7 +803,7 @@
                 var data_args = Polymer.dom(e).rootTarget.getAttribute("data-args");
 
                 // console.log(this.selectedPage);
-                console.log(data_args);
+                // console.log(data_args);
 
                 if (Number(data_args) < this.selectedPage) {
                     this.selectedPage = Number(data_args);
@@ -834,7 +834,7 @@
                 this.draftdata_agentdetails_lastname = '';
                 this.draftdata_agentdetails_suffix = '';
                 this.draftdata_agentdetails_email = '';
-                this.draftdata_agentdetails_cellphone = '';                
+                this.draftdata_agentdetails_cellphone = '';
             },
 
             _select1(e) {
@@ -942,8 +942,24 @@
                         var firebaseDbRef = firebaseDb.ref();
                         var firebaseUpdate = {};
                         firebaseUpdate[this.path] = draftdata;
-                        firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
-                        firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
+
+                        if (this.buyerKey) {
+                            firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
+                        }
+                        else {
+                            this.saveErrorDetails = "Buyer Key is empty.";
+                            saveSuccess.setAttribute("style", "display: none; color: green;");
+                            saveFailed.setAttribute("style", "display: block; color: red;");
+                        }
+
+                        if (this.agentKey) {
+                            firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
+                        }
+                        else {
+                            this.saveErrorDetails = "Agent Key is empty.";
+                            saveSuccess.setAttribute("style", "display: none; color: green;");
+                            saveFailed.setAttribute("style", "display: block; color: red;");
+                        }
 
                         var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
                         var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
@@ -1031,7 +1047,7 @@
             guid: function () {
                 // return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
                 //     this.s4() + '-' + this.s4() + this.s4() + this.s4();
-                
+
 
                 var uid = new ShortUniqueId();
 
@@ -1039,7 +1055,7 @@
                 // var shortid = new shortid();
                 return uid.randomUUID(8);
 
-               
+
             }
 
 
