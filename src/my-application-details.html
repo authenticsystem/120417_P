@@ -32,6 +32,8 @@
 <link rel="import" href="../bower_components/titanium-date-input/titanium-date-input.html">
 <link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
 
+<link rel="import" href="short-unique-id.html">
+
 
 <dom-module id="my-application-details">
     <template>
@@ -880,8 +882,8 @@
                     }
                     else if (parseInt(this.selectedPage) == 3) {
                         //complete
-                        this.agentKey = this.agentKey == '' ? this.agentKey : this.guid();
-                        this.buyerKey = this.buyerKey == '' ? this.buyerKey : this.guid();
+                        this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
+                        this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
                         var currentDateTime = new Date();
 
                         var draftdata = {
@@ -1027,8 +1029,17 @@
                     .substring(1);
             },
             guid: function () {
-                return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
-                    this.s4() + '-' + this.s4() + this.s4() + this.s4();
+                // return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
+                //     this.s4() + '-' + this.s4() + this.s4() + this.s4();
+                
+
+                var uid = new ShortUniqueId();
+
+                // console.log(uid.randomUUID(8));
+                // var shortid = new shortid();
+                return uid.randomUUID(8);
+
+               
             }
 
 
