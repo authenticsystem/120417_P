@@ -53,9 +53,10 @@
                 </div>
             </div>
 
-            <div style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle;">
+            <!-- vertical-align:middle; -->
+            <div style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle; ">
                 <div style="margin-left: 16px; margin-top: 8px;">
-                    <iron-icon icon="my-icons:alarm" style="color: rgba(255, 5, 5, 0.774);"></iron-icon>
+                    <iron-icon id="expiryPart" icon="my-icons:alarm" style="display: inline-block; color: rgba(255, 5, 5, 0.774);"></iron-icon>
                     <span style="color:rgba(255, 5, 5, 0.774); font-size: 12px;">
                         <time-until datetime$="{{item.expiry}}">{{item.expiry}}</time-until>
                     </span>
@@ -80,13 +81,28 @@
                 if (this.item) {
                     if (this.item.lotdetails.maprenderdetails) {
                         Polymer.dom(this.root).querySelector("#header").setAttribute("style", "background-color: " + this.item.lotdetails.maprenderdetails.type_bg_color + "; padding: 16px; padding-bottom: 5px;");
-                        Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: " + this.item.lotdetails.maprenderdetails.bg_color + "; border-radius: 2px; color: " + this.item.lotdetails.maprenderdetails.fore_color + "; padding-left: 2px;padding-right: 2px;");
-                        Polymer.dom(this.root).querySelector("#iconStart").setAttribute("style", "color: " + this.item.lotdetails.maprenderdetails.fore_color + ";");
-                        Polymer.dom(this.root).querySelector("#startValue").setAttribute("style", "display:inline-block; color: " + this.item.lotdetails.maprenderdetails.fore_color + ";font-size: 12px;");
-                        Polymer.dom(this.root).querySelector("#lotName").setAttribute("style", "margin-top: 24px; color: " + this.item.lotdetails.maprenderdetails.fore_color + ";font-weight: 400; font-size: 22px; text-transform:capitalize;");
-                        Polymer.dom(this.root).querySelector("#refKey").setAttribute("style", "font-size: 10px; color: " + this.item.lotdetails.maprenderdetails.fore_color + ";");
-                        
-                        
+
+                        if (this.item.type === 'Hold') {
+                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: #E65100; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
+                        }
+                        else if (this.item.type === 'Reserve') {
+                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: #FFD600; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px;");
+                        }                        
+                        else if (this.item.type === 'Buy') {
+                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
+                        }                                                
+
+                        Polymer.dom(this.root).querySelector("#iconStart").setAttribute("style", "color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";");
+                        Polymer.dom(this.root).querySelector("#startValue").setAttribute("style", "display:inline-block; color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";font-size: 12px;");
+                        Polymer.dom(this.root).querySelector("#lotName").setAttribute("style", "margin-top: 24px; color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";font-weight: 400; font-size: 22px; text-transform:capitalize;");
+                        Polymer.dom(this.root).querySelector("#refKey").setAttribute("style", "font-size: 10px; color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";");
+                        if (this.item.expiry) {
+                            Polymer.dom(this.root).querySelector("#expiryPart").setAttribute("style", "display: inline-block;; color: rgba(255, 5, 5, 0.774);");
+                        }
+                        else {
+                            Polymer.dom(this.root).querySelector("#expiryPart").setAttribute("style", "display: none; color: rgba(255, 5, 5, 0.774);");
+                        }
+
                     }
                 }
             }
