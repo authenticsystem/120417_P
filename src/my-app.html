@@ -186,11 +186,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
 
       <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
-        <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]">
+        <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
           <div style="height: 100%; overflow: auto;">
 
-              <paper-toast id="toast" text=""></paper-toast>
-              
+            <paper-toast id="toast" text=""></paper-toast>
+
             <app-header fixed>
               <app-toolbar>
                 <iron-image class="avatar" sizing="contain" src="images/manifest/icon-512x512.png"></iron-image>
@@ -322,6 +322,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         //console.log(user);
         if (user) {
           this.page = page || 'dashboard';
+
+          var drawer = Polymer.dom(this.root).querySelector("#drawerMain");
+          if (drawer) {
+            if (!drawer.persistent) {
+              drawer.close();
+            }
+          }
+
         }
         else {
           this.page = page || 'landing-page';
@@ -330,7 +338,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // Close a non-persistent drawer when the page & route are changed.
         // if (!this.$.drawer.persistent) {
         //   this.$.drawer.close();
-        // }
+        // }     
       }
 
       _pageChanged(page) {

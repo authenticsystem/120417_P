@@ -29,6 +29,11 @@
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 
+<link rel="import" href="../bower_components/titanium-date-input/titanium-date-input.html">
+<link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
+
+<link rel="import" href="short-unique-id.html">
+
 
 <dom-module id="my-application-details">
     <template>
@@ -151,32 +156,35 @@
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
                 <div class="mnu" role="listbox">
                     <!-- <iron-selector attr-for-selected="value" class="drawer-list"> -->
-                    <paper-item id="lotdetails" on-click="_selectPage" data-args="0">
-                        <div class="circle-mini-first" on-click="_selectPage" data-args="0">1</div>
-                        <span on-click="_selectPage" data-args="0">Lot Details</span>
+
+                    <!-- on-tap="_selectPage" data-args="0" -->
+                    <paper-item id="lotdetails">
+                        <div class="circle-mini-first">1</div>
+                        <span>Lot Details</span>
                     </paper-item>
 
-                    <paper-item id="buyersinformation" on-click="_selectPage" data-args="1">
-                        <div class="circle-mini" on-click="_selectPage" data-args="1">2</div>
-                        <span on-click="_selectPage" data-args="1">Buyer's Information</span>
+                    <!-- on-tap="_selectPage" data-args="1" -->
+                    <paper-item id="buyersinformation">
+                        <div class="circle-mini">2</div>
+                        <span>Buyer's Information</span>
                     </paper-item>
 
-                    <paper-item id="samplecomputation" on-click="_selectPage" data-args="2">
-                        <div class="circle-mini" on-click="_selectPage" data-args="2">3</div>
-                        <span on-click="_selectPage" data-args="2">Agent's Information</span>
+                    <!-- on-tap="_selectPage" data-args="2" -->
+                    <paper-item id="samplecomputation">
+                        <div class="circle-mini">3</div>
+                        <span>Agent's Information</span>
                     </paper-item>
 
-
-
-                    <paper-item id="finalize" on-click="_selectPage" data-args="3">
-                        <div class="circle-mini" on-click="_selectPage" data-args="3">4</div>
-                        <span on-click="_selectPage" data-args="3">Finalize</span>
+                    <!-- on-tap="_selectPage" data-args="3" -->
+                    <paper-item id="finalize">
+                        <div class="circle-mini">4</div>
+                        <span>Finalize</span>
                     </paper-item>
 
-                    <paper-item id="complete" on-click="_selectPage" data-args="4">
-                        <div class="circle-mini-last" on-click="_selectPage" data-args="4">5</div>
-
-                        <span on-click="_selectPage" data-args="4">Complete</span>
+                    <!-- on-tap="_selectPage" data-args="4" -->
+                    <paper-item id="complete">
+                        <div class="circle-mini-last">5</div>
+                        <span>Complete</span>
                     </paper-item>
 
                     <!-- </iron-selector> -->
@@ -209,9 +217,9 @@
                                 <span>1. Lot Details</span>
                             </div>
                             <div class="details">
-                                <paper-input label="Block" always-float-label value="{{block}}" style="display: inline-block; width: 20%;"></paper-input>
-                                <paper-input label="Lot" always-float-label value="{{lot}}" style="display: inline-block; width: 20%;"></paper-input>
-                                <paper-input label="Level" always-float-label value="{{level}}" style="display: inline-block; width: 20%;"></paper-input>
+                                <paper-input label="Block" required="true" auto-validate="true" always-float-label value="{{block}}" style="display: inline-block; width: 20%;"></paper-input>
+                                <paper-input label="Lot" required="true" auto-validate="true" always-float-label value="{{lot}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
+                                <paper-input label="Level" always-float-label value="{{level}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
 
                                 <paper-spinner id="spinnerDetails" alt="Getting details...." style="height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
 
@@ -219,14 +227,13 @@
                                     <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}
                                 </div>
 
-                                <paper-card heading="" style="width:100%; margin-top: 16px;">
-
-                                    <div id="cardcontentlotDetails" class="card-content" style="height: 64px; background-color: rgb(122, 122, 122); color: white;">
+                                <paper-card id="stepOneCard" heading="" style="width:100%; margin-top: 16px; display: none;">
+                                    <div id="cardcontentlotDetails" class="card-content" style="height: 48px; background-color: rgb(122, 122, 122); color: white;">
                                         <div style="position: absolute; padding-left: 16px; bottom: 5px; left: 0px; font-weight: 400; font-size: 20px;">
                                             [[fullLotName]]
                                         </div>
                                     </div>
-                                    <div class="card-content">
+                                    <div class="card-content" style="top: -4px;">
                                         <div style="display: inline-block; padding-right: 24px;">
                                             <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{areaLabel}}</div>
                                             <span style="font-weight: 400;">
@@ -241,14 +248,16 @@
                                             </span>
                                         </div>
 
-                                        <div style="padding-top: 24px;">
+                                        <!-- style="padding-top: 8px;" -->
+                                        <div style="padding-top: 5px;">
                                             <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{typeLabel}}</div>
                                             <span style="font-weight: 400;">
                                                 [[fullLotData.maprenderdetails.type_name]]
                                             </span>
                                         </div>
 
-                                        <div style="padding-top: 24px;">
+                                        <!-- style="padding-top: 8px;" -->
+                                        <div style="padding-top: 5px;">
                                             <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{statusLabel}}</div>
                                             <span style="font-weight: 400;" id="statusValue">
                                                 [[fullLotData.maprenderdetails.status_name]]
@@ -258,22 +267,30 @@
                                     </div>
                                     <div class="card-actions" style="display: none;" id="cardActions">
                                         <paper-radio-group selected="{{draftdata_type}}">
-                                            <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button>
                                             <paper-radio-button name="Hold" on-click="selectHold">Hold</paper-radio-button>
+                                            <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button>
                                             <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button>
                                         </paper-radio-group>
 
                                         </br>
                                         <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
                                             <div id="start">
-                                                <iron-icon icon="my-icons:access-time" style="color: blue;"></iron-icon>
-                                                <span style="color: blue;">Date:</span>
-                                                <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker>
+                                                <!-- <span style="color: blue;">Date:</span> -->
+                                                <!-- <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker> -->
+
+                                                <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
+                                                <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
+                                                <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
+                                                <paper-input id="startDateTimeValueV" auto-validate="true" type="datetime-local" no-label-float="true" value="{{startDateTimeValue}}"></paper-input>
+
                                             </div>
-                                            <div id="expiry">
-                                                <iron-icon icon="my-icons:alarm" style="color: rgba(255, 5, 5, 0.774); "></iron-icon>
-                                                <span style="color: rgba(255, 5, 5, 0.774);">Expiry:</span>
-                                                <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker>
+                                            <div id="expiry" style="position: relative; padding-top: 16px;">
+                                                <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon>
+                                                <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span>
+                                                <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input>
+                                                <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span>
+                                                <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span>
+                                                <!-- <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker> -->
                                             </div>
                                         </div>
 
@@ -286,74 +303,35 @@
                     </neon-animatable>
 
                     <neon-animatable>
-                        <firebase-query path="/buyers" order-by-child='{{buyersCellphoneEmail}}' equal-to='{{buyersInputPhoneEmail}}' limit-to-first=1
+                        <firebase-query path="/buyers" order-by-child='cellphone' equal-to='{{draftdata_buyerdetails_cellphone}}' limit-to-first=1
                             data="{{buyersList}}"></firebase-query>
 
                         <div class="docu">
                             <div class="docu-header">2. Buyer's Information</div>
                             <div class="details">
-
-                                <paper-dropdown-menu label="Select email/phone number" style="width:40%">
-                                    <paper-listbox slot="dropdown-content" selected="{{buyersCellphoneEmail}}" attr-for-selected="name">
-                                        <paper-item name="cellphone">
-                                            <iron-icon icon="my-icons:call">Phone number</iron-icon>
-                                        </paper-item>
-                                        <paper-item name="email">
-                                            <iron-icon icon="my-icons:email">Email</iron-icon>
-                                        </paper-item>
-                                    </paper-listbox>
-                                </paper-dropdown-menu>
-                                <paper-input always-floats-after typing label="" style="width:40%; display:inline-block" value={{buyersInputPhoneEmail}}></paper-input>
-                                <paper-spinner id="spinnerDetails2" alt="Getting details...." style="display:inline-block; height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
-                                </br>
-                                <paper-card heading="" style="width:100%;">
-                                    <div class="card-content" style="background-color:rgb(122, 122, 122)">
-                                        <paper-input always-floats-after typing label="First Name" style="width:49%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"
-                                            value="{{draftdata_buyerdetails_firstname}}"></paper-input>
-                                        <paper-input always-floats-after typing label="Middle Name" style="width:49%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"
-                                            value={{draftdata_buyerdetails_middlename}}></paper-input>
-                                        <paper-input always-floats-after typing label="Last Name" style="width:68%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"
-                                            value={{draftdata_buyerdetails_lastname}}></paper-input>
-                                        <paper-input always-floats-after typing label="Suffix" value={{draftdata_buyerdetails_suffix}} style="width:30%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"></paper-input>
-                                        <paper-input type="number" always-floats-after typing label="Cellphone" value={{draftdata_buyerdetails_cellphone}} style="width:49%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"></paper-input>
-                                        <paper-input type="email" always-floats-after typing label="Email" value={{draftdata_buyerdetails_email}} style="width:49%; display:inline-block; --paper-input-container-color:white; --paper-input-container-input-color:white"></paper-input>
-                                    </div>
-                                </paper-card>
-
+                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_buyerdetails_cellphone}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_buyerdetails_firstname}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_buyerdetails_middlename}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_buyerdetails_lastname}}"></paper-input>
+                                <paper-input always-float-label="true" label="Suffix" value="{{draftdata_buyerdetails_suffix}}"></paper-input>
+                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_buyerdetails_email}}"></paper-input>
                             </div>
                         </div>
                     </neon-animatable>
 
                     <neon-animatable>
-                        <firebase-query path="/agents" order-by-child='{{agentsCellphoneEmail}}' equal-to='{{agentsInputPhoneEmail}}' limit-to-first=1
+                        <firebase-query path="/agents" order-by-child='cellphone' equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1
                             data="{{agentsList}}"></firebase-query>
 
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
                             <div class="detais">
-                                <paper-dropdown-menu label="Select email/phone number" style="width:40%">
-                                    <paper-listbox slot="dropdown-content" selected="{{agentsCellphoneEmail}}" attr-for-selected="name">
-                                        <paper-item name="cellphone">
-                                            <iron-icon icon="my-icons:call">Phone number</iron-icon>
-                                        </paper-item>
-                                        <paper-item name="email">
-                                            <iron-icon icon="my-icons:email">Email</iron-icon>
-                                        </paper-item>
-                                    </paper-listbox>
-                                </paper-dropdown-menu>
-                                <paper-input always-floats-after typing label="" style="width:40%; display:inline-block" value={{agentsInputPhoneEmail}}></paper-input>
-                                <paper-spinner id="spinnerDetails3" alt="Getting details...." style="display:inline-block; height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
-                                </br>
-                                <paper-card heading="" style="width:100%;">
-                                    <div class="card-content" style="background-color:#2196F3">
-                                        <paper-input always-floats after typing label="Name" style="--paper-input-container-color:white; --paper-input-container-input-color:white"
-                                            auto-validate pattern="[a-zA-Z-. ]*" error-message="letters only!" value="{{draftdata_agentdetails_name}}"></paper-input>
-                                        <paper-input always-floats after typing label="Email" style="--paper-input-container-color:white; --paper-input-container-input-color:white"
-                                            value="{{draftdata_agentdetails_email}}"></paper-input>
-                                        <paper-input type="number" always-floats after typing label="Cellphone #" style="--paper-input-container-color:white; --paper-input-container-input-color:white"
-                                            value="{{draftdata_agentdetails_cellphone}}"></paper-input>
-                                    </div>
-                                </paper-card>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_agentdetails_lastname}}"></paper-input>
+                                <paper-input always-float-label="true" label="Suffix" value="{{draftdata_agentdetails_suffix}}"></paper-input>
+                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
                             </div>
                         </div>
                     </neon-animatable>
@@ -363,14 +341,28 @@
                             <div class="docu-header">4. Finalize</div>
 
                             <div class="details">
-                                <paper-item>
-                                    <paper-item-body>
-                                        <div id="finalizeNoteDiv" style="color: red;">
-                                            <div>{{finalizeNote1}}</div>
-                                            <div>{{finalizeNote2}}</div>
-                                        </div>
-                                    </paper-item-body>
-                                </paper-item>
+                                <div>Please review the following details:</div>
+                                <div>Block: {{block}}</div>
+                                <div>Lot: {{lot}}</div>
+                                <div>Level: {{level}}</div>
+                                <div>Area: {{fullLotData.area}}</div>
+                                <div>Designation: {{fullLotData.maprenderdetails.designation_name}}</div>
+                                <div>Type: {{fullLotData.maprenderdetails.type_name}}</div>
+                                <div>Transaction: {{draftdata_type}}</div>
+                                <div>Start: {{startDateTimeValue}}</div>
+                                <div>Expires: {{expiryDate}}</div>
+                                <div>Buyer's First Name: {{draftdata_buyerdetails_firstname}}</div>
+                                <div>Buyer's Middle Name: {{draftdata_buyerdetails_middlename}}</div>
+                                <div>Buyer's Last Name: {{draftdata_buyerdetails_lastname}}</div>
+                                <div>Buyer's Suffix: {{draftdata_buyerdetails_suffix}}</div>
+                                <div>Buyer's Cellphone: {{draftdata_buyerdetails_cellphone}}</div>
+                                <div>Buyer's Email: {{draftdata_buyerdetails_email}}</div>
+                                <div>Agent's First Name: {{draftdata_agentdetails_firstname}}</div>
+                                <div>Agent's Middle Name: {{draftdata_agentdetails_middlename}}</div>
+                                <div>Agent's Last Name: {{draftdata_agentdetails_lastname}}</div>
+                                <div>Agent's Suffix: {{draftdata_agentdetails_suffix}}</div>
+                                <div>Agent's Cellphone: {{draftdata_agentdetails_cellphone}}</div>
+                                <div>Agent's Email: {{draftdata_agentdetails_email}}</div>
 
                             </div>
                         </div>
@@ -383,9 +375,8 @@
                             <div class="details">
                                 <paper-item>
                                     <paper-item-body>
-                                        <div>
-                                            Your application is now for approval.
-                                        </div>
+                                        <div id="saveSuccess" style="display: none; color: green;">Application saved.</div>
+                                        <div id="saveFailed" style="display: none; color: red;">Error updating data. {{saveErrorDetails}}</div>
                                     </paper-item-body>
                                 </paper-item>
 
@@ -458,18 +449,21 @@
                 },
                 favrighthide: {
                     type: Boolean,
-                    value: false
+                    value: true
                 },
                 block: {
                     type: String,
+                    // value: '',
                     observer: 'blocklotplotChanged'
                 },
                 lot: {
                     type: String,
+                    // value: '',
                     observer: 'blocklotplotChanged'
                 },
                 level: {
                     type: String,
+                    // value: '',
                     observer: 'blocklotplotChanged'
                 },
                 fullLot: String,
@@ -481,136 +475,124 @@
                 buyersList: {
                     type: Object,
                     value: null,
+                    notify: true,
                     observer: 'buyersListChanged'
-                },
-                buyersCellphoneEmail: {
-                    type: String,
-                    value: 'cellphone',
-                    observer: 'buyersCellphoneEmailChanged'
-                },
-                buyersInputPhoneEmail: {
-                    type: String,
-                    value: '',
-                    observer: 'buyersInputPhoneEmailChanged'
                 },
                 agentsList: {
                     type: Object,
                     value: null,
                     observer: 'agentsListChanged'
-                }, agentsCellphoneEmail: {
-                    type: String,
-                    value: 'cellphone',
-                    observer: 'agentsCellphoneEmailChanged'
                 },
-                agentsInputPhoneEmail: {
+                buyerKey: {
                     type: String,
-                    value: '',
-                    observer: 'agentsInputPhoneEmailChanged'
-                }
+                    value: ''
+                },
+                agentKey: {
+                    type: String,
+                    value: ''
+                },
+                expiryDate: String
 
             },
 
             observers: [
-                'fulllotDataChanged(fullLotData.*)'
+                'fulllotDataChanged(fullLotData.*)',
+                'draftdatatypeChanged(draftdata_type.*)',
+                'startDateTimeValueChanged(startDateTimeValue,expiryHoursDaysValue)',
+                'draftdata_buyerdetails_cellphoneChanged(draftdata_buyerdetails_cellphone,draftdata_buyerdetails_firstname,draftdata_buyerdetails_middlename,draftdata_buyerdetails_lastname)',
+                'draftdata_agentdetails_cellphoneChanged(draftdata_agentdetails_cellphone,draftdata_agentdetails_firstname,draftdata_agentdetails_middlename,draftdata_agentdetails_lastname)'
             ],
-            buyersInputPhoneEmailChanged() {
-                if (this.buyersInputPhoneEmail) {
-                    var spinnerDetails2 = Polymer.dom(this.root).querySelector("#spinnerDetails2");
-                    spinnerDetails2.active = true;
-                } else {
-                    var spinnerDetails2 = Polymer.dom(this.root).querySelector("#spinnerDetails2");
-                    spinnerDetails2.active = false;
+
+            draftdata_buyerdetails_cellphoneChanged() {
+                if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname) {
+                    this.favrighthide = false;
                 }
-            },
-            agentsInputPhoneEmailChanged() {
-                if (this.agentsInputPhoneEmail) {
-                    var spinnerDetails3 = Polymer.dom(this.root).querySelector("#spinnerDetails3");
-                    spinnerDetails3.active = true;
-                } else {
-                    var spinnerDetails3 = Polymer.dom(this.root).querySelector("#spinnerDetails3");
-                    spinnerDetails3.active = false;
+                else {
+                    this.favrighthide = true;
                 }
             },
 
-            buyersCellphoneEmailChanged() {
-                if (this.buyersCellphoneEmail) {
-                    // this.set('draftdata.buyer', '');
-                    // this.set('draftdata.buyerdetails', '');
-
-                    this.buyersInputPhoneEmail = '';
-                    var spinnerDetails2 = Polymer.dom(this.root).querySelector("#spinnerDetails2");
-                    spinnerDetails2.active = false;
-                    // console.log(this.buyersList);
+            draftdata_agentdetails_cellphoneChanged() {
+                if (this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
+                    this.favrighthide = false;
                 }
-            },
-            agentsCellphoneEmailChanged() {
-                if (this.agentsCellphoneEmail) {
-                    // this.set('draftdata.agent', '');
-                    // this.set('draftdata.agentdetails', '');
-
-                    this.agentsInputPhoneEmail = '';
-                    var spinnerDetails3 = Polymer.dom(this.root).querySelector("#spinnerDetails3");
-                    spinnerDetails3.active = false;
-                    // console.log(this.buyersList);
+                else {
+                    this.favrighthide = true;
                 }
             },
 
-            buyersListChanged() {
-                if (this.buyersList) {
-                    if (this.buyersList.length > 0) {
-                        // this.set('draftdata.buyer', this.buyersList[0].$key);
-                        // this.set('draftdata.buyerdetails', {
-                        //     firstname: this.buyersList[0].firstname,
-                        //     middlename: this.buyersList[0].middlename,
-                        //     lastname: this.buyersList[0].lastname,
-                        //     suffix: this.buyersList[0].suffix,
-                        //     cellphone: this.buyersList[0].cellphone,
-                        //     email: this.buyersList[0].email
-                        // });
+            startDateTimeValueChanged() {
+                if (this.draftdata_type === 'Reserve') {
+                    var xdate = new Date(this.$.startDateTimeValueV.value);
+                    xdate.setDate(xdate.getDate() + Number(this.expiryHoursDaysValue));
+                    this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+                    this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
+                        + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+                }
+                else if (this.draftdata_type === 'Hold') {
+                    var xdate = new Date(this.$.startDateTimeValueV.value);
+                    xdate.setHours(xdate.getHours() + Number(this.expiryHoursDaysValue));
+                    this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+                    this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
+                        + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+                }
+                else if (this.draftdata_type === 'Buy') {
+                    this.expiryDate = '';
+                }
 
+                if (this.$.startDateTimeValueV.value) {
+                    this.favrighthide = false;
+                }
+                else {
+                    this.favrighthide = true;
+                }
 
-                        var spinnerDetails2 = Polymer.dom(this.root).querySelector("#spinnerDetails2");
-                        spinnerDetails2.active = false;
-                        // console.log(this.buyersList);
+            },
+
+            draftdatatypeChanged(e) {
+                if (e) {
+                    this.favrighthide = false;
+                }
+                else {
+                    this.favrighthide = true;
+                }
+            },
+
+            buyersListChanged(e) {
+                if (e) {
+                    if (e.length > 0) {
+                        this.buyerKey = e[0].$key;
+                        this.draftdata_buyerdetails_firstname = e[0].firstname;
+                        this.draftdata_buyerdetails_middlename = e[0].middlename;
+                        this.draftdata_buyerdetails_lastname = e[0].lastname;
+                        this.draftdata_buyerdetails_suffix = e[0].suffix;
+                        this.draftdata_buyerdetails_email = e[0].email;
                     }
                     else {
-                        // this.set('draftdata.buyer', '');
-                        // this.set('draftdata.buyerdetails', '');
-
-                        var spinnerDetails2 = Polymer.dom(this.root).querySelector("#spinnerDetails2");
-                        spinnerDetails2.active = false;
+                        this.buyerKey = '';
                     }
-
+                }
+                else {
+                    this.buyerKey = '';
                 }
             },
-            agentsListChanged() {
-                if (this.agentsList) {
-                    if (this.agentsList.length > 0) {
-                        // this.set('draftdata.agent', this.agentsList[0].$key);
-                        // this.set('draftdata.agentdetails', {
-                        //     active: this.agentsList[0].active,
-                        //     broker: this.agentsList[0].broker,
-                        //     cellphone: this.agentsList[0].cellphone,
-                        //     email: this.agentsList[0].email,
-                        //     name: this.agentsList[0].name,
-                        //     parent: this.agentsList[0].parent,
-                        //     position: this.agentsList[0].position,
-                        //     type: this.agentsList[0].type,
-                        // });
 
-
-                        var spinnerDetails3 = Polymer.dom(this.root).querySelector("#spinnerDetails3");
-                        spinnerDetails3.active = false;
-                        // console.log(this.buyersList);
+            agentsListChanged(e) {
+                if (e) {
+                    if (e.length > 0) {
+                        this.agentKey = e[0].$key;
+                        this.draftdata_agentdetails_firstname = e[0].firstname;
+                        this.draftdata_agentdetails_middlename = e[0].middlename;
+                        this.draftdata_agentdetails_lastname = e[0].lastname;
+                        this.draftdata_agentdetails_suffix = e[0].suffix;
+                        this.draftdata_agentdetails_email = e[0].email;
                     }
                     else {
-                        // this.set('draftdata.agent', '');
-                        // this.set('draftdata.agentdetails', '');
-
-                        var spinnerDetails3 = Polymer.dom(this.root).querySelector("#spinnerDetails3");
-                        spinnerDetails3.active = false;
+                        this.agentKey = '';
                     }
-
+                }
+                else {
+                    this.agentKey = '';
                 }
             },
 
@@ -619,14 +601,40 @@
                 showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
 
                 var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
-                showExpiry.setAttribute("style", "display: block;");
+                showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
+
+                var ddate = new Date();
+                this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+                this.expiryHoursDaysLabel = "days";
+                this.expiryHoursDaysValue = 30;
+                var xdate = new Date(this.$.startDateTimeValueV.value);
+                xdate.setDate(xdate.getDate() + this.expiryHoursDaysValue);
+                this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+
+                this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
+                    + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+
+                // console.log(this.startDateTimeValue)
             },
             selectHold() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
                 showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
 
                 var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
-                showExpiry.setAttribute("style", "display: block;");
+                showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
+
+                var ddate = new Date();
+                this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+                this.expiryHoursDaysLabel = "hours";
+                this.expiryHoursDaysValue = 24;
+                var xdate = new Date(this.$.startDateTimeValueV.value);
+                xdate.setHours(xdate.getHours() + this.expiryHoursDaysValue);
+                this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+
+                this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
+                    + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
             },
             selectBuy() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
@@ -636,6 +644,12 @@
                 hideExpiry.setAttribute("style", "display: none;");
 
                 this.set('draftdata.expiry', '');
+
+                var ddate = new Date();
+                this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
+                this.expiryDate = '';
             },
 
             getpath() {
@@ -653,22 +667,33 @@
                         errormsg.setAttribute("style", "display: none;");
 
                         var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
-                        cardcontentlotDetails.setAttribute("style", "height: 64px; background-color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_bg_color : "rgb(122, 122, 122)") + "; color: " + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_fore_color : "white") + ";");
+                        cardcontentlotDetails.setAttribute("style", "height: 48px; background-color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_bg_color : "rgb(122, 122, 122)") + "; color: " + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_fore_color : "white") + ";");
 
                         this.fullLotName = "Block " + this.fullLotData.block + " - Lot " + this.fullLotData.lot + (this.fullLotData.level ? " - Level " + this.fullLotData.level : "");
-                        this.areaLabel = "Area";
-                        this.designationLabel = "Designation";
-                        this.typeLabel = "Type";
-                        this.statusLabel = "Status";
+                        this.areaLabel = this.fullLotData.area ? "Area" : "";
+                        this.designationLabel = this.fullLotData.designation ? "Designation" : "";
+                        this.typeLabel = this.fullLotData.type ? "Type" : "";
+                        this.statusLabel = this.fullLotData.status ? "Status" : "";
 
                         var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
                         statusValue.setAttribute("style", "font-weight: 400; color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.fore_color : "black") + ";");
+
+                        var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
+                        stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: block;");
 
 
                         var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
                         if (this.fullLotData.status == 'available' || this.fullLotData.status == 'hold' || this.fullLotData.status == 'reserved' || this.fullLotData.status == 'notyetavailable') {
                             cardActions.setAttribute("style", "display: block;");
-                            this.favrighthide = false;
+
+                            if (this.draftdata_type) {
+                                this.favrighthide = false;
+                            }
+                            else {
+                                this.favrighthide = true;
+                            }
+
+
                         }
                         else {
                             cardActions.setAttribute("style", "display: none;");
@@ -687,7 +712,10 @@
                             this.validationMessage = 'Not found!';
 
                             var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
-                            cardcontentlotDetails.setAttribute("style", "height: 64px; background-color: rgb(122, 122, 122); color: white;");
+                            cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
+
+                            var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
+                            stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
 
                             this.fullLotName = "";
                             this.areaLabel = "";
@@ -717,9 +745,11 @@
                         errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
                         this.validationMessage = 'Not found!';
 
-
                         var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
-                        cardcontentlotDetails.setAttribute("style", "height: 64px; background-color: rgb(122, 122, 122); color: white;");
+                        cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
+
+                        var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
+                        stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
 
                         this.fullLotName = "";
                         this.areaLabel = "";
@@ -770,41 +800,41 @@
             },
 
             _selectPage(e) {
-                // var currentselectedpage = parseInt(this.selectedPage);
-
                 var data_args = Polymer.dom(e).rootTarget.getAttribute("data-args");
 
-                this.selectedPage = parseInt(data_args);
-
-                // if (currentselectedpage > this.selectedPage) {
-                //     this.entryanimation = "slide-from-right-animation";
-                //     this.exitanimation = "slide-left-animation";
-                // }
-                // else if (currentselectedpage < this.selectedPage) {
-                //     this.entryanimation = "slide-from-left-animation";
-                //     this.exitanimation = "slide-right-animation";
-
-                // }
-
-
-                // console.log(e);
-
-                // console.log(currentselectedpage);
                 // console.log(this.selectedPage);
+                // console.log(data_args);
 
-
-                // if (e.detail !== null && e.detail!== 'undefined') {
-                //     this.selectedPage = e.detail.item.attributes.id.value;
-                // }
-
+                if (Number(data_args) < this.selectedPage) {
+                    this.selectedPage = Number(data_args);
+                    this._select1();
+                }
+                else if (Number(data_args) > this.selectedPage) {
+                    this.selectedPage = Number(data_args);
+                    this._select2();
+                }
 
             },
 
 
             ready() {
-                // this.addEventListener('iron-select', (e) => this._selectPage(e));
                 this.selectedPage = 0;
-                // console.log(this.routeData.lot);
+
+                this.draftdata_buyerdetails_cellphone = '';
+                this.draftdata_buyerdetails_firstname = '';
+                this.draftdata_buyerdetails_middlename = '';
+                this.draftdata_buyerdetails_lastname = '';
+                this.draftdata_buyerdetails_suffix = '';
+                this.draftdata_buyerdetails_email = '';
+                this.draftdata_buyerdetails_cellphone = '';
+
+                this.draftdata_agentdetails_cellphone = '';
+                this.draftdata_agentdetails_firstname = '';
+                this.draftdata_agentdetails_middlename = '';
+                this.draftdata_agentdetails_lastname = '';
+                this.draftdata_agentdetails_suffix = '';
+                this.draftdata_agentdetails_email = '';
+                this.draftdata_agentdetails_cellphone = '';
             },
 
             _select1(e) {
@@ -834,7 +864,6 @@
                     this.selectedPage = 3;
                 }
 
-
             },
 
             _select2(e) {
@@ -853,35 +882,21 @@
                     }
                     else if (parseInt(this.selectedPage) == 3) {
                         //complete
-
-                        // var guid = this.guid();
-                        // var today = new Date();
-                        // var dd = today.getDate();
-                        // var mm = today.getMonth() + 1; //January is 0!
-                        // var yyyy = today.getFullYear();
-                        // currentdate = mm + '/' + dd + '/' + yyyy;
-
-                        // var mm2 = today.getMonth() + 1 + 1; //January is 0!
-                        // expirationdate = mm2 + '/' + dd + '/' + yyyy;
-
-                        // this.set('lotdetailsAPP.color', 'red');
-                        // this.set('reservationdetailsAPP.agent', 'Mr. Marc Rizon');
-                        // this.set('reservationdetailsAPP.datareserved', currentdate);
-                        // this.set('reservationdetailsAPP.expirationdate', expirationdate);
-                        // this.set('reservationdetailsAPP.refcode', guid);
-                        // this.set('reservationdetailsAPP.status', 'active');
-                        // this.set('reservationdetailsAPP.type', 'Reserved');
-
+                        this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
+                        this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
                         var currentDateTime = new Date();
 
                         var draftdata = {
-                            agent: '1',
+                            agent: this.agentKey,
                             agentdetails: {
-                                name: this.draftdata_agentdetails_name,
+                                firstname: this.draftdata_agentdetails_firstname,
+                                middlename: this.draftdata_agentdetails_middlename,
+                                lastname: this.draftdata_agentdetails_lastname,
+                                suffix: this.draftdata_agentdetails_suffix,
                                 email: this.draftdata_agentdetails_email,
                                 cellphone: this.draftdata_agentdetails_cellphone
                             },
-                            buyer: '2',
+                            buyer: this.buyerKey,
                             buyerdetails: {
                                 firstname: this.draftdata_buyerdetails_firstname,
                                 middlename: this.draftdata_buyerdetails_middlename,
@@ -890,35 +905,97 @@
                                 cellphone: this.draftdata_buyerdetails_cellphone,
                                 email: this.draftdata_buyerdetails_email
                             },
-                            expiry: this.draftdata_expiry,
+                            expiry: this.expiryDate,
                             isdraft: 'false',
                             isserved: 'false',
                             lot: this.fullLot,
-                            lotdetails: {
-                                block: this.block,
-                                lot: this.lot
-                            },
+                            lotdetails: this.fullLotData,
                             processed: '',
                             processordetails: '',
                             served: '',
-                            start: this.draftdata_start,
+                            start: this.startDateTimeValue,
                             status: '',
                             timestamp: currentDateTime.toISOString(),
                             type: this.draftdata_type
                         };
 
-                        console.log(this.fullLot);
-                        // this.newdata = draftdata;
+                        var draftBuyer = {
+                            firstname: this.draftdata_buyerdetails_firstname,
+                            middlename: this.draftdata_buyerdetails_middlename,
+                            lastname: this.draftdata_buyerdetails_lastname,
+                            suffix: this.draftdata_buyerdetails_suffix,
+                            cellphone: this.draftdata_buyerdetails_cellphone,
+                            email: this.draftdata_buyerdetails_email
+                        };
 
-                        this.$.idd.setStoredValue(this.path, draftdata);
 
-                        this.favlefthide = false;
-                        this.favrighthide = true;
+                        var draftAgent = {
+                            firstname: this.draftdata_agentdetails_firstname,
+                            middlename: this.draftdata_agentdetails_middlename,
+                            lastname: this.draftdata_agentdetails_lastname,
+                            suffix: this.draftdata_agentdetails_suffix,
+                            email: this.draftdata_agentdetails_email,
+                            cellphone: this.draftdata_agentdetails_cellphone
+                        };
+
+                        var firebaseDb = this.$.idd.db;
+                        var firebaseDbRef = firebaseDb.ref();
+                        var firebaseUpdate = {};
+                        firebaseUpdate[this.path] = draftdata;
+
+                        if (this.buyerKey) {
+                            firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
+                        }
+                        else {
+                            this.saveErrorDetails = "Buyer Key is empty.";
+                            saveSuccess.setAttribute("style", "display: none; color: green;");
+                            saveFailed.setAttribute("style", "display: block; color: red;");
+                        }
+
+                        if (this.agentKey) {
+                            firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
+                        }
+                        else {
+                            this.saveErrorDetails = "Agent Key is empty.";
+                            saveSuccess.setAttribute("style", "display: none; color: green;");
+                            saveFailed.setAttribute("style", "display: block; color: red;");
+                        }
+
+                        var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
+                        var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+
+                        firebaseDbRef.update(firebaseUpdate, function (error) {
+                            if (error) {
+                                console.log("Error updating data:", error);
+                                this.saveErrorDetails = error;
+                                saveSuccess.setAttribute("style", "display: none; color: green;");
+                                saveFailed.setAttribute("style", "display: block; color: red;");
+
+                                this.favlefthide = false;
+                                this.favrighthide = true;
+                            }
+                            else {
+                                this.saveErrorDetails = "";
+                                saveSuccess.setAttribute("style", "display: block; color: green;");
+                                saveFailed.setAttribute("style", "display: none; color: red;");
+
+                                this.favlefthide = true;
+                                this.favrighthide = true;
+                            }
+                        });
 
                     }
                     else {
                         this.favlefthide = false;
                         this.favrighthide = false;
+
+                        if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname
+                            && this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
+                            this.favrighthide = false;
+                        }
+                        else {
+                            this.favrighthide = true;
+                        }
                     }
 
                     if (parseInt(this.selectedPage) !== 4) {
@@ -968,8 +1045,17 @@
                     .substring(1);
             },
             guid: function () {
-                return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
-                    this.s4() + '-' + this.s4() + this.s4() + this.s4();
+                // return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
+                //     this.s4() + '-' + this.s4() + this.s4() + this.s4();
+
+
+                var uid = new ShortUniqueId();
+
+                // console.log(uid.randomUUID(8));
+                // var shortid = new shortid();
+                return uid.randomUUID(8);
+
+
             }
 
 
