@@ -192,7 +192,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div id="errMsg" style="display:none">No record found!</div>
           
           <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
-            end-at="{{typeValue}}" limit-to-last="20">
+            end-at="{{typeValue}}" limit-to-last="200">
           </firebase-query>
 
           <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold">
