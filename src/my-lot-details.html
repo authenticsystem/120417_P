@@ -1,7 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="shared-styles.html">
-
+<link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="time-element.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 
 <dom-module id="my-lot-details">
   <template>
@@ -39,24 +41,69 @@
 
     <div id="headerPanel" style="background: #7B1FA2; padding:16px;color: white;">
       <div style="display: inline;">Block {{selectedLotDetails.block}} - Lot {{selectedLotDetails.lot}}
-        <div id="level" style="display: inline;"> - Level {{selectedLotDetails.plot}}</div>
+        <div id="level" style="display: inline;"> - Level {{selectedLotDetails.level}}</div>
       </div>
       <paper-icon-button style="float:right; top: -8px" icon="my-icons:close" on-tap="_close"></paper-icon-button>
     </div>
 
-    <div style="padding: 16px;">
+    <div style="padding: 16px; padding-top: 12px; padding-bottom: 0px; font-size: 12px;">
+      <div>{{lotsubdetail}}</div>
+    </div>
+
+    <div id="reservationdetails" style="padding: 16px; font-size: 12px;">
       <div>
-        <div>
-          <span style="color: gray;">Status:&nbsp;</span>
-          <div id="statusBox" style="display: inline-block; height: 16px; width: 16px;"></div>
-          <div id="status" style="display: inline; color: black;">&nbsp;{{lotStatus}}</div>
+        <span>Current Status:&nbsp;</span>
+        <div id="statusBox" style="display: inline-block; border-radius: 2px; padding-left: 2px;padding-right: 2px;">
+          <div id="status" style="display: inline; color: black;">{{lotStatus}}</div>
         </div>
-        <div style="display: inline;">
-          <span style="color: gray;">Area:</span> {{selectedLotDetails.area}}</div>
-        <div style="float:right;">{{selectedLotDetails.maprenderdetails.designation_name}}</div>
+      </div>
+
+      <div id="reservationBlock" style="display: none;">
+
+        <div id="refKey" style="font-size: 12px; color: black;padding-bottom: 8px;">
+          Ref. [[selectedLotDetails.reservationdetails.reference]]
+        </div>
+
+        <div>
+          <iron-icon id="iconStart" icon="my-icons:event" style="color: gray;font-size: 12px;"></iron-icon>
+          <span style="font-size: 12px;">
+            [[_getLocalDatetimeFormat(selectedLotDetails.reservationdetails.start)]]
+          </span>
+        </div>
+
+        <div style="padding-bottom: 10px;">
+          <div id="expiryPart" style="display: none;">
+            <iron-icon icon="my-icons:alarm" style="display: inline-block; color: gray; font-size: 12px;"></iron-icon>
+            <span id="expiryPartSpan" style="font-size: 12px;">
+              [[_getLocalDatetimeFormat(selectedLotDetails.reservationdetails.expiry)]] &nbsp;
+              <time-until style="color: rgba(255, 5, 5, 0.774);" datetime$="{{selectedLotDetails.reservationdetails.expiry}}">{{selectedLotDetails.reservationdetails.expiry}}</time-until>
+            </span>
+          </div>
+        </div>
+
+        <div style="padding-bottom: 8px;">
+          <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Buyer</div>
+          <span style="font-weight: 400;">
+            [[selectedLotDetails.reservationdetails.buyerdetails.firstname]] [[selectedLotDetails.reservationdetails.buyerdetails.middlename]]
+            [[selectedLotDetails.reservationdetails.buyerdetails.lastname]]
+          </span>
+        </div>
+
+        <div>
+          <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Agent</div>
+          <span style="font-weight: 400;">[[selectedLotDetails.reservationdetails.agentdetails.firstname]] [[selectedLotDetails.reservationdetails.agentdetails.middlename]]
+            [[selectedLotDetails.reservationdetails.agentdetails.lastname]]
+          </span>
+        </div>
 
       </div>
     </div>
+
+    <!-- <div id="action" style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle; ">
+      <div style="margin-left: 16px; margin-top: 8px;">
+          <paper-button style="height: 32px; font-size: 12px; font-weight: 400; ">View Reservations</paper-button>
+      </div>
+    </div> -->
 
   </template>
 
@@ -74,78 +121,42 @@
           value: false,
           notify: true
         },
-        // statusColors: Object,
         selectedLotDetails: {
           type: Object,
           observer: '_selectedLotDetailsChanged'
         },
-        lotStatus: String
+        lotStatus: String,
+        lotsubdetail: {
+          type: String,
+          value: ''
+        }
       },
       observers: [
         '_selectedLotDetailsChanged(selectedLotDetails.*)'
       ],
 
-      _close() {
-        this.selectedLot = '';
-        this.style.display = "none";
-      },
-      // _getStatusColor(e) {
-      //   if (e) {
-      //     if (e) {
-      //       if (this.statuscolors) {
-      //         if (this.statuscolors[e]) {
-      //           return (this.statuscolors[e]).color;
-      //         }
-      //         else {
-      //           return "gray";
-      //         }
-      //       }
-      //       else {
-      //         return "gray";
-      //       }
-      //     }
-      //     else {
-      //       return "gray";
-      //     }
-      //   }
-      //   else {
-      //     return "gray";
-      //   }
-      // },
-
-      // _getStatusName(e) {
-      //   if (e) {
-      //     if (e) {
-      //       if (this.statuscolors) {
-      //         if (this.statuscolors[e]) {
-      //           return (this.statuscolors[e]).name;
-      //         }
-      //         else {
-      //           return "";
-      //         }
-      //       }
-      //       else {
-      //         return "";
-      //       }
-      //     }
-      //     else {
-      //       return "";
-      //     }
-      //   }
-      //   else {
-      //     return "";
-      //   }
-      // },
-
       _selectedLotDetailsChanged(newData, oldData) {
         if (this.selectedLotDetails) {
+          //check if selected lot has level, then show levels
+          //else show below 
           if (this.selectedLotDetails.maprenderdetails) {
             var args = Polymer.dom(this.root).querySelector("#headerPanel");
             if (args) {
               args.setAttribute("style", "background:" + this.selectedLotDetails.maprenderdetails.type_bg_color + "; padding:16px;color: " + this.selectedLotDetails.maprenderdetails.type_fore_color + ";");
             }
-          }
 
+            this.lotsubdetail = '';
+            if (this.selectedLotDetails.maprenderdetails.type_name) this.lotsubdetail = this.selectedLotDetails.maprenderdetails.type_name;
+
+            if (this.selectedLotDetails.area) {
+              if (String(this.selectedLotDetails.maprenderdetails.type_name).indexOf('Area') == -1) {
+                this.lotsubdetail = this.lotsubdetail + ' --- ' + this.selectedLotDetails.area;
+              }
+            }
+
+            if (this.selectedLotDetails.maprenderdetails.designation_name) this.lotsubdetail = this.lotsubdetail + ' --- ' + this.selectedLotDetails.maprenderdetails.designation_name;
+
+          }
 
           var showhidePlot = Polymer.dom(this.root).querySelector("#level");
           if (this.selectedLotDetails.level != '') {
@@ -161,13 +172,47 @@
             var color2 = this.selectedLotDetails.maprenderdetails.fore_color ? this.selectedLotDetails.maprenderdetails.fore_color : 'white';
             var color3 = this.selectedLotDetails.maprenderdetails.bg_color ? this.selectedLotDetails.maprenderdetails.bg_color : 'gray';
             colorStatus.setAttribute("style", "display: inline; color:" + color2 + ";");
-            colorStatusBox.setAttribute("style", "display: inline-block; height: 16px; width: 16px; background:" + color3 + ";");
+            colorStatusBox.setAttribute("style", "display: inline-block;  background:" + color3 + "; border-radius: 2px; padding-left: 2px;padding-right: 2px;");
 
             this.lotStatus = this.selectedLotDetails.maprenderdetails.status_name;
 
+
+            var expiryPart = Polymer.dom(this.root).querySelector("#expiryPart");
+            if (this.selectedLotDetails.status === 'sold' || this.selectedLotDetails.status === 'soldlacking') {
+              if (expiryPart) {
+                expiryPart.setAttribute("style", "display: none; ");
+              }
+            }
+            else {
+              if (expiryPart) {
+                expiryPart.setAttribute("style", "display: block; ");
+              }
+            }
+
           }
 
+
+          var reservationBlock = Polymer.dom(this.root).querySelector("#reservationBlock");
+          if (this.selectedLotDetails.reservationdetails) {
+            reservationBlock.setAttribute("style", "display: block;");
+          }
+          else {
+            reservationBlock.setAttribute("style", "display: none;");
+          }
+
+
         }
+
+      },
+
+      _close() {
+        this.selectedLot = '';
+        this.style.display = "none";
+      },
+
+      _getLocalDatetimeFormat(e) {
+        var xdate = new Date(e);
+        return xdate.toDateString() + ' ' + xdate.toLocaleTimeString().replace(/:\d{2}\s/, ' ');;
       }
 
 
