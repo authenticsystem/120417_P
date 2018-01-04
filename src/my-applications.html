@@ -157,7 +157,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <app-route route="{{route}}" pattern="/:action" data="{{routeData}}"></app-route>
+    <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
     <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
       <div name="">
@@ -285,6 +285,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div id="appdetails"></div>
         <my-application-details id="d23" path=""></my-application-details>
       </div>
+
+      <!-- <my-application-details name="/edit"></my-application-details> -->
+
 
       <div name="view404">Not found.</div>
 

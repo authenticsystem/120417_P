@@ -759,14 +759,14 @@
                             this.statusLabel = this.fullLotData.status ? "Status" : "";
 
                             var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
-                            statusValue.setAttribute("style", "font-weight: 400; color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.fore_color : "black") + ";");
+                            statusValue.setAttribute("style", "font-weight: 400; color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.fore_color : "black") + "; background:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.bg_color : "gray") + "; border-radius: 2px; padding-left: 2px;padding-right: 2px;");
 
                             var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
                             stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: block;");
 
 
                             var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
-                            if (this.fullLotData.status == 'available' || this.fullLotData.status == 'hold' || this.fullLotData.status == 'reserved' || this.fullLotData.status == 'notyetavailable') {
+                            if (this.fullLotData.status == 'available' || this.fullLotData.status == 'hold' || this.fullLotData.status == 'reserved') {
                                 cardActions.setAttribute("style", "display: block;");
 
                                 if (this.draftdata_type) {
