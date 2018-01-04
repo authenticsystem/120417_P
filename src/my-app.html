@@ -44,6 +44,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-view2.html">
 <link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
+<link rel="lazy-import" href="my-corporate-account.html">
 
 <dom-module id="my-app">
   <template>
@@ -174,6 +175,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
         <my-landing-page name="landing-page" user="{{user}}"></my-landing-page>
         <my-signin name="signin"></my-signin>
+        <my-corporate-account name="corporate"></my-corporate-account>
         <my-register-signin name="register-signin"></my-register-signin>
         <my-view404 name="view404"></my-view404>
       </iron-pages>

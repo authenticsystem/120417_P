@@ -160,7 +160,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-route route="{{route}}" pattern="/:action" data="{{routeData}}"></app-route>
 
     <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
-
       <div name="">
         <!-- <iron-ajax auto url="src/data.json" last-response="{{items}}"></iron-ajax> -->
         <app-header-layout fullbleed has-scrolling-region>
@@ -190,7 +189,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </app-header>
 
           <div id="errMsg" style="display:none">No record found!</div>
-          
+
+          <!-- <firebase-query id="query" path="/statuscolor" data="{{statuscolor}}">
+                    </firebase-query> -->
+
           <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
             end-at="{{typeValue}}" limit-to-last="200">
           </firebase-query>
@@ -202,62 +204,62 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div class="divSeparator">
                   <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
 
-                      <my-application-card item="{{item}}"></my-application-card>
+                    <my-application-card item="{{item}}"></my-application-card>
 
-                        
-                        <!-- <div class="card-content" style="width: 100%;">
-                          <div class="header" style="background-color: #2196F3; padding: 16px; padding-bottom: 5px;">
-                            <span style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
-                              [[item.type]]
-                            </span>
 
-                            <div style="display:inline-block; margin-left: 24px;">
-                              <iron-icon icon="my-icons:access-time" style="color: white;"></iron-icon>
-                              <div style="display:inline-block; color: white; font-size: 12px;">
-                                <time-ago datetime$="{{item.start}}">{{item.start}}</time-ago>
-                              </div>
-                            </div>
-
-                            <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
-                              <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
-                              <paper-listbox slot="dropdown-content">
-                                <paper-item>Lacking</paper-item>
-                                <paper-item>Complete</paper-item>
-                              </paper-listbox>
-                            </paper-menu-button>
-
-                            <div style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">
-                              <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
-                              <span id="plot">- Level {{item.lotdetails.level}}</span>
-                            </div>
-                            <div style="font-size: 10px; color: white;">
-                              &nbsp;Ref.: [[item.$key]]
-                            </div>
-                          </div>
-
-                          <div style="padding: 16px;">
-                            <div style="padding-bottom: 8px;">
-                              <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">Buyer</div>
-                              <span style="font-weight: 400;">
-                                [[item.buyerdetails.firstname]] [[item.buyerdetails.middlename]] [[item.buyerdetails.lastname]]
-                              </span>
-                            </div>
-                            <div>
-                              <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">Agent</div>
-                              <span style="font-weight: 400;">[[item.agentdetails.firstname]] [[item.agentdetails.middlename]] [[item.agentdetails.lastname]]</span>
-                            </div>
-                          </div>
-
-                          <div style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle;">
-                            <div style="margin-left: 16px; margin-top: 8px;">
-                              <iron-icon icon="my-icons:alarm" style="color: rgba(255, 5, 5, 0.774);"></iron-icon>
-                              <span style="color:rgba(255, 5, 5, 0.774); font-size: 12px;">
-                                <time-until datetime$="{{item.expiry}}">{{item.expiry}}</time-until>
-                              </span>
-                            </div>
-                          </div>
-
-                        </div> -->
+                    <!-- <div class="card-content" style="width: 100%;">
+                                    <div class="header" style="background-color: #2196F3; padding: 16px; padding-bottom: 5px;">
+                                      <span style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
+                                        [[item.type]]
+                                      </span>
+          
+                                      <div style="display:inline-block; margin-left: 24px;">
+                                        <iron-icon icon="my-icons:access-time" style="color: white;"></iron-icon>
+                                        <div style="display:inline-block; color: white; font-size: 12px;">
+                                          <time-ago datetime$="{{item.start}}">{{item.start}}</time-ago>
+                                        </div>
+                                      </div>
+          
+                                      <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
+                                        <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
+                                        <paper-listbox slot="dropdown-content">
+                                          <paper-item>Lacking</paper-item>
+                                          <paper-item>Complete</paper-item>
+                                        </paper-listbox>
+                                      </paper-menu-button>
+          
+                                      <div style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">
+                                        <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
+                                        <span id="plot">- Level {{item.lotdetails.level}}</span>
+                                      </div>
+                                      <div style="font-size: 10px; color: white;">
+                                        &nbsp;Ref.: [[item.$key]]
+                                      </div>
+                                    </div>
+          
+                                    <div style="padding: 16px;">
+                                      <div style="padding-bottom: 8px;">
+                                        <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">Buyer</div>
+                                        <span style="font-weight: 400;">
+                                          [[item.buyerdetails.firstname]] [[item.buyerdetails.middlename]] [[item.buyerdetails.lastname]]
+                                        </span>
+                                      </div>
+                                      <div>
+                                        <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">Agent</div>
+                                        <span style="font-weight: 400;">[[item.agentdetails.firstname]] [[item.agentdetails.middlename]] [[item.agentdetails.lastname]]</span>
+                                      </div>
+                                    </div>
+          
+                                    <div style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle;">
+                                      <div style="margin-left: 16px; margin-top: 8px;">
+                                        <iron-icon icon="my-icons:alarm" style="color: rgba(255, 5, 5, 0.774);"></iron-icon>
+                                        <span style="color:rgba(255, 5, 5, 0.774); font-size: 12px;">
+                                          <time-until datetime$="{{item.expiry}}">{{item.expiry}}</time-until>
+                                        </span>
+                                      </div>
+                                    </div>
+          
+                                  </div> -->
 
 
 
@@ -278,7 +280,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-fab noink class="fab-menu" icon="my-icons:add" on-tap="_appsnew"></paper-fab>
         </a>
       </div>
-      <!-- div -name -->
 
       <div name="/new">
         <div id="appdetails"></div>
@@ -288,6 +289,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div name="view404">Not found.</div>
 
     </iron-pages>
+
+
   </template>
 
   <script>
