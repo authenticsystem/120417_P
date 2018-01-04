@@ -157,142 +157,153 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
-    <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
-      <div name="">
-        <!-- <iron-ajax auto url="src/data.json" last-response="{{items}}"></iron-ajax> -->
-        <app-header-layout fullbleed has-scrolling-region>
-          <app-header fixed slot="header">
-            <app-toolbar primary>
-              <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-              <div main-title>Applications</div>
-              <paper-dropdown-menu style="--paper-dropdown-menu-color:white;" id="child">
-                <paper-listbox slot="dropdown-content" selected="{{filterByChild}}" style="cursor:pointer;">
-                  <paper-item>By Status</paper-item>
-                  <paper-item>By Lot</paper-item>
-                  <!-- <paper-item>By Buyer</paper-item> -->
-                </paper-listbox>
-              </paper-dropdown-menu>
-              <paper-dropdown-menu id="status">
-                <paper-listbox slot="dropdown-content" selected="{{filterByStatus}}" style="cursor:pointer;">
-                  <paper-item>All</paper-item>
-                  <paper-item>Buy</paper-item>
-                  <paper-item>On-Hold</paper-item>
-                  <paper-item>Reserve</paper-item>
-                </paper-listbox>
-              </paper-dropdown-menu>
-              <paper-input id="filterInput" style="--paper-input-container-color:white; --paper-input-container-input-color:white;" label="Search"
-                value={{inputtedValue}}></paper-input>
-              <paper-icon-button icon="my-icons:search" on-tap="toggleSearch"></paper-icon-button>
-            </app-toolbar>
-          </app-header>
+    <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}"  data="{{detailData}}" active="{{detailActive}}"></app-route>
+    <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
 
-          <div id="errMsg" style="display:none">No record found!</div>
+    <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
 
-          <!-- <firebase-query id="query" path="/statuscolor" data="{{statuscolor}}">
-                    </firebase-query> -->
+    <div hidden$="{{!applicationActive}}">
+    <!-- <template is="dom-if" if="{{_checkIfApplicationActive(applicationActive)}}"> -->
+      <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
+        <div name="">
+          <!-- <iron-ajax auto url="src/data.json" last-response="{{items}}"></iron-ajax> -->
+          <app-header-layout fullbleed has-scrolling-region>
+            <app-header fixed slot="header">
+              <app-toolbar primary>
+                <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                <div main-title>Applications</div>
+                <paper-dropdown-menu style="--paper-dropdown-menu-color:white;" id="child">
+                  <paper-listbox slot="dropdown-content" selected="{{filterByChild}}" style="cursor:pointer;">
+                    <paper-item>By Status</paper-item>
+                    <paper-item>By Lot</paper-item>
+                    <!-- <paper-item>By Buyer</paper-item> -->
+                  </paper-listbox>
+                </paper-dropdown-menu>
+                <paper-dropdown-menu id="status">
+                  <paper-listbox slot="dropdown-content" selected="{{filterByStatus}}" style="cursor:pointer;">
+                    <paper-item>All</paper-item>
+                    <paper-item>Buy</paper-item>
+                    <paper-item>On-Hold</paper-item>
+                    <paper-item>Reserve</paper-item>
+                  </paper-listbox>
+                </paper-dropdown-menu>
+                <paper-input id="filterInput" style="--paper-input-container-color:white; --paper-input-container-input-color:white;" label="Search"
+                  value={{inputtedValue}}></paper-input>
+                <paper-icon-button icon="my-icons:search" on-tap="toggleSearch"></paper-icon-button>
+              </app-toolbar>
+            </app-header>
 
-          <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
-            end-at="{{typeValue}}" limit-to-last="200">
-          </firebase-query>
+            <div id="errMsg" style="display:none">No record found!</div>
 
-          <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold">
-            <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
-              <paper-toast id="toast" text="" duration="0"></paper-toast>
-              <template>
-                <div class="divSeparator">
-                  <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
+            <!-- <firebase-query id="query" path="/statuscolor" data="{{statuscolor}}">
+                      </firebase-query> -->
 
-                    <my-application-card item="{{item}}"></my-application-card>
+            <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
+              end-at="{{typeValue}}" limit-to-last="200">
+            </firebase-query>
+
+            <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold">
+              <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
+                <paper-toast id="toast" text="" duration="0"></paper-toast>
+                <template>
+                  <div class="divSeparator">
+                    <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
+
+                      <my-application-card item="{{item}}"></my-application-card>
 
 
-                    <!-- <div class="card-content" style="width: 100%;">
-                                    <div class="header" style="background-color: #2196F3; padding: 16px; padding-bottom: 5px;">
-                                      <span style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
-                                        [[item.type]]
-                                      </span>
-          
-                                      <div style="display:inline-block; margin-left: 24px;">
-                                        <iron-icon icon="my-icons:access-time" style="color: white;"></iron-icon>
-                                        <div style="display:inline-block; color: white; font-size: 12px;">
-                                          <time-ago datetime$="{{item.start}}">{{item.start}}</time-ago>
+                      <!-- <div class="card-content" style="width: 100%;">
+                                      <div class="header" style="background-color: #2196F3; padding: 16px; padding-bottom: 5px;">
+                                        <span style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
+                                          [[item.type]]
+                                        </span>
+            
+                                        <div style="display:inline-block; margin-left: 24px;">
+                                          <iron-icon icon="my-icons:access-time" style="color: white;"></iron-icon>
+                                          <div style="display:inline-block; color: white; font-size: 12px;">
+                                            <time-ago datetime$="{{item.start}}">{{item.start}}</time-ago>
+                                          </div>
+                                        </div>
+            
+                                        <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
+                                          <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
+                                          <paper-listbox slot="dropdown-content">
+                                            <paper-item>Lacking</paper-item>
+                                            <paper-item>Complete</paper-item>
+                                          </paper-listbox>
+                                        </paper-menu-button>
+            
+                                        <div style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">
+                                          <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
+                                          <span id="plot">- Level {{item.lotdetails.level}}</span>
+                                        </div>
+                                        <div style="font-size: 10px; color: white;">
+                                          &nbsp;Ref.: [[item.$key]]
                                         </div>
                                       </div>
-          
-                                      <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
-                                        <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
-                                        <paper-listbox slot="dropdown-content">
-                                          <paper-item>Lacking</paper-item>
-                                          <paper-item>Complete</paper-item>
-                                        </paper-listbox>
-                                      </paper-menu-button>
-          
-                                      <div style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">
-                                        <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
-                                        <span id="plot">- Level {{item.lotdetails.level}}</span>
+            
+                                      <div style="padding: 16px;">
+                                        <div style="padding-bottom: 8px;">
+                                          <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">Buyer</div>
+                                          <span style="font-weight: 400;">
+                                            [[item.buyerdetails.firstname]] [[item.buyerdetails.middlename]] [[item.buyerdetails.lastname]]
+                                          </span>
+                                        </div>
+                                        <div>
+                                          <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">Agent</div>
+                                          <span style="font-weight: 400;">[[item.agentdetails.firstname]] [[item.agentdetails.middlename]] [[item.agentdetails.lastname]]</span>
+                                        </div>
                                       </div>
-                                      <div style="font-size: 10px; color: white;">
-                                        &nbsp;Ref.: [[item.$key]]
+            
+                                      <div style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle;">
+                                        <div style="margin-left: 16px; margin-top: 8px;">
+                                          <iron-icon icon="my-icons:alarm" style="color: rgba(255, 5, 5, 0.774);"></iron-icon>
+                                          <span style="color:rgba(255, 5, 5, 0.774); font-size: 12px;">
+                                            <time-until datetime$="{{item.expiry}}">{{item.expiry}}</time-until>
+                                          </span>
+                                        </div>
                                       </div>
-                                    </div>
-          
-                                    <div style="padding: 16px;">
-                                      <div style="padding-bottom: 8px;">
-                                        <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">Buyer</div>
-                                        <span style="font-weight: 400;">
-                                          [[item.buyerdetails.firstname]] [[item.buyerdetails.middlename]] [[item.buyerdetails.lastname]]
-                                        </span>
-                                      </div>
-                                      <div>
-                                        <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">Agent</div>
-                                        <span style="font-weight: 400;">[[item.agentdetails.firstname]] [[item.agentdetails.middlename]] [[item.agentdetails.lastname]]</span>
-                                      </div>
-                                    </div>
-          
-                                    <div style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle;">
-                                      <div style="margin-left: 16px; margin-top: 8px;">
-                                        <iron-icon icon="my-icons:alarm" style="color: rgba(255, 5, 5, 0.774);"></iron-icon>
-                                        <span style="color:rgba(255, 5, 5, 0.774); font-size: 12px;">
-                                          <time-until datetime$="{{item.expiry}}">{{item.expiry}}</time-until>
-                                        </span>
-                                      </div>
-                                    </div>
-          
-                                  </div> -->
+            
+                                    </div> -->
 
 
 
 
+
+                    </div>
 
                   </div>
 
-                </div>
 
+                </template>
+              </iron-list>
 
-              </template>
-            </iron-list>
+            </iron-scroll-threshold>
 
-          </iron-scroll-threshold>
+          </app-header-layout>
+          <a href="/applications/new" style="text-decoration: none;">
+            <paper-fab noink class="fab-menu" icon="my-icons:add" on-tap="_appsnew"></paper-fab>
+          </a>
+        </div>
 
-        </app-header-layout>
-        <a href="/applications/new" style="text-decoration: none;">
-          <paper-fab noink class="fab-menu" icon="my-icons:add" on-tap="_appsnew"></paper-fab>
-        </a>
-      </div>
+        <div name="/new">
+          <div id="appdetails"></div>
+          <my-application-details id="d23" path=""></my-application-details>
+        </div>
 
-      <div name="/new">
-        <div id="appdetails"></div>
-        <my-application-details id="d23" path=""></my-application-details>
-      </div>
+        <div name="view404">Not found.</div>
 
-      <!-- <my-application-details name="/edit"></my-application-details> -->
+      </iron-pages>
+    <!-- </template> -->
+    </div>
 
-
-      <div name="view404">Not found.</div>
-
-    </iron-pages>
-
+    <div hidden$="{{!detailActive}}">
+    <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
+      <!-- <my-application-details application-key='[[detailData.key]]'></my-application-details> -->
+      [[detailData.key]]
+    <!-- </template> -->
+    </div>
 
   </template>
 
@@ -335,7 +346,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: ''
         },
+        route: Object,
+        routeData: Object
       },
+
+      // _checkIfApplicationActive(e){
+      //   console.log('app'+e+this.applicationActive);
+      //   return e;
+      // },
+
+      // _checkIfDetailActive(e){
+      //   console.log('detail'+e);
+      //   return e;
+      // },
 
       toggleSearch() {
         var listStat = Polymer.dom(this.root).querySelector("#status");
