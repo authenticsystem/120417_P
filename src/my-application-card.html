@@ -23,7 +23,10 @@
                     </div>
                 </div>
 
-                <paper-icon-button id="editButton" icon="my-icons:edit" on-tap="editApplication" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                <!-- <a href$="{{_getViewDetailsLink(item.$key)}}" target="_top"> -->
+                <!-- <paper-icon-button id="openDetailButton" on-tap="viewDetails" icon="my-icons:open-in-new" alt="View details" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                <paper-tooltip for="openDetailButton" position="left">view details</paper-tooltip> -->
+                <!-- </a> -->
 
                 <!-- <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
                     <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
@@ -150,7 +153,7 @@
                             Polymer.dom(this.root).querySelector("#level").setAttribute("style", "display: none;");
                         }
 
-                        Polymer.dom(this.root).querySelector("#editButton").setAttribute("style", "display:inline-block;position: absolute;  right: 8px; top:8px; color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";");
+                        // Polymer.dom(this.root).querySelector("#openDetailButton").setAttribute("style", "display:inline-block;position: absolute;  right: 8px; top:8px; color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";");
 
 
                     }
@@ -166,9 +169,11 @@
                 return xdate.toDateString() + ' ' + xdate.toLocaleTimeString().replace(/:\d{2}\s/, ' ');;
             },
 
-            editApplication() {
-                //edit application
-            }
+            _getViewDetailsLink(e) {
+                return '/applications/detail/' + e.toString();
+            },
+
+
 
 
         })
