@@ -33,6 +33,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="my-application-new.html">
 <link rel="import" href="my-application-detail.html">
+<link rel="import" href="my-application-edit.html">
 
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 
@@ -159,102 +160,125 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
+    <!-- <app-location route="{{route}}"></app-location> -->
 
-    <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
     <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
+
 
     <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
 
     <div hidden$="{{!applicationActive}}">
-      <!-- <template is="dom-if" if="{{_checkIfApplicationActive(applicationActive)}}"> -->
-      <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
-        <div name="">
-          <!-- <iron-ajax auto url="src/data.json" last-response="{{items}}"></iron-ajax> -->
-          <app-header-layout fullbleed has-scrolling-region>
-            <app-header fixed slot="header">
-              <app-toolbar primary>
-                <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-                <div main-title>Applications</div>
-                <paper-dropdown-menu style="--paper-dropdown-menu-color:white;" id="child">
-                  <paper-listbox slot="dropdown-content" selected="{{filterByChild}}" style="cursor:pointer;">
-                    <paper-item>By Status</paper-item>
-                    <paper-item>By Lot</paper-item>
-                    <!-- <paper-item>By Buyer</paper-item> -->
-                  </paper-listbox>
-                </paper-dropdown-menu>
-                <paper-dropdown-menu id="status">
-                  <paper-listbox slot="dropdown-content" selected="{{filterByStatus}}" style="cursor:pointer;">
-                    <paper-item>All</paper-item>
-                    <paper-item>Buy</paper-item>
-                    <paper-item>On-Hold</paper-item>
-                    <paper-item>Reserve</paper-item>
-                  </paper-listbox>
-                </paper-dropdown-menu>
-                <paper-input id="filterInput" style="--paper-input-container-color:white; --paper-input-container-input-color:white;" label="Search"
-                  value={{inputtedValue}}></paper-input>
-                <paper-icon-button icon="my-icons:search" on-tap="toggleSearch"></paper-icon-button>
-              </app-toolbar>
-            </app-header>
+      <template is="dom-if" if="{{_checkIfApplicationActive(applicationActive)}}">
+        <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
+          <div name="">
+            <!-- <iron-ajax auto url="src/data.json" last-response="{{items}}"></iron-ajax> -->
+            <app-header-layout fullbleed has-scrolling-region>
+              <app-header fixed slot="header">
+                <app-toolbar primary>
+                  <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                  <div main-title>Applications</div>
+                  <paper-dropdown-menu style="--paper-dropdown-menu-color:white;" id="child">
+                    <paper-listbox slot="dropdown-content" selected="{{filterByChild}}" style="cursor:pointer;">
+                      <paper-item>By Status</paper-item>
+                      <paper-item>By Lot</paper-item>
+                      <!-- <paper-item>By Buyer</paper-item> -->
+                    </paper-listbox>
+                  </paper-dropdown-menu>
+                  <paper-dropdown-menu id="status">
+                    <paper-listbox slot="dropdown-content" selected="{{filterByStatus}}" style="cursor:pointer;">
+                      <paper-item>All</paper-item>
+                      <paper-item>Buy</paper-item>
+                      <paper-item>On-Hold</paper-item>
+                      <paper-item>Reserve</paper-item>
+                    </paper-listbox>
+                  </paper-dropdown-menu>
+                  <paper-input id="filterInput" style="--paper-input-container-color:white; --paper-input-container-input-color:white;" label="Search"
+                    value={{inputtedValue}}></paper-input>
+                  <paper-icon-button icon="my-icons:search" on-tap="toggleSearch"></paper-icon-button>
+                </app-toolbar>
+              </app-header>
 
-            <div id="errMsg" style="display:none">No record found!</div>
+              <div id="errMsg" style="display:none">No record found!</div>
 
-            <!-- <firebase-query id="query" path="/statuscolor" data="{{statuscolor}}">
+              <!-- <firebase-query id="query" path="/statuscolor" data="{{statuscolor}}">
                       </firebase-query> -->
 
-            <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
-              end-at="{{typeValue}}" limit-to-last="200">
-            </firebase-query>
+              <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
+                end-at="{{typeValue}}" limit-to-last="200">
+              </firebase-query>
 
-            <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold">
-              <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
-                <paper-toast id="toast" text="" duration="0"></paper-toast>
-                <template>
-                  <div class="divSeparator">
-                    <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
+              <!-- on-lower-threshold="loadMoreData" -->
+              <iron-scroll-threshold id="threshold">
+                <!-- threshold -->
+                <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="document">
+                  <paper-toast id="toast" text="" duration="0"></paper-toast>
+                  <template>
+                    <div class="divSeparator">
+                      <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
 
-                      <my-application-card item="{{item}}"></my-application-card>
+                        <my-application-card item="{{item}}"></my-application-card>
 
-                      <div tabindex="0">
-                        <a href$="{{_getViewDetailsLink(item.$key)}}">
-                          <paper-icon-button id="openDetailButton" on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new" alt="{{item.$key}}"
-                            style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
-                          <paper-tooltip position="left">view details</paper-tooltip>
-                        </a>
+
+                        <div tabindex="0">
+                          <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
+                            <paper-icon-button id="{{item.$key}}" on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
+                              style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
+                            <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
+                          </a>
+                        </div>
+
+                        <div tabindex="1">
+                          <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
+                            <paper-icon-button id="openDetailButton" on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new" alt="{{item.$key}}"
+                              style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                            <paper-tooltip position="left">view details</paper-tooltip>
+                          </a>
+                        </div>
+
+
+
                       </div>
 
                     </div>
 
-                  </div>
 
+                  </template>
+                </iron-list>
 
-                </template>
-              </iron-list>
+              </iron-scroll-threshold>
 
-            </iron-scroll-threshold>
+            </app-header-layout>
+            <a href="/applications/new" style="text-decoration: none;">
+              <paper-fab noink class="fab-menu" on-tap="_appsnew" icon="my-icons:add"></paper-fab>
+            </a>
+          </div>
 
-          </app-header-layout>
-          <a href="/applications/new" style="text-decoration: none;">
-            <paper-fab noink class="fab-menu" icon="my-icons:add" on-tap="_appsnew"></paper-fab>
-          </a>
-        </div>
+          <div name="/new">
+            <div id="appnew"></div>
+            <my-application-new id="d23" path="" prev-route="{{route.prefix}}"></my-application-new>
+          </div>
 
-        <div name="/new">
-          <div id="appnew"></div>
-          <my-application-new id="d23" path=""></my-application-new>
-        </div>
+          <div name="view404">Not found.</div>
 
-        <div name="view404">Not found.</div>
-
-      </iron-pages>
-      <!-- </template> -->
+        </iron-pages>
+      </template>
     </div>
 
     <div hidden$="{{!detailActive}}">
-      <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
-      <div id="appdetail"></div>
-      <my-application-detail id="d24" transaction-key='{{detailData.key}}'></my-application-detail>
-      <!-- [[detailData.key]] -->
-      <!-- </template> -->
+      <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}">
+        <div id="appdetail"></div>
+        <my-application-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"></my-application-detail>
+        <!-- [[detailData.key]] -->
+      </template>
+    </div>
+
+    <div hidden$="{{!editActive}}">
+      <template is="dom-if" if="{{_checkIfEditActive(editActive)}}">
+        <div id="appedit"></div>
+        <my-application-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-application-edit>
+      </template>
     </div>
 
   </template>
@@ -299,18 +323,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: ''
         },
         route: Object,
-        routeData: Object
+        routeData: Object,
+        applicationActive: {
+          type: Boolean,
+          value: true
+        }
+
       },
 
-      // _checkIfApplicationActive(e){
-      //   console.log('app'+e+this.applicationActive);
-      //   return e;
-      // },
+      _checkIfApplicationActive(e) {
+        // console.log('app'+e+this.applicationActive);
+        return e;
+      },
 
-      // _checkIfDetailActive(e){
-      //   console.log('detail'+e);
-      //   return e;
-      // },
+      _checkIfDetailActive(e) {
+        // console.log('detail' + e);
+        return e;
+      },
+
+      _checkIfEditActive(e) {
+        // console.log('edit' + e);
+        return e;
+      },
 
       toggleSearch() {
         var listStat = Polymer.dom(this.root).querySelector("#status");
@@ -408,7 +442,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             Polymer.dom(node.parentNode).removeChild(oldDiv);
           }
           var newDiv = document.createElement("my-application-new");
-          newDiv.setAttribute("id", "d23")
+          newDiv.setAttribute("id", "d23");
+          newDiv.setAttribute("prev-route", this.route.prefix);
           // newDiv.setAttribute("block", "3")
           //if open existing
           var currentDiv = document.getElementById("appnew");
@@ -420,16 +455,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return '/applications/detail/' + e.toString();
       },
 
+      _getEditAppLink(e) {
+        return '/applications/edit/' + e.toString();
+      },
+
       viewDetails(e) {
-        //   this.detailData = {key: '-L1zxBXP1NIWcdtKM4vf'};
-
-
-        //   // Polymer.dom(this.root).querySelector("#d24").setAttribute("transaction-key", "-L1zxBXP1NIWcdtKM4vf");
-        //   Polymer.dom(this.root).querySelector("#d24").transactionKey = '-L1zxBXP1NIWcdtKM4vf';
-        //  console.log(this.detailData);
-
-        //  this.set('route.path','/detail/-L1zxBXP1NIWcdtKM4vf');
-
         var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
         var node = Polymer.dom(this.root).querySelector("#appdetail");
         if (node) {
@@ -440,12 +470,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var newDiv = document.createElement("my-application-detail");
           newDiv.setAttribute("id", "d24")
           newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("prev-route", this.route.prefix);
           //if open existing
           var currentDiv = document.getElementById("appdetail");
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-        }
 
+        }
+      },
+
+      editDetails(e) {
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var node = Polymer.dom(this.root).querySelector("#appedit");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-application-edit");
+          newDiv.setAttribute("id", "d25")
+          newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          //if open existing
+          var currentDiv = document.getElementById("appedit");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+        }
       }
+
+
 
     })
 

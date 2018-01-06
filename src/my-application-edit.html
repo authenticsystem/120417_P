@@ -35,7 +35,7 @@
 <link rel="import" href="short-unique-id.html">
 
 
-<dom-module id="my-application-new">
+<dom-module id="my-application-edit">
     <template>
         <style include="shared-styles">
             :host {
@@ -124,7 +124,6 @@
 
             }
 
-
             paper-button.green {
                 background-color: var(--paper-green-500);
                 color: white;
@@ -144,12 +143,8 @@
             }
         </style>
 
-        <!-- <app-route route="{{route}}" pattern="/:key" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
-
-        <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
-        </firebase-document> -->
-
-        <firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}"></firebase-document>
+        <!-- to get the record of Transaction Key -->
+        <firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}" disabled="true"></firebase-document>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
@@ -196,7 +191,7 @@
                         <a href$="{{_getPrevRoute()}}">
                             <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="toggleDrawer"></paper-icon-button>
                         </a>
-                        <div main-title>New Application</div>
+                        <div main-title>{{referenceLabel}} {{applicationKey}}</div>
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
@@ -205,15 +200,22 @@
 
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
+                        <!-- for current Transaction Keys data -->
+                        <firebase-document id="transactionFire" path="/applications/{{transactionKey}}" data="{{transactionData}}" disabled="true"></firebase-document>
 
-                        <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
+                        <!-- for Lot Details when entering Block, Lot, Level -->
+                        <firebase-document id="lotFire" path="/lots/{{fullLot}}" data="{{fullLotData}}" disabled="true"></firebase-document>
 
-                        <firebase-document id="fdColor"></firebase-document>
+                        <!-- for corresponding Selected Transaction Color Hold, Reserve, Buy -->
+                        <firebase-document id="fdColor" disabled="true"></firebase-document>
 
-                        <firebase-query path="/applications" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1 data="{{lastApplication}}"></firebase-query>
+                        <!-- to get the last Applications filed, will be use to compare MIN and MAX Start Date -->
+                        <firebase-query id="otherApplicationFire" path="/applications" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1
+                            data="{{lastApplication}}" disabled="true"></firebase-query>
 
-                        <firebase-query path="/reservations/{{fullLot}}" order-by-child='isexpired' equal-to='false' limit-to-last=1 data="{{lastReservation}}"></firebase-query>
-                        <!-- <firebase-query path="/reservations/{{fullLot}}" order-by-key limit-to-last=1 data="{{lastReservation}}"></firebase-query> -->
+                        <!-- to check if there is current reservation not yet isexpired or not yet served -->
+                        <firebase-query id="reservationsFire" path="/reservations/{{fullLot}}" order-by-child='isexpired' equal-to='false' limit-to-last=1
+                            data="{{lastReservation}}" disabled="true"></firebase-query>
 
                         <div class="docu">
 
@@ -285,8 +287,8 @@
                                                 <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
                                                 <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
                                                 <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
-                                                <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" type="datetime-local" no-label-float="true"
-                                                    value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
+                                                <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}" type="datetime-local"
+                                                    no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
 
                                             </div>
                                             <div id="expiry" style="position: relative; padding-top: 16px;">
@@ -419,7 +421,7 @@
 
     <script>
         Polymer({
-            is: 'my-application-new',
+            is: 'my-application-edit',
 
             properties: {
                 blocklot: String,
@@ -438,7 +440,7 @@
                     value: "slide-left-animation"
                 },
                 route: Object,
-                prevRoute: String,
+
                 routeData: Object,
                 lotdetailsAPP: {
                     type: Object,
@@ -502,7 +504,20 @@
                     type: String,
                     value: ''
                 },
-                transTypeCorrespondingColor: Object
+                transTypeCorrespondingColor: Object,
+                transactionKey: {
+                    type: String,
+                    value: '',
+                    observer: 'transactionKeyChanged'
+                },
+                transactionData: {
+                    type: Array,
+                    observer: 'transactionDataChanged'
+                },
+                transTypeChange: {
+                    type: Boolean,
+                    value: false
+                }
 
             },
 
@@ -514,7 +529,25 @@
                 'draftdata_agentdetails_cellphoneChanged(draftdata_agentdetails_cellphone,draftdata_agentdetails_firstname,draftdata_agentdetails_middlename,draftdata_agentdetails_lastname)',
                 'lastApplicationChanged(lastApplication.*)',
                 'isStartDateTimeInvalidChanged(isStartDateTimeInvalid.*)',
+
+                // 'transactionDataChanged(transactionData)'
+
             ],
+
+            transactionKeyChanged() {
+                // console.log(this.transactionKey);
+
+                this.$.appheader.resetLayout();
+
+                if (this.transactionKey) {
+                    this.$.idd.disabled = false;
+                    this.$.transactionFire.disabled = false;
+                    this.$.lotFire.disabled = false;
+                    this.$.fdColor.disabled = false;
+                    this.$.otherApplicationFire.disabled = false;
+                    this.$.reservationsFire.disabled = false;
+                }
+            },
 
             // attached() {
             //     // console.log(this.localName + '#' + this.id + ' was attached');
@@ -529,8 +562,56 @@
             //     }
             // },
 
-            _getPrevRoute() {
-                return this.prevRoute || '/applications'
+            transactionDataChanged() {
+                if (Object.keys(this.transactionData).length > 0) {
+                    // console.log(this.transactionData);
+
+                    this.applicationKey = this.transactionData.reference;
+                    if (this.transactionData.lotdetails) {
+                        this.block = this.transactionData.lotdetails.block;
+                        this.lot = this.transactionData.lotdetails.lot;
+                        this.level = this.transactionData.lotdetails.level;
+                    }
+                    this.startDateTimeValue = this.transactionData.start;
+                    this.expiryDate = this.transactionData.expiry;
+
+                    // this.minStartDateTime = this.transactionData.start; // still to determine
+                    // this.maxStartDateTime = this.transactionData.expiry; // still to determine
+
+                    var xdate = new Date(this.transactionData.expiry);
+                    this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+
+                    var sdate = new Date(this.transactionData.start);
+                    var ddate = xdate.getTime() - sdate.getTime();
+                    this.expiryHoursDaysValue = ddate / (this.transactionData.type === 'Hold' ? (1000 * 60 * 60) : this.transactionData.type === 'Reserve' ? (1000 * 60 * 60 * 24) : 0); //in hours & in days
+                    this.expiryHoursDaysLabel = (this.transactionData.type === 'Hold' ? 'hours' : this.transactionData.type === 'Reserve' ? 'days' : '');
+                    this.draftdata_type = this.transactionData.type;
+
+                    var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
+                    showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
+
+                    var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
+                    showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
+
+
+                    this.buyerKey = this.transactionData.buyer;
+                    this.draftdata_buyerdetails_cellphone = this.transactionData.buyerdetails.cellphone;
+                    this.draftdata_buyerdetails_firstname = this.transactionData.buyerdetails.firstname;
+                    this.draftdata_buyerdetails_middlename = this.transactionData.buyerdetails.middlename;
+                    this.draftdata_buyerdetails_lastname = this.transactionData.buyerdetails.lastname;
+                    this.draftdata_buyerdetails_suffix = this.transactionData.buyerdetails.suffix;
+                    this.draftdata_buyerdetails_email = this.transactionData.buyerdetails.email;
+
+                    this.agentKey = this.transactionData.agent;
+                    this.draftdata_agentdetails_cellphone = this.transactionData.agentdetails.cellphone;
+                    this.draftdata_agentdetails_firstname = this.transactionData.agentdetails.firstname;
+                    this.draftdata_agentdetails_middlename = this.transactionData.agentdetails.middlename;
+                    this.draftdata_agentdetails_lastname = this.transactionData.agentdetails.lastname;
+                    this.draftdata_agentdetails_suffix = this.transactionData.agentdetails.suffix;
+                    this.draftdata_agentdetails_email = this.transactionData.agentdetails.email;
+
+                }
+
             },
 
             isStartDateTimeInvalidChanged() {
@@ -540,32 +621,69 @@
             },
 
             lastApplicationChanged() {
+                //loop thru the applications, get Previous and Next of the Current Transaction Key
                 if (this.lastApplication[0]) {
-                    if (this.lastApplication[0].expiry) {
-                        this.minStartDateTime = this.lastApplication[0].expiry;
 
-                        if (this.startDateTimeValue) {
-                            var startDTV = new Date(this.startDateTimeValue);
-                            var minStartDT = new Date(this.minStartDateTime);
-                            if (startDTV > minStartDT) {
-                                this.isStartDateTimeInvalidGlobal = false;
+                    if (this.lastApplication[0].$key == this.transactionKey) {
+                        // console.log(this.lastApplication[0].$key)
+
+                        //min start = start
+                        if (this.transactionData.start) {
+                            this.minStartDateTime = this.transactionData.start;
+                            this.maxStartDateTime = '';
+
+                            if (this.startDateTimeValue) {
+                                var startDTV = new Date(this.startDateTimeValue);
+                                var minStartDT = new Date(this.minStartDateTime);
+                                if (startDTV >= minStartDT) {
+                                    this.isStartDateTimeInvalidGlobal = false;
+                                }
+                                else {
+                                    this.isStartDateTimeInvalidGlobal = true;
+                                }
                             }
-                            else {
-                                this.isStartDateTimeInvalidGlobal = true;
-                            }
+                        }
+                        else {
+                            this.minStartDateTime = '';
+                            this.maxStartDateTime = '';
                         }
                     }
                     else {
-                        this.minStartDateTime = '';
+                        //min start = expiry
+                        if (this.transactionData.start) {
+                            this.minStartDateTime = this.transactionData.start;
+                            this.maxStartDateTime = this.transactionData.expiry;
+
+                            if (this.startDateTimeValue) {
+                                var startDTV = new Date(this.startDateTimeValue);
+                                var minStartDT = new Date(this.minStartDateTime);
+                                var maxStartDT = new Date(this.maxStartDateTime);
+                                if (startDTV >= minStartDT && startDTV <= maxStartDT) {
+                                    this.isStartDateTimeInvalidGlobal = false;
+                                }
+                                else {
+                                    this.isStartDateTimeInvalidGlobal = true;
+                                }
+                            }
+                        }
+                        else {
+                            this.minStartDateTime = '';
+                            this.maxStartDateTime = '';
+                        }
                     }
 
                 }
                 else {
                     this.minStartDateTime = '';
+                    this.maxStartDateTime = '';
                 }
 
                 // console.log(this.lastApplication[0]);
 
+            },
+
+            _getPrevRoute() {
+                return this.prevRoute || '/applications'
             },
 
             draftdata_buyerdetails_cellphoneChanged() {
@@ -593,6 +711,16 @@
                     this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
                     this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
                         + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+
+                    if (this.maxStartDateTime) {
+                        var maxSDate = new Date(this.maxStartDateTime);
+                        if (xdate <= maxSDate) {
+                            this.isStartDateTimeInvalid = false;
+                        }
+                        else {
+                            this.isStartDateTimeInvalid = true;
+                        }
+                    }
                 }
                 else if (this.draftdata_type === 'Hold') {
                     var xdate = new Date(this.$.startDateTimeValueV.value);
@@ -600,9 +728,22 @@
                     this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
                     this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
                         + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+
+                    if (this.maxStartDateTime) {
+                        var maxSDate = new Date(this.maxStartDateTime);
+                        if (xdate <= maxSDate) {
+                            this.isStartDateTimeInvalid = false;
+                        }
+                        else {
+                            this.isStartDateTimeInvalid = true;
+                        }
+                    }
                 }
                 else if (this.draftdata_type === 'Buy') {
                     this.expiryDate = '';
+
+                    // this.isStartDateTimeInvalidGlobal = false;
+
                 }
 
                 if (this.$.startDateTimeValueV.value) {
@@ -620,16 +761,18 @@
             },
 
             draftdatatypeChanged(e) {
-                if (e) {
-                    if (this.isStartDateTimeInvalid === true) {
-                        this.favrighthide = true;
+                if (this.transTypeChange === true) {
+                    if (e) {
+                        if (this.isStartDateTimeInvalid === true) {
+                            this.favrighthide = true;
+                        }
+                        else {
+                            this.favrighthide = false;
+                        }
                     }
                     else {
-                        this.favrighthide = false;
+                        this.favrighthide = true;
                     }
-                }
-                else {
-                    this.favrighthide = true;
                 }
             },
 
@@ -699,6 +842,8 @@
                     }
                 });
 
+                this.transTypeChange = true;
+
             },
             selectHold() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
@@ -726,6 +871,8 @@
                         this.transTypeCorrespondingColor = snapshot.val()
                     }
                 });
+
+                this.transTypeChange = true;
             },
             selectBuy() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
@@ -749,12 +896,13 @@
                         this.transTypeCorrespondingColor = snapshot.val()
                     }
                 });
+
+                this.transTypeChange = true;
             },
 
             getpath() {
                 this.applicationKey = this.guid();
                 this.path = 'applications/' + this.applicationKey;
-
                 return this.path;
             },
 
@@ -776,7 +924,7 @@
                             this.areaLabel = this.fullLotData.area ? "Area" : "";
                             this.designationLabel = this.fullLotData.designation ? "Designation" : "";
                             this.typeLabel = this.fullLotData.type ? "Type" : "";
-                            this.statusLabel = this.fullLotData.status ? "Status" : "";
+                            this.statusLabel = this.fullLotData.status ? "Current Status" : "";
 
                             var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
                             statusValue.setAttribute("style", "font-weight: 400; color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.fore_color : "black") + "; background:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.bg_color : "gray") + "; border-radius: 2px; padding-left: 2px;padding-right: 2px;");
@@ -799,9 +947,20 @@
 
                             }
                             else {
-                                cardActions.setAttribute("style", "display: none;");
-                                this.favrighthide = true;
+                                if (this.transTypeChange === true) {
+                                    cardActions.setAttribute("style", "display: none;");
+                                    this.favrighthide = true;
+                                }
+                                else {
+                                    cardActions.setAttribute("style", "display: block;");
+                                    this.favrighthide = false;
+                                    var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
+                                    showExpiry.setAttribute("style", "display: none; padding-top: 8px; position: relative;");
+                                }
                             }
+
+
+                            this.referenceLabel = 'Ref.';
 
 
                         }
@@ -833,6 +992,8 @@
                                 cardActions.setAttribute("style", "display: none;");
 
                                 this.favrighthide = true;
+
+                                this.referenceLabel = 'Not found!'
                             }
                         }
 
@@ -865,6 +1026,8 @@
                             cardActions.setAttribute("style", "display: none;");
 
                             this.favrighthide = true;
+
+                            this.referenceLabel = 'Not found!'
                         }
                     }
 
@@ -898,6 +1061,8 @@
                         cardActions.setAttribute("style", "display: none;");
 
                         this.favrighthide = true;
+
+                        this.referenceLabel = 'Not found!'
                     }
 
 
@@ -938,6 +1103,13 @@
                 //     }
                 // }));
                 // this.$.narrow = !this.$.narrow;
+
+                // this.$.idd.disabled = true;
+                // this.$.transactionFire.disabled = true;
+                // this.$.lotFire.disabled = true;
+                // this.$.fdColor.disabled = true;
+                // this.$.otherApplicationFire.disabled = true;
+                // this.$.reservationsFire.disabled = true;
 
                 Polymer.dom(this.parentNode).removeChild(this);
 
@@ -986,6 +1158,8 @@
 
                 this.minStartDateTime = '';
                 this.saveErrorDetails = 'saving...';
+
+
             },
 
             _select1(e) {
@@ -1057,14 +1231,14 @@
                                     },
                                     expiry: this.expiryDate,
                                     isdraft: 'false',
-                                    isserved: 'false',
+                                    isserved: this.transactionData.isserved, //get value from current
                                     lot: this.fullLot,
                                     lotdetails: this.fullLotData,
-                                    processed: '',
-                                    processordetails: '',
-                                    served: '',
+                                    processed: this.transactionData.processed, //get value from current
+                                    processordetails: this.transactionData.processordetails, //get value from current
+                                    served: this.transactionData.served, //get value from current
                                     start: this.startDateTimeValue,
-                                    status: '',
+                                    status: this.transactionData.status, //get value from current
                                     timestamp: { ".sv": "timestamp" },
                                     type: this.draftdata_type,
                                     reference: this.applicationKey
@@ -1093,8 +1267,9 @@
                                 var firebaseDbRef = firebaseDb.ref();
                                 var firebaseUpdate = {};
 
-                                var transactionPush = firebaseDbRef.child('applications').push();
-                                this.transactionKey = transactionPush.key;
+                                //no need
+                                // var transactionPush = firebaseDbRef.child('applications').push();
+                                // this.transactionKey = transactionPush.key;
 
                                 if (this.transactionKey) {
 
