@@ -35,7 +35,7 @@
 <link rel="import" href="short-unique-id.html">
 
 
-<dom-module id="my-application-details">
+<dom-module id="my-application-new">
     <template>
         <style include="shared-styles">
             :host {
@@ -144,13 +144,12 @@
             }
         </style>
 
-        <!-- <app-route route="[[route]]" pattern="/:lot" data="{{routeData}}"></app-route> -->
+        <!-- <app-route route="{{route}}" pattern="/:key" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
 
         <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
         </firebase-document> -->
 
         <firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}"></firebase-document>
-
 
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
@@ -209,9 +208,10 @@
 
                         <firebase-document id="fdColor"></firebase-document>
 
-                        <firebase-query path="/applications" order-by-key order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1 data="{{lastApplication}}"></firebase-query>
+                        <firebase-query path="/applications" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1 data="{{lastApplication}}"></firebase-query>
 
-                        <firebase-query path="/reservations/{{fullLot}}" order-by-key limit-to-last=1 data="{{lastReservation}}"></firebase-query>
+                        <firebase-query path="/reservations/{{fullLot}}" order-by-child='isexpired' equal-to='false' limit-to-last=1 data="{{lastReservation}}"></firebase-query>
+                        <!-- <firebase-query path="/reservations/{{fullLot}}" order-by-key limit-to-last=1 data="{{lastReservation}}"></firebase-query> -->
 
                         <div class="docu">
 
@@ -417,7 +417,7 @@
 
     <script>
         Polymer({
-            is: 'my-application-details',
+            is: 'my-application-new',
 
             properties: {
                 blocklot: String,
@@ -513,6 +513,19 @@
                 'lastApplicationChanged(lastApplication.*)',
                 'isStartDateTimeInvalidChanged(isStartDateTimeInvalid.*)'
             ],
+
+            // attached() {
+            //     // console.log(this.localName + '#' + this.id + ' was attached');
+            //     // if(!this.applicationKey) {
+            //     this.getpath();
+            //     // console.log(this.applicationKey);
+            // },
+
+            // newdataChanged() {
+            //     if(Object.keys(this.newdata).length > 0){
+            //     console.log(this.newdata);
+            //     }
+            // },
 
             isStartDateTimeInvalidChanged() {
                 this.favrighthide = this.isStartDateTimeInvalid;
@@ -703,7 +716,7 @@
                 //get color
                 var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/hold');
                 transTypeCorrespondingColorRef.on('value', snapshot => {
-                    if (snapshot) {
+                    if (snapshot.exists()) {
                         this.transTypeCorrespondingColor = snapshot.val()
                     }
                 });
@@ -759,14 +772,14 @@
                             this.statusLabel = this.fullLotData.status ? "Status" : "";
 
                             var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
-                            statusValue.setAttribute("style", "font-weight: 400; color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.fore_color : "black") + ";");
+                            statusValue.setAttribute("style", "font-weight: 400; color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.fore_color : "black") + "; background:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.bg_color : "gray") + "; border-radius: 2px; padding-left: 2px;padding-right: 2px;");
 
                             var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
                             stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: block;");
 
 
                             var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
-                            if (this.fullLotData.status == 'available' || this.fullLotData.status == 'hold' || this.fullLotData.status == 'reserved' || this.fullLotData.status == 'notyetavailable') {
+                            if (this.fullLotData.status == 'available' || this.fullLotData.status == 'hold' || this.fullLotData.status == 'reserved') {
                                 cardActions.setAttribute("style", "display: block;");
 
                                 if (this.draftdata_type) {
@@ -1120,6 +1133,7 @@
                                     var isCurrentReservation = false;
                                     if (this.lastReservation) {
                                         if (this.lastReservation.length > 0) {
+                                            //check if this.lastReservation is expired, check for previous reservation --done thru query
                                             isCurrentReservation = false;
                                         }
                                         else {
@@ -1172,11 +1186,58 @@
                                         firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = this.transTypeCorrespondingColor.name;
                                         firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = this.transTypeCorrespondingColor.bg_color;
                                         firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = this.transTypeCorrespondingColor.fore_color;
-                                    }
 
+                                        //shb 01/04
+                                        //for lots with level/map_lot: check other lots by map_lot, compare and get winning map_lot status
+                                        //get lots thru map_lot
+                                        if (this.fullLotData.level) {
+                                            var otherLotsRef = this.$.fdColor.db.ref('lots');
+                                            var otherLotMapLot = 'block' + this.fullLotData.block + 'lot' + this.fullLotData.lot;
+                                            otherLotsRef.orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
+                                                if (snap.exists()) {
+                                                    var winningValStat = 0;
+                                                    snap.forEach(element => {
+                                                        var valStat = 0;
+                                                        var stat = element.val().status;
+                                                        if (stat) {
+                                                            if (stat === 'available') valStat = 5;
+                                                            else if (stat === 'hold') valStat = 4;
+                                                            else if (stat === 'reserved') valStat = 3;
+                                                            else if (stat === 'soldlacking') valStat = 2;
+                                                            else if (stat === 'sold') valStat = 1;
+                                                            else valStat = 0; //notyetavailable
+                                                        }
+                                                        if (valStat > winningValStat) {
+                                                            winningValStat = valStat;
+                                                        }
+                                                    });
+
+                                                    var winningColor;
+                                                    if (winningValStat == 5) winningColor = 'available';
+                                                    else if (winningValStat == 4) winningColor = 'hold';
+                                                    else if (winningValStat == 3) winningColor = 'reserved';
+                                                    else if (winningValStat == 2) winningColor = 'soldlacking';
+                                                    else if (winningValStat == 1) winningColor = 'sold';
+                                                    else winningColor = 'notyetavailable';
+
+                                                    var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + winningColor);
+                                                    transTypeCorrespondingColorRef.on('value', statusColor => {
+                                                        if (statusColor.exists()) {
+                                                            corresStatusColor = statusColor.val()
+                                                            firebaseUpdate["/lots/" + otherLotMapLot + "/status"] = winningColor;
+                                                            firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
+                                                            firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
+                                                            firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
+                                                        }
+                                                    });
+                                                }
+                                            });
+
+                                        }
+
+                                    }
                                     //if ok, update bg_color, status_name
                                     //check reservations if current is expired, then check if there is prior reservation, then iscurrent=false
-
 
 
                                     var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");

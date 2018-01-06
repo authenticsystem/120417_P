@@ -31,13 +31,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 
-<link rel="import" href="my-application-details.html">
+<link rel="import" href="my-application-new.html">
+<link rel="import" href="my-application-detail.html">
 
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 
 <link rel="import" href="time-element.html">
 <!-- <script src="../bower_components/time-elements/time-elements.js"></script> -->
 
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="my-application-card.html">
 
 <dom-module id="my-applications">
@@ -157,6 +159,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
+<<<<<<< HEAD
     <app-route route="{{route}}" pattern="/:action" data="{{routeData}}"></app-route>
 
     <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
@@ -374,34 +377,106 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 
+=======
+>>>>>>> master
 
+    <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
+    <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
+
+    <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
+
+    <div hidden$="{{!applicationActive}}">
+      <!-- <template is="dom-if" if="{{_checkIfApplicationActive(applicationActive)}}"> -->
+      <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
+        <div name="">
+          <!-- <iron-ajax auto url="src/data.json" last-response="{{items}}"></iron-ajax> -->
+          <app-header-layout fullbleed has-scrolling-region>
+            <app-header fixed slot="header">
+              <app-toolbar primary>
+                <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                <div main-title>Applications</div>
+                <paper-dropdown-menu style="--paper-dropdown-menu-color:white;" id="child">
+                  <paper-listbox slot="dropdown-content" selected="{{filterByChild}}" style="cursor:pointer;">
+                    <paper-item>By Status</paper-item>
+                    <paper-item>By Lot</paper-item>
+                    <!-- <paper-item>By Buyer</paper-item> -->
+                  </paper-listbox>
+                </paper-dropdown-menu>
+                <paper-dropdown-menu id="status">
+                  <paper-listbox slot="dropdown-content" selected="{{filterByStatus}}" style="cursor:pointer;">
+                    <paper-item>All</paper-item>
+                    <paper-item>Buy</paper-item>
+                    <paper-item>On-Hold</paper-item>
+                    <paper-item>Reserve</paper-item>
+                  </paper-listbox>
+                </paper-dropdown-menu>
+                <paper-input id="filterInput" style="--paper-input-container-color:white; --paper-input-container-input-color:white;" label="Search"
+                  value={{inputtedValue}}></paper-input>
+                <paper-icon-button icon="my-icons:search" on-tap="toggleSearch"></paper-icon-button>
+              </app-toolbar>
+            </app-header>
+
+            <div id="errMsg" style="display:none">No record found!</div>
+
+            <!-- <firebase-query id="query" path="/statuscolor" data="{{statuscolor}}">
+                      </firebase-query> -->
+
+            <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
+              end-at="{{typeValue}}" limit-to-last="200">
+            </firebase-query>
+
+            <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold">
+              <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
+                <paper-toast id="toast" text="" duration="0"></paper-toast>
+                <template>
+                  <div class="divSeparator">
+                    <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
+
+                      <my-application-card item="{{item}}"></my-application-card>
+
+                      <div tabindex="0">
+                        <a href$="{{_getViewDetailsLink(item.$key)}}">
+                          <paper-icon-button id="openDetailButton" on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new" alt="{{item.$key}}"
+                            style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                          <paper-tooltip position="left">view details</paper-tooltip>
+                        </a>
+                      </div>
+
+                    </div>
 
 >>>>>>> master
                   </div>
 
-                </div>
 
+                </template>
+              </iron-list>
 
-              </template>
-            </iron-list>
+            </iron-scroll-threshold>
 
-          </iron-scroll-threshold>
+          </app-header-layout>
+          <a href="/applications/new" style="text-decoration: none;">
+            <paper-fab noink class="fab-menu" icon="my-icons:add" on-tap="_appsnew"></paper-fab>
+          </a>
+        </div>
 
-        </app-header-layout>
-        <a href="/applications/new" style="text-decoration: none;">
-          <paper-fab noink class="fab-menu" icon="my-icons:add" on-tap="_appsnew"></paper-fab>
-        </a>
-      </div>
+        <div name="/new">
+          <div id="appnew"></div>
+          <my-application-new id="d23" path=""></my-application-new>
+        </div>
 
-      <div name="/new">
-        <div id="appdetails"></div>
-        <my-application-details id="d23" path=""></my-application-details>
-      </div>
+        <div name="view404">Not found.</div>
 
-      <div name="view404">Not found.</div>
+      </iron-pages>
+      <!-- </template> -->
+    </div>
 
-    </iron-pages>
-
+    <div hidden$="{{!detailActive}}">
+      <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
+      <div id="appdetail"></div>
+      <my-application-detail id="d24" transaction-key='{{detailData.key}}'></my-application-detail>
+      <!-- [[detailData.key]] -->
+      <!-- </template> -->
+    </div>
 
   </template>
 
@@ -444,6 +519,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: ''
         },
+        route: Object,
+        routeData: Object
       },
       timeVoid(e){
         var time = Polymer.dom(this.root).querySelector("#start");
@@ -499,6 +576,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               }
             // }, 1000);
       },
+
+      // _checkIfApplicationActive(e){
+      //   console.log('app'+e+this.applicationActive);
+      //   return e;
+      // },
+
+      // _checkIfDetailActive(e){
+      //   console.log('detail'+e);
+      //   return e;
+      // },
 
       toggleSearch() {
         var listStat = Polymer.dom(this.root).querySelector("#status");
@@ -589,19 +676,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _appsnew() {
-        var node = Polymer.dom(this.root).querySelector("#appdetails");
+        var node = Polymer.dom(this.root).querySelector("#appnew");
         if (node) {
           var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
           if (oldDiv) {
             Polymer.dom(node.parentNode).removeChild(oldDiv);
           }
-          var newDiv = document.createElement("my-application-details");
+          var newDiv = document.createElement("my-application-new");
           newDiv.setAttribute("id", "d23")
           // newDiv.setAttribute("block", "3")
           //if open existing
-          var currentDiv = document.getElementById("appdetails");
+          var currentDiv = document.getElementById("appnew");
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
+      },
+
+      _getViewDetailsLink(e) {
+        return '/applications/detail/' + e.toString();
+      },
+
+      viewDetails(e) {
+        //   this.detailData = {key: '-L1zxBXP1NIWcdtKM4vf'};
+
+
+        //   // Polymer.dom(this.root).querySelector("#d24").setAttribute("transaction-key", "-L1zxBXP1NIWcdtKM4vf");
+        //   Polymer.dom(this.root).querySelector("#d24").transactionKey = '-L1zxBXP1NIWcdtKM4vf';
+        //  console.log(this.detailData);
+
+        //  this.set('route.path','/detail/-L1zxBXP1NIWcdtKM4vf');
+
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var node = Polymer.dom(this.root).querySelector("#appdetail");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-application-detail");
+          newDiv.setAttribute("id", "d24")
+          newDiv.setAttribute("transaction-key", data_args)
+          //if open existing
+          var currentDiv = document.getElementById("appdetail");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+        }
+
       }
 
     })
