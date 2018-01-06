@@ -12,6 +12,9 @@
 
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.7/webcomponents-lite.min.js"></script>
+<link rel="import" href="../bower_components/social-media-icons/social-media-icons.html">
+
 <dom-module id="my-signin">
     <template>
         <style include="shared-styles">
@@ -50,12 +53,12 @@
                 background-color: var(--paper-green-500);
                 color: white;
                 height: 38px;
-
+                width: 100%;
             }
 
             .action {
                 /* display: inline-block; */
-                float: right;
+                float: left;
             }
 
             .moreoption {
@@ -76,6 +79,20 @@
             #errorMsgDiv {
                 color: red;
             }
+
+            /* .socialBtn{
+                text-align: center;
+            } */
+
+            .hr1 {
+                width: 35%;
+                float: left
+            }
+
+            .hr2 {
+                width: 35%;
+                float: right
+            }
         </style>
 
         <firebase-auth id="auth" user="{{user}}" provider="password" on-error="handleError"></firebase-auth>
@@ -86,17 +103,15 @@
                     fade style="width:128px; height:128px;"></iron-image>
             </a>
             </br>
-            <div>
-                <div class="header">Sign in</div>
-                <div>to continue to Haven of Peace Memorial Garden inventory and reservation system</div>
-                </br>
-                <div id="errorMsgDiv" style="display: none;">{{validationMessage}}</div>
-                <paper-input label="Email" value="{{email}}" always-float-label required auto-validate error-message=""></paper-input>
-                <paper-input label="Password" type="password" value="{{password}}" always-float-label required auto-validate error-message=""></paper-input>
-                </br>
-                </br>
-                <div class="footer">
-                    <!--<div class="moreoption">
+            <div class="header">Sign in</div>
+            <div>to continue to Haven of Peace Memorial Garden inventory and reservation system</div>
+
+            <div id="errorMsgDiv" style="display: none;">{{validationMessage}}</div>
+
+            <paper-input label="Email" value="{{email}}" always-float-label required auto-validate error-message=""></paper-input>
+            <paper-input label="Password" type="password" value="{{password}}" always-float-label required auto-validate error-message=""></paper-input>
+            <!-- <div class="footer"> -->
+            <!--<div class="moreoption">
                         <paper-menu-button>
                             <div slot="dropdown-trigger" alt="menu" style="color: royalblue;">More options</div>
                             <paper-listbox slot="dropdown-content">
@@ -107,12 +122,21 @@
                             </paper-listbox>
                         </paper-menu-button>
                     </div>-->
-                    <div class="action">
-                        <paper-button class="green" on-tap="_signIn">next</paper-button>
-                    </div>
-                </div>
+            <!-- <div class="action"> -->
+            <paper-button class="green" on-tap="_signIn">next</paper-button>
+            <div style="text-align: center; margin-top:10px">
+                <hr class="hr1">OR LOGIN AS
+                <hr class="hr2">
             </div>
-
+            <a style="cursor: pointer">
+                <social-media-icons on-tap="_facebook" icon="facebook" color="#3b5998" size="40" style="margin-right:10px"></social-media-icons>
+            </a>
+            <a style="cursor: pointer">
+                <social-media-icons on-tap="_google" icon="googleplus" color="#d34836" size="40"></social-media-icons>
+            </a>
+            <!-- </div> -->
+            <!-- </div> -->
+            <!-- end of main container -->
         </div>
 
     </template>
@@ -125,6 +149,20 @@
                 var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                 errormsg.setAttribute("style", "display: block;");
                 this.validationMessage = 'Invalid email/password.';
+            },
+            _facebook() {
+                var provider = new firebase.auth.FacebookAuthProvider();
+                firebase.auth().signInWithPopup(provider).then(function (response) {
+                    app = this.document.querySelector('my-app');
+                    app.set('route.path', '/');
+                  })
+            },
+            _google() {
+                var provider = new firebase.auth.GoogleAuthProvider();
+                firebase.auth().signInWithPopup(provider).then(function (response) {
+                    app = this.document.querySelector('my-app');
+                    app.set('route.path', '/');
+                  })
             },
 
             _signIn() {
