@@ -1423,7 +1423,9 @@
                                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = statusColors.val()[selectedTransType].name;
                                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = statusColors.val()[selectedTransType].bg_color;
                                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = statusColors.val()[selectedTransType].fore_color;
-                                                firebaseUpdate["/reservations/" + this.fullLot + "/" + this.lastReservation[0].$key + "/iscurrent"] = false;
+                                                if (this.lastReservation.length > 0) {
+                                                    firebaseUpdate["/reservations/" + this.fullLot + "/" + this.lastReservation[0].$key + "/iscurrent"] = false;
+                                                }
                                             }
 
                                             //current lot selected
