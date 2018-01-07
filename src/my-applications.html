@@ -170,7 +170,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
 
     <div hidden$="{{!applicationActive}}">
-      <template is="dom-if" if="{{_checkIfApplicationActive(applicationActive)}}">
+      <!-- <template is="dom-if" if="{{_checkIfApplicationActive(applicationActive)}}"> -->
         <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
           <div name="">
             <!-- <iron-ajax auto url="src/data.json" last-response="{{items}}"></iron-ajax> -->
@@ -263,22 +263,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div name="view404">Not found.</div>
 
         </iron-pages>
-      </template>
+      <!-- </template> -->
     </div>
 
     <div hidden$="{{!detailActive}}">
-      <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}">
+      <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
         <div id="appdetail"></div>
         <my-application-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"></my-application-detail>
         <!-- [[detailData.key]] -->
-      </template>
+      <!-- </template> -->
     </div>
 
     <div hidden$="{{!editActive}}">
-      <template is="dom-if" if="{{_checkIfEditActive(editActive)}}">
+      <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
         <div id="appedit"></div>
         <my-application-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-application-edit>
-      </template>
+      <!-- </template> -->
     </div>
 
   </template>
@@ -324,27 +324,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         route: Object,
         routeData: Object,
-        applicationActive: {
-          type: Boolean,
-          value: true
-        }
+        // applicationActive: {
+        //   type: Boolean,
+        //   value: true
+        // }
 
       },
 
-      _checkIfApplicationActive(e) {
-        // console.log('app'+e+this.applicationActive);
-        return e;
-      },
+      // _checkIfApplicationActive(e) {
+      //   // console.log('app'+e+this.applicationActive);
+      //   return e;
+      // },
 
-      _checkIfDetailActive(e) {
-        // console.log('detail' + e);
-        return e;
-      },
+      // _checkIfDetailActive(e) {
+      //   // console.log('detail' + e);
+      //   return e;
+      // },
 
-      _checkIfEditActive(e) {
-        // console.log('edit' + e);
-        return e;
-      },
+      // _checkIfEditActive(e) {
+      //   // console.log('edit' + e);
+      //   return e;
+      // },
 
       toggleSearch() {
         var listStat = Polymer.dom(this.root).querySelector("#status");
