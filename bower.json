@@ -36,13 +36,13 @@
     "polymer": "Polymer/polymer#^2.2.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
     "paper-radio-group": "PolymerElements/paper-radio-group#^2.0.0",
-    "paper-spinner":"PolymerElements/paper-spinner#^2.0.0",
-    "datetime-picker":"fooloomanzoo/datetime-picker#^2.5.5",
-    "paper-dropdown-menu":"PolymerElements/paper-dropdown-menu#^2.0.1",
-    "titanium-date-input":"LssPolymerElements/titanium-date-input#^1.0.25",
-    "paper-time-input":"ryanburns23/paper-time-input#^2.0.4",
-    "time-elements" : "github/time-elements#^0.6.1",
-    "short-unique-id":"hectorsantillan/short-unique-id#^1.0.0"
+    "paper-spinner": "PolymerElements/paper-spinner#^2.0.0",
+    "datetime-picker": "fooloomanzoo/datetime-picker#^2.5.5",
+    "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.1",
+    "titanium-date-input": "LssPolymerElements/titanium-date-input#^1.0.25",
+    "paper-time-input": "ryanburns23/paper-time-input#^2.0.4",
+    "time-elements": "github/time-elements#^0.6.1",
+    "short-unique-id": "hectorsantillan/short-unique-id#^1.0.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"
