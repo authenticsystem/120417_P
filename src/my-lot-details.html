@@ -4,6 +4,8 @@
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="time-element.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
 
 <dom-module id="my-lot-details">
   <template>
@@ -34,23 +36,49 @@
           box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         }
       }
+
+      paper-item {
+        --paper-item: {
+          cursor: pointer;
+          /* any other styles here */
+        };
+      }
+
+      
     </style>
 
-    <firebase-document path="/lots/{{selectedLot}}" data="{{selectedLotDetails}}">
+    <firebase-document id="lotd" path="/lots/{{selectedLot}}" data="{{selectedLotDetails}}">
     </firebase-document>
+
+    <firebase-query path="/lots" order-by-child='map_lot' equal-to='{{selectedLot}}' limit-to-first=5 data="{{levelLots}}"></firebase-query>
 
     <div id="headerPanel" style="background: #7B1FA2; padding:16px;color: white;">
       <div style="display: inline;">Block {{selectedLotDetails.block}} - Lot {{selectedLotDetails.lot}}
-        <div id="level" style="display: inline;"> - Level {{selectedLotDetails.level}}</div>
+        <!-- <div id="level" style="display: inline;"> - Level {{selectedLotDetails.level}}</div> -->
       </div>
       <paper-icon-button style="float:right; top: -8px" icon="my-icons:close" on-tap="_close"></paper-icon-button>
     </div>
 
-    <div style="padding: 16px; padding-top: 12px; padding-bottom: 0px; font-size: 12px;">
+    <div style="padding: 16px; padding-top: 12px; font-size: 12px;">
       <div>{{lotsubdetail}}</div>
+
+      <div id="levelsBlock">
+        <template is="dom-repeat" items="{{levelLots}}">
+          <div style="padding-top: 3px;">
+            <paper-item id="{{item.$key}}" on-tap="_levelTap">
+              <!-- <paper-item-body> -->
+              <span style="text-transform: capitalize; ">Level&nbsp;{{item.level}}&nbsp;---&nbsp;</span>
+              <div style$="display: inline-block; border-radius: 2px; padding-left: 2px;padding-right: 2px; background: {{item.maprenderdetails.bg_color}};">
+                <div style$="display: inline; color: {{item.maprenderdetails.fore_color}};">{{item.maprenderdetails.status_name}}</div>
+              </div>
+              <!-- </paper-item-body> -->
+            </paper-item>
+          </div>
+        </template>
+      </div>
     </div>
 
-    <div id="reservationdetails" style="padding: 16px; font-size: 12px;">
+    <div id="reservationdetails" style="padding: 16px; padding-top: 0px; font-size: 12px;">
       <div>
         <span>Current Status:&nbsp;</span>
         <div id="statusBox" style="display: inline-block; border-radius: 2px; padding-left: 2px;padding-right: 2px;">
@@ -123,19 +151,28 @@
         },
         selectedLotDetails: {
           type: Object,
-          observer: '_selectedLotDetailsChanged'
+          // observer: '_selectedLotDetailsChanged'
         },
         lotStatus: String,
         lotsubdetail: {
           type: String,
           value: ''
         }
+
       },
       observers: [
-        '_selectedLotDetailsChanged(selectedLotDetails.*)'
+        '_selectedLotDetailsChanged(selectedLotDetails.*)',
+        // '_levelLotsChanged(levelLots.*)',
       ],
 
+      // _levelLotsChanged(){
+      //   console.log(this.levelLots);
+      // },
+
       _selectedLotDetailsChanged(newData, oldData) {
+        if (this.levelLots) this.levelLots = null;
+        // console.log(this.selectedLotDetails);
+
         if (this.selectedLotDetails) {
           //check if selected lot has level, then show levels
           //else show below 
@@ -158,13 +195,13 @@
 
           }
 
-          var showhidePlot = Polymer.dom(this.root).querySelector("#level");
-          if (this.selectedLotDetails.level != '') {
-            showhidePlot.setAttribute("style", "display: inline;");
-          }
-          else {
-            showhidePlot.setAttribute("style", "display: none;");
-          }
+          // var showhidePlot = Polymer.dom(this.root).querySelector("#level");
+          // if (this.selectedLotDetails.inventoriable==='yes') {
+          //   showhidePlot.setAttribute("style", "display: inline;");
+          // }
+          // else {
+          //   showhidePlot.setAttribute("style", "display: none;");
+          // }
 
           if (this.selectedLotDetails.status) {
             var colorStatus = Polymer.dom(this.root).querySelector("#status");
@@ -189,6 +226,15 @@
               }
             }
 
+
+            // if (this.selectedLot) {
+            //   // console.log(this.selectedLot);
+            //   var otherLotsRef = this.$.lotd.db.ref('lots');
+            //   otherLotsRef.orderByChild('map_lot').equalTo(this.selectedLot).limitToFirst(5).on('value', snap => {
+            //     this.levelLots = snap.val();
+            //   });
+            // }
+
           }
 
 
@@ -198,6 +244,14 @@
           }
           else {
             reservationBlock.setAttribute("style", "display: none;");
+          }
+
+          var reservationdetails = Polymer.dom(this.root).querySelector("#reservationdetails");
+          if (this.selectedLotDetails.inventoriable === 'no') {
+            reservationdetails.setAttribute("style", "padding: 16px; padding-top: 0px; font-size: 12px; display: none;");
+          }
+          else {
+            reservationdetails.setAttribute("style", "padding: 16px; padding-top: 0px; font-size: 12px; display: block;");
           }
 
 
@@ -213,6 +267,30 @@
       _getLocalDatetimeFormat(e) {
         var xdate = new Date(e);
         return xdate.toDateString() + ' ' + xdate.toLocaleTimeString().replace(/:\d{2}\s/, ' ');;
+      },
+
+      _toArray: function (obj) {
+        if (obj) {
+          return Object.keys(obj).map(function (key) {
+            return {
+              name: key,
+              value: obj[key]
+            };
+          });
+        }
+        else {
+          return null;
+        }
+      },
+
+      _levelTap(e){
+        // var data_args = Polymer.dom(e).rootTarget.getAttribute("id");
+        // if(data_args) {
+        //   this.selectedLot = data_args;
+        // }
+
+        // console.log(data_args);
+        
       }
 
 
