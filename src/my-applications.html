@@ -325,7 +325,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                         <div tabindex="0">
                           <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
-                            <paper-icon-button id="{{item.$key}}" on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
+                            <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
                               style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
                             <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
                           </a>
@@ -333,7 +333,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                         <div tabindex="1">
                           <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
-                            <paper-icon-button id="openDetailButton" on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new" alt="{{item.$key}}"
+                            <paper-icon-button id="openDetailButton" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new" alt="{{item.$key}}"
                               style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
                             <paper-tooltip position="left">view details</paper-tooltip>
                           </a>

@@ -181,8 +181,8 @@
             <app-header-layout id="appheader" has-scrolling-region>
                 <app-header fixed slot="header">
                     <app-toolbar>
-                        <a href$="{{_getPrevRoute()}}" tabindex="-1">
-                            <paper-icon-button class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="toggleDrawer"></paper-icon-button>
+                        <a href="/applications" tabindex="-1">
+                            <paper-icon-button class="menu" noink style="color: white;" icon="my-icons:arrow-back" on-tap="toggleDrawer"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{newdata.reference}}</div>
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
