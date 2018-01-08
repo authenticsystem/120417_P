@@ -149,7 +149,7 @@
         <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
         </firebase-document> -->
 
-        <firebase-document id="idd" path="{{path}}" data="{{newdata}}"></firebase-document>
+        <firebase-document id="idd" path="{{path}}" data="{{newdata}}" disabled="true"></firebase-document>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
@@ -178,11 +178,13 @@
                 </div>
             </app-drawer>
 
-            <app-header-layout has-scrolling-region>
+            <app-header-layout id="appheader" has-scrolling-region>
                 <app-header fixed slot="header">
                     <app-toolbar>
-                        <paper-icon-button class="menu" icon="my-icons:menu" on-tap="toggleDrawer"></paper-icon-button>
-                        <div main-title>Ref. {{newdata.reference}}</div>
+                        <a href$="{{_getPrevRoute()}}" tabindex="-1">
+                            <paper-icon-button class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="toggleDrawer"></paper-icon-button>
+                        </a>
+                        <div main-title>{{referenceLabel}} {{newdata.reference}}</div>
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
@@ -198,6 +200,9 @@
                             </div>
                             <div class="details">
                                 <paper-card id="stepOneCard" heading="" style="width:100%; margin-top: 16px; display: block;">
+
+                                    <paper-spinner id="spinnerDetails" active alt="Getting details...." style="position: absolute; left: 50%; top: 50%; height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
+
                                     <div id="cardcontentlotDetails" class="card-content" style$="height: 48px; background-color: {{newdata.lotdetails.maprenderdetails.type_bg_color}}; color: {{newdata.lotdetails.maprenderdetails.type_fore_color}};">
                                         <div style="position: absolute; padding-left: 16px; bottom: 5px; left: 0px; font-weight: 400; font-size: 20px;">
                                             [[fullLotName]]
@@ -347,18 +352,34 @@
             },
 
             observers: [
-                'newdataChanged(newdata.*)'
+                'newdataChanged(newdata)'
             ],
 
+            _getPrevRoute() {
+                return this.prevRoute || '/applications'
+            },
+
             transactionKeyChanged() {
-                this.getpath();
+                if (this.transactionKey) {
+                    this.$.appheader.resetLayout();
+                    this.selectedPage = 0;
+                    this.getpath();
+
+                    this.$.idd.disabled = false;
+
+                    // console.log(this.transactionKey);
+                }
             },
 
             newdataChanged() {
+                // console.log(this.newdata);
+
                 if (Object.keys(this.newdata).length > 0) {
-                    this.fullLotName = 'Block ' + this.newdata.lotdetails.block + ' - Lot ' + this.newdata.lotdetails.lot;
-                    if (this.newdata.lotdetails.level) {
-                        this.fullLotName = this.fullLotName + ' - Level ' + String(this.newdata.lotdetails.level).toUpperCase();
+                    if (this.newdata.lotdetails) {
+                        this.fullLotName = 'Block ' + this.newdata.lotdetails.block + ' - Lot ' + this.newdata.lotdetails.lot;
+                        if (this.newdata.lotdetails.level) {
+                            this.fullLotName = this.fullLotName + ' - Level ' + String(this.newdata.lotdetails.level).toUpperCase();
+                        }
                     }
 
                     this.areaLabel = "Area";
@@ -386,29 +407,48 @@
                         Polymer.dom(this.root).querySelector("#expiryPartSpan").setAttribute("style", "display: none; color: black; font-size: 12px;");
                     }
 
-                    
+
                     Polymer.dom(this.root).querySelector("#cardActions").setAttribute("style", "display: block;");
 
+                    var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
+                    spinnerDetails.active = false;
+
+                    this.referenceLabel = 'Ref.';
+
+                }
+                else {
+                    if (this.transactionKey) {
+                        var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
+                        spinnerDetails.active = false;
+                        this.referenceLabel = 'Not found!'
+                        // alert('Not found!');
+                    }
                 }
             },
 
             getpath() {
                 // this.applicationKey = this.guid();
                 // this.path = 'applications/' + this.applicationKey;
-                this.path = 'applications/' + this.transactionKey;
+                if (this.transactionKey) {
+                    this.path = 'applications/' + this.transactionKey;
+                    // console.log(this.path);
+                }
 
-                // console.log(this.path);
+
 
                 return this.path;
             },
 
             toggleDrawer() {
-                this.dispatchEvent(new CustomEvent('toggleDrawer', {
-                    bubbles: true, composed: true, detail: {
-                        narrow: this.$.narrow
-                    }
-                }));
-                this.$.narrow = !this.$.narrow;
+                // this.dispatchEvent(new CustomEvent('toggleDrawer', {
+                //     bubbles: true, composed: true, detail: {
+                //         narrow: this.$.narrow
+                //     }
+                // }));
+                // this.$.narrow = !this.$.narrow;
+
+                Polymer.dom(this.parentNode).removeChild(this);
+
             },
 
             _currentPage(e, s) {

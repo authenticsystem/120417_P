@@ -35,7 +35,7 @@
 <link rel="import" href="short-unique-id.html">
 
 
-<dom-module id="my-application-new">
+<dom-module id="my-application-edit">
     <template>
         <style include="shared-styles">
             :host {
@@ -124,7 +124,6 @@
 
             }
 
-
             paper-button.green {
                 background-color: var(--paper-green-500);
                 color: white;
@@ -144,12 +143,8 @@
             }
         </style>
 
-        <!-- <app-route route="{{route}}" pattern="/:key" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
-
-        <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
-        </firebase-document> -->
-
-        <firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}"></firebase-document>
+        <!-- to get the record of Transaction Key -->
+        <firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}" disabled="true"></firebase-document>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
@@ -193,10 +188,10 @@
             <app-header-layout id="appheader" has-scrolling-region>
                 <app-header fixed slot="header">
                     <app-toolbar>
-                        <a href$="{{_getPrevRoute()}}">
-                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="toggleDrawer"></paper-icon-button>
+                        <a href$="{{_getPrevRoute()}}" tabindex="-1">
+                            <paper-icon-button class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="toggleDrawer"></paper-icon-button>
                         </a>
-                        <div main-title>New Application</div>
+                        <div main-title>{{referenceLabel}} {{applicationKey}}</div>
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
@@ -205,15 +200,25 @@
 
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
+                        <!-- for current Transaction Keys data -->
+                        <firebase-document id="transactionFire" path="/applications/{{transactionKey}}" data="{{transactionData}}" disabled="true"></firebase-document>
 
-                        <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
+                        <!-- for Lot Details when entering Block, Lot, Level -->
+                        <firebase-document id="lotFire" path="/lots/{{fullLot}}" data="{{fullLotData}}" disabled="true"></firebase-document>
 
-                        <firebase-document id="fdColor"></firebase-document>
+                        <!-- for corresponding Selected Transaction Color Hold, Reserve, Buy -->
+                        <firebase-document id="fdColor" disabled="true"></firebase-document>
 
-                        <firebase-query path="/applications" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1 data="{{lastApplication}}"></firebase-query>
+                        <!-- to get the last Applications filed, will be use to compare MIN and MAX Start Date -->
+                        <firebase-query id="otherApplicationFire" path="/applications" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1
+                            data="{{lastApplication}}" disabled="true"></firebase-query>
 
-                        <firebase-query path="/reservations/{{fullLot}}" order-by-child='isexpired' equal-to='false' limit-to-last=1 data="{{lastReservation}}"></firebase-query>
-                        <!-- <firebase-query path="/reservations/{{fullLot}}" order-by-key limit-to-last=1 data="{{lastReservation}}"></firebase-query> -->
+                        <!-- to check if there is current reservation not yet isexpired or not yet served -->
+                        <firebase-query id="reservationsFire" path="/reservations/{{origFullLot}}" limit-to-last=3 data="{{lastTwoReservation}}"
+                            disabled="true"></firebase-query>
+
+                        <firebase-query id="lastReservationFire" path="/reservations/{{fullLot}}" order-by-child='iscurrent' equal-to='true' limit-to-last=1
+                            data="{{lastReservation}}" disabled="true"></firebase-query>
 
                         <div class="docu">
 
@@ -285,8 +290,8 @@
                                                 <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
                                                 <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
                                                 <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
-                                                <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" type="datetime-local" no-label-float="true"
-                                                    value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
+                                                <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}" type="datetime-local"
+                                                    no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
 
                                             </div>
                                             <div id="expiry" style="position: relative; padding-top: 16px;">
@@ -419,7 +424,7 @@
 
     <script>
         Polymer({
-            is: 'my-application-new',
+            is: 'my-application-edit',
 
             properties: {
                 blocklot: String,
@@ -438,7 +443,7 @@
                     value: "slide-left-animation"
                 },
                 route: Object,
-                prevRoute: String,
+
                 routeData: Object,
                 lotdetailsAPP: {
                     type: Object,
@@ -502,7 +507,21 @@
                     type: String,
                     value: ''
                 },
-                transTypeCorrespondingColor: Object
+                transTypeCorrespondingColor: Object,
+                transactionKey: {
+                    type: String,
+                    value: '',
+                    observer: 'transactionKeyChanged'
+                },
+                transactionData: {
+                    type: Array,
+                    observer: 'transactionDataChanged'
+                },
+                transTypeChange: {
+                    type: Boolean,
+                    value: false
+                },
+                origFullLot: String
 
             },
 
@@ -514,7 +533,27 @@
                 'draftdata_agentdetails_cellphoneChanged(draftdata_agentdetails_cellphone,draftdata_agentdetails_firstname,draftdata_agentdetails_middlename,draftdata_agentdetails_lastname)',
                 'lastApplicationChanged(lastApplication.*)',
                 'isStartDateTimeInvalidChanged(isStartDateTimeInvalid.*)',
+
+                // 'transactionDataChanged(transactionData)'
+
             ],
+
+            transactionKeyChanged() {
+                // console.log(this.transactionKey);
+
+                this.$.appheader.resetLayout();
+
+                if (this.transactionKey) {
+                    this.$.idd.disabled = false;
+                    this.$.transactionFire.disabled = false;
+                    this.$.lotFire.disabled = false;
+                    this.$.fdColor.disabled = false;
+                    this.$.otherApplicationFire.disabled = false;
+                    this.$.reservationsFire.disabled = false;
+                    this.$.lastReservationFire.disabled = false;
+
+                }
+            },
 
             // attached() {
             //     // console.log(this.localName + '#' + this.id + ' was attached');
@@ -529,8 +568,66 @@
             //     }
             // },
 
-            _getPrevRoute() {
-                return this.prevRoute || '/applications'
+            transactionDataChanged() {
+                if (Object.keys(this.transactionData).length > 0) {
+                    // console.log(this.transactionData);
+                    this.origFullLot = 'block' + this.transactionData.lotdetails.block + 'lot' + this.transactionData.lotdetails.lot + (this.transactionData.lotdetails.level ? 'level' + this.transactionData.lotdetails.level : '');
+
+                    this.applicationKey = this.transactionData.reference;
+                    if (this.transactionData.lotdetails) {
+                        this.block = this.transactionData.lotdetails.block;
+                        this.lot = this.transactionData.lotdetails.lot;
+                        this.level = this.transactionData.lotdetails.level;
+                    }
+                    this.startDateTimeValue = this.transactionData.start;
+                    this.expiryDate = this.transactionData.expiry;
+
+                    // this.minStartDateTime = this.transactionData.start; // still to determine
+                    // this.maxStartDateTime = this.transactionData.expiry; // still to determine
+
+                    var xdate = new Date(this.transactionData.expiry);
+                    this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+
+                    var sdate = new Date(this.transactionData.start);
+                    var ddate = xdate.getTime() - sdate.getTime();
+                    this.expiryHoursDaysValue = ddate / (this.transactionData.type === 'Hold' ? (1000 * 60 * 60) : this.transactionData.type === 'Reserve' ? (1000 * 60 * 60 * 24) : 0); //in hours & in days
+                    this.expiryHoursDaysLabel = (this.transactionData.type === 'Hold' ? 'hours' : this.transactionData.type === 'Reserve' ? 'days' : '');
+                    this.draftdata_type = this.transactionData.type;
+
+                    var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
+                    showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
+
+                    var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
+                    showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
+
+
+                    this.buyerKey = this.transactionData.buyer;
+                    this.draftdata_buyerdetails_cellphone = this.transactionData.buyerdetails.cellphone;
+                    this.draftdata_buyerdetails_firstname = this.transactionData.buyerdetails.firstname;
+                    this.draftdata_buyerdetails_middlename = this.transactionData.buyerdetails.middlename;
+                    this.draftdata_buyerdetails_lastname = this.transactionData.buyerdetails.lastname;
+                    this.draftdata_buyerdetails_suffix = this.transactionData.buyerdetails.suffix;
+                    this.draftdata_buyerdetails_email = this.transactionData.buyerdetails.email;
+
+                    this.agentKey = this.transactionData.agent;
+                    this.draftdata_agentdetails_cellphone = this.transactionData.agentdetails.cellphone;
+                    this.draftdata_agentdetails_firstname = this.transactionData.agentdetails.firstname;
+                    this.draftdata_agentdetails_middlename = this.transactionData.agentdetails.middlename;
+                    this.draftdata_agentdetails_lastname = this.transactionData.agentdetails.lastname;
+                    this.draftdata_agentdetails_suffix = this.transactionData.agentdetails.suffix;
+                    this.draftdata_agentdetails_email = this.transactionData.agentdetails.email;
+
+                    if (typeof (this.transTypeCorrespondingColor) == 'undefined') {
+                        var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + (this.transactionData.type == 'Reserve' ? 'reserved' : (this.transactionData.type == 'Hold' ? 'hold' : (this.transactionData.type == 'Buy' ? 'sold' : ''))));
+                        corresStatusColorRef.on('value', statusColor => {
+                            if (statusColor.exists()) {
+                                this.transTypeCorrespondingColor = statusColor.val()
+                                // console.log(this.transTypeCorrespondingColor);
+                            }
+                        });
+                    }
+                }
+
             },
 
             isStartDateTimeInvalidChanged() {
@@ -540,32 +637,69 @@
             },
 
             lastApplicationChanged() {
+                //loop thru the applications, get Previous and Next of the Current Transaction Key
                 if (this.lastApplication[0]) {
-                    if (this.lastApplication[0].expiry) {
-                        this.minStartDateTime = this.lastApplication[0].expiry;
 
-                        if (this.startDateTimeValue) {
-                            var startDTV = new Date(this.startDateTimeValue);
-                            var minStartDT = new Date(this.minStartDateTime);
-                            if (startDTV > minStartDT) {
-                                this.isStartDateTimeInvalidGlobal = false;
+                    if (this.lastApplication[0].$key == this.transactionKey) {
+                        // console.log(this.lastApplication[0].$key)
+
+                        //min start = start
+                        if (this.transactionData.start) {
+                            this.minStartDateTime = this.transactionData.start;
+                            this.maxStartDateTime = '';
+
+                            if (this.startDateTimeValue) {
+                                var startDTV = new Date(this.startDateTimeValue);
+                                var minStartDT = new Date(this.minStartDateTime);
+                                if (startDTV >= minStartDT) {
+                                    this.isStartDateTimeInvalidGlobal = false;
+                                }
+                                else {
+                                    this.isStartDateTimeInvalidGlobal = true;
+                                }
                             }
-                            else {
-                                this.isStartDateTimeInvalidGlobal = true;
-                            }
+                        }
+                        else {
+                            this.minStartDateTime = '';
+                            this.maxStartDateTime = '';
                         }
                     }
                     else {
-                        this.minStartDateTime = '';
+                        //min start = expiry
+                        if (this.transactionData.start) {
+                            this.minStartDateTime = this.transactionData.start;
+                            this.maxStartDateTime = this.transactionData.expiry;
+
+                            if (this.startDateTimeValue) {
+                                var startDTV = new Date(this.startDateTimeValue);
+                                var minStartDT = new Date(this.minStartDateTime);
+                                var maxStartDT = new Date(this.maxStartDateTime);
+                                if (startDTV >= minStartDT && startDTV <= maxStartDT) {
+                                    this.isStartDateTimeInvalidGlobal = false;
+                                }
+                                else {
+                                    this.isStartDateTimeInvalidGlobal = true;
+                                }
+                            }
+                        }
+                        else {
+                            this.minStartDateTime = '';
+                            this.maxStartDateTime = '';
+                        }
                     }
 
                 }
                 else {
                     this.minStartDateTime = '';
+                    this.maxStartDateTime = '';
                 }
 
                 // console.log(this.lastApplication[0]);
 
+            },
+
+            _getPrevRoute() {
+                return this.prevRoute || '/applications'
             },
 
             draftdata_buyerdetails_cellphoneChanged() {
@@ -593,6 +727,16 @@
                     this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
                     this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
                         + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+
+                    if (this.maxStartDateTime) {
+                        var maxSDate = new Date(this.maxStartDateTime);
+                        if (xdate <= maxSDate) {
+                            this.isStartDateTimeInvalid = false;
+                        }
+                        else {
+                            this.isStartDateTimeInvalid = true;
+                        }
+                    }
                 }
                 else if (this.draftdata_type === 'Hold') {
                     var xdate = new Date(this.$.startDateTimeValueV.value);
@@ -600,9 +744,22 @@
                     this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
                     this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
                         + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+
+                    if (this.maxStartDateTime) {
+                        var maxSDate = new Date(this.maxStartDateTime);
+                        if (xdate <= maxSDate) {
+                            this.isStartDateTimeInvalid = false;
+                        }
+                        else {
+                            this.isStartDateTimeInvalid = true;
+                        }
+                    }
                 }
                 else if (this.draftdata_type === 'Buy') {
                     this.expiryDate = '';
+
+                    // this.isStartDateTimeInvalidGlobal = false;
+
                 }
 
                 if (this.$.startDateTimeValueV.value) {
@@ -620,16 +777,18 @@
             },
 
             draftdatatypeChanged(e) {
-                if (e) {
-                    if (this.isStartDateTimeInvalid === true) {
-                        this.favrighthide = true;
+                if (this.transTypeChange === true) {
+                    if (e) {
+                        if (this.isStartDateTimeInvalid === true) {
+                            this.favrighthide = true;
+                        }
+                        else {
+                            this.favrighthide = false;
+                        }
                     }
                     else {
-                        this.favrighthide = false;
+                        this.favrighthide = true;
                     }
-                }
-                else {
-                    this.favrighthide = true;
                 }
             },
 
@@ -699,6 +858,8 @@
                     }
                 });
 
+                this.transTypeChange = true;
+
             },
             selectHold() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
@@ -726,6 +887,8 @@
                         this.transTypeCorrespondingColor = snapshot.val()
                     }
                 });
+
+                this.transTypeChange = true;
             },
             selectBuy() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
@@ -749,12 +912,13 @@
                         this.transTypeCorrespondingColor = snapshot.val()
                     }
                 });
+
+                this.transTypeChange = true;
             },
 
             getpath() {
                 this.applicationKey = this.guid();
                 this.path = 'applications/' + this.applicationKey;
-
                 return this.path;
             },
 
@@ -776,7 +940,7 @@
                             this.areaLabel = this.fullLotData.area ? "Area" : "";
                             this.designationLabel = this.fullLotData.designation ? "Designation" : "";
                             this.typeLabel = this.fullLotData.type ? "Type" : "";
-                            this.statusLabel = this.fullLotData.status ? "Status" : "";
+                            this.statusLabel = this.fullLotData.status ? "Current Status" : "";
 
                             var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
                             statusValue.setAttribute("style", "font-weight: 400; color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.fore_color : "black") + "; background:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.bg_color : "gray") + "; border-radius: 2px; padding-left: 2px;padding-right: 2px;");
@@ -799,9 +963,20 @@
 
                             }
                             else {
-                                cardActions.setAttribute("style", "display: none;");
-                                this.favrighthide = true;
+                                if (this.transTypeChange === true) {
+                                    cardActions.setAttribute("style", "display: none;");
+                                    this.favrighthide = true;
+                                }
+                                else {
+                                    cardActions.setAttribute("style", "display: block;");
+                                    this.favrighthide = false;
+                                    var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
+                                    showExpiry.setAttribute("style", "display: none; padding-top: 8px; position: relative;");
+                                }
                             }
+
+
+                            this.referenceLabel = 'Ref.';
 
 
                         }
@@ -833,6 +1008,8 @@
                                 cardActions.setAttribute("style", "display: none;");
 
                                 this.favrighthide = true;
+
+                                this.referenceLabel = 'Not found!'
                             }
                         }
 
@@ -865,6 +1042,8 @@
                             cardActions.setAttribute("style", "display: none;");
 
                             this.favrighthide = true;
+
+                            this.referenceLabel = 'Not found!'
                         }
                     }
 
@@ -898,6 +1077,8 @@
                         cardActions.setAttribute("style", "display: none;");
 
                         this.favrighthide = true;
+
+                        this.referenceLabel = 'Not found!'
                     }
 
 
@@ -938,6 +1119,13 @@
                 //     }
                 // }));
                 // this.$.narrow = !this.$.narrow;
+
+                // this.$.idd.disabled = true;
+                // this.$.transactionFire.disabled = true;
+                // this.$.lotFire.disabled = true;
+                // this.$.fdColor.disabled = true;
+                // this.$.otherApplicationFire.disabled = true;
+                // this.$.reservationsFire.disabled = true;
 
                 Polymer.dom(this.parentNode).removeChild(this);
 
@@ -986,6 +1174,8 @@
 
                 this.minStartDateTime = '';
                 this.saveErrorDetails = 'saving...';
+
+
             },
 
             _select1(e) {
@@ -1023,16 +1213,22 @@
                 if (parseInt(this.selectedPage) >= 0) {
                     if (parseInt(this.selectedPage) == 3) {
                         //complete
+                        if (this.isStartDateTimeInvalidGlobal == true) {
+                            var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+                            this.saveErrorDetails = "Start date conflict, please change the start date accordingly.";
+                            saveFailed.setAttribute("style", "display: block; color: red;");
+                        }
+                        else {
+                            var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
+                            var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+                            var favRightVar = Polymer.dom(this.root).querySelector("#favright");
 
-                        if (this.transTypeCorrespondingColor) {
+                            if (this.transactionKey) {
+                                var firebaseDb = this.$.idd.db;
+                                var firebaseDbRef = firebaseDb.ref();
+                                var firebaseUpdate = {};
 
-                            if (this.isStartDateTimeInvalidGlobal == true) {
-                                var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                                this.saveErrorDetails = "Start date conflict, please change the start date accordingly.";
-                                saveFailed.setAttribute("style", "display: block; color: red;");
-                            }
-                            else {
-
+                                //get agent and buyer key, use 
                                 this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
                                 this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
 
@@ -1057,18 +1253,20 @@
                                     },
                                     expiry: this.expiryDate,
                                     isdraft: 'false',
-                                    isserved: 'false',
+                                    isserved: this.transactionData.isserved, //get value from current
                                     lot: this.fullLot,
                                     lotdetails: this.fullLotData,
-                                    processed: '',
-                                    processordetails: '',
-                                    served: '',
+                                    processed: this.transactionData.processed, //get value from current
+                                    processordetails: this.transactionData.processordetails, //get value from current
+                                    served: this.transactionData.served, //get value from current
                                     start: this.startDateTimeValue,
-                                    status: '',
+                                    status: this.transactionData.status, //get value from current
                                     timestamp: { ".sv": "timestamp" },
                                     type: this.draftdata_type,
                                     reference: this.applicationKey
                                 };
+                                //save to /applications/{id}
+                                firebaseUpdate["/applications/" + this.transactionKey] = draftdata;
 
                                 var draftBuyer = {
                                     firstname: this.draftdata_buyerdetails_firstname,
@@ -1078,7 +1276,16 @@
                                     cellphone: this.draftdata_buyerdetails_cellphone,
                                     email: this.draftdata_buyerdetails_email
                                 };
-
+                                if (this.buyerKey) {
+                                    //save to /buyers/{new id}
+                                    firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
+                                }
+                                else {
+                                    this.saveErrorDetails = "Buyer Key is empty.";
+                                    saveSuccess.setAttribute("style", "display: none; color: green;");
+                                    saveFailed.setAttribute("style", "display: block; color: red;");
+                                    return;
+                                }
 
                                 var draftAgent = {
                                     firstname: this.draftdata_agentdetails_firstname,
@@ -1088,63 +1295,83 @@
                                     email: this.draftdata_agentdetails_email,
                                     cellphone: this.draftdata_agentdetails_cellphone
                                 };
+                                if (this.agentKey) {
+                                    //save to /agents/{new id}
+                                    firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
+                                }
+                                else {
+                                    this.saveErrorDetails = "Agent Key is empty.";
+                                    saveSuccess.setAttribute("style", "display: none; color: green;");
+                                    saveFailed.setAttribute("style", "display: block; color: red;");
+                                }
 
-                                var firebaseDb = this.$.idd.db;
-                                var firebaseDbRef = firebaseDb.ref();
-                                var firebaseUpdate = {};
+                                var sdate;
+                                var serverdatetime = firebase.database().ref("info/serverdatetime");
+                                serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
+                                serverdatetime.once('value').then(snapshot => {
+                                    var sdate = new Date(snapshot.val());
+                                    // var d1 = new Date(snapshot.val());
+                                    // var sdate = new Date(d1);
+                                    // sdate.setHours(d1.getHours() + 8); //manila +8 offset from UTC
+                                    // console.log(sdate);
 
-                                var transactionPush = firebaseDbRef.child('applications').push();
-                                this.transactionKey = transactionPush.key;
-
-                                if (this.transactionKey) {
-
-                                    //save to /applications/{id}
-                                    firebaseUpdate["/applications/" + this.transactionKey] = draftdata;
-                                    //this.path
-
-                                    if (this.buyerKey) {
-                                        //save to /buyers/{new id}
-                                        firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
-                                    }
-                                    else {
-                                        this.saveErrorDetails = "Buyer Key is empty.";
-                                        saveSuccess.setAttribute("style", "display: none; color: green;");
-                                        saveFailed.setAttribute("style", "display: block; color: red;");
-                                    }
-
-                                    if (this.agentKey) {
-                                        //save to /agents/{new id}
-                                        firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
-                                    }
-                                    else {
-                                        this.saveErrorDetails = "Agent Key is empty.";
-                                        saveSuccess.setAttribute("style", "display: none; color: green;");
-                                        saveFailed.setAttribute("style", "display: block; color: red;");
-                                    }
-
-
-
-                                    //how to get last two reservation with iscurrent and not iscurrent
-                                    //what if there is no iscurrent but there is a reservation???
-                                    //--- no need to get the current iscurrent=true, we just need the last-reservation to check if we can set the current reservation as iscurrent
-
-                                    // applications filter
-                                    // edit
-
-                                    // save to application and conditionally to Reservations & Lot Details Reservation
-                                    // ---check for applications in-line and determine the start date and time
-                                    // ---save to reservation will be after checking of docs approval
-
-                                    // midnight update
-
-
-                                    //will be transferred later, when docs checking and approval are up
-                                    //save to /reservations/{new id}
+                                    //is Current in New Lot = check if current Selected is more current than others
+                                    //if already has record that is CURRENT, then compare dates which is closer to server dates
+                                    //if no record at all, then declare as CURRENT
+                                    //if has record, and if current application start and expiry is more closer to server dates, then declare as CURRENT
+                                    //if other application is closer than server dates then declare AS NOT CURRENT
+                                    // console.log(this.lastReservation);
+                                    // console.log(this.lastTwoReservation);
                                     var isCurrentReservation = false;
                                     if (this.lastReservation) {
                                         if (this.lastReservation.length > 0) {
-                                            //check if this.lastReservation is expired, check for previous reservation --done thru query
-                                            isCurrentReservation = false;
+                                            if (this.lastReservation[0].$key === this.transactionKey) {
+                                                isCurrentReservation = true; //it should be true, not based from iscurrent
+                                            }
+                                            else {
+                                                //always check Priority thru key (timestamp)
+                                                if (this.transactionKey < this.lastReservation[0].$key) {
+                                                    //consider comparing the dates  
+                                                    var tdStartDate = new Date(this.transactionData.start);
+                                                    var tdExpiryDate = new Date(this.transactionData.expiry);
+                                                    if (this.transactionData.expiry) {
+                                                        if (sdate >= tdStartDate && sdate <= tdExpiryDate) {
+                                                            var lrStartDate = new Date(this.lastReservation[0].start);
+                                                            var lrExpiryDate = new Date(this.lastReservation[0].expiry);
+                                                            if (this.lastReservation[0].expiry) {
+                                                                if (sdate >= lrStartDate && sdate <= lrExpiryDate) {
+                                                                    isCurrentReservation = false;
+                                                                }
+                                                                else {
+                                                                    isCurrentReservation = true;
+                                                                }
+                                                            }
+                                                            else {
+                                                                if (sdate >= lrStartDate) {
+                                                                    isCurrentReservation = false;
+                                                                }
+                                                                else {
+                                                                    isCurrentReservation = true;
+                                                                }
+                                                            }
+                                                        }
+                                                        else {
+                                                            isCurrentReservation = false;
+                                                        }
+                                                    }
+                                                    else {
+                                                        if (sdate >= tdStartDate) {
+                                                            isCurrentReservation = false;
+                                                        }
+                                                        else {
+                                                            isCurrentReservation = true;
+                                                        }
+                                                    }
+                                                }
+                                                else {
+                                                    isCurrentReservation = false;
+                                                }
+                                            }
                                         }
                                         else {
                                             isCurrentReservation = true;
@@ -1153,9 +1380,6 @@
                                     else {
                                         isCurrentReservation = true;
                                     }
-
-                                    // console.log(this.lastReservation);
-
 
                                     var dataForReservation = {
                                         agent: this.agentKey,
@@ -1177,7 +1401,7 @@
                                             email: this.draftdata_buyerdetails_email
                                         },
                                         expiry: this.expiryDate,
-                                        isexpired: false,
+                                        isexpired: this.lastReservation[0] ? (this.lastReservation[0].isexpired ? this.lastReservation[0].isexpired : false) : false,
                                         start: this.startDateTimeValue,
                                         timestamp: { ".sv": "timestamp" },
                                         iscurrent: isCurrentReservation,
@@ -1186,115 +1410,254 @@
                                                 this.draftdata_type === 'Buy' ? 'sold' : ''),
                                         reference: this.applicationKey
                                     };
-
                                     firebaseUpdate["/reservations/" + this.fullLot + "/" + this.transactionKey] = dataForReservation;
 
-                                    if (isCurrentReservation == true) {
-                                        firebaseUpdate["/lots/" + this.fullLot + "/reservation"] = this.transactionKey;
-                                        firebaseUpdate["/lots/" + this.fullLot + "/reservationdetails"] = dataForReservation;
-                                        firebaseUpdate["/lots/" + this.fullLot + "/status"] = (this.draftdata_type === 'Reserve' ? 'reserved' : this.draftdata_type === 'Hold' ? 'hold' : this.draftdata_type === 'Buy' ? 'sold' : '');
-                                        firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = this.transTypeCorrespondingColor.name;
-                                        firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = this.transTypeCorrespondingColor.bg_color;
-                                        firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = this.transTypeCorrespondingColor.fore_color;
 
-                                        //shb 01/04
-                                        //for lots with level/map_lot: check other lots by map_lot, compare and get winning map_lot status
-                                        //get lots thru map_lot
-                                        if (this.fullLotData.level) {
-                                            var otherLotsRef = this.$.fdColor.db.ref('lots');
-                                            var otherLotMapLot = 'block' + this.fullLotData.block + 'lot' + this.fullLotData.lot;
-                                            otherLotsRef.orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
-                                                if (snap.exists()) {
-                                                    var winningValStat = 0;
-                                                    snap.forEach(element => {
-                                                        var valStat = 0;
-                                                        var stat = element.val().status;
-                                                        if (stat) {
-                                                            if (stat === 'available') valStat = 5;
-                                                            else if (stat === 'hold') valStat = 4;
-                                                            else if (stat === 'reserved') valStat = 3;
-                                                            else if (stat === 'soldlacking') valStat = 2;
-                                                            else if (stat === 'sold') valStat = 1;
-                                                            else valStat = 0; //notyetavailable
-                                                        }
-                                                        if (valStat > winningValStat) {
-                                                            winningValStat = valStat;
-                                                        }
-                                                    });
-
-                                                    var winningColor;
-                                                    if (winningValStat == 5) winningColor = 'available';
-                                                    else if (winningValStat == 4) winningColor = 'hold';
-                                                    else if (winningValStat == 3) winningColor = 'reserved';
-                                                    else if (winningValStat == 2) winningColor = 'soldlacking';
-                                                    else if (winningValStat == 1) winningColor = 'sold';
-                                                    else winningColor = 'notyetavailable';
-
-                                                    var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + winningColor);
-                                                    transTypeCorrespondingColorRef.on('value', statusColor => {
-                                                        if (statusColor.exists()) {
-                                                            corresStatusColor = statusColor.val()
-                                                            firebaseUpdate["/lots/" + otherLotMapLot + "/status"] = winningColor;
-                                                            firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
-                                                            firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
-                                                            firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
-                                                        }
-                                                    });
+                                    var statusColorsRef = firebase.database().ref('statuscolor').once('value').then(statusColors => {
+                                        if (statusColors.exists()) {
+                                            if (isCurrentReservation == true) {
+                                                var selectedTransType = (this.draftdata_type === 'Reserve' ? 'reserved' : this.draftdata_type === 'Hold' ? 'hold' : this.draftdata_type === 'Buy' ? 'sold' : '');
+                                                firebaseUpdate["/lots/" + this.fullLot + "/reservation"] = this.transactionKey;
+                                                firebaseUpdate["/lots/" + this.fullLot + "/reservationdetails"] = dataForReservation;
+                                                firebaseUpdate["/lots/" + this.fullLot + "/status"] = selectedTransType;
+                                                firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = statusColors.val()[selectedTransType].name;
+                                                firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = statusColors.val()[selectedTransType].bg_color;
+                                                firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = statusColors.val()[selectedTransType].fore_color;
+                                                if (this.lastReservation.length > 0) {
+                                                    firebaseUpdate["/reservations/" + this.fullLot + "/" + this.lastReservation[0].$key + "/iscurrent"] = false;
                                                 }
+                                            }
+
+                                            //current lot selected
+                                            var otherLotMapLot = 'block' + this.fullLotData.block + 'lot' + this.fullLotData.lot;
+                                            var otherLotsRef = firebase.database().ref('lots').orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
+                                                if (snap.exists()) {
+                                                    if (this.fullLotData.level) {
+                                                        var winningValStat = 0;
+                                                        snap.forEach(element => {
+                                                            var valStat = 0;
+                                                            var stat = element.val().status;
+                                                            if (stat) {
+                                                                if (stat === 'available') valStat = 5;
+                                                                else if (stat === 'hold') valStat = 4;
+                                                                else if (stat === 'reserved') valStat = 3;
+                                                                else if (stat === 'soldlacking') valStat = 2;
+                                                                else if (stat === 'sold') valStat = 1;
+                                                                else valStat = 0; //notyetavailable
+                                                            }
+                                                            if (valStat > winningValStat) {
+                                                                winningValStat = valStat;
+                                                            }
+                                                        });
+
+                                                        var winningColor;
+                                                        if (winningValStat == 5) winningColor = 'available';
+                                                        else if (winningValStat == 4) winningColor = 'hold';
+                                                        else if (winningValStat == 3) winningColor = 'reserved';
+                                                        else if (winningValStat == 2) winningColor = 'soldlacking';
+                                                        else if (winningValStat == 1) winningColor = 'sold';
+                                                        else winningColor = 'notyetavailable';
+
+                                                        firebaseUpdate["/lots/" + otherLotMapLot + "/status"] = winningColor;
+                                                        firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColors.val()[winningColor].name;
+                                                        firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColors.val()[winningColor].bg_color;
+                                                        firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColors.val()[winningColor].fore_color;
+                                                    }
+                                                }
+
+                                                //turn orig lot next reservation as current status if it is not expired
+                                                //same as FiveMinuteReset
+                                                var origLot = "block" + this.transactionData.lotdetails.block + "lot" + this.transactionData.lotdetails.lot + (this.transactionData.lotdetails.level ? "level" + this.transactionData.lotdetails.level : "");
+                                                if (origLot != this.fullLot) {
+                                                    if (origLot && this.transactionKey) {
+                                                        firebaseUpdate["/reservations/" + origLot + "/" + this.transactionKey] = null;
+                                                    }
+
+                                                    if (this.lastTwoReservation.length > 0) {
+                                                        // console.log(this.lastTwoReservation);
+                                                        var keys = Object.keys(this.lastTwoReservation);
+                                                        var previousDate;
+                                                        var key = '';
+                                                        var selectedKey = '';
+
+                                                        keys.forEach(ckey => {
+                                                            //contain next
+                                                            //check if next reservation is also expired
+                                                            // console.log(this.lastTwoReservation);
+
+                                                            //isCurrent in orig lot == ok
+                                                            if (this.lastTwoReservation[ckey].$key != this.transactionKey) {
+                                                                //must be be the same as current transaction key
+                                                                var kxdate = new Date(this.lastTwoReservation[ckey].expiry);
+                                                                if (this.lastTwoReservation[ckey].expiry) {
+                                                                    if (kxdate > sdate) {
+                                                                        if (previousDate) {
+                                                                            if (kxdate < previousDate) {
+                                                                                //if current expiry date is greater than previous evaluated expiry
+                                                                                key = this.lastTwoReservation[ckey].$key;
+                                                                                selectedKey = ckey;
+                                                                            }
+                                                                        }
+                                                                        else {
+                                                                            key = this.lastTwoReservation[ckey].$key;
+                                                                            selectedKey = ckey;
+                                                                        }
+
+                                                                        previousDate = kxdate;
+                                                                    }
+                                                                }
+                                                            }
+                                                        });
+
+                                                        if (key) {
+
+                                                            firebaseUpdate['/reservations/' + origLot + '/' + key + '/iscurrent'] = true;
+                                                            firebaseUpdate['/reservations/' + origLot + '/' + key + '/isexpired'] = false;
+
+                                                            firebaseUpdate['/lots/' + origLot + '/reservation'] = key.toString();
+                                                            firebaseUpdate['/lots/' + origLot + '/reservationdetails'] = {
+                                                                agent: this.lastTwoReservation[selectedKey].agent,
+                                                                agentdetails: this.lastTwoReservation[selectedKey].agentdetails,
+                                                                buyer: this.lastTwoReservation[selectedKey].agent,
+                                                                buyerdetails: this.lastTwoReservation[selectedKey].buyerdetails,
+                                                                expiry: this.lastTwoReservation[selectedKey].expiry,
+                                                                iscurrent: true,
+                                                                isexpired: this.lastTwoReservation[selectedKey].isexpired,
+                                                                reference: this.lastTwoReservation[selectedKey].reference,
+                                                                start: this.lastTwoReservation[selectedKey].start,
+                                                                timestamp: this.lastTwoReservation[selectedKey].timestamp,
+                                                                type: this.lastTwoReservation[selectedKey].type,
+                                                            };
+                                                            firebaseUpdate['/lots/' + origLot + '/status'] = this.lastTwoReservation[selectedKey].type;
+                                                            firebaseUpdate['/lots/' + origLot + '/maprenderdetails/bg_color'] = statusColors.val()[this.lastTwoReservation[selectedKey].type].bg_color;
+                                                            firebaseUpdate['/lots/' + origLot + '/maprenderdetails/fore_color'] = statusColors.val()[this.lastTwoReservation[selectedKey].type].fore_color;
+                                                            firebaseUpdate['/lots/' + origLot + '/maprenderdetails/status_name'] = statusColors.val()[this.lastTwoReservation[selectedKey].type].name;
+
+                                                        }
+                                                        else {
+                                                            //no next
+                                                            firebaseUpdate['/lots/' + origLot + '/reservation'] = '';
+                                                            firebaseUpdate['/lots/' + origLot + '/reservationdetails'] = '';
+                                                            firebaseUpdate['/lots/' + origLot + '/status'] = 'available';
+                                                            firebaseUpdate['/lots/' + origLot + '/maprenderdetails/bg_color'] = statusColors.val()['available'].bg_color;
+                                                            firebaseUpdate['/lots/' + origLot + '/maprenderdetails/fore_color'] = statusColors.val()['available'].fore_color;
+                                                            firebaseUpdate['/lots/' + origLot + '/maprenderdetails/status_name'] = statusColors.val()['available'].name;
+
+                                                        }
+
+                                                    }
+                                                    else {
+                                                        //no next
+                                                        firebaseUpdate['/lots/' + origLot + '/reservation'] = '';
+                                                        firebaseUpdate['/lots/' + origLot + '/reservationdetails'] = '';
+                                                        firebaseUpdate['/lots/' + origLot + '/status'] = 'available';
+                                                        firebaseUpdate['/lots/' + origLot + '/maprenderdetails/bg_color'] = statusColors.val()['available'].bg_color;
+                                                        firebaseUpdate['/lots/' + origLot + '/maprenderdetails/fore_color'] = statusColors.val()['available'].fore_color;
+                                                        firebaseUpdate['/lots/' + origLot + '/maprenderdetails/status_name'] = statusColors.val()['available'].name;
+
+                                                    }
+
+                                                }
+
+                                                var map_lot_Orig = "block" + this.transactionData.lotdetails.block + "lot" + this.transactionData.lotdetails.lot;
+                                                var otherLotsRefOrig = firebase.database().ref('lots').orderByChild('map_lot').equalTo(map_lot_Orig).on('value', snap => {
+                                                    if (this.transactionData.lotdetails.level) {
+                                                        if (snap.exists()) {
+                                                            var winningValStat = 0;
+                                                            snap.forEach(element => {
+                                                                var valStat = 0;
+                                                                var stat = element.val().status;
+                                                                if (stat) {
+                                                                    if (stat === 'available') valStat = 5;
+                                                                    else if (stat === 'hold') valStat = 4;
+                                                                    else if (stat === 'reserved') valStat = 3;
+                                                                    else if (stat === 'soldlacking') valStat = 2;
+                                                                    else if (stat === 'sold') valStat = 1;
+                                                                    else valStat = 0; //notyetavailable
+                                                                }
+                                                                if (valStat > winningValStat) {
+                                                                    winningValStat = valStat;
+                                                                }
+                                                            });
+
+                                                            var winningColor;
+                                                            if (winningValStat == 5) winningColor = 'available';
+                                                            else if (winningValStat == 4) winningColor = 'hold';
+                                                            else if (winningValStat == 3) winningColor = 'reserved';
+                                                            else if (winningValStat == 2) winningColor = 'soldlacking';
+                                                            else if (winningValStat == 1) winningColor = 'sold';
+                                                            else winningColor = 'notyetavailable';
+
+                                                            firebaseUpdate["/lots/" + map_lot_Orig + "/status"] = winningColor;
+                                                            firebaseUpdate["/lots/" + map_lot_Orig + "/maprenderdetails/status_name"] = statusColors.val()[winningColor].name;
+                                                            firebaseUpdate["/lots/" + map_lot_Orig + "/maprenderdetails/bg_color"] = statusColors.val()[winningColor].bg_color;
+                                                            firebaseUpdate["/lots/" + map_lot_Orig + "/maprenderdetails/fore_color"] = statusColors.val()[winningColor].fore_color;
+
+                                                        }
+                                                    }
+
+                                                    console.log(firebaseUpdate);
+
+                                                    var uPromise = firebaseDbRef.update(firebaseUpdate, function (error) {
+                                                        if (error) {
+                                                            console.log("Error updating data:", error);
+                                                            this.saveErrorDetails = error;
+                                                            saveSuccess.setAttribute("style", "display: none; color: green;");
+                                                            saveFailed.setAttribute("style", "display: block; color: red;");
+
+                                                            this.favlefthide = false;
+                                                            this.favrighthide = true;
+
+                                                            // console.log('1');
+                                                        }
+                                                        else {
+                                                            this.saveErrorDetails = "";
+                                                            saveSuccess.setAttribute("style", "display: block; color: green;");
+                                                            saveFailed.setAttribute("style", "display: none; color: red;");
+
+                                                            this.favlefthide = true;
+                                                            this.favrighthide = true;
+
+                                                            favRightVar.setAttribute("style", "display: none; background: #1976d2;");
+
+                                                            // console.log('2');
+                                                        }
+                                                    });
+                                                    console.log(uPromise);
+
+                                                });
+
                                             });
 
                                         }
-
-                                    }
-                                    //if ok, update bg_color, status_name
-                                    //check reservations if current is expired, then check if there is prior reservation, then iscurrent=false
-
-
-                                    var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
-                                    var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                                    var favRightVar = Polymer.dom(this.root).querySelector("#favright");
-
-                                    firebaseDbRef.update(firebaseUpdate, function (error) {
-                                        if (error) {
-                                            console.log("Error updating data:", error);
-                                            this.saveErrorDetails = error;
-                                            saveSuccess.setAttribute("style", "display: none; color: green;");
-                                            saveFailed.setAttribute("style", "display: block; color: red;");
-
-                                            this.favlefthide = false;
-                                            this.favrighthide = true;
-
-                                            // console.log('1');
-                                        }
                                         else {
-                                            this.saveErrorDetails = "";
-                                            saveSuccess.setAttribute("style", "display: block; color: green;");
-                                            saveFailed.setAttribute("style", "display: none; color: red;");
-
-                                            this.favlefthide = true;
-                                            this.favrighthide = true;
-
-                                            favRightVar.setAttribute("style", "display: none; background: #1976d2;");
-
-                                            // console.log('2');
+                                            // var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+                                            this.saveErrorDetails = "Status Colors is missing.";
+                                            saveFailed.setAttribute("style", "display: block; color: red;");
+                                            return;
                                         }
+
                                     });
-                                }
-                                else {
-                                    //transactionKey is missing
-                                    var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                                    this.saveErrorDetails = "Transaction Key is missing.";
-                                    saveFailed.setAttribute("style", "display: block; color: red;");
-                                }
+
+
+                                });
+
+
+                            }
+                            else {
+                                //transactionKey is missing
+                                var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+                                this.saveErrorDetails = "Transaction Key is missing.";
+                                saveFailed.setAttribute("style", "display: block; color: red;");
                             }
 
+                            //verification first
+                            //get colors
+                            //get map_lot
+                            //get reservations
                         }
-                        else {
-                            var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                            this.saveErrorDetails = "Status color is not yet loaded, please re-select transaction type.";
-                            saveFailed.setAttribute("style", "display: block; color: red;");
-                        }
-                        // console.log('3');
+
+
 
                     }
                     else {
