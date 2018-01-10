@@ -28,6 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 
@@ -184,6 +185,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
 
+      <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
+      </firebase-query>
 
       <!-- <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
@@ -273,6 +276,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           narrow: {
             type: Boolean,
             notify: true
+          },
+          account:{
+            type:Object,
+            observer: '__accountChanged'
           }
         };
       }
@@ -281,6 +288,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return [
           '_routePageChanged(routeData.page,user)',
         ];
+      }
+
+      __accountChanged(){
+        console.log(this.account);
       }
 
       toggleMenu() {
@@ -370,6 +381,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _alreadySignedIn(e, f) {
         if (f === true) {
           if (e) {
+
+            if (e.emailVerified === true) {
+              // this._linkVerification(e);
+              // var ref = firebase.database().ref("accountlist").orderByChild('uid').equalTo(e.uid);
+            }
+
             if (e.emailVerified === false) {
               console.log(e);
               e.sendEmailVerification();
