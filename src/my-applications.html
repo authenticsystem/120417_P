@@ -206,13 +206,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       </firebase-query> -->
 
               <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
-                end-at="{{typeValue}}" limit-to-last="200">
+                end-at="{{typeValue}}" limit-to-last="50">
               </firebase-query>
 
               <!-- on-lower-threshold="loadMoreData" -->
               <iron-scroll-threshold id="threshold">
                 <!-- threshold -->
-                <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="document">
+                <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
                   <paper-toast id="toast" text="" duration="0"></paper-toast>
                   <template>
                     <div class="divSeparator">

@@ -165,8 +165,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}">
     </app-route>
 
+    <!-- NOTICE!!! -->
+
+    <!-- dev server -->
     <firebase-app auth-domain="hpmg-56df3.firebaseapp.com" database-url="https://hpmg-56df3.firebaseio.com/" api-key="AIzaSyCKxkkMfRQlhG5vTWh8Y_1yNWtMCTa-YPM">
     </firebase-app>
+
+    <!-- LIVE Server -->
+    <!-- <firebase-app auth-domain="hope-live-180101.firebaseapp.com" database-url="https://hope-live-180101.firebaseio.com/" api-key="AIzaSyBFcXcEIVgNSQaw6oANEBbYlOk0QOzp_q0">
+    </firebase-app> -->
+
+    <!-- NOTICE!!! -->
 
     <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth>
 

@@ -33,6 +33,7 @@
 <link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
 
 <link rel="import" href="short-unique-id.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 
 
 <dom-module id="my-application-edit">
@@ -192,6 +193,15 @@
                             <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="toggleDrawer"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{applicationKey}}</div>
+                        <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteApplicationOpen"></paper-icon-button>
+                        <paper-dialog id="deleteApplication">
+                            <h2>Delete Application?</h2>
+                            <!-- <p>Continue delete the current application?</p> -->
+                            <div class="buttons">
+                                <paper-button dialog-dismiss autofocus>No</paper-button>
+                                <paper-button dialog-confirm on-tap="deleteApplication">Yes</paper-button>
+                            </div>
+                        </paper-dialog>
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
@@ -537,6 +547,97 @@
                 // 'transactionDataChanged(transactionData)'
 
             ],
+
+            deleteApplicationOpen() {
+                this.$.deleteApplication.open();
+            },
+
+            deleteApplication() {
+                //delete application
+
+                //delete in lot/reservation & details
+                //delete in application/{{key}}
+                //delete in reservation/{{key}}
+                //if current application is current in lot/reservation, then get next application, update lot/reservation & details
+
+                //get lot/reservationkey
+                //if(current) get next reservation
+                //do delete
+                if (this.origFullLot) {
+                    var getLotReservationDetails = firebase.database().ref('/lots/'+this.origFullLot+'/reservation').on('value',
+                        lotReservation => {
+                            var dataToUpdate = {};
+                            var isCurrent = false;
+
+                            if(lotReservation.val().toString() == this.transactionKey) {
+                                isCurrent = true;
+                            }
+
+                            var getNextReservation = firebase.database().ref('/reservations/' + this.origFullLot).orderByKey().startAt(this.transactionKey).limitToFirst(3).on('value',
+                                nextReservation => {
+                                    var selectedKey = '';
+                                    var selectedKeyDetails;
+                                    if (isCurrent === true) {
+                                        if (nextReservation.exists()) {
+                                            //get key
+                                            nextReservation.forEach(
+                                                reservation => {
+                                                    if (reservation.key != this.transactionKey) {
+                                                        if (reservation.val().isexpired === false) {
+                                                            selectedKey = reservation.key;
+                                                            selectedKeyDetails = reservation.val();
+                                                        }
+                                                       
+                                                    }
+                                                }
+                                            );
+                                        }
+                                    }
+
+                                    if (selectedKey) {
+                                        dataToUpdate["/reservations/" + this.origFullLot + "/" + selectedKey + "/iscurrent"] = true;
+                                        dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = selectedKey;
+                                        dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = {
+                                            agent: selectedKeyDetails.agent,
+                                            agentdetails: selectedKeyDetails.agentdetails,
+                                            buyer: selectedKeyDetails.buyer,
+                                            buyerdetails: selectedKeyDetails.buyerdetails,
+                                            expiry: selectedKeyDetails.expiry,
+                                            iscurrent: true,
+                                            isexpired: selectedKeyDetails.isexpired,
+                                            reference: selectedKeyDetails.reference,
+                                            start: selectedKeyDetails.start,
+                                            timestamp: selectedKeyDetails.timestamp,
+                                            type: selectedKeyDetails.type
+                                        };
+                                    }
+                                    else {
+                                        dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = "";
+                                        dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = "";
+                                    }
+
+                                    dataToUpdate["/applications/" + this.transactionKey] = null;
+                                    dataToUpdate["/reservations/" + this.origFullLot + "/" + this.transactionKey] = null;
+
+                                    // console.log(dataToUpdate);
+
+                                    var uPromise = firebaseDbRef.update(firebaseUpdate, function (error) {
+                                        if (error) {
+                                            alert("Error updating data:", error);
+                                        }
+                                        else {
+                                            alert(this.origFullLot + " delete successfully.");
+                                        }
+                                    });
+                                });
+                        });
+                }
+                else {
+                    // Orig Lot is empty
+                    alert("Original Lot is empty. Please wait & delete again!");
+                }
+
+            },
 
             transactionKeyChanged() {
                 // console.log(this.transactionKey);
@@ -950,7 +1051,7 @@
 
 
                             var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
-                            if (this.fullLotData.status == 'available' || this.fullLotData.status == 'hold' || this.fullLotData.status == 'reserved') {
+                            if (this.fullLotData.status == 'available') { // || this.fullLotData.status == 'hold' || this.fullLotData.status == 'reserved'
                                 cardActions.setAttribute("style", "display: block;");
 
                                 if (this.draftdata_type) {
@@ -963,15 +1064,23 @@
 
                             }
                             else {
-                                if (this.transTypeChange === true) {
+                                if (this.fullLot != this.origFullLot) {
                                     cardActions.setAttribute("style", "display: none;");
                                     this.favrighthide = true;
                                 }
                                 else {
-                                    cardActions.setAttribute("style", "display: block;");
-                                    this.favrighthide = false;
-                                    var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
-                                    showExpiry.setAttribute("style", "display: none; padding-top: 8px; position: relative;");
+                                    if (this.transTypeChange === true) {
+                                        cardActions.setAttribute("style", "display: none;");
+                                        this.favrighthide = true;
+                                    }
+                                    else {
+                                        cardActions.setAttribute("style", "display: block;");
+                                        this.favrighthide = false;
+                                        if (this.fullLotData.status == 'sold' || this.fullLotData.status == 'soldlacking') {
+                                            var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
+                                            showExpiry.setAttribute("style", "display: none; padding-top: 8px; position: relative;");
+                                        }
+                                    }
                                 }
                             }
 
@@ -1423,8 +1532,11 @@
                                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = statusColors.val()[selectedTransType].name;
                                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = statusColors.val()[selectedTransType].bg_color;
                                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = statusColors.val()[selectedTransType].fore_color;
+
                                                 if (this.lastReservation.length > 0) {
-                                                    firebaseUpdate["/reservations/" + this.fullLot + "/" + this.lastReservation[0].$key + "/iscurrent"] = false;
+                                                    if (this.lastReservation[0].$key != this.transactionKey) {
+                                                        firebaseUpdate["/reservations/" + this.fullLot + "/" + this.lastReservation[0].$key + "/iscurrent"] = false;
+                                                    }
                                                 }
                                             }
 
