@@ -1,0 +1,298 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/bwt-datatable/bwt-datatable-card.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+
+<link rel="import" href="my-icons.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-accountlist">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+        --paper-datatable-api-table: {
+          table-layout: fixed;
+        }
+        --paper-datatable-card-checked-checkbox-color: var(--paper-green-500);
+      }
+
+      app-header {
+        color: rgb(255, 255, 255);
+        background-color: #388E3C;
+      }
+
+      paper-button.indigo {
+        background-color: var(--paper-indigo-500);
+        color: white;
+        height: 30px;
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--paper-pink-a200) !important;
+          color: white;
+        }
+        ;
+      }
+
+      paper-button.default {
+        background-color: gainsboro;
+        color: white;
+        height: 30px;
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--paper-pink-a200) !important;
+          color: white;
+        }
+        ;
+      }
+      paper-fab.fab-menu {
+        position: fixed;
+        top: 85px;
+        right: 32px;
+      }
+
+      paper-card {
+        width: 100%;
+      }
+
+      paper-input {
+        display: inline-block;
+      }
+
+      /* paper-dialog#addUser{
+        position: fixed;
+
+      }  */
+    </style>
+
+    <app-header-layout fullbleed has-scrolling-region>
+      <app-header fixed slot="header">
+        <app-toolbar primary>
+          <paper-icon-button id="search" class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+          <div main-title>Account List</div>
+          <paper-input id="filterInput" style="--paper-input-container-color:white; --paper-input-container-input-color:white; display:none;"
+            label="Search" value="{{searchTerm}}" on-input="{{retrieveResults}}"></paper-input>
+          <paper-icon-button icon="my-icons:search" on-tap="toggleSearch"></paper-icon-button>
+        </app-toolbar>
+      </app-header>
+
+      <paper-dialog id="addUser" with-backdrop>
+        <h2>Add New User</h2>
+        <div>
+          <div class="horizontal layout">
+            <paper-input required="true" value="{{firstname}}" always-float-label="First Name" label="First Name"></paper-input>
+            <paper-input required="true" value="{{middlename}}" always-float-label="Middle Name" label="Middle Name"></paper-input>
+            <paper-input required="true" value="{{lastname}}" always-float-label="Last Name" label="Last Name"></paper-input>
+            <paper-input required="true" value="{{suffix}}" always-float-label="Suffix" label="Suffix"></paper-input>
+          </div>
+          <paper-input required="true" always-float-label="Email" label="Email" value="{{email}}"></paper-input>
+          <paper-input required="true" type="number" value="{{cellphone}}" always-float-label="Cellphone" label="Cellphone"></paper-input>
+
+          <paper-dropdown-menu style="--paper-dropdown-menu-color:white;" always-float-label="true" label="Role">
+            <paper-listbox slot="dropdown-content" selected="{{role}}" style="cursor:pointer;">
+              <paper-item></paper-item>
+              <paper-item>Owner</paper-item>
+              <paper-item>Agent</paper-item>
+            </paper-listbox>
+          </paper-dropdown-menu>
+        </div>
+        <div class="buttons">
+          <paper-button dialog-confirm class="indigo" on-click="_submit">Add</paper-button>
+          <paper-button dialog-confirm class="default" on-click="_cancel">Cancel</paper-button>
+        </div>
+      </paper-dialog>
+
+      <paper-datatable-card style="padding:17px;" id="myTable">
+        <paper-fab noink class="fab-menu" icon="my-icons:add" on-tap="addDialog"></paper-fab>
+        <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="{{selectedType}}" start-at="{{equal}}"
+          end-at="{{equal}}"></firebase-query>
+        <paper-datatable data="{{account}}">
+          <!-- <div id="successMessage" style="display: none; color:rgb(0, 255, 106); "> </div> -->
+          <!-- <paper-datatable-column header="ID" property="" sortable sorted></paper-datatable-column> -->
+          <paper-datatable-column header="First Name" property="firstname" sortable></paper-datatable-column>
+          <paper-datatable-column header="Middle Name" property="middlename" sortable></paper-datatable-column>
+          <paper-datatable-column header="Last Name" property="lastname" sortable></paper-datatable-column>
+          <paper-datatable-column header="Suffix" property="suffix" sortable></paper-datatable-column>
+          <paper-datatable-column header="Email" property="email" sortable></paper-datatable-column>
+          <paper-datatable-column header="Cellphone" property="cellphone" sortable></paper-datatable-column>
+          <paper-datatable-column header="Role" property="role" sortable></paper-datatable-column>
+          <paper-datatable-column header="Active" property="active" sortable></paper-datatable-column>
+        </paper-datatable>
+      </paper-datatable-card>
+    </app-header-layout>
+
+  </template>
+
+  <script> 
+    Polymer({
+      is: 'my-accountlist',
+      properties: {
+
+        account: {
+          type: Object,
+          value: null,
+          observers: 'accountChanged'
+        },
+
+        searchTerm: {
+          type: String,
+          value: '',
+          observer: '_search'
+        },
+
+        selectedType: {
+          tpye: String,
+          value: '',
+        },
+
+        equal: {
+          type: String,
+          value: ''
+        },
+        firstname: {
+          type: String,
+          value: ''
+        },
+        middlename: {
+          type: String,
+          value: ''
+        },
+        lastname: {
+          type: String,
+          value: ''
+        },
+        suffix: {
+          type: String,
+          value: ''
+        },
+        email: {
+          type: String,
+          value: ''
+        },
+        cellphone: {
+          type: Number,
+          value: ''
+        },
+        role: {
+          type: Number,
+          observer: '_roleChanged'
+        },
+        newRole: {
+          type: String,
+          value: ''
+        }
+      },
+      _search() {
+        this.equal = this.searchTerm;
+        if(this.equal){
+
+        }
+        // console.log(this.equal);
+      },
+
+      _roleChanged() {
+        if (this.role) {
+          if (this.role == 0) {
+            this.newRole = 'Owner';
+          }
+          else {
+            this.newRole = 'Agent';
+          }
+        }
+      },
+
+      _submit() {
+        var ref = firebase.database().ref("accountlist");
+        ref.push({
+          active: true,
+          firstname: this.firstname,
+          middlename: this.middlename,
+          lastname: this.lastname,
+          cellphone: this.cellphone,
+          email: this.email,
+          role: this.newRole,
+          suffix: this.suffix,
+          uid: 'none'
+        });
+
+        var list = Polymer.dom(this.root).querySelector("#addUser");
+        list.style.display = "none";
+        var table = Polymer.dom(this.root).querySelector("#myTable");
+        table.setAttribute("style", "display:block;padding:17px;");
+      },
+      _cancel() {
+        this.firstname = "";
+        this.middlename = "";
+        this.lastname = "";
+        this.cellphone = "";
+        this.email = "";
+        this.suffix = "";
+        this.role = "";
+
+        var list = Polymer.dom(this.root).querySelector("#addUser");
+        list.style.display = "none";
+        var table = Polymer.dom(this.root).querySelector("#myTable");
+        table.setAttribute("style", "display:block;padding:17px;");
+      },
+
+      addDialog() {
+        this.firstname = "";
+        this.middlename = "";
+        this.lastname = "";
+        this.cellphone = "";
+        this.email = "";
+        this.suffix = "";
+        this.newRole = "";
+
+        var add = Polymer.dom(this.root).querySelector("#addUser");
+        var table = Polymer.dom(this.root).querySelector("#myTable");
+        if (add.style.display === "block") {
+          add.style.display = "none";
+        } else {
+          add.style.display = "block";
+          table.style.display = "none";
+        }
+
+
+      },
+      toggleSearch() {
+        var list = Polymer.dom(this.root).querySelector("#filterInput");
+        if (list.style.display === "block") {
+          list.style.display = "none";
+        } else {
+          list.style.display = "block";
+        }
+      },
+      toggleDrawer() {
+        this.dispatchEvent(new CustomEvent('toggleDrawer', {
+          bubbles: true, composed: true, detail: {
+            narrow: this.$.narrow
+          }
+        }));
+        this.$.narrow = !this.$.narrow;
+      }
+
+    })
+  </script>
+</dom-module>
