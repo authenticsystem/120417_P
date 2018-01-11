@@ -194,7 +194,7 @@
                         </a>
                         <div main-title>{{referenceLabel}} {{applicationKey}}</div>
                         <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteApplicationOpen"></paper-icon-button>
-                        <paper-dialog id="deleteApplication">
+                        <paper-dialog id="deleteApplicationPD">
                             <h2>Delete Application?</h2>
                             <!-- <p>Continue delete the current application?</p> -->
                             <div class="buttons">
@@ -549,7 +549,7 @@
             ],
 
             deleteApplicationOpen() {
-                this.$.deleteApplication.open();
+                this.$.deleteApplicationPD.open();
             },
 
             deleteApplication() {
@@ -563,71 +563,84 @@
                 //get lot/reservationkey
                 //if(current) get next reservation
                 //do delete
-                if (this.origFullLot) {
-                    var getLotReservationDetails = firebase.database().ref('/lots/'+this.origFullLot+'/reservation').on('value',
+                if (this.origFullLot && this.transactionKey) {
+                    var getLotReservationDetails = firebase.database().ref('/lots/' + this.origFullLot + '/reservation').once('value').then(
                         lotReservation => {
                             var dataToUpdate = {};
                             var isCurrent = false;
 
-                            if(lotReservation.val().toString() == this.transactionKey) {
+                            if (lotReservation.val().toString() == this.transactionKey) {
                                 isCurrent = true;
                             }
 
-                            var getNextReservation = firebase.database().ref('/reservations/' + this.origFullLot).orderByKey().startAt(this.transactionKey).limitToFirst(3).on('value',
-                                nextReservation => {
-                                    var selectedKey = '';
-                                    var selectedKeyDetails;
-                                    if (isCurrent === true) {
-                                        if (nextReservation.exists()) {
-                                            //get key
-                                            nextReservation.forEach(
-                                                reservation => {
-                                                    if (reservation.key != this.transactionKey) {
-                                                        if (reservation.val().isexpired === false) {
-                                                            selectedKey = reservation.key;
-                                                            selectedKeyDetails = reservation.val();
+                            var getNextReservation = firebase.database().ref('/reservations/' + this.origFullLot).orderByKey().startAt(this.transactionKey).limitToFirst(3).once('value').then(nextReservation => {
+                                    var getStatusColors = firebase.database().ref('/statuscolor').once('value').then(statusColor => {
+
+                                        var selectedKey = '';
+                                        var selectedKeyDetails;
+                                        if (isCurrent === true) {
+                                            if (nextReservation.exists()) {
+                                                //get key
+                                                nextReservation.forEach(
+                                                    reservation => {
+                                                        if (reservation.key != this.transactionKey) {
+                                                            if (reservation.val().isexpired === false) {
+                                                                selectedKey = reservation.key;
+                                                                selectedKeyDetails = reservation.val();
+                                                            }
+
                                                         }
-                                                       
                                                     }
-                                                }
-                                            );
+                                                );
+                                            }
                                         }
-                                    }
 
-                                    if (selectedKey) {
-                                        dataToUpdate["/reservations/" + this.origFullLot + "/" + selectedKey + "/iscurrent"] = true;
-                                        dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = selectedKey;
-                                        dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = {
-                                            agent: selectedKeyDetails.agent,
-                                            agentdetails: selectedKeyDetails.agentdetails,
-                                            buyer: selectedKeyDetails.buyer,
-                                            buyerdetails: selectedKeyDetails.buyerdetails,
-                                            expiry: selectedKeyDetails.expiry,
-                                            iscurrent: true,
-                                            isexpired: selectedKeyDetails.isexpired,
-                                            reference: selectedKeyDetails.reference,
-                                            start: selectedKeyDetails.start,
-                                            timestamp: selectedKeyDetails.timestamp,
-                                            type: selectedKeyDetails.type
-                                        };
-                                    }
-                                    else {
-                                        dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = "";
-                                        dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = "";
-                                    }
-
-                                    dataToUpdate["/applications/" + this.transactionKey] = null;
-                                    dataToUpdate["/reservations/" + this.origFullLot + "/" + this.transactionKey] = null;
-
-                                    // console.log(dataToUpdate);
-
-                                    var uPromise = firebaseDbRef.update(firebaseUpdate, function (error) {
-                                        if (error) {
-                                            alert("Error updating data:", error);
+                                        if (selectedKey) {
+                                            dataToUpdate["/reservations/" + this.origFullLot + "/" + selectedKey + "/iscurrent"] = true;
+                                            dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = selectedKey;
+                                            dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = {
+                                                agent: selectedKeyDetails.agent,
+                                                agentdetails: selectedKeyDetails.agentdetails,
+                                                buyer: selectedKeyDetails.buyer,
+                                                buyerdetails: selectedKeyDetails.buyerdetails,
+                                                expiry: selectedKeyDetails.expiry,
+                                                iscurrent: true,
+                                                isexpired: selectedKeyDetails.isexpired,
+                                                reference: selectedKeyDetails.reference,
+                                                start: selectedKeyDetails.start,
+                                                timestamp: selectedKeyDetails.timestamp,
+                                                type: selectedKeyDetails.type
+                                            };
+                                            
+                                            dataToUpdate["/lots/" + this.origFullLot + "/status"] = selectedKeyDetails.type;
+                                            dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/bg_color"] = statusColor.val()[selectedKeyDetails.type].bg_color;
+                                            dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/fore_color"] = statusColor.val()[selectedKeyDetails.type].fore_color;
+                                            dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/status_name"] = statusColor.val()[selectedKeyDetails.type].name;
                                         }
                                         else {
-                                            alert(this.origFullLot + " delete successfully.");
+                                            dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = "";
+                                            dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = "";
+                                            dataToUpdate["/lots/" + this.origFullLot + "/status"] = "available";
+                                            dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/bg_color"] = "green";
+                                            dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/fore_color"] = "white";
+                                            dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/status_name"] = "Available";
                                         }
+
+                                        dataToUpdate["/applications/" + this.transactionKey] = null;
+                                        dataToUpdate["/reservations/" + this.origFullLot + "/" + this.transactionKey] = null;
+
+                                        // console.log(dataToUpdate);
+                                        var origFullLot2 = this.origFullLot;
+
+                                        var uPromise = firebase.database().ref().update(dataToUpdate, function (error) {
+                                            if (error) {
+                                                alert("Error updating data:", error);
+                                            }
+                                            else {
+                                                window.location = "/applications";
+                                                alert(origFullLot2 + " delete successfully.");
+                                            }
+                                        });
                                     });
                                 });
                         });
@@ -1027,7 +1040,7 @@
                 if (this.fullLotData) {
                     if (this.fullLotData.inventoriable == "yes") {
 
-                        if (this.fullLotData.area) {
+                        if (this.fullLotData.lot) {
                             var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
                             spinnerDetails.active = false;
                             //ok we have value
@@ -1197,7 +1210,7 @@
             blocklotplotChanged() {
                 if (this.block) { this.block = this.block.toString().toUpperCase(); }
                 if (this.lot) { this.lot = this.lot.toString().toUpperCase(); }
-                if (this.level) { this.level = this.level.toString().toUpperCase(); }
+                if (this.level) { this.level = this.level.toString().toLowerCase(); }
 
                 this.fullLot = "block" + this.block + "lot" + this.lot + (this.level ? "level" + this.level : "");
 
