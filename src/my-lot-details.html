@@ -65,12 +65,13 @@
       <div id="levelsBlock">
         <template is="dom-repeat" items="{{levelLots}}">
           <div style="padding-top: 3px;">
-            <paper-item id="{{item.$key}}" on-tap="_levelTap">
+            <paper-item id="{{item.$key}}" on-tap="_levelTap" style="font-size: 14px;">
               <!-- <paper-item-body> -->
               <span style="text-transform: capitalize; ">Level&nbsp;{{item.level}}&nbsp;---&nbsp;</span>
               <div style$="display: inline-block; border-radius: 2px; padding-left: 2px;padding-right: 2px; background: {{item.maprenderdetails.bg_color}};">
                 <div style$="display: inline; color: {{item.maprenderdetails.fore_color}};">{{item.maprenderdetails.status_name}}</div>
               </div>
+              <span style="text-transform: capitalize;">&nbsp;---&nbsp;{{item.designation}}</span>
               <!-- </paper-item-body> -->
             </paper-item>
           </div>
