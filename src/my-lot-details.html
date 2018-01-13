@@ -41,10 +41,9 @@
         --paper-item: {
           cursor: pointer;
           /* any other styles here */
-        };
+        }
+        ;
       }
-
-      
     </style>
 
     <firebase-document id="lotd" path="/lots/{{selectedLot}}" data="{{selectedLotDetails}}">
@@ -63,7 +62,7 @@
       <div>{{lotsubdetail}}</div>
 
       <div id="levelsBlock">
-        <template is="dom-repeat" items="{{levelLots}}">
+        <template is="dom-repeat" items="{{levelLots}}" sort="_computeSort">
           <div style="padding-top: 3px;">
             <paper-item id="{{item.$key}}" on-tap="_levelTap" style="font-size: 14px;">
               <!-- <paper-item-body> -->
@@ -284,14 +283,20 @@
         }
       },
 
-      _levelTap(e){
+      _levelTap(e) {
         // var data_args = Polymer.dom(e).rootTarget.getAttribute("id");
         // if(data_args) {
         //   this.selectedLot = data_args;
         // }
 
         // console.log(data_args);
-        
+
+      },
+      _computeSort(a, b) {
+        if (a.level == b.level) {
+          return 0;
+        }
+        return a.level > b.level ? -1 : 1;
       }
 
 

@@ -34,20 +34,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       iron-image {
         margin: 0 auto;
       }
+
       /* .bg { */
-        /* The image used */
-        /* background-image: url("/images/manifest/icon-72x72.png"); */
 
-        /* Full height */
-        /* height: 100%; */
+      /* The image used */
 
-        /* Center and scale the image nicely */
-        /* background-position: center; */
-        /* background-repeat: no-repeat; */
-        /* background-size: cover; */
+      /* background-image: url("/images/manifest/icon-72x72.png"); */
+
+      /* Full height */
+
+      /* height: 100%; */
+
+      /* Center and scale the image nicely */
+
+      /* background-position: center; */
+
+      /* background-repeat: no-repeat; */
+
+      /* background-size: cover; */
+
       /* } */
     </style>
-
 
     <app-header-layout fullbleed has-scrolling-region>
       <app-header fixed slot="header">
@@ -108,15 +115,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <!-- <div class="bg"> -->
 
-        <div class="card">
-            <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload fade style="width:200px; height:200px;"></iron-image></br>
+      <div class="card">
+        <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
+          fade style="width:200px; height:200px;"></iron-image>
+        </br>
 
-          Content (later): </br>
-          1. Notices / Special Instructions / Meetings / etc.</br>
-          2. Sales Agent Activity Charts</br>
-          3. Statistics Charts (tbd)</br>
-          4. others (tbd)</br>
-        </div>
+        Content (later): </br>
+        1. Notices / Special Instructions / Meetings / etc.</br>
+        2. Sales Agent Activity Charts</br>
+        3. Statistics Charts (tbd)</br>
+        4. others (tbd)</br>
+      </div>
 
 
       <!-- </div> -->
@@ -148,6 +157,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }));
         this.$.narrow = !this.$.narrow;
+      }
+
+      ready() {
+        super.ready();
+        firebase.database.ref('/lots').on('value').then(snap => {
+          
+        });
+
       }
 
     }
