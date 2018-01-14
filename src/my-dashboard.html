@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
@@ -35,6 +36,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin: 0 auto;
       }
 
+      table,
+      th,
+      td {
+        border: 1px solid gray;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 5px;
+        text-align: right;
+      }
+
       /* .bg { */
 
       /* The image used */
@@ -55,6 +69,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       /* } */
     </style>
+
+    <firebase-query path="/reports/lotstatus/Today" limit-to-first=50 data="{{todayLotStatus}}"></firebase-query>
 
     <app-header-layout fullbleed has-scrolling-region>
       <app-header fixed slot="header">
@@ -116,15 +132,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- <div class="bg"> -->
 
       <div class="card">
-        <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
-          fade style="width:200px; height:200px;"></iron-image>
-        </br>
+        <h3>Activity Report: Today</h3>
+        <div style="padding-top: 3px; font-size: 14px;">
+          <table>
+            <tr>
+              <th style="text-align: left;">Type</th>
+              <th style="color: orange;">Hold</th>
+              <th style="color: rgb(145, 145, 0);">Reserved</th>
+              <th style="color: red;">Sold</th>
+            </tr>
+            <template is="dom-repeat" items="{{todayLotStatus}}">
+              <tr>
+                <td style="text-align: left;">{{_formatType(item.$key)}}</td>
+                <td style="color: black;">{{_formatNumber(item.hold)}}</td>
+                <td style="color: black;">{{_formatNumber(item.reserved)}}</td>
+                <td style="color: black;">{{_formatNumber(item.sold)}}</td>
+              </tr>
+            </template>
+          </table>
+        </div>
 
-        Content (later): </br>
-        1. Notices / Special Instructions / Meetings / etc.</br>
-        2. Sales Agent Activity Charts</br>
-        3. Statistics Charts (tbd)</br>
-        4. others (tbd)</br>
       </div>
 
 
@@ -159,12 +186,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.narrow = !this.$.narrow;
       }
 
-      ready() {
-        super.ready();
-        firebase.database.ref('/lots').on('value').then(snap => {
-          
-        });
+      _formatType(e) {
+        if (e == 'lawnlots') return 'Lawn Lots';
+        else if (e == 'wallniche') return 'Wall Niche';
+        else if (e == 'bonechamber') return 'Bone Chamber';
+        else if (e == 'cinerarium') return 'Cinerarium';
+        else if (e == 'familylots1') return 'Family Lots 1 (Area=53.27m²)';
+        else if (e == 'familylots2') return 'Family Lots 1 (Area=52.83m²)';
+        else if (e == 'familylots3') return 'Family Lots 1 (Irregular Lots)';
+        else if (e == 'familylots4') return 'Family Lots 2 (Area=37.45m²)';
+        else if (e == 'familylots5') return 'Family Lots 2 (Irregular Lots)';
+        else if (e == 'gardenlots1') return 'Garden Lots 1 (Area=12.52m²)';
+        else if (e == 'gardenlots2') return 'Garden Lots 1 (Area=12.43m²)';
+        else if (e == 'gardenlots3') return 'Garden Lots 1 (Irregular Lots)';
+        else if (e == 'gardenlots4') return 'Garden Lots 2 (Area=20.00m²)';
+        else if (e == 'gardenlots5') return 'Garden Lots 2 (Irregular Lots)';
+      }
 
+      _formatNumber(e) {
+        if(e == 0) return '-'
+        else return e;
       }
 
     }
