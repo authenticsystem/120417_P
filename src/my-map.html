@@ -209,8 +209,8 @@
           <template is="dom-repeat" items="{{blocks}}" as='block'>
             <!-- #cbe6a3 -->
             <google-map-poly closed stroke-color="{{block.maprenderdetails.stroke_color}}" stroke-weight="1" stroke-opacity="1" fill-color="{{block.maprenderdetails.bg_color}}"
-              fill-opacity="1" clickable="true" click-events="true" on-google-map-poly-click="polyBlocksClicked"
-              mouse-events="true" on-google-map-poly-mouseover="polyMouseOver" on-google-map-poly-mouseout="polyMouseOut" id="{{block.$key}}">
+              fill-opacity="1" clickable="true" click-events="true" on-google-map-poly-click="polyBlocksClicked" mouse-events="true"
+              on-google-map-poly-mouseover="polyMouseOver" on-google-map-poly-mouseout="polyMouseOut" id="{{block.$key}}">
               <template is="dom-repeat" items="{{block.map_points}}" as='point'>
                 <google-map-point longitude="{{point.longitude}}" latitude="{{point.latitude}}"></google-map-point>
               </template>
@@ -445,6 +445,7 @@
             <paper-button raised noink class="myToolbarSignIn">Sign In</paper-button>
           </a>
         </div>
+
       </template>
 
       <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
