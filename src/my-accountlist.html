@@ -93,7 +93,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         left: 10px;
         margin-left: 20%;
       }
-
+      paper-icon-button.delete{
+        color: red;
+      }
       paper-search-bar#searching {
         color: #388E3C
       }
@@ -134,8 +136,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <!-- <paper-search-bar id="searching" query="{{query}}" placeholder="Enter search term" on-paper-search-search="search" on-paper-search-filter="filter"
           disable-filter-button>
         </paper-search-bar> -->
-
-        <paper-datatable data="{{account}}">
+        <div slot="toolbar-select">
+          <paper-icon-button class="delete" icon="my-icons:delete-forever" on-tap="deleteSelected"></paper-icon-button>
+        </div>
+        <paper-datatable data="{{account}}" selectable>
           <paper-datatable-column header="First Name" property="firstname"></paper-datatable-column>
           <paper-datatable-column header="Middle Name" property="middlename"></paper-datatable-column>
           <paper-datatable-column header="Last Name" property="lastname"></paper-datatable-column>
