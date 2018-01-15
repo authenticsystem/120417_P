@@ -132,7 +132,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- <div class="bg"> -->
 
       <div class="card">
-        <h3>Activity Report: Today</h3>
+        <!-- <iron-icon on-tap="gettotal" icon="my-icons:map" slot="item-icon"></iron-icon> -->
+          <h3 style="display: inline-block;">
+            Activity Report: Today
+            <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+              DRY RUN
+            </span>
+          </h3>
+
+
         <div style="padding-top: 3px; font-size: 14px;">
           <table>
             <tr>
@@ -201,12 +209,68 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         else if (e == 'gardenlots3') return 'Garden Lots 1 (Irregular Lots)';
         else if (e == 'gardenlots4') return 'Garden Lots 2 (Area=20.00m²)';
         else if (e == 'gardenlots5') return 'Garden Lots 2 (Irregular Lots)';
+
       }
 
       _formatNumber(e) {
-        if(e == 0) return '-'
+        if (e == 0) return '-'
         else return e;
       }
+
+      // gettotal() {
+
+
+      //   // firebase.database().ref('/lots').orderByChild('status').equalTo('reserved').once('value').then(snap => {
+      //   //   if (snap.exists()) {
+      //   //     var counter = 0;
+
+      //   //     snap.forEach(element => {
+      //   //       if (element.val().reservationdetails) {
+      //   //         var serverDateTimePH = new Date(element.val().reservationdetails.start);
+      //   //         var serverDatePH_String = serverDateTimePH.getFullYear() + "-" + ("0" + (serverDateTimePH.getMonth() + 1)).slice(-2) + "-" + ("0" + serverDateTimePH.getDate()).slice(-2) + "T00:00";
+      //   //         var serverDatePH = new Date(serverDatePH_String);
+
+      //   //         if (serverDatePH.toISOString() == '2018-01-13T16:00:00.000Z') {
+      //   //           console.log(serverDatePH.toISOString());
+      //   //           console.log(counter + ' ' +serverDatePH + ' ' + element.val().type);
+      //   //           counter = counter + 1;
+      //   //         }
+      //   //       }
+      //   //     });
+
+      //   //     this._totalHold = counter;
+
+      //   //   }
+      //   //   else {
+      //   //     this._totalHold = '11';
+      //   //   }
+
+      //   // });
+
+      //   var serverdatetime = firebase.database().ref("info/serverdatetime");
+      //   serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
+      //   serverdatetime.once('value').then(snapshot => {
+      //     var sdate = new Date(snapshot.val());
+
+      //     var serverDateTime = new Date();
+      //     var serverDateTimePH = new Date(serverDateTime);
+      //     serverDateTimePH.setHours(serverDateTime.getHours() + 8); //manila +8 offset from UTC     
+
+      //     var startAt = serverDateTimePH.getFullYear() + "-" + ("0" + (serverDateTimePH.getMonth() + 1)).slice(-2) + "-" + ("0" + serverDateTimePH.getDate()).slice(-2) + "T00:00";
+      //     var endAt = serverDateTimePH.getFullYear() + "-" + ("0" + (serverDateTimePH.getMonth() + 1)).slice(-2) + "-" + ("0" + serverDateTimePH.getDate()).slice(-2) + "T23:59";
+
+      //     firebase.database().ref('/lots').orderByChild('reservationdetails/start').startAt('2018-01-14T00:00').endAt('2018-01-14T23:59').on('child_changed', snap => {
+      //       // snap.forEach(element => {
+      //       //   console.log(element.val());
+      //       // })
+      //       console.log(snap.val());
+      //     });
+
+
+      //   });
+
+
+      // }
 
     }
 

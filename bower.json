@@ -43,7 +43,8 @@
     "paper-time-input":"ryanburns23/paper-time-input#^2.0.4",
     "time-elements" : "github/time-elements#^0.6.1",
     "short-unique-id":"hectorsantillan/short-unique-id#^1.0.0",
-    "paper-tooltip":"PolymerElements/paper-tooltip#^2.0.1"
+    "paper-tooltip":"PolymerElements/paper-tooltip#^2.0.1",
+    "paper-badge":"PolymerElements/paper-badge#^2.0.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"
