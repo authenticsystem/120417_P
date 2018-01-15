@@ -333,9 +333,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ],
 
       _applicationChanged(e) {
-        if(this.search){
+        if (this.search) {
           if (e.length == 0) {
             this.msg = 'No result found.';
+          }
+          else {
+            this.msg = '';
           }
         }
       },
@@ -380,6 +383,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         else {
           this.selectedType = '';
           this.typeValue = '';
+          this.msg = '';
         }
       },
 
