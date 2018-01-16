@@ -12,8 +12,6 @@
 
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.7/webcomponents-lite.min.js"></script>
-<link rel="import" href="../bower_components/social-media-icons/social-media-icons.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 
@@ -117,19 +115,10 @@
                     <div slot="dropdown-trigger" alt="menu" style="color: royalblue;">More options</div>
                     <paper-listbox slot="dropdown-content">
                         <paper-item>
-                            <social-media-icons id="facebook" on-tap="_facebook" icon="facebook" color="#3b5998" size="30" style="cursor:pointer"></social-media-icons>
-                        </paper-item>
-                        <paper-item>
-                            <social-media-icons id="google" on-tap="_google" icon="googleplus" color="#d34836" size="30" style="cursor:pointer"></social-media-icons>
-                        </paper-item>
-                        <paper-item>
-                            <iron-icon id="phone" icon="my-icons:phone-android" style="color:rgb(104, 95, 95); cursor:ponter; text-align: center"></iron-icon>
+                            <a href="/register-signin">Create Account?</a>
                         </paper-item>
                     </paper-listbox>
                 </paper-menu-button>
-                <paper-tooltip for="facebook">Login as Facebook</paper-tooltip>
-                <paper-tooltip for="google">Login as Google</paper-tooltip>
-                <paper-tooltip for="phone">Login using Phone number</paper-tooltip>
             </div>
             <div class="action">
             <paper-button received-focus-from-keyboard id="next" class="green" on-tap="_signIn">next</paper-button>
@@ -158,20 +147,20 @@
                 errormsg.setAttribute("style", "display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");
                 this.validationMessage = 'Invalid email/password.';
             },
-            _facebook() {
-                var provider = new firebase.auth.FacebookAuthProvider();
-                firebase.auth().signInWithPopup(provider).then(function (response) {
-                    app = this.document.querySelector('my-app');
-                    app.set('route.path', '/');
-                })
-            },
-            _google() {
-                var provider = new firebase.auth.GoogleAuthProvider();
-                firebase.auth().signInWithPopup(provider).then(function (response) {
-                    app = this.document.querySelector('my-app');
-                    app.set('route.path', '/');
-                })
-            },
+            // _facebook() {
+            //     var provider = new firebase.auth.FacebookAuthProvider();
+            //     firebase.auth().signInWithPopup(provider).then(function (response) {
+            //         app = this.document.querySelector('my-app');
+            //         app.set('route.path', '/');
+            //     })
+            // },
+            // _google() {
+            //     var provider = new firebase.auth.GoogleAuthProvider();
+            //     firebase.auth().signInWithPopup(provider).then(function (response) {
+            //         app = this.document.querySelector('my-app');
+            //         app.set('route.path', '/');
+            //     })
+            // },
 
             _signIn() {
                 // this.$.auth.createUserWithEmailAndPassword('hbsantillan@yahoo.com', '1'); 

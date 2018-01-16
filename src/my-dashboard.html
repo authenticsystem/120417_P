@@ -12,7 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
-
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <dom-module id="my-dashboard">
   <template>
     <style include="shared-styles">
@@ -48,7 +48,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /* } */
     </style>
 
-
+<firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth>
     <app-header-layout fullbleed has-scrolling-region>
       <app-header fixed slot="header">
         <app-toolbar primary>
@@ -110,13 +110,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <div class="card">
             <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload fade style="width:200px; height:200px;"></iron-image></br>
-
+          </br>
           Content (later): </br>
           1. Notices / Special Instructions / Meetings / etc.</br>
           2. Sales Agent Activity Charts</br>
           3. Statistics Charts (tbd)</br>
           4. others (tbd)</br>
+        
         </div>
+        
 
 
       <!-- </div> -->
