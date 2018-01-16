@@ -70,7 +70,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /* } */
     </style>
 
+
 <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth>
+
+    <firebase-query path="/reports/lotstatus/Today" limit-to-first=50 data="{{todayLotStatus}}"></firebase-query>
+
+
     <app-header-layout fullbleed has-scrolling-region>
       <app-header fixed slot="header">
         <app-toolbar primary>
@@ -130,6 +135,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <!-- <div class="bg"> -->
 
+
         <div class="card">
             <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload fade style="width:200px; height:200px;"></iron-image></br>
           </br>
@@ -139,6 +145,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           3. Statistics Charts (tbd)</br>
           4. others (tbd)</br>
         
+
+      <div class="card">
+        <h3>Activity Report: Today</h3>
+        <div style="padding-top: 3px; font-size: 14px;">
+          <table>
+            <tr>
+              <th style="text-align: left;">Type</th>
+              <th style="color: orange;">Hold</th>
+              <th style="color: rgb(145, 145, 0);">Reserved</th>
+              <th style="color: red;">Sold</th>
+            </tr>
+            <template is="dom-repeat" items="{{todayLotStatus}}">
+              <tr>
+                <td style="text-align: left;">{{_formatType(item.$key)}}</td>
+                <td style="color: black;">{{_formatNumber(item.hold)}}</td>
+                <td style="color: black;">{{_formatNumber(item.reserved)}}</td>
+                <td style="color: black;">{{_formatNumber(item.sold)}}</td>
+              </tr>
+            </template>
+          </table>
         </div>
         
 

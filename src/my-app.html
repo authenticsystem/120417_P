@@ -39,6 +39,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-dashboard.html">
 <link rel="lazy-import" href="my-briefcase.html">
 <link rel="lazy-import" href="my-applications.html">
+<link rel="lazy-import" href="my-application-details.html">
+<link rel="lazy-import" href="my-accountlist.html">
 <link rel="lazy-import" href="my-corporate-account.html">
 <link rel="lazy-import" href="my-account-link.html">
 <link rel="lazy-import" href="my-application-detail.html">
@@ -195,9 +197,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 >>>>>>> f335d3e0e1f83e2ac17c33e058aa6f65b9394f46
+=======
+>>>>>>> origin/gabriel
       <!-- <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
       <template is="dom-if" if="{{user.emailVerified}}">
@@ -231,6 +236,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <paper-icon-item toggles="true" class="menuSelected">
                     <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
                     <span>My Account</span>
+                  </paper-icon-item>
+                </a>
+                <a name="account-link" href="[[rootPath]]account-link">
+                  <paper-icon-item toggles="true" class="menuSelected">
+                    <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
+                    <span>Account</span>
                   </paper-icon-item>
                 </a>
                 <a name="map" href="[[rootPath]]map">
@@ -324,9 +335,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-drawer-layout>
       </template>
       <!-- not yet verify -->
+<<<<<<< HEAD
 
     </template>
 
+=======
+>>>>>>> origin/gabriel
     <paper-toast id="toast" text=""></paper-toast>
 
   </template>
@@ -475,11 +489,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (f === true) {
           return e !== null;
         }
-        else {
-          return false;
-        }
+       else {
+         return false;
       }
-
+      }
+      
       _notifyNetworkStatus() {
         let oldOffline = this.offline;
         this.offline = !navigator.onLine;

@@ -36,6 +36,9 @@
     "polymer": "Polymer/polymer#^2.2.0",
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
     "paper-radio-group": "PolymerElements/paper-radio-group#^2.0.0",
+ 
+    "bwt-datatable": "bluewatertracks/bwt-datatable#^2.0.4",
+    "paper-search":"Collaborne/paper-search#^2.0.9"
     "paper-spinner": "PolymerElements/paper-spinner#^2.0.0",
     "datetime-picker": "fooloomanzoo/datetime-picker#^2.5.5",
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.1",
@@ -50,5 +53,14 @@
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"
   },
-  "private": true
+  "private": true,
+  "resolutions": {
+    "paper-dropdown-menu": "1 - 2",
+    "paper-icon-button": "^2.0.1",
+    "paper-checkbox": "^2.0.1",
+    "iron-iconset-svg": "^2.0.0",
+    "webcomponentsjs": "^v1.0.19",
+    "polymer": "^2.2.0",
+    "iron-flex-layout": "^2.0.0"
+  }
 }
