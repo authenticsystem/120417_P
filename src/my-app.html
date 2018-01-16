@@ -270,6 +270,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
             <my-applications name="applications" route="[[subroute]]"></my-applications>
             <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
+            <my-accountlist name="accountlist" route="[[subroute]]"></my-accountlist>
             <my-account-link user="{{user}}" name="account-link" route="[[subroute]]"></my-account-link>
             <my-accountlist name="accountlist" route="[[subroute]]"></my-accountlist>
             <my-view404 name="view404"></my-view404>
@@ -328,48 +329,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-drawer-layout>
       </template>
       <!-- not yet verify -->
-      <!-- <a name="map" href="[[rootPath]]map">
-        <paper-icon-item toggles="true" class="menuSelected">
-          <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
-          <span>Map</span>
-        </paper-icon-item>
-        </a>
-        <a name="applications" href="[[rootPath]]applications">
-          <paper-icon-item toggles="true" class="menuSelected">
-            <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
-            <span>Applications</span>
-          </paper-icon-item>
-        </a>
-        <a name="accountlist" href="[[rootPath]]accountlist">
-          <paper-icon-item toggles="true" class="menuSelected">
-            <iron-icon icon="my-icons:account-box" slot="item-icon"></iron-icon>
-            <span>Account List</span>
-          </paper-icon-item>
-        </a>
-        <a on-tap="_signOut" href="/">
-          <paper-icon-item toggles="true">
-            <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
-            <span>Sign-out</span>
-          </paper-icon-item>
-        </a>
-        </iron-selector>
-
-        </div>
-        </app-drawer>
-
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-          <my-dashboard name="dashboard"></my-dashboard>
-          <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
-          <my-applications name="applications" route="[[subroute]]"></my-applications>
-          <my-accountlist name="accountlist" route="[[subroute]]"></my-accountlist>
-          <my-view404 name="view404"></my-view404>
-        </iron-pages>
-
-        </app-drawer-layout> -->
-
-    </template>
-    <paper-toast id="toast" text=""></paper-toast>
-
+        <paper-toast id="toast" text=""></paper-toast>
   </template>
 
   <script>
@@ -516,8 +476,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (f === true) {
           return e !== null;
         }
-        else {
-          return false;
+
+       else {
+         return false;
         }
       }
 
