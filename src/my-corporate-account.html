@@ -1,0 +1,104 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/skeleton-auth/skeleton-auth.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-corporate-account"> 
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                /* overflow: hidden; */
+            }
+
+            @media (min-width: 767px) {
+                .main-container {
+                    height: 100%;
+                    background-color: white;
+                    max-width: 370px;
+                    margin: 16px auto;
+                    padding: 40px;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                }
+
+            }
+
+            @media (max-width: 767px) {
+                :host {
+                    height: 100%;
+                }
+                .main-container {
+                    height: 100%;
+                    background-color: white;
+                    margin: 0 auto;
+                    padding: 40px;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                }
+
+            }
+
+            paper-button.green {
+                background-color: var(--paper-green-500);
+                color: white;
+                height: 38px;
+
+            }
+
+            .action {
+                float: right;
+            }
+
+            .footer {
+                height: 48px;
+            }
+
+            .header {
+                font-size: 24px;
+                font-weight: 400;
+            }
+        </style>
+
+        <div class="main-container">
+            <a href="/">
+                <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
+                    fade style="width:128px; height:128px;"></iron-image>
+            </a>
+            </br>
+            <div>
+                <div class="header">Sign in with ..</div>
+                <div>to continue to Haven of Peace Memorial Garden inventory and reservation system</div>
+                
+                <skeleton-auth google facebook twitter email phone on-error="handleError">
+                    </skeleton-auth>
+  
+                    <div class="footer">
+                        <div class="action">
+                            <paper-button class="green" on-tap="_return">cancel</paper-button>
+                        </div>
+                    </div>
+            </div>
+
+        </div>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-corporate-account',
+            properties: {
+                userInfo: {
+                    type: Object
+                },
+            },
+
+            _return(){
+                history.back();
+            }
+
+        })
+    </script>
+</dom-module>
