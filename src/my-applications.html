@@ -333,64 +333,59 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // }
 
       },
-      observers: [
-        '_searchChanged(filterBy, search)',
-        '_applicationChanged(applications)'
-      ],
-
-      _applicationChanged(e) {
-        if (this.search) {
-          if (e.length == 0) {
-            this.msg = 'No result found.';
-          }
-          else {
-            this.msg = '';
-          }
-        }
-      },
-      _searchChanged(g, e) {
-
-        if (g) {
-          if (g == 1) {
-            this.selectedLabel = 'by reference';
-            if (e) {
-              this.selectedType = 'reference';
-            }
-          }
-          else if (g == 2) {
-            this.selectedLabel = 'by lot';
-            if (e) {
-              this.selectedType = 'lot';
-            }
-          }
-          else if (g == 3) {
-            this.selectedLabel = 'by type';
-            if (e) {
-              this.selectedType = 'type';
-            }
-          }
-          else if (g == 4) {
-            this.selectedLabel = 'by buyer lastname';
-            if (e) {
-              this.selectedType = 'buyerdetails/lastname';
-            }
-          }
-          else {
-            this.selectedLabel = 'by agent lastname';
-            if (e) {
-              this.selectedType = 'agentdetails/lastname';
-            }
-          }
-        }
-
-        if (e) {
-          this.typeValue = e;
-        }
-        else {
-          this.selectedType = '';
-          this.typeValue = '';
-          this.msg = '';
-        }
+      timeVoid(e){
+        var time = Polymer.dom(this.root).querySelector("#start");
+        var startTime = new Date(e);
+        if(startTime == "Invalid Date"){
+                this.timeElapse = "No data.";
+              } else 
+              {
+                var endTime = new Date();
+                // time difference in ms
+                var timeDiff = endTime - startTime;
+                // strip the miliseconds
+                timeDiff /= 1000;
+                // get seconds
+                var seconds = Math.round(timeDiff % 60);
+                // remove seconds from the date
+                timeDiff = Math.floor(timeDiff / 60);
+                // get minutes
+                var minutes = Math.round(timeDiff % 60);
+                // remove minutes from the date
+                timeDiff = Math.floor(timeDiff / 60);
+                // get hours
+                var hours = Math.round(timeDiff % 24);
+                // remove hours from the date
+                timeDiff = Math.floor(timeDiff / 24);
+                // the rest of timeDiff is number of days
+                var days = timeDiff;
+              
+                if(days == 1){
+                  this.timeElapse = days + " day ago";
+                }
+                if(days >= 2){
+                  this.timeElapse = days + " days ago";
+                }
+                if(days == 0 && hours == 1){
+                  this.timeElapse = "an hour ago";
+                }
+                if(days == 0 && hours >= 2){
+                  this.timeElapse = hours + " hours ago";
+                }
+                if(days == 0 && minutes == 1){
+                  this.timeElapse = "a minute ago";
+                }
+                if(days == 0 && minutes >= 2){
+                  this.timeElapse = minutes + " minutes ago";
+                }
+                if(days == 0 && seconds == 1){
+                  this.timeElapse = "a second ago";
+                }
+                if(days == 0 && seconds >= 2){
+                  this.timeElapse = seconds + " seconds ago";
+                }
+              }
+            // }, 1000);
       },
 
       // _checkIfApplicationActive(e) {

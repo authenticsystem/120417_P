@@ -1254,32 +1254,40 @@
                                     var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                                     var favRightVar = Polymer.dom(this.root).querySelector("#favright");
 
-                                    // console.log(firebaseUpdate);
-                                    firebaseDbRef.update(firebaseUpdate, function (error) {
-                                        if (error) {
-                                            console.log("Error updating data:", error);
-                                            this.saveErrorDetails = error;
-                                            saveSuccess.setAttribute("style", "display: none; color: green;");
-                                            saveFailed.setAttribute("style", "display: block; color: red;");
+                                    if (this.fullLotData.status != 'available') {
+                                        this.saveErrorDetails = 'Lot status changed just now. Please check the status of the lot.';
+                                        saveSuccess.setAttribute("style", "display: none; color: green;");
+                                        saveFailed.setAttribute("style", "display: block; color: red;");
+                                    }
+                                    else {
 
-                                            this.favlefthide = false;
-                                            this.favrighthide = true;
+                                        // console.log(firebaseUpdate);
+                                        firebaseDbRef.update(firebaseUpdate, function (error) {
+                                            if (error) {
+                                                console.log("Error updating data:", error);
+                                                this.saveErrorDetails = error;
+                                                saveSuccess.setAttribute("style", "display: none; color: green;");
+                                                saveFailed.setAttribute("style", "display: block; color: red;");
 
-                                            // console.log('1');
-                                        }
-                                        else {
-                                            this.saveErrorDetails = "";
-                                            saveSuccess.setAttribute("style", "display: block; color: green;");
-                                            saveFailed.setAttribute("style", "display: none; color: red;");
+                                                this.favlefthide = false;
+                                                this.favrighthide = true;
 
-                                            this.favlefthide = true;
-                                            this.favrighthide = true;
+                                                // console.log('1');
+                                            }
+                                            else {
+                                                this.saveErrorDetails = "";
+                                                saveSuccess.setAttribute("style", "display: block; color: green;");
+                                                saveFailed.setAttribute("style", "display: none; color: red;");
 
-                                            favRightVar.setAttribute("style", "display: none; background: #1976d2;");
+                                                this.favlefthide = true;
+                                                this.favrighthide = true;
 
-                                            // console.log('2');
-                                        }
-                                    });
+                                                favRightVar.setAttribute("style", "display: none; background: #1976d2;");
+
+                                                // console.log('2');
+                                            }
+                                        });
+                                    }
                                 }
                                 else {
                                     //transactionKey is missing
