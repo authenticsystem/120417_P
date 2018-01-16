@@ -197,13 +197,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-
->>>>>>> f335d3e0e1f83e2ac17c33e058aa6f65b9394f46
-=======
->>>>>>> origin/gabriel
       <!-- <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
       <template is="dom-if" if="{{user.emailVerified}}">
@@ -245,6 +238,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <span>Account</span>
                   </paper-icon-item>
                 </a>
+                <a name="accountlist" href="[[rootPath]]accountlist">
+                  <paper-icon-item toggles="true" class="menuSelected">
+                    <iron-icon icon="my-icons:account-box" slot="item-icon"></iron-icon>
+                    <span>Account List</span>
+                  </paper-icon-item>
+                </a>
                 <a name="map" href="[[rootPath]]map">
                   <paper-icon-item toggles="true" class="menuSelected">
                     <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
@@ -257,7 +256,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <span>Account</span>
                   </paper-icon-item>
                 </a>
-                <<<<<<< HEAD <<<<<<< HEAD=======>>>>>>> 5e4617db3ca17c8304bde7eda531a80ae65256fd
                   <a name="applications" href="[[rootPath]]applications">
                     <paper-icon-item toggles="true" class="menuSelected">
                       <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
@@ -280,6 +278,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
             <my-applications name="applications" route="[[subroute]]"></my-applications>
             <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
+            <my-accountlist name="accountlist" route="[[subroute]]"></my-accountlist>
             <my-account-link user="{{user}}" name="account-link" route="[[subroute]]"></my-account-link>
             <my-view404 name="view404"></my-view404>
           </iron-pages>
@@ -337,58 +336,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-drawer-layout>
       </template>
       <!-- not yet verify -->
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-    </template>
-
-=======
->>>>>>> origin/gabriel
-=======
-      <<<<<<< HEAD=======< a name="map" href="[[rootPath]]map">
-        <paper-icon-item toggles="true" class="menuSelected">
-          <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
-          <span>Map</span>
-        </paper-icon-item>
-        </a>
-        <a name="applications" href="[[rootPath]]applications">
-          <paper-icon-item toggles="true" class="menuSelected">
-            <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
-            <span>Applications</span>
-          </paper-icon-item>
-        </a>
-        <a name="accountlist" href="[[rootPath]]accountlist">
-          <paper-icon-item toggles="true" class="menuSelected">
-            <iron-icon icon="my-icons:account-box" slot="item-icon"></iron-icon>
-            <span>Account List</span>
-          </paper-icon-item>
-        </a>
-        <a on-tap="_signOut" href="/">
-          <paper-icon-item toggles="true">
-            <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
-            <span>Sign-out</span>
-          </paper-icon-item>
-        </a>
-        </iron-selector>
-
-        </div>
-        </app-drawer>
-
-        <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-          <my-dashboard name="dashboard"></my-dashboard>
-          <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
-          <my-applications name="applications" route="[[subroute]]"></my-applications>
-          <my-accountlist name="accountlist" route="[[subroute]]"></my-accountlist>
-          <my-view404 name="view404"></my-view404>
-        </iron-pages>
-
-        </app-drawer-layout>
-
-    </template>
-
-    >>>>>>> origin/peter ======= >>>>>>> 5e4617db3ca17c8304bde7eda531a80ae65256fd
->>>>>>> origin/gabriel
-    <paper-toast id="toast" text=""></paper-toast>
+        <paper-toast id="toast" text=""></paper-toast>
 
   </template>
 
