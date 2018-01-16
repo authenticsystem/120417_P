@@ -21,6 +21,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-search/paper-search-bar.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
 
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
@@ -93,9 +95,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         left: 10px;
         margin-left: 20%;
       }
-      paper-icon-button.delete{
+
+      paper-icon-button.delete {
         color: red;
       }
+
       paper-search-bar#searching {
         color: #388E3C
       }
@@ -131,15 +135,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-dialog>
       </div>
 
-      <firebase-query id="query" path="/accountlist" data="{{account}}" start-at="{{equal}}" order-by-child="{{selectedType}}"end-at="{{equal\uf8ff}}"></firebase-query>
+      <firebase-query id="query" path="/accountlist" data="{{account}}" start-at="{{equal}}" order-by-child="{{selectedType}}"
+        end-at="{{equal\uf8ff}}"></firebase-query>
+
       <paper-datatable-card style="padding:17px;" id="myTable">
-        <!-- <paper-search-bar id="searching" query="{{query}}" placeholder="Enter search term" on-paper-search-search="search" on-paper-search-filter="filter"
-          disable-filter-button>
-        </paper-search-bar> -->
         <div slot="toolbar-select">
-          <paper-icon-button class="delete" icon="my-icons:delete-forever" on-tap="deleteSelected"></paper-icon-button>
+          <a href$={{_get($key)}}>
+            <paper-icon-button id="{{$key}}" class="delete" icon="my-icons:delete-forever" no-ink on-tap="deleteSelected"></paper-icon-button>
+            <paper-tooltip for="{{$key}}" position="bottom">Delete</paper-tooltip>
+          </a>
         </div>
-        <paper-datatable data="{{account}}" selectable>
+
+        <paper-dialog id="deleteUserInfo">
+          <h2>Delete User Permanently?</h2>
+          <div class="buttons">
+            <paper-button dialog-dismiss autofocus>No</paper-button>
+            <paper-button dialog-confirm on-tap="deleteUser">Yes</paper-button>
+          </div>
+          
+        </paper-dialog>
+        <paper-datatable data="{{account}}" selectable multi-selection selected-items="{{selectedItems}}" on-row-tap="rowTapped">
           <paper-datatable-column header="First Name" property="firstname"></paper-datatable-column>
           <paper-datatable-column header="Middle Name" property="middlename"></paper-datatable-column>
           <paper-datatable-column header="Last Name" property="lastname"></paper-datatable-column>
@@ -191,21 +206,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: ''
         },
-        // query: {
-        //   type: String,
-        //   notify: true,
-        //   value: '',
-        //   observer: '_search'
-        // },
-        selectedType:{
+        selectedType: {
+          type: String,
+          value: ''
+        },
+        selectedItems:{
           type:String,
           value:''
         }
       },
-      // _search() {
-      //   this.equal = this.query;
-      // },
-
       getpath() {
         this.accountkey = this.guid();
       },
@@ -233,13 +242,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         table.setAttribute("style", "display:block;padding:17px;");
         var NewUser = Polymer.dom(this.root).querySelector("#addAccount");
         NewUser.setAttribute("style", "display:block");
-        // var search = Polymer.dom(this.root).querySelector("#searching");
-        // search.setAttribute("style", "display:block");
         var New = Polymer.dom(this.root).querySelector("#addNew");
         New.setAttribute("style", "display:none");
         var Toast = Polymer.dom(this.root).querySelector("#toast");
         Toast.open();
-         var NewDialog = Polymer.dom(this.root).querySelector("#adddialog");
+        var NewDialog = Polymer.dom(this.root).querySelector("#adddialog");
         NewDialog.setAttribute("style", "display:block");
       },
 
@@ -250,8 +257,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         table.setAttribute("style", "display:block;padding:17px;");
         var NewUser = Polymer.dom(this.root).querySelector("#addAccount");
         NewUser.setAttribute("style", "display:block");
-        // var search = Polymer.dom(this.root).querySelector("#searching");
-        // search.setAttribute("style", "display:block");
         var New = Polymer.dom(this.root).querySelector("#addNew");
         New.setAttribute("style", "display:none");
         var NewDialog = Polymer.dom(this.root).querySelector("#adddialog");
@@ -265,8 +270,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.cellphone = "";
         this.suffix = "";
 
-        // var search = Polymer.dom(this.root).querySelector("#searching");
-        // search.setAttribute("style", "display:none");
         var add = Polymer.dom(this.root).querySelector("#addUser");
         var table = Polymer.dom(this.root).querySelector("#myTable");
         var NewUser = Polymer.dom(this.root).querySelector("#addAccount");
@@ -292,7 +295,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }));
         this.$.narrow = !this.$.narrow;
       },
+      deleteSelected() {
+        this.$.deleteUserInfo.open();
+      },
+      deleteUser() {
 
+      },
+      rowTapped(){
+
+      }
     })
   </script>
 </dom-module>
