@@ -39,7 +39,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-dashboard.html">
 <link rel="lazy-import" href="my-briefcase.html">
 <link rel="lazy-import" href="my-applications.html">
-<link rel="lazy-import" href="my-application-details.html">
 <link rel="lazy-import" href="my-accountlist.html">
 <link rel="lazy-import" href="my-corporate-account.html">
 <link rel="lazy-import" href="my-account-link.html">
@@ -215,7 +214,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <div class="shortText" on-tap="_signOut">[[user.email]]</div>
                     <div class="shortText">Sales Agent</div>
                   </div>
-
                 </app-toolbar>
               </app-header>
 
@@ -238,19 +236,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <span>Account</span>
                   </paper-icon-item>
                 </a>
+                <a name="accountlist" href="[[rootPath]]accountlist">
+                  <paper-icon-item toggles="true" class="menuSelected">
+                    <iron-icon icon="my-icons:account-box" slot="item-icon"></iron-icon>
+                    <span>Account List</span>
+                  </paper-icon-item>
+                </a>
                 <a name="map" href="[[rootPath]]map">
                   <paper-icon-item toggles="true" class="menuSelected">
                     <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
                     <span>Map</span>
                   </paper-icon-item>
                 </a>
-                <a name="account-link" href="[[rootPath]]account-link">
-                  <paper-icon-item toggles="true" class="menuSelected">
-                    <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
-                    <span>Account</span>
-                  </paper-icon-item>
-                </a>
-                <<<<<<< HEAD <<<<<<< HEAD=======>>>>>>> 5e4617db3ca17c8304bde7eda531a80ae65256fd
                   <a name="applications" href="[[rootPath]]applications">
                     <paper-icon-item toggles="true" class="menuSelected">
                       <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
@@ -274,6 +271,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <my-applications name="applications" route="[[subroute]]"></my-applications>
             <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
             <my-account-link user="{{user}}" name="account-link" route="[[subroute]]"></my-account-link>
+            <my-accountlist name="accountlist" route="[[subroute]]"></my-accountlist>
             <my-view404 name="view404"></my-view404>
           </iron-pages>
 
@@ -330,7 +328,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-drawer-layout>
       </template>
       <!-- not yet verify -->
-      <<<<<<< HEAD=======< a name="map" href="[[rootPath]]map">
+      <!-- <a name="map" href="[[rootPath]]map">
         <paper-icon-item toggles="true" class="menuSelected">
           <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
           <span>Map</span>
@@ -367,11 +365,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <my-view404 name="view404"></my-view404>
         </iron-pages>
 
-        </app-drawer-layout>
+        </app-drawer-layout> -->
 
     </template>
-
-    >>>>>>> origin/peter ======= >>>>>>> 5e4617db3ca17c8304bde7eda531a80ae65256fd
     <paper-toast id="toast" text=""></paper-toast>
 
   </template>
