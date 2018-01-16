@@ -39,15 +39,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-dashboard.html">
 <link rel="lazy-import" href="my-briefcase.html">
 <link rel="lazy-import" href="my-applications.html">
-<<<<<<< HEAD
+<link rel="lazy-import" href="my-application-details.html">
+<link rel="lazy-import" href="my-accountlist.html">
 <link rel="lazy-import" href="my-corporate-account.html">
 <link rel="lazy-import" href="my-account-link.html">
 <link rel="lazy-import" href="my-application-detail.html">
 <link rel="lazy-import" href="my-account.html">
-=======
-<link rel="lazy-import" href="my-application-details.html">
 <link rel="lazy-import" href="my-accountlist.html">
->>>>>>> origin/peter
 <link rel="lazy-import" href="my-view2.html">
 <link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
@@ -199,10 +197,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
-<<<<<<< HEAD
-=======
-
->>>>>>> 21fedd16d311d89609932c0cdaf174a98178ebed
       <!-- <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
       <template is="dom-if" if="{{user.emailVerified}}">
@@ -251,24 +245,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </paper-icon-item>
                 </a>
                 <a name="account-link" href="[[rootPath]]account-link">
-                <paper-icon-item toggles="true" class="menuSelected">
-                  <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
-                  <span>Account</span>
-                </paper-icon-item>
-              </a>
-<<<<<<< HEAD
-                <a name="applications" href="[[rootPath]]applications">
                   <paper-icon-item toggles="true" class="menuSelected">
-                    <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
-                    <span>Applications</span>
+                    <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
+                    <span>Account</span>
                   </paper-icon-item>
                 </a>
-                <a on-tap="_signOut" href="/">
-                  <paper-icon-item toggles="true">
-                    <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
-                    <span>Sign-out</span>
-                  </paper-icon-item>
-                </a>
+                <<<<<<< HEAD <<<<<<< HEAD=======>>>>>>> 5e4617db3ca17c8304bde7eda531a80ae65256fd
+                  <a name="applications" href="[[rootPath]]applications">
+                    <paper-icon-item toggles="true" class="menuSelected">
+                      <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
+                      <span>Applications</span>
+                    </paper-icon-item>
+                  </a>
+                  <a on-tap="_signOut" href="/">
+                    <paper-icon-item toggles="true">
+                      <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
+                      <span>Sign-out</span>
+                    </paper-icon-item>
+                  </a>
               </iron-selector>
 
             </div>
@@ -336,34 +330,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-drawer-layout>
       </template>
       <!-- not yet verify -->
-=======
-              <a name="map" href="[[rootPath]]map">
-                <paper-icon-item toggles="true" class="menuSelected">
-                  <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
-                  <span>Map</span>
-                </paper-icon-item>
-              </a>
-              <a name="applications" href="[[rootPath]]applications">
-                <paper-icon-item toggles="true" class="menuSelected">
-                  <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
-                  <span>Applications</span>
-                </paper-icon-item>
-              </a>
-              <a name="accountlist" href="[[rootPath]]accountlist">
-                  <paper-icon-item toggles="true" class="menuSelected">
-                    <iron-icon icon="my-icons:account-box" slot="item-icon"></iron-icon>
-                    <span>Account List</span>
-                  </paper-icon-item>
-                </a>
-              <a on-tap="_signOut" href="/">
-                <paper-icon-item toggles="true">
-                  <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
-                  <span>Sign-out</span>
-                </paper-icon-item>
-              </a>
-            </iron-selector>
+      <<<<<<< HEAD=======< a name="map" href="[[rootPath]]map">
+        <paper-icon-item toggles="true" class="menuSelected">
+          <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
+          <span>Map</span>
+        </paper-icon-item>
+        </a>
+        <a name="applications" href="[[rootPath]]applications">
+          <paper-icon-item toggles="true" class="menuSelected">
+            <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
+            <span>Applications</span>
+          </paper-icon-item>
+        </a>
+        <a name="accountlist" href="[[rootPath]]accountlist">
+          <paper-icon-item toggles="true" class="menuSelected">
+            <iron-icon icon="my-icons:account-box" slot="item-icon"></iron-icon>
+            <span>Account List</span>
+          </paper-icon-item>
+        </a>
+        <a on-tap="_signOut" href="/">
+          <paper-icon-item toggles="true">
+            <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
+            <span>Sign-out</span>
+          </paper-icon-item>
+        </a>
+        </iron-selector>
 
-          </div>
+        </div>
         </app-drawer>
 
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
@@ -374,11 +367,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <my-view404 name="view404"></my-view404>
         </iron-pages>
 
-      </app-drawer-layout>
+        </app-drawer-layout>
 
     </template>
 
->>>>>>> origin/peter
+    >>>>>>> origin/peter ======= >>>>>>> 5e4617db3ca17c8304bde7eda531a80ae65256fd
     <paper-toast id="toast" text=""></paper-toast>
 
   </template>
@@ -524,26 +517,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _alreadySignedIn(e, f) {
-<<<<<<< HEAD
         if (f === true) {
           return e !== null;
-=======
-      if (f === true) {
-        if (e) {
-        //     // if (e.emailVerified === false) {
-        //     //   console.log(e);
-        //     //   e.sendEmailVerification();
-        //     // }
->>>>>>> origin/peter
         }
+        else {
+          return false;
+        }
+      }
 
-       return e !== null;
-      }
-       else {
-         return false;
-      }
-      }
-      
       _notifyNetworkStatus() {
         let oldOffline = this.offline;
         this.offline = !navigator.onLine;
