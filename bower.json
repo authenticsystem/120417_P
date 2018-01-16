@@ -37,7 +37,7 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
     "paper-radio-group": "PolymerElements/paper-radio-group#^2.0.0",
     "bwt-datatable": "bluewatertracks/bwt-datatable#^2.0.4",
-    "paper-search":"Collaborne/paper-search#^2.0.9",
+    "paper-search": "Collaborne/paper-search#^2.0.9",
     "paper-spinner": "PolymerElements/paper-spinner#^2.0.0",
     "datetime-picker": "fooloomanzoo/datetime-picker#^2.5.5",
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.1",
@@ -47,7 +47,8 @@
     "short-unique-id": "hectorsantillan/short-unique-id#^1.0.0",
     "paper-tooltip": "PolymerElements/paper-tooltip#^2.0.1",
     "vaadin-upload": "vaadin/vaadin-upload#^3.0.0",
-    "paper-alert-dialog": "Collaborne/paper-alert-dialog#^2.0.1"
+    "paper-alert-dialog": "Collaborne/paper-alert-dialog#^2.0.1",
+    "paper-toolbar": "PolymerElements/paper-toolbar#^2.0.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"
