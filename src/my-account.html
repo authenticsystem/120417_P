@@ -1,0 +1,188 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
+<link rel="import" href="../bower_components/paper-alert-dialog/paper-alert-dialog.html">
+<link rel="import" href="../bower_components/paper-alert-dialog/paper-alert-dialog-icon-header.html">
+
+<dom-module id="my-account">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+
+      .pad {
+        padding: 0 16px;
+        @apply --layout-flex;
+        @apply --layout-vertical;
+      }
+
+      .primary {
+        font-size: 18px;
+        text-transform: capitalize;
+      }
+
+      .shortText,
+      .longText {
+        font-size: 12px;
+      }
+
+      app-header {
+        color: rgb(255, 255, 255);
+        background-color: #388E3C;
+      }
+
+      paper-icon-button.menu {
+        margin-right: 16px;
+      }
+
+      iron-image {
+        margin: 0 auto;
+      }
+
+      paper-button.green {
+        background-color: var(--paper-green-500);
+        color: white;
+        float: right;
+        margin-right: 40px
+      }
+
+      paper-button.green[active] {
+        background-color: var(--paper-red-500);
+      }
+
+      #uploader {
+        -webkit-appearance: none;
+        /* appearance: none; */
+        width: 50%;
+        margin-bottom: 10px
+      }
+    </style>
+
+    <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth>
+    <app-header-layout fullbleed has-scrolling-region>
+      <app-header fixed slot="header">
+        <app-toolbar primary>
+          <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+          <div main-title>My Account</div>
+        </app-toolbar>
+      </app-header>
+
+      <div class="card">
+
+        <span hidden$="{{user.emailVerified}}">
+          <h1>Please verify your account first</h1>
+        </span>
+
+        <span hidden$="{{!user.emailVerified}}">
+          <img src="{{user.photoURL}}" style="border:1px solid black;padding:5px; width:50px; height:50px"></img>
+          <img src="{{downloadURL}}"></img>
+          </br>
+          <progress value="0" max="100" id="uploader">0%</progress>
+          </br>
+          <input type="file" id="fileButton" on-tap="_upload"></input>
+          </br>
+          <paper-input label="{{user.displayName}}" id="name" style="margin-left:40px; margin-right:40px"></paper-input>
+          <paper-input label="{{user.email}}" id="email" style="margin-left:40px; margin-right:40px"></paper-input>
+          <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button>
+        </span>
+
+        <!-- alert dialog -->
+        <!-- <paper-button raised on-tap="openDialog">plain dialog</paper-button>
+        <paper-alert-dialog id="dialog" confirm-button="Got it">
+          <paper-alert-dialog-icon-header icon="icons:done">Well done!</paper-alert-dialog-icon-header>
+          Excellent, you can move on.
+        </paper-alert-dialog> -->
+        <!-- alert dialog -->
+
+      </div>
+
+    </app-header-layout>
+  </template>
+  <script>
+    Polymer({
+      is: 'my-account',
+
+      toggleDrawer() {
+        this.dispatchEvent(new CustomEvent('toggleDrawer', {
+          bubbles: true, composed: true, detail: {
+            narrow: this.$.narrow
+          }
+        }));
+        this.$.narrow = !this.$.narrow;
+      },
+      openDialog() {
+        var dialog = Polymer.dom(this.root).querySelector("#dialog");
+        this.$.dialog.open();
+      },
+      _upload(e) {
+        var fileButton = Polymer.dom(this.root).querySelector("#fileButton");
+        var uploader = Polymer.dom(this.root).querySelector("#uploader");
+
+        fileButton.addEventListener('change', function (e) {
+          //get file
+          var file = e.target.files[0];
+          //create storage
+          var user = firebase.auth().currentUser;
+          var storageRef = firebase.storage().ref('profilePic/' + file.name);
+          //upload file
+          var uploadTask = storageRef.put(file);
+          //update progressbar
+          uploadTask.on('state_changed',
+
+            function progress(snapshot) {
+              var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              uploader.value = percentage;
+            },
+            function error(err) {
+            },
+            function () {
+              var downloadURL = uploadTask.snapshot.downloadURL;
+              var user = firebase.auth().currentUser;
+              user.updateProfile({
+                photoURL: downloadURL
+              }).then(function () {
+                // Update successful.
+                window.location.reload()
+              }).catch(function (error) {
+                // An error happened.
+              });
+            }
+
+          );
+        });
+      },
+      _update() {
+        var user = firebase.auth().currentUser;
+        var name = Polymer.dom(this.root).querySelector("#name");
+        user.updateProfile({
+          displayName: name.value
+        }).then(function () {
+          // Update successful.
+          window.location.reload()
+        }).catch(function (error) {
+          // An error happened.
+        });
+      }
+    })
+
+
+  </script>
+</dom-module>
