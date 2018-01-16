@@ -194,6 +194,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
+<<<<<<< HEAD
+=======
+
+>>>>>>> 21fedd16d311d89609932c0cdaf174a98178ebed
       <!-- <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
       <template is="dom-if" if="{{user.emailVerified}}">
@@ -241,6 +245,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <span>Map</span>
                   </paper-icon-item>
                 </a>
+                <a name="account-link" href="[[rootPath]]account-link">
+                <paper-icon-item toggles="true" class="menuSelected">
+                  <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
+                  <span>Account</span>
+                </paper-icon-item>
+              </a>
                 <a name="applications" href="[[rootPath]]applications">
                   <paper-icon-item toggles="true" class="menuSelected">
                     <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
@@ -319,7 +329,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         </app-drawer-layout>
       </template>
-
       <!-- not yet verify -->
     <paper-toast id="toast" text=""></paper-toast>
 
