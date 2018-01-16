@@ -125,6 +125,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
           <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{suffix}}" always-float-label="Suffix" label="Suffix"></paper-input>
           <paper-input char-counter maxlength="9" value="{{cellphone}}" always-float-label="Cellphone" label="Cellphone">
+          <paper-input char-counter maxlength="10" value="{{cellphone}}" always-float-label="Cellphone" label="Cellphone">
             <div slot="prefix">+63</div>
           </paper-input>
         </div>
@@ -135,15 +136,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </paper-dialog>
       </div>
 
-      <firebase-query id="query" path="/accountlist" data="{{account}}" start-at="{{equal}}" order-by-child="{{selectedType}}"
+      <firebase-query id="query" path="/accountlist/{{key}}" data="{{account}}" start-at="{{equal}}" order-by-child="{{selectedType}}"
         end-at="{{equal\uf8ff}}"></firebase-query>
 
       <paper-datatable-card style="padding:17px;" id="myTable">
         <div slot="toolbar-select">
-          <a href$={{_get($key)}}>
-            <paper-icon-button id="{{$key}}" class="delete" icon="my-icons:delete-forever" no-ink on-tap="deleteSelected"></paper-icon-button>
-            <paper-tooltip for="{{$key}}" position="bottom">Delete</paper-tooltip>
-          </a>
+          <paper-icon-button id="key" class="delete" icon="my-icons:delete-forever" no-ink on-tap="deleteSelected"></paper-icon-button>
+          <paper-tooltip position="bottom">Delete</paper-tooltip>
         </div>
 
         <paper-dialog id="deleteUserInfo">
@@ -152,9 +151,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-button dialog-dismiss autofocus>No</paper-button>
             <paper-button dialog-confirm on-tap="deleteUser">Yes</paper-button>
           </div>
-          
+
         </paper-dialog>
-        <paper-datatable data="{{account}}" selectable multi-selection selected-items="{{selectedItems}}" on-row-tap="rowTapped">
+        <!-- <paper-input type="text" id="key"></paper-input>
+        <paper-button on-click="deleteData">remove</paper-button> -->
+        <paper-datatable data="{{account}}" selectable>
           <paper-datatable-column header="First Name" property="firstname"></paper-datatable-column>
           <paper-datatable-column header="Middle Name" property="middlename"></paper-datatable-column>
           <paper-datatable-column header="Last Name" property="lastname"></paper-datatable-column>
@@ -210,11 +211,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: ''
         },
-        selectedItems:{
-          type:String,
-          value:''
+        uid: {
+          type: String,
+          value: ''
         }
+        // selectedItems: {
+        //   type: String,
+        //   value: '',
+        //   observer:'selectedData'
+        // }
       },
+
       getpath() {
         this.accountkey = this.guid();
       },
@@ -297,13 +304,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       deleteSelected() {
         this.$.deleteUserInfo.open();
+        // console.log(this.$.deleteUserInfo);
       },
       deleteUser() {
-
+        var deleteDataRef = firebase.database().ref('accountlist');
+        var query = deleteDataRef.orderByChild('uid').equalTo(key).on('child_added', (snapshot) => {snapshot.ref.remove();
+          window.location.reload();
+        })
+       
       },
-      rowTapped(){
-
-      }
+      rowTapped() {
+      },
     })
   </script>
 </dom-module>
