@@ -28,6 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 
@@ -38,11 +39,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-dashboard.html">
 <link rel="lazy-import" href="my-briefcase.html">
 <link rel="lazy-import" href="my-applications.html">
+<link rel="lazy-import" href="my-corporate-account.html">
+<link rel="lazy-import" href="my-account-link.html">
 <link rel="lazy-import" href="my-application-detail.html">
 <link rel="lazy-import" href="my-account.html">
 <link rel="lazy-import" href="my-view2.html">
 <link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
+
 
 <dom-module id="my-app">
   <template>
@@ -183,6 +187,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
         <my-landing-page name="landing-page" user="{{user}}"></my-landing-page>
         <my-signin name="signin"></my-signin>
+        <my-corporate-account name="corporate-account"></my-corporate-account>
         <my-register-signin name="register-signin"></my-register-signin>
         <my-view404 name="view404"></my-view404>
       </iron-pages>
@@ -339,7 +344,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           narrow: {
             type: Boolean,
             notify: true
-          }
+          },
+          // account: {
+          //   type: Object,
+          //   observer: '__accountChanged'
+          // }
         };
       }
 
@@ -348,6 +357,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           '_routePageChanged(routeData.page,user)',
         ];
       }
+
+      // __accountChanged() {
+      //   if (Object.keys(this.account).length > 0) {
+      //     console.log(this.account);
+      //   }
+      //   else {
+      //     console.log(this.account);
+      //   }
+      // }
 
       toggleMenu() {
         var drawerlayout = Polymer.dom(this.root).querySelector("#drawerLayout");

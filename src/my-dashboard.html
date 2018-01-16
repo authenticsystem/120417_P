@@ -9,6 +9,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
@@ -34,17 +35,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       iron-image {
         margin: 0 auto;
       }
+
+      table,
+      th,
+      td {
+        border: 1px solid gray;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 5px;
+        text-align: right;
+      }
+
       /* .bg { */
-        /* The image used */
-        /* background-image: url("/images/manifest/icon-72x72.png"); */
 
-        /* Full height */
-        /* height: 100%; */
+      /* The image used */
 
-        /* Center and scale the image nicely */
-        /* background-position: center; */
-        /* background-repeat: no-repeat; */
-        /* background-size: cover; */
+      /* background-image: url("/images/manifest/icon-72x72.png"); */
+
+      /* Full height */
+
+      /* height: 100%; */
+
+      /* Center and scale the image nicely */
+
+      /* background-position: center; */
+
+      /* background-repeat: no-repeat; */
+
+      /* background-size: cover; */
+
       /* } */
     </style>
 
@@ -120,6 +142,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
         
 
+      </div>
+
 
       <!-- </div> -->
 
@@ -150,6 +174,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }));
         this.$.narrow = !this.$.narrow;
+      }
+
+      _formatType(e) {
+        if (e == 'lawnlots') return 'Lawn Lots';
+        else if (e == 'wallniche') return 'Wall Niche';
+        else if (e == 'bonechamber') return 'Bone Chamber';
+        else if (e == 'cinerarium') return 'Cinerarium';
+        else if (e == 'familylots1') return 'Family Lots 1 (Area=53.27m²)';
+        else if (e == 'familylots2') return 'Family Lots 1 (Area=52.83m²)';
+        else if (e == 'familylots3') return 'Family Lots 1 (Irregular Lots)';
+        else if (e == 'familylots4') return 'Family Lots 2 (Area=37.45m²)';
+        else if (e == 'familylots5') return 'Family Lots 2 (Irregular Lots)';
+        else if (e == 'gardenlots1') return 'Garden Lots 1 (Area=12.52m²)';
+        else if (e == 'gardenlots2') return 'Garden Lots 1 (Area=12.43m²)';
+        else if (e == 'gardenlots3') return 'Garden Lots 1 (Irregular Lots)';
+        else if (e == 'gardenlots4') return 'Garden Lots 2 (Area=20.00m²)';
+        else if (e == 'gardenlots5') return 'Garden Lots 2 (Irregular Lots)';
+      }
+
+      _formatNumber(e) {
+        if(e == 0) return '-'
+        else return e;
       }
 
     }
