@@ -1,0 +1,309 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/bwt-datatable/bwt-datatable-card.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-search/paper-search-bar.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+
+<link rel="import" href="my-icons.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="short-unique-id.html">
+<dom-module id="my-accountlist">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        /* padding: 10px;
+        --paper-datatable-api-table: {
+          table-layout: fixed;
+        } */
+      }
+
+      app-header {
+        color: rgb(255, 255, 255);
+        background-color: #388E3C;
+      }
+
+      paper-button.indigo {
+        background-color: var(--paper-indigo-500);
+        color: white;
+        height: 30px;
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--paper-pink-a200) !important;
+          color: white;
+        }
+        ;
+      }
+
+      paper-button.default {
+        background-color: gainsboro;
+        color: white;
+        height: 30px;
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--paper-pink-a200) !important;
+          color: white;
+        }
+        ;
+      }
+
+      paper-fab.fab-menu {
+        position: fixed;
+        bottom: 32px;
+        right: 32px;
+
+      }
+
+      paper-input {
+        display: inline-block;
+      }
+
+      paper-dialog#addUser {
+        width: 60%;
+        margin: 0 auto;
+        padding: 40px;
+        margin-top: 2%
+      }
+
+      h2 {
+        margin-top: 2px;
+      }
+
+      paper-toast {
+        width: 20%;
+        position: fixed;
+        bottom: 1opx;
+        left: 10px;
+        margin-left: 20%;
+      }
+
+      paper-icon-button.delete {
+        color: red;
+      }
+
+      paper-search-bar#searching {
+        color: #388E3C
+      }
+    </style>
+
+    <app-header-layout fullbleed has-scrolling-region>
+      <app-header fixed slot="header">
+        <app-toolbar primary>
+          <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+          <div main-title id="addAccount">Account List</div>
+          <div main-title id="addNew" style="display:none">New User</div>
+        </app-toolbar>
+      </app-header>
+
+
+      <paper-dialog id="addUser">
+        <h2>Add New User</h2>
+        <div>
+          <div class="horizontal layout">
+            <paper-input auto-validate pattern="[a-zA-Z-.]*" value="{{firstname}}" always-float-label="First Name" label="First Name"></paper-input>
+            <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{middlename}}" always-float-label="Middle Name" label="Middle Name"></paper-input>
+            <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{lastname}}" always-float-label="Last Name" label="Last Name"></paper-input>
+          </div>
+          <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{suffix}}" always-float-label="Suffix" label="Suffix"></paper-input>
+          <paper-input char-counter maxlength="9" value="{{cellphone}}" always-float-label="Cellphone" label="Cellphone">
+            <div slot="prefix">+63</div>
+          </paper-input>
+        </div>
+        <div class="buttons">
+          <paper-button id="done" class="indigo" on-click="_submit" raised>Add</paper-button>
+          <paper-button id="cancel" class="default" on-click="_cancel" raised>Cancel</paper-button>
+        </div>
+      </paper-dialog>
+      </div>
+
+      <firebase-query id="query" path="/accountlist" data="{{account}}" start-at="{{equal}}" order-by-child="{{selectedType}}"
+        end-at="{{equal\uf8ff}}"></firebase-query>
+
+      <paper-datatable-card style="padding:17px;" id="myTable">
+        <div slot="toolbar-select">
+          <a href$={{_get($key)}}>
+            <paper-icon-button id="{{$key}}" class="delete" icon="my-icons:delete-forever" no-ink on-tap="deleteSelected"></paper-icon-button>
+            <paper-tooltip for="{{$key}}" position="bottom">Delete</paper-tooltip>
+          </a>
+        </div>
+
+        <paper-dialog id="deleteUserInfo">
+          <h2>Delete User Permanently?</h2>
+          <div class="buttons">
+            <paper-button dialog-dismiss autofocus>No</paper-button>
+            <paper-button dialog-confirm on-tap="deleteUser">Yes</paper-button>
+          </div>
+          
+        </paper-dialog>
+        <paper-datatable data="{{account}}" selectable multi-selection selected-items="{{selectedItems}}" on-row-tap="rowTapped">
+          <paper-datatable-column header="First Name" property="firstname"></paper-datatable-column>
+          <paper-datatable-column header="Middle Name" property="middlename"></paper-datatable-column>
+          <paper-datatable-column header="Last Name" property="lastname"></paper-datatable-column>
+          <paper-datatable-column header="Suffix" property="suffix"></paper-datatable-column>
+          <paper-datatable-column header="Cellphone" property="cellphone"></paper-datatable-column>
+          <paper-datatable-column header="Active" property="active"></paper-datatable-column>
+        </paper-datatable>
+      </paper-datatable-card>
+      <paper-fab id="adddialog" class="fab-menu" icon="my-icons:add" on-tap="_addDialog"></paper-fab>
+    </app-header-layout>
+    <paper-toast id="toast" text="Successfully Added!"></paper-toast>
+  </template>
+
+  <script> 
+    Polymer({
+      is: 'my-accountlist',
+      properties: {
+
+        path: String,
+        account: {
+          type: Object,
+          value: null,
+        },
+        equal: {
+          type: String,
+          value: ''
+        },
+        firstname: {
+          type: String,
+          value: ''
+        },
+        middlename: {
+          type: String,
+          value: ''
+        },
+        lastname: {
+          type: String,
+          value: ''
+        },
+        suffix: {
+          type: String,
+          value: ''
+        },
+        cellphone: {
+          type: Number,
+          value: ''
+        },
+        accountkey: {
+          type: String,
+          value: ''
+        },
+        selectedType: {
+          type: String,
+          value: ''
+        },
+        selectedItems:{
+          type:String,
+          value:''
+        }
+      },
+      getpath() {
+        this.accountkey = this.guid();
+      },
+      guid: function () {
+        var uid = new ShortUniqueId();
+        return uid.randomUUID(7);
+      },
+
+      _submit() {
+        var ref = firebase.database().ref("accountlist");
+        ref.push({
+          accountkey: this.guid(),
+          active: true,
+          firstname: this.firstname,
+          middlename: this.middlename,
+          lastname: this.lastname,
+          cellphone: "+63" + this.cellphone,
+          suffix: this.suffix,
+          uid: 'none'
+        });
+
+        var list = Polymer.dom(this.root).querySelector("#addUser");
+        list.style.display = "none";
+        var table = Polymer.dom(this.root).querySelector("#myTable");
+        table.setAttribute("style", "display:block;padding:17px;");
+        var NewUser = Polymer.dom(this.root).querySelector("#addAccount");
+        NewUser.setAttribute("style", "display:block");
+        var New = Polymer.dom(this.root).querySelector("#addNew");
+        New.setAttribute("style", "display:none");
+        var Toast = Polymer.dom(this.root).querySelector("#toast");
+        Toast.open();
+        var NewDialog = Polymer.dom(this.root).querySelector("#adddialog");
+        NewDialog.setAttribute("style", "display:block");
+      },
+
+      _cancel() {
+        var list = Polymer.dom(this.root).querySelector("#addUser");
+        list.style.display = "none";
+        var table = Polymer.dom(this.root).querySelector("#myTable");
+        table.setAttribute("style", "display:block;padding:17px;");
+        var NewUser = Polymer.dom(this.root).querySelector("#addAccount");
+        NewUser.setAttribute("style", "display:block");
+        var New = Polymer.dom(this.root).querySelector("#addNew");
+        New.setAttribute("style", "display:none");
+        var NewDialog = Polymer.dom(this.root).querySelector("#adddialog");
+        NewDialog.setAttribute("style", "display:block");
+      },
+
+      _addDialog() {
+        this.firstname = "";
+        this.middlename = "";
+        this.lastname = "";
+        this.cellphone = "";
+        this.suffix = "";
+
+        var add = Polymer.dom(this.root).querySelector("#addUser");
+        var table = Polymer.dom(this.root).querySelector("#myTable");
+        var NewUser = Polymer.dom(this.root).querySelector("#addAccount");
+        NewUser.setAttribute("style", "display:none");
+        var NewDialog = Polymer.dom(this.root).querySelector("#adddialog");
+        NewDialog.setAttribute("style", "display:none");
+        var New = Polymer.dom(this.root).querySelector("#addNew");
+        New.setAttribute("style", "display:block");
+        if (add.style.display === "block") {
+          add.style.display = "none";
+        }
+        if (add.style.display === "none") {
+          add.style.display = "block";
+          table.style.display = "none";
+        }
+      },
+
+      toggleDrawer() {
+        this.dispatchEvent(new CustomEvent('toggleDrawer', {
+          bubbles: true, composed: true, detail: {
+            narrow: this.$.narrow
+          }
+        }));
+        this.$.narrow = !this.$.narrow;
+      },
+      deleteSelected() {
+        this.$.deleteUserInfo.open();
+      },
+      deleteUser() {
+
+      },
+      rowTapped(){
+
+      }
+    })
+  </script>
+</dom-module>
