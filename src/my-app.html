@@ -39,6 +39,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-dashboard.html">
 <link rel="lazy-import" href="my-briefcase.html">
 <link rel="lazy-import" href="my-applications.html">
+<link rel="lazy-import" href="my-application-details.html">
+<link rel="lazy-import" href="my-accountlist.html">
 <link rel="lazy-import" href="my-corporate-account.html">
 <link rel="lazy-import" href="my-account-link.html">
 <link rel="lazy-import" href="my-application-detail.html">
@@ -194,10 +196,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
-<<<<<<< HEAD
-=======
-
->>>>>>> 21fedd16d311d89609932c0cdaf174a98178ebed
       <!-- <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
       <template is="dom-if" if="{{user.emailVerified}}">
@@ -478,11 +476,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (f === true) {
           return e !== null;
         }
-        else {
-          return false;
-        }
       }
-
+       else {
+         return false;
+      }
+      }
+      
       _notifyNetworkStatus() {
         let oldOffline = this.offline;
         this.offline = !navigator.onLine;
