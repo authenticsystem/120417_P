@@ -1,0 +1,288 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/skeleton-auth/skeleton-auth.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-account-link">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                /* overflow: hidden; */
+            }
+
+            @media (min-width: 767px) {
+                .main-container {
+                    height: 100%;
+                    background-color: white;
+                    max-width: 370px;
+                    margin: 16px auto;
+                    padding: 40px;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                }
+
+            }
+
+            @media (max-width: 767px) {
+                :host {
+                    height: 100%;
+                }
+                .main-container {
+                    height: 100%;
+                    background-color: white;
+                    margin: 0 auto;
+                    padding: 40px;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                }
+
+            }
+
+            app-header {
+                color: rgb(255, 255, 255);
+                background-color: #388E3C;
+            }
+
+            paper-button.green {
+                background-color: var(--paper-green-500);
+                color: white;
+                align-self: flex-end;
+                height: 40px;
+
+            }
+
+            paper-input {
+                flex: 1;
+            }
+
+            .action {
+                float: right;
+            }
+
+            .footer {
+                height: 48px;
+            }
+
+            .header {
+                font-size: 24px;
+                font-weight: 400;
+            }
+
+            #holder {
+                display: flex;
+            }
+        </style>
+
+        <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
+        </firebase-query>
+
+        <app-header-layout fullbleed has-scrolling-region>
+            <app-header fixed slot="header">
+                <app-toolbar primary>
+                    <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                    <div main-title>Account</div>
+                </app-toolbar>
+            </app-header>
+
+            <div class="card">
+                <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
+                    fade style="width:200px; height:200px;"></iron-image>
+                </br>
+
+                <template is="dom-if" if="{{_accountLink(accountKnown)}}">
+                    ACCOUNT SUCCESSFULLY LINK </br>
+                </template>
+
+                <template is="dom-if" if="{{_accountNotLink(accountKnown)}}">
+
+                    <firebase-query id="query" path="/accountlist" order-by-child="accountkey" equal-to="{{accountKey}}" data="{{accountInfo}}">
+                    </firebase-query>
+
+                    <div id="keySubmittion">
+                        Enter key to link your account.
+                        <div id="holder">
+                            <paper-input auto-validate required label="Key" value="{{accKey}}"></paper-input>
+                            <paper-button class="green" on-tap="_submitKey">Submit</paper-button>
+                        </div>
+                        <span style="color:red; font-size:12px;">{{msg}}</span>
+                    </div>
+
+                    <div id="codeSubmittion" style="display:none;">
+                        <!-- <skeleton-auth phone on-error="handleError">
+                        </skeleton-auth> -->
+                        Enter verification code that was sent to your mobile device.
+                        <div id="holder">
+                            <paper-input value="{{confirmationCode}}" allowed-pattern="[\d]" label="Verification code" maxlength="6" prevent-invalid-input
+                                auto-validate required></paper-input>
+                            <paper-button class="green" on-tap="_verifyCode">Verify</paper-button>
+                        </div>
+                        <span style="color:red; font-size:12px;">{{msg}}</span>
+                    </div>
+
+                </template>
+
+            </div>
+        </app-header-layout>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-account-link',
+            properties: {
+                account: {
+                    type: Object,
+                    observer: '_accountChanged'
+                },
+                accountKnown: {
+                    type: Boolean,
+                    notify: true
+                },
+                accKey: {
+                    type: String,
+                    observer: '_accKeyChanged'
+                },
+                accountInfo: Object
+            },
+
+            _accKeyChanged() {
+                this.accountKey = this.accKey;
+            },
+
+            _submitKey() {
+                if (!this.accKey) {
+                    this.msg = 'Please enter key.';
+                }
+                else {
+
+                    if (this.accountInfo.length > 0) {
+                        this.signInWithPhone();
+                        this.msg = '';
+                    }
+                    else {
+                        this.msg = 'Must be a valid key.';
+                    }
+                }
+            },
+
+            signInWithPhone() {
+                this._removeRecaptcha();
+                const recaptchaContainer = document.createElement('div');
+                recaptchaContainer.id = 'recaptchaContainer';
+                document.body.appendChild(recaptchaContainer);
+
+                if (!recaptchaContainer) {
+                    this.error = new Error('Invalid recaptcha-container');
+                    return;
+                }
+
+                const appVerifier = new firebase.auth.RecaptchaVerifier(
+                    recaptchaContainer,
+                    { size: 'invisible' }
+                );
+                const phoneComplete = this.accountInfo[0].cellphone;
+                // const phoneComplete = '+639128616318';
+                firebase.auth()
+                    .signInWithPhoneNumber(phoneComplete, appVerifier)
+                    .then((confirmationResult) => {
+                        /**
+                         * SMS sent. Prompt user to type the code
+                         * from the message, then sign the user in
+                         * with confirmationResult.confirm(code).
+                         */
+                        Polymer.dom(this.root).querySelector("#keySubmittion").setAttribute("style", "display: none;");
+                        Polymer.dom(this.root).querySelector("#codeSubmittion").setAttribute("style", "display: block;");
+                        this.confirmationResult = confirmationResult;
+                        this._removeRecaptcha();
+                    })
+                    .catch((error) => {
+                        this._removeRecaptcha();
+                    });
+            },
+
+            _removeRecaptcha() {
+                const element = document.getElementById('recaptchaContainer');
+                if (!element) return;
+                element.remove();
+            },
+
+
+            _verifyCode() {
+                if (!this.confirmationCode) {
+                    this.msg = 'Please enter the code.'
+                }
+                else {
+                    var credential = firebase.auth.PhoneAuthProvider
+                        .credential(this.confirmationResult.verificationId, this.confirmationCode);
+                    var accountKey = this.accountInfo[0].$key;
+                    var userName = this.accountInfo[0].firstname + ' ' + this.accountInfo[0].middlename + ' ' + this.accountInfo[0].lastname + ' ' + this.accountInfo[0].suffix;
+
+                    firebase.auth().currentUser.linkWithCredential(credential).then(function (user) {
+                        var fbDB = firebase.database().ref();
+                        var data = user.uid;
+                        user.updateProfile({ displayName: userName });
+                        fbDB.child('accountlist/' + accountKey + '/uid').set(data);
+                        window.location.reload();
+                    }, function (error) {
+                        console.log(error);
+                    });
+                }
+            },
+
+            _accountChanged() {
+                if (this.account.length > 0) {
+                    this.accountKnown = true;
+                }
+                else {
+                    this.accountKnown = false;
+                }
+            },
+
+            _accountLink(e) {
+                if (e == true) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            },
+
+            _accountNotLink(e) {
+                if (e == false) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            },
+
+            toggleDrawer() {
+                this.dispatchEvent(new CustomEvent('toggleDrawer', {
+                    bubbles: true, composed: true, detail: {
+                        narrow: this.$.narrow
+                    }
+                }));
+                this.$.narrow = !this.$.narrow;
+            }
+
+        })
+    </script>
+</dom-module>
