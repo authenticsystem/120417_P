@@ -152,7 +152,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-button dialog-dismiss autofocus>No</paper-button>
             <paper-button dialog-confirm on-tap="deleteUser">Yes</paper-button>
           </div>
-          
+
         </paper-dialog>
         <paper-datatable data="{{account}}" selectable multi-selection selected-items="{{selectedItems}}" on-row-tap="rowTapped">
           <paper-datatable-column header="First Name" property="firstname"></paper-datatable-column>
@@ -160,6 +160,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-datatable-column header="Last Name" property="lastname"></paper-datatable-column>
           <paper-datatable-column header="Suffix" property="suffix"></paper-datatable-column>
           <paper-datatable-column header="Cellphone" property="cellphone"></paper-datatable-column>
+          <paper-datatable-column header="Role" property="role"></paper-datatable-column>
           <paper-datatable-column header="Active" property="active"></paper-datatable-column>
         </paper-datatable>
       </paper-datatable-card>
@@ -209,12 +210,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         selectedType: {
           type: String,
           value: ''
-        },
-        selectedItems:{
-          type:String,
-          value:''
         }
       },
+      // _name(e) {
+      //   console.log(e);
+      // },
+
       getpath() {
         this.accountkey = this.guid();
       },
@@ -233,6 +234,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           lastname: this.lastname,
           cellphone: "+63" + this.cellphone,
           suffix: this.suffix,
+          role: 'Agent',
           uid: 'none'
         });
 
@@ -301,7 +303,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       deleteUser() {
 
       },
-      rowTapped(){
+      rowTapped() {
 
       }
     })

@@ -245,14 +245,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <span>Applications</span>
                   </paper-icon-item>
                 </a>
-                <span hidden$="{{_access(account)}}">
-                  <a name="accountlist" href="[[rootPath]]accountlist">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:account-box" slot="item-icon"></iron-icon>
-                      <span>Account List</span>
-                    </paper-icon-item>
-                  </a>
-                </span>
+                <a style$="{{_access(account)}}" name="accountlist" href="[[rootPath]]accountlist">
+                  <paper-icon-item toggles="true" class="menuSelected">
+                    <iron-icon icon="my-icons:account-box" slot="item-icon"></iron-icon>
+                    <span>Account List</span>
+                  </paper-icon-item>
+                </a>
                 <a on-tap="_signOut" href="/">
                   <paper-icon-item toggles="true">
                     <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
@@ -366,8 +364,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _access(e) {
-        if(Object.keys(e).length > 0)
-        console.log(e[0].role);
+        if (Object.keys(e).length > 0) {
+          if (e[0].role == 'Manager') {
+            return 'display:block';
+          }
+        }
+        else {
+          return 'display:none';
+        }
       }
 
       toggleMenu() {
