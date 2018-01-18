@@ -16,8 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
-<link rel="import" href="../bower_components/paper-alert-dialog/paper-alert-dialog.html">
-<link rel="import" href="../bower_components/paper-alert-dialog/paper-alert-dialog-icon-header.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 
 <dom-module id="my-account">
   <template>
@@ -93,7 +92,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <span hidden$="{{!user.emailVerified}}">
           <img src="{{user.photoURL}}" style="border:1px solid black;padding:5px; width:50px; height:50px"></img>
-          <img src="{{downloadURL}}"></img>
+          <img src="" id="photoViewer" alt="your image"></img>
           </br>
           <progress value="0" max="100" id="uploader">0%</progress>
           </br>
@@ -103,14 +102,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-input label="{{user.email}}" id="email" style="margin-left:40px; margin-right:40px"></paper-input>
           <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button>
         </span>
-
-        <!-- alert dialog -->
-        <!-- <paper-button raised on-tap="openDialog">plain dialog</paper-button>
-        <paper-alert-dialog id="dialog" confirm-button="Got it">
-          <paper-alert-dialog-icon-header icon="icons:done">Well done!</paper-alert-dialog-icon-header>
-          Excellent, you can move on.
-        </paper-alert-dialog> -->
-        <!-- alert dialog -->
+        <paper-toast id="toast" text="Successfully updated!"></paper-toast>
 
       </div>
 
@@ -127,10 +119,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }));
         this.$.narrow = !this.$.narrow;
-      },
-      openDialog() {
-        var dialog = Polymer.dom(this.root).querySelector("#dialog");
-        this.$.dialog.open();
       },
       _upload(e) {
         var fileButton = Polymer.dom(this.root).querySelector("#fileButton");
@@ -176,6 +164,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           displayName: name.value
         }).then(function () {
           // Update successful.
+          var Toast = Polymer.dom(this.root).querySelector("#toast");
+        Toast.open();
           window.location.reload()
         }).catch(function (error) {
           // An error happened.
