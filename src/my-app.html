@@ -213,6 +213,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <!-- verified user -->
       <template is="dom-if" if="{{user.emailVerified}}">
+        <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
+        </firebase-query>
+
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
           <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
             <div style="height: 100%; overflow: auto;">
@@ -242,18 +245,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <paper-icon-item toggles="true" class="menuSelected">
                     <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
                     <span>My Account</span>
-                  </paper-icon-item>
-                </a>
-                <a name="account-link" href="[[rootPath]]account-link">
-                  <paper-icon-item toggles="true" class="menuSelected">
-                    <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
-                    <span>Account</span>
-                  </paper-icon-item>
-                </a>
-                <a name="accountlist" href="[[rootPath]]accountlist">
-                  <paper-icon-item toggles="true" class="menuSelected">
-                    <iron-icon icon="my-icons:account-box" slot="item-icon"></iron-icon>
-                    <span>Account List</span>
                   </paper-icon-item>
                 </a>
                 <a name="map" href="[[rootPath]]map">
@@ -390,11 +381,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           narrow: {
             type: Boolean,
             notify: true
-          },
-          // account: {
-          //   type: Object,
-          //   observer: '__accountChanged'
-          // }
+          }
         };
       }
 
@@ -404,14 +391,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ];
       }
 
-      // __accountChanged() {
-      //   if (Object.keys(this.account).length > 0) {
-      //     console.log(this.account);
-      //   }
-      //   else {
-      //     console.log(this.account);
-      //   }
-      // }
+      _access(e) {
+        if(Object.keys(e).length > 0)
+        console.log(e[0].role);
+      }
 
       toggleMenu() {
         var drawerlayout = Polymer.dom(this.root).querySelector("#drawerLayout");
@@ -421,6 +404,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           drawerlayout.toggle();
         }
       }
+
+      // _access(e) {
+      //   var ref = firebase.database().ref("accountlist");
+      //  var uki = ref.orderByChild("uid").equalTo(e);
+
+      //   console.log(uki);
+      // }
 
       ready() {
         super.ready();
@@ -509,6 +499,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _alreadySignedIn(e, f) {
         if (f === true) {
+          // e.sendEmailVerification();
           return e !== null;
         }
 

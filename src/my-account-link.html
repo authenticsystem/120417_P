@@ -98,7 +98,7 @@
             <app-header fixed slot="header">
                 <app-toolbar primary>
                     <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-                    <div main-title>Account</div>
+                    <div main-title>My Account</div>
                 </app-toolbar>
             </app-header>
 
@@ -108,7 +108,12 @@
                 </br>
 
                 <template is="dom-if" if="{{_accountLink(accountKnown)}}">
-                    ACCOUNT SUCCESSFULLY LINK </br>
+                    ACCOUNT SUCCESSFULLY LINK
+                    <div>
+                        <a href="/account">
+                            <button>OK</button>
+                        </a>
+                    </div>
                 </template>
 
                 <template is="dom-if" if="{{_accountNotLink(accountKnown)}}">
