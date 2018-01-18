@@ -392,8 +392,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _access(e) {
-        if(Object.keys(e).length > 0)
-        console.log(e[0].role);
+        if (Object.keys(e).length > 0) {
+          if (e[0].role == 'Manager') {
+            return 'display:block';
+          }
+        }
+        else {
+          return 'display:none';
+        }
       }
 
       toggleMenu() {
