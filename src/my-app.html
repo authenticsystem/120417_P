@@ -199,6 +199,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
       <template is="dom-if" if="{{user.emailVerified}}">
+        <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
+        </firebase-query>
+
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
           <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
             <div style="height: 100%; overflow: auto;">
@@ -230,36 +233,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <span>My Account</span>
                   </paper-icon-item>
                 </a>
-                <a name="account-link" href="[[rootPath]]account-link">
-                  <paper-icon-item toggles="true" class="menuSelected">
-                    <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
-                    <span>Account</span>
-                  </paper-icon-item>
-                </a>
-                <a name="accountlist" href="[[rootPath]]accountlist">
-                  <paper-icon-item toggles="true" class="menuSelected">
-                    <iron-icon icon="my-icons:account-box" slot="item-icon"></iron-icon>
-                    <span>Account List</span>
-                  </paper-icon-item>
-                </a>
                 <a name="map" href="[[rootPath]]map">
                   <paper-icon-item toggles="true" class="menuSelected">
                     <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
                     <span>Map</span>
                   </paper-icon-item>
                 </a>
-                  <a name="applications" href="[[rootPath]]applications">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
-                      <span>Applications</span>
-                    </paper-icon-item>
-                  </a>
-                  <a on-tap="_signOut" href="/">
-                    <paper-icon-item toggles="true">
-                      <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
-                      <span>Sign-out</span>
-                    </paper-icon-item>
-                  </a>
+                <a name="applications" href="[[rootPath]]applications">
+                  <paper-icon-item toggles="true" class="menuSelected">
+                    <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
+                    <span>Applications</span>
+                  </paper-icon-item>
+                </a>
+                <a style$="{{_access(account)}}" name="accountlist" href="[[rootPath]]accountlist">
+                  <paper-icon-item toggles="true" class="menuSelected">
+                    <iron-icon icon="my-icons:account-box" slot="item-icon"></iron-icon>
+                    <span>Account List</span>
+                  </paper-icon-item>
+                </a>
+                <a on-tap="_signOut" href="/">
+                  <paper-icon-item toggles="true">
+                    <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
+                    <span>Sign-out</span>
+                  </paper-icon-item>
+                </a>
               </iron-selector>
 
             </div>
@@ -329,7 +326,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-drawer-layout>
       </template>
       <!-- not yet verify -->
-        <paper-toast id="toast" text=""></paper-toast>
+      <paper-toast id="toast" text=""></paper-toast>
+    </template>
   </template>
 
   <script>
@@ -355,11 +353,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           narrow: {
             type: Boolean,
             notify: true
-          },
-          // account: {
-          //   type: Object,
-          //   observer: '__accountChanged'
-          // }
+          }
         };
       }
 
@@ -369,14 +363,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ];
       }
 
-      // __accountChanged() {
-      //   if (Object.keys(this.account).length > 0) {
-      //     console.log(this.account);
-      //   }
-      //   else {
-      //     console.log(this.account);
-      //   }
-      // }
+      _access(e) {
+        if (Object.keys(e).length > 0) {
+          if (e[0].role == 'Manager') {
+            return 'display:block';
+          }
+        }
+        else {
+          return 'display:none';
+        }
+      }
 
       toggleMenu() {
         var drawerlayout = Polymer.dom(this.root).querySelector("#drawerLayout");
@@ -386,6 +382,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           drawerlayout.toggle();
         }
       }
+
+      // _access(e) {
+      //   var ref = firebase.database().ref("accountlist");
+      //  var uki = ref.orderByChild("uid").equalTo(e);
+
+      //   console.log(uki);
+      // }
 
       ready() {
         super.ready();
@@ -474,21 +477,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _alreadySignedIn(e, f) {
         if (f === true) {
-<<<<<<< HEAD
-=======
-          if (e) {
-            // if (e.emailVerified === false) {
-              // console.log(e);
-              // e.sendEmailVerification();
-            // }
-          }
-
->>>>>>> master
+          // e.sendEmailVerification();
           return e !== null;
         }
 
-       else {
-         return false;
+        else {
+          return false;
         }
       }
 

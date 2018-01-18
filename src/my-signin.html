@@ -9,7 +9,7 @@
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
-
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
@@ -106,32 +106,26 @@
             <div class="header">Sign in</div>
             <div>to continue to Haven of Peace Memorial Garden inventory and reservation system</div>
             <br>
-            <div id="errorMsgDiv" style="display: none;"><iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}</div>
+            <div id="errorMsgDiv" style="display: none;">
+                <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}</div>
 
             <paper-input label="Email" value="{{email}}" always-float-label required auto-validate error-message=""></paper-input>
             <paper-input label="Password" type="password" value="{{password}}" always-float-label required auto-validate error-message=""></paper-input>
             <div class="footer">
-            <div class="moreoption">
-                <paper-menu-button>
-                    <div slot="dropdown-trigger" alt="menu" style="color: royalblue;">More options</div>
-                    <paper-listbox slot="dropdown-content">
-                        <paper-item>
-                            <a href="/register-signin">Create Account?</a>
-                        </paper-item>
-                     <!-- <paper-item>
-                             <a href="/register-signin" style="text-decoration:none;">Create Account</a>
-                          </paper-item>
-                          <paper-item>
-                             <a href="/corporate-account" style="text-decoration:none;">Sign-in with different account</a>
-                          </paper-item>
-                          <paper-item>Forgot Password?</paper-item>
-                      -->
-                    </paper-listbox>
-                </paper-menu-button>
-            </div>
-            <div class="action">
-            <paper-button received-focus-from-keyboard id="next" class="green" on-tap="_signIn">next</paper-button>
-            </div>
+                <div class="moreoption">
+                    <paper-menu-button>
+                        <div slot="dropdown-trigger" style="color: royalblue;">More options</div>
+                        <paper-listbox slot="dropdown-content">
+                            <paper-item>
+                                <a style="text-decoration:none;" href="/register-signin">Create Account?</a>
+                            </paper-item>
+                            <!-- <paper-item>Forgot Password?</paper-item> -->
+                        </paper-listbox>
+                    </paper-menu-button>
+                </div>
+                <div class="action">
+                    <paper-button received-focus-from-keyboard id="next" class="green" on-tap="_signIn">next</paper-button>
+                </div>
             </div>
             <!-- <div style="text-align: center; margin-top:10px">
                 <hr class="hr1">OR LOGIN AS
@@ -142,7 +136,7 @@
 
             <!-- </div> -->
             <!-- </div> -->
-        <!-- end of main container -->
+            <!-- end of main container -->
         </div>
 
     </template>
