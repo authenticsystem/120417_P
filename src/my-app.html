@@ -231,6 +231,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <div class="pad">
                     <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
                     <div class="shortText">Sales Agent</div>
+                    <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
+                    <div class="shortText">{{_roleAcc(account)}}</div>
                   </div>
                 </app-toolbar>
               </app-header>
@@ -258,6 +260,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <paper-icon-item toggles="true" class="menuSelected">
                     <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
                     <span>Applications</span>
+                  </paper-icon-item>
+                </a>
+                <a style$="{{_access(account)}}" name="accountlist" href="[[rootPath]]accountlist">
+                  <paper-icon-item toggles="true" class="menuSelected">
+                    <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
+                    <span>Account List</span>
                   </paper-icon-item>
                 </a>
                 <a on-tap="_signOut" href="/">
@@ -651,10 +659,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //   '1234567'
           // );
           // user.reauthenticateWithCredential(credentials);
-      }).catch(function(error) {
-        // An error happened.
-      });
-    }
+        }).catch(function (error) {
+          // An error happened.
+        });
+      }
 
     }
 
