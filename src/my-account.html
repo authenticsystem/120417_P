@@ -96,7 +96,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div class="card">
 
         <span hidden$="{{user.emailVerified}}">
-          <h1>Please verify your account first</h1>
+          <h1>Verify Account</h1>
+          <span>Let us know if this email belongs to you.
+            <br> Click the link in the email sent to
+            <b>[[user.email]]</b>.
+          </span>
+          <br>
+          <br>
+          <paper-button on-tap="_resend" toggles raised class="custom green">Resend Verification</paper-button>
+          <paper-button on-tap="_reload" toggles raised>Already Verified</paper-button>
         </span>
 
         <span hidden$="{{!user.emailVerified}}">
@@ -141,6 +149,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
+      _resend() {
+        this.user.sendEmailVerification();
+      },
+
+      _reload() {
+        window.location.reload();
+      },
+
       _userName(e) {
         if (e) return e;
         else return 'Name not defined';
@@ -166,59 +182,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }));
         this.$.narrow = !this.$.narrow;
       },
-      _upload(e) {
-        var fileButton = Polymer.dom(this.root).querySelector("#fileButton");
-        var uploader = Polymer.dom(this.root).querySelector("#uploader");
-
-        fileButton.addEventListener('change', function (e) {
-          //get file
-          var file = e.target.files[0];
-          //create storage
-          var user = firebase.auth().currentUser;
-          var storageRef = firebase.storage().ref('profilePic/' + file.name);
-          //upload file
-          var uploadTask = storageRef.put(file);
-          //update progressbar
-          uploadTask.on('state_changed',
-
-            function progress(snapshot) {
-              var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              uploader.value = percentage;
-              if (percentage === 100) {
-                var user = firebase.auth().currentUser;
-                if (user) {
-                  var photoUrl = user.photoURL;
-                  console.log(user.photoURL);
-                  // Create a reference to the file to delete
-                  var desertRef = firebase.storage().refFromURL(user.photoURL);
-                  // Delete the file
-                  desertRef.delete().then(function () {
-                    // File deleted successfully
-                    //window.location.reload()
-                  }).catch(function (error) {
-                    // Uh-oh, an error occurred!
-                  });
-                }
-              }
-            },
-            function error(err) {
-            },
-            function () {
-              var downloadURL = uploadTask.snapshot.downloadURL;
-              var user = firebase.auth().currentUser;
-              user.updateProfile({
-                photoURL: downloadURL
-              }).then(function () {
-                // Update successful.
-                window.location.reload()
-              }).catch(function (error) {
-                // An error happened.
-              });
-            }
-
-          );
-        });
-      },
+    
       _update() {
         var user = firebase.auth().currentUser;
         var name = Polymer.dom(this.root).querySelector("#name");

@@ -119,15 +119,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <h2>Add New User</h2>
         <div>
           <div class="horizontal layout">
-            <paper-input required auto-validate pattern="[a-zA-Z-.]*" value="{{firstname}}" always-float-label="First Name" label="First Name"></paper-input>
-            <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{middlename}}" always-float-label="Middle Name"
-              label="Middle Name"></paper-input>
-            <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{lastname}}" always-float-label="Last Name" label="Last Name"></paper-input>
+            <paper-input required auto-validate pattern="[a-zA-Z-.]*" value="{{firstname}}" always-float-label label="First Name"></paper-input>
+            <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
+            <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{lastname}}" always-float-label label="Last Name"></paper-input>
           </div>
-          <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{suffix}}" always-float-label="Suffix" label="Suffix"></paper-input>
-          <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label="Cellphone" label="Cellphone">
+          <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{suffix}}" always-float-label label="Suffix"></paper-input>
+          <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label
+            label="Cellphone">
             <div slot="prefix">+63</div>
           </paper-input>
+          <paper-dropdown-menu label="Role">
+            <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{roleAdd}}">
+              <paper-item>Manager</paper-item>
+              <paper-item>Sales Agent</paper-item>
+            </paper-listbox>
+          </paper-dropdown-menu>
         </div>
         <span style="color:red; font-size:13px;">{{msg}}</span>
         <div class="buttons">
@@ -146,9 +152,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{mylastname}}" always-float-label="Last Name" label="Last Name"></paper-input>
           </div>
           <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{mysuffix}}" always-float-label="Suffix" label="Suffix"></paper-input>
-          <paper-input required prevent-invalid-input allowed-pattern="[\d]" char-counter auto-validate maxlength="10" value="{{mycellphone}}" always-float-label="Cellphone" label="Cellphone">
+          <paper-input required prevent-invalid-input allowed-pattern="[\d]" char-counter auto-validate maxlength="10" value="{{mycellphone}}"
+            always-float-label="Cellphone" label="Cellphone">
             <div slot="prefix">+63</div>
           </paper-input>
+          <paper-dropdown-menu label="Role">
+            <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{myrole}}">
+              <paper-item>Manager</paper-item>
+              <paper-item>Sales Agent</paper-item>
+            </paper-listbox>
+          </paper-dropdown-menu>
         </div>
         <span style="color:red; font-size:13px;">{{msg}}</span>
         <div class="buttons">
@@ -161,12 +174,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <paper-datatable-card style="padding:17px;" header-fixed id-property="$key" header="Accounts" id="datatableCard">
 
-        <div slot="toolbar-main">
+        <!-- <div slot="toolbar-main">
           <paper-input value="{{searchTerm}}" on-input="retrieveResults" label="Search..." style="display:inline-block" no-label-float>
             <iron-icon icon="search" slot="prefix"></iron-icon>
           </paper-input>
-          <!-- <paper-icon-button icon="cached" on-tap="retrieveResults"></paper-icon-button> -->
-        </div>
+          <paper-icon-button icon="cached" on-tap="retrieveResults"></paper-icon-button>
+        </div> -->
 
         <div slot="toolbar-select">
           <!-- <a href$={{_get($key)}}> -->
@@ -236,6 +249,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         keyS: {
           type: String,
           value: ''
+        },
+        roleAdd: {
+          type: Number,
+          value: 1
+        },
+        roleUpdate: {
+          type: String,
+          observer: '_roleUpdateChanged'
+        }
+      },
+
+      _roleUpdateChanged() {
+        if (this.roleUpdate) {
+          if (this.roleUpdate == 'Manager') {
+            this.myrole = 0;
+          }
+          else {
+            this.myrole = 1;
+          }
         }
       },
 
@@ -252,6 +284,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if (!this.mysuffix) {
               this.mysuffix = '';
             }
+            var role;
+            if (this.myrole == 0) {
+              role = 'Manager';
+            }
+            else {
+              role = 'Sales Agent';
+            }
             if (this.selectedItems.length > 0) {
               var ref = firebase.database().ref('/accountlist');
               ref.child(this.keyS).update({
@@ -261,7 +300,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   lastname: this.mylastname,
                   suffix: this.mysuffix
                 },
-                cellphone: this.mycellphone
+                cellphone: this.mycellphone,
+                role: role,
               });
             }
             Polymer.dom(this.root).querySelector("#toast").open();
@@ -311,6 +351,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.mylastname = this.selectedItem[0].name.lastname;
             this.mysuffix = this.selectedItem[0].name.suffix;
             this.mycellphone = this.selectedItem[0].cellphone;
+            this.roleUpdate = this.selectedItem[0].role;
             this.keyS = this.selectedItem[0].$key;
             this.selectedItems = this.selectedItem;
           }
@@ -339,8 +380,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if (!this.suffix) {
               this.suffix = '';
             }
+            var role;
+            if (this.roleAdd == 0) {
+              role = 'Manager';
+            }
+            else {
+              role = 'Sales Agent';
+            }
+
             var ref = firebase.database().ref("accountlist");
-            ref.push({
+            var push = ref.push({
               accountkey: this.guid(),
               active: true,
               name: {
@@ -350,23 +399,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 suffix: this.suffix
               },
               cellphone: this.cellphone,
-              role: 'Sales Agent',
+              role: role,
               uid: 'none'
 
             });
-            var list = Polymer.dom(this.root).querySelector("#addUser");
-            list.style.display = "none";
-            var table = Polymer.dom(this.root).querySelector("#datatableCard");
-            table.setAttribute("style", "display:block;padding:17px;");
-            var NewUser = Polymer.dom(this.root).querySelector("#addAccount");
-            NewUser.setAttribute("style", "display:block");
-            var New = Polymer.dom(this.root).querySelector("#addNew");
-            New.setAttribute("style", "display:none");
-            var Toast = Polymer.dom(this.root).querySelector("#toast");
-            Toast.open();
-            this.txt = "Account successfully added.";
-            var NewDialog = Polymer.dom(this.root).querySelector("#adddialog");
-            NewDialog.setAttribute("style", "display:block");
+            if (push) {
+              var list = Polymer.dom(this.root).querySelector("#addUser");
+              list.style.display = "none";
+              var table = Polymer.dom(this.root).querySelector("#datatableCard");
+              table.setAttribute("style", "display:block;padding:17px;");
+              var NewUser = Polymer.dom(this.root).querySelector("#addAccount");
+              NewUser.setAttribute("style", "display:block");
+              var New = Polymer.dom(this.root).querySelector("#addNew");
+              New.setAttribute("style", "display:none");
+              var Toast = Polymer.dom(this.root).querySelector("#toast");
+              Toast.open();
+              this.txt = "Account successfully added.";
+              var NewDialog = Polymer.dom(this.root).querySelector("#adddialog");
+              NewDialog.setAttribute("style", "display:block");
+              this.firstname = '';
+              this.middlename = '';
+              this.lastname = '';
+              this.suffix = '';
+              this.cellphone = '';
+              this.roleAdd = 1;
+            }
+            else {
+              this.msg = 'Error submitting!';
+            }
           }
         }
       },

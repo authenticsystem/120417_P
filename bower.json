@@ -39,7 +39,7 @@
     "bwt-datatable": "bluewatertracks/bwt-datatable#^2.0.4",
     "paper-search": "Collaborne/paper-search#^2.0.9",
     "paper-spinner": "PolymerElements/paper-spinner#^2.0.0",
-    "datetime-picker": "fooloomanzoo/datetime-picker#^2.5.5",
+    "datetime-picker": "fooloomanzoo/datetime-picker#^2.5.10",
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.1",
     "titanium-date-input": "LssPolymerElements/titanium-date-input#^1.0.25",
     "paper-time-input": "ryanburns23/paper-time-input#^2.0.4",

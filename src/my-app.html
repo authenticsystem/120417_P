@@ -174,6 +174,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       paper-button.green[active] {
         background-color: var(--paper-red-500);
       }
+
+      #Pbtn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 400;
+        color: rgb(8, 8, 175);
+      }
+
+      #Pbtn:hover {
+        color: rgb(91, 55, 252);
+      }
     </style>
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
@@ -211,12 +224,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
       <!-- <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
-
+      <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
+      </firebase-query>
       <!-- verified user -->
       <template is="dom-if" if="{{user.emailVerified}}">
-        <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
-        </firebase-query>
-        <template is="dom-if" if="{{_roleUnknown(account)}}">
+
+        <template is="dom-if" if="{{!user.phoneNumber}}">
           <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
               <div style="height: 100%; overflow: auto;">
@@ -280,154 +293,155 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </app-drawer-layout>
         </template>
 
-        <template is="dom-if" if="{{_roleNotManager(account)}}">
-          <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
-            <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
-              <div style="height: 100%; overflow: auto;">
+        <template is="dom-if" if="{{user.phoneNumber}}">
+          <template is="dom-if" if="{{_roleNotManager(account)}}">
+            <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
+              <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
+                <div style="height: 100%; overflow: auto;">
 
-                <paper-toast id="toast" text=""></paper-toast>
+                  <paper-toast id="toast" text=""></paper-toast>
 
-                <app-header fixed>
-                  <app-toolbar>
-                    <div hidden$="{{!user.photoURL}}">
-                      <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
-                    </div>
-                    <div hidden$="{{user.photoURL}}">
-                      <iron-image class="avatar" sizing="contain" src="../images/user.png" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
-                    </div>
-                    <div class="pad">
+                  <app-header fixed>
+                    <app-toolbar>
+                      <div hidden$="{{!user.photoURL}}">
+                        <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
+                      </div>
+                      <div hidden$="{{user.photoURL}}">
+                        <iron-image class="avatar" sizing="contain" src="../images/user.png" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
+                      </div>
+                      <div class="pad">
 
-                      <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
-                      <div class="shortText">{{_roleAcc(account)}}</div>
+                        <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
+                        <div class="shortText">{{_roleAcc(account)}}</div>
 
-                    </div>
-                  </app-toolbar>
-                </app-header>
+                      </div>
+                    </app-toolbar>
+                  </app-header>
 
-                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-                  <a name="dashboard" href="[[rootPath]]dashboard">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:dashboard" slot="item-icon"></iron-icon>
-                      <span>Dashboard</span>
-                    </paper-icon-item>
-                  </a>
-                  <a name="account" href="[[rootPath]]account">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
-                      <span>My Account</span>
-                    </paper-icon-item>
-                  </a>
-                  <a name="map" href="[[rootPath]]map">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
-                      <span>Map</span>
-                    </paper-icon-item>
-                  </a>
-                  <a name="applications" href="[[rootPath]]applications">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
-                      <span>Applications</span>
-                    </paper-icon-item>
-                  </a>
-                  <a on-tap="_signOut" href="/">
-                    <paper-icon-item toggles="true">
-                      <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
-                      <span>Sign-out</span>
-                    </paper-icon-item>
-                  </a>
-                </iron-selector>
+                  <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                    <a name="dashboard" href="[[rootPath]]dashboard">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:dashboard" slot="item-icon"></iron-icon>
+                        <span>Dashboard</span>
+                      </paper-icon-item>
+                    </a>
+                    <a name="account" href="[[rootPath]]account">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
+                        <span>My Account</span>
+                      </paper-icon-item>
+                    </a>
+                    <a name="map" href="[[rootPath]]map">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
+                        <span>Map</span>
+                      </paper-icon-item>
+                    </a>
+                    <a name="applications" href="[[rootPath]]applications">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
+                        <span>Applications</span>
+                      </paper-icon-item>
+                    </a>
+                    <a on-tap="_signOut" href="/">
+                      <paper-icon-item toggles="true">
+                        <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
+                        <span>Sign-out</span>
+                      </paper-icon-item>
+                    </a>
+                  </iron-selector>
 
-              </div>
-            </app-drawer>
+                </div>
+              </app-drawer>
 
-            <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-              <my-dashboard name="dashboard"></my-dashboard>
-              <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
-              <my-applications name="applications" route="[[subroute]]"></my-applications>
-              <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
-              <my-account-link user="{{user}}" name="account-link" route="[[subroute]]"></my-account-link>
-              <my-accountlist name="accountlist" route="[[subroute]]"></my-accountlist>
-              <my-view404 name="view404"></my-view404>
-            </iron-pages>
-          </app-drawer-layout>
-        </template>
+              <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+                <my-dashboard name="dashboard"></my-dashboard>
+                <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
+                <my-applications name="applications" route="[[subroute]]"></my-applications>
+                <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
+                <my-account-link user="{{user}}" name="account-link" route="[[subroute]]"></my-account-link>
+                <my-view404 name="view404"></my-view404>
+              </iron-pages>
+            </app-drawer-layout>
+          </template>
 
-        <template is="dom-if" if="{{_roleIsManager(account)}}">
-          <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
-            <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
-              <div style="height: 100%; overflow: auto;">
+          <template is="dom-if" if="{{_roleIsManager(account)}}">
+            <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
+              <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
+                <div style="height: 100%; overflow: auto;">
 
-                <paper-toast id="toast" text=""></paper-toast>
+                  <paper-toast id="toast" text=""></paper-toast>
 
-                <app-header fixed>
-                  <app-toolbar>
-                    <div hidden$="{{!user.photoURL}}">
-                      <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
-                    </div>
-                    <div hidden$="{{user.photoURL}}">
-                      <iron-image class="avatar" sizing="contain" src="../images/user.png" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
-                    </div>
-                    <div class="pad">
+                  <app-header fixed>
+                    <app-toolbar>
+                      <div hidden$="{{!user.photoURL}}">
+                        <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
+                      </div>
+                      <div hidden$="{{user.photoURL}}">
+                        <iron-image class="avatar" sizing="contain" src="../images/user.png" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
+                      </div>
+                      <div class="pad">
 
-                      <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
-                      <div class="shortText">{{_roleAcc(account)}}</div>
+                        <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
+                        <div class="shortText">{{_roleAcc(account)}}</div>
 
-                    </div>
-                  </app-toolbar>
-                </app-header>
+                      </div>
+                    </app-toolbar>
+                  </app-header>
 
-                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-                  <a name="dashboard" href="[[rootPath]]dashboard">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:dashboard" slot="item-icon"></iron-icon>
-                      <span>Dashboard</span>
-                    </paper-icon-item>
-                  </a>
-                  <a name="account" href="[[rootPath]]account">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
-                      <span>My Account</span>
-                    </paper-icon-item>
-                  </a>
-                  <a name="map" href="[[rootPath]]map">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
-                      <span>Map</span>
-                    </paper-icon-item>
-                  </a>
-                  <a name="applications" href="[[rootPath]]applications">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
-                      <span>Applications</span>
-                    </paper-icon-item>
-                  </a>
-                  <a name="accountlist" href="[[rootPath]]accountlist">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
-                      <span>Account List</span>
-                    </paper-icon-item>
-                  </a>
-                  <a on-tap="_signOut" href="/">
-                    <paper-icon-item toggles="true">
-                      <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
-                      <span>Sign-out</span>
-                    </paper-icon-item>
-                  </a>
-                </iron-selector>
+                  <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                    <a name="dashboard" href="[[rootPath]]dashboard">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:dashboard" slot="item-icon"></iron-icon>
+                        <span>Dashboard</span>
+                      </paper-icon-item>
+                    </a>
+                    <a name="account" href="[[rootPath]]account">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
+                        <span>My Account</span>
+                      </paper-icon-item>
+                    </a>
+                    <a name="map" href="[[rootPath]]map">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
+                        <span>Map</span>
+                      </paper-icon-item>
+                    </a>
+                    <a name="applications" href="[[rootPath]]applications">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
+                        <span>Applications</span>
+                      </paper-icon-item>
+                    </a>
+                    <a name="accountlist" href="[[rootPath]]accountlist">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
+                        <span>Account List</span>
+                      </paper-icon-item>
+                    </a>
+                    <a on-tap="_signOut" href="/">
+                      <paper-icon-item toggles="true">
+                        <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
+                        <span>Sign-out</span>
+                      </paper-icon-item>
+                    </a>
+                  </iron-selector>
 
-              </div>
-            </app-drawer>
+                </div>
+              </app-drawer>
 
-            <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-              <my-dashboard name="dashboard"></my-dashboard>
-              <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
-              <my-applications name="applications" route="[[subroute]]"></my-applications>
-              <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
-              <my-accountlist name="accountlist" route="[[subroute]]"></my-accountlist>
-              <my-account-link user="{{user}}" name="account-link" route="[[subroute]]"></my-account-link>
-              <my-view404 name="view404"></my-view404>
-            </iron-pages>
-          </app-drawer-layout>
+              <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+                <my-dashboard name="dashboard"></my-dashboard>
+                <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
+                <my-applications name="applications" route="[[subroute]]"></my-applications>
+                <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
+                <my-accountlist name="accountlist" route="[[subroute]]"></my-accountlist>
+                <my-account-link user="{{user}}" name="account-link" route="[[subroute]]"></my-account-link>
+                <my-view404 name="view404"></my-view404>
+              </iron-pages>
+            </app-drawer-layout>
+          </template>
         </template>
       </template>
       <!-- verified user -->
@@ -443,11 +457,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <app-header fixed>
                 <app-toolbar>
                   <div>
-                    <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]"></iron-image>
+                    <div hidden$="{{!user.photoURL}}">
+                      <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
+                    </div>
+                    <div hidden$="{{user.photoURL}}">
+                      <iron-image class="avatar" sizing="contain" src="../images/user.png" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
+                    </div>
                   </div>
                   <div class="pad">
-                    <div class="shortText">[[user.email]]</div>
-                    <div class="shortText">Sales Agent</div>
+                    <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
+                    <div class="shortText">{{_roleAcc(account)}}</div>
                   </div>
                 </app-toolbar>
               </app-header>
@@ -484,32 +503,67 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-drawer-layout>
       </template>
       <!-- not yet verify -->
+      <!-- alert dialog photoUrl-->
+      <paper-dialog id="photoUrl" confirm-button="Done">
+        <center>
+          <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img>
+          <img hidden$="{{user.photoURL}}" src="../images/user.png" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img>
+        </center>
+        <input type="file" id="fileButton" on-tap="_upload" accept="image/*"></input>
+        <progress value="0" max="100" id="uploader" style=" -webkit-appearance: none; width:100%; height:5px;">0%</progress>
+        <div class="buttons">
+          <paper-button dialog-confirm autofocus raised>Cancel</paper-button>
+        </div>
+      </paper-dialog>
+      <!-- alert dialog photoUrl-->
+      <!-- alert dialog email-->
+      <paper-dialog id="changeEmail" confirm-button="Done">
+        <h3 style="margin-bottom:-1em;">Update Email &nbsp;or
+          <button id="Pbtn" on-tap="openChangePass">Password</button>
+        </h3>
+        <div style="color:red; font-size:13px;margin-bottom:-1em;">{{validationMessage}}</div>
+        <paper-input label="{{user.email}}" id="email" value="{{newEmail}}"></paper-input>
+        <div class="buttons">
+          <paper-button on-tap="_reAuthUserE" toggles raised class="custom green">Update</paper-button>
+          <paper-button dialog-confirm autofocus raised>Cancel</paper-button>
+        </div>
+      </paper-dialog>
+      <!-- alert dialog email-->
+      <paper-dialog id="changePass" confirm-button="Done">
+        <h3 style="margin-bottom:-1em;">Update Password &nbsp;or
+          <button id="Pbtn" on-tap="openChangeEmail">Email</button>
+        </h3>
+        <div style="color:red; font-size:13px;margin-bottom:-1em;">{{validationMessage}}</div>
+        <paper-input label="New password" type="password" id="email" value="{{newPass}}"></paper-input>
+        <div class="buttons">
+          <paper-button on-tap="_reAuthUserP" toggles raised class="custom green">Update</paper-button>
+          <paper-button dialog-confirm autofocus raised>Cancel</paper-button>
+        </div>
+      </paper-dialog>
+      <!-- alert dialog email-->
+      <paper-dialog id="reAuthE" confirm-button="Done">
+        <h3 style="margin-bottom:-1em;">Provide Email and Password to continue.</h3>
+        <div style="color:red; font-size:13px;margin-bottom:-1em;">{{validationMessage}}</div>
+        <paper-input style="margin-bottom:-1em;" label="Email" value="{{email}}" always-float-label id="email"></paper-input>
+        <paper-input label="Password" always-float-label type="password" value={{password}} id="email"></paper-input>
+        <div class="buttons">
+          <paper-button on-tap="_changeEmail" toggles raised class="custom green">Submit</paper-button>
+          <paper-button dialog-confirm autofocus raised>Cancel</paper-button>
+        </div>
+      </paper-dialog>
+      <!-- alert dialog email-->
+      <paper-dialog id="reAuthP" confirm-button="Done">
+        <h3 style="margin-bottom:-1em;">Provide Email and Password to continue.</h3>
+        <div style="color:red; font-size:13px;margin-bottom:-1em;">{{validationMessage}}</div>
+        <paper-input style="margin-bottom:-1em;" label="Email" value="{{email}}" always-float-label id="email"></paper-input>
+        <paper-input label="Password" always-float-label type="password" value={{password}} id="email"></paper-input>
+        <div class="buttons">
+          <paper-button on-tap="_changePass" toggles raised class="custom green">Submit</paper-button>
+          <paper-button dialog-confirm autofocus raised>Cancel</paper-button>
+        </div>
+      </paper-dialog>
+      <!-- alert dialog email-->
     </template>
-
-    <!-- alert dialog photoUrl-->
-    <paper-dialog id="photoUrl" confirm-button="Done">
-      <center>
-        <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img>
-        <img hidden$="{{user.photoURL}}" src="../images/user.png" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img>
-      </center>
-      <input type="file" id="fileButton" on-tap="_upload" accept="image/*"></input>
-      <progress value="0" max="100" id="uploader" style=" -webkit-appearance: none; width:100%; height:5px;">0%</progress>
-      <div class="buttons">
-        <paper-button dialog-confirm autofocus raised>Cancel</paper-button>
-      </div>
-    </paper-dialog>
-    <!-- alert dialog photoUrl-->
-    <!-- alert dialog email-->
-    <paper-dialog id="changeEmail" confirm-button="Done">
-      <h3 style="margin-bottom:-2em;">Update Email</h3>
-      <paper-input label="{{user.email}}" id="email"></paper-input>
-      <div class="buttons">
-        <paper-button on-tap="_changeEmail" toggles raised class="custom green">Update</paper-button>
-        <paper-button dialog-confirm autofocus raised>Cancel</paper-button>
-      </div>
-    </paper-dialog>
-    <!-- alert dialog email-->
-
   </template>
 
   <script>
@@ -559,14 +613,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _roleUnknown(e) {
-        if (Object.keys(e).length > 0) {
-          return false;
-        }
-        else {
-          return true;
-        }
-      }
+      // _roleUnknown(e) {
+      //   if (Object.keys(e).length > 0) {
+      //     return false;
+      //   }
+      //   else {
+      //     return true;
+      //   }
+      // }
 
       _roleNotManager(e) {
         if (Object.keys(e).length > 0) {
@@ -709,10 +763,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _alreadySignedIn(e, f) {
         if (f === true) {
-          // e.sendEmailVerification();
           return e !== null;
         }
-
         else {
           return false;
         }
@@ -737,11 +789,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // alert(this.offline);
 
           if (this.offline === false) {
-            // this.$.toast.close();
+            this.$.toast.close();
             this.$.toast.duration = 3000;
           }
           else {
-            // this.$.toast.close();
+            this.$.toast.close();
             this.$.toast.duration = 0;
           }
 
@@ -754,14 +806,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         window.location.reload()
         this.set("route.path", "");
       }
+
       openPhotoUrl() {
-        var photoUrl = Polymer.dom(this.root).querySelector("#photoUrl");
-        this.$.photoUrl.open();
+        Polymer.dom(this.root).querySelector("#photoUrl").open();
       }
+
+      openChangePass() {
+        var changeEmail = Polymer.dom(this.root).querySelector("#changeEmail").close();
+        var changePasss = Polymer.dom(this.root).querySelector("#changePass").open();
+        this.validationMessage = '';
+      }
+
       openChangeEmail() {
-        var changeEmail = Polymer.dom(this.root).querySelector("#changeEmail");
-        this.$.changeEmail.open();
+        Polymer.dom(this.root).querySelector("#changePass").close();
+        Polymer.dom(this.root).querySelector("#changeEmail").open();
+        this.validationMessage = '';
       }
+
       _upload(e) {
         var fileButton = Polymer.dom(this.root).querySelector("#fileButton");
         var uploader = Polymer.dom(this.root).querySelector("#uploader");
@@ -814,29 +875,74 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       }
 
-      _update() {
-
+      showError() {
+        this.validationMessage = 'Invalid email or password.';
       }
 
       _changeEmail() {
-        var user = firebase.auth().currentUser;
-        var name = Polymer.dom(this.root).querySelector("#name");
-        user.updateEmail(
-          'ardie@gmail.com'
-        ).then(function () {
-          // var user = firebase.auth().currentUser;
-          // var credentials = firebase.auth.EmailAuthProvider.credential(
-          //   user.email,
-          //   '1234567'
-          // );
-          // user.reauthenticateWithCredential(credentials);
-        }).catch(function (error) {
-          // An error happened.
-        });
+        if (!this.email || !this.password) {
+          this.validationMessage = 'Invalid empty email or password.';
+        }
+        else {
+          var myNewEmail = this.newEmail;
+          this.validationMessage = '';
+          this.$.auth
+            .signInWithEmailAndPassword(this.email, this.password)
+            .then(function (user) {
+              user.updateEmail(myNewEmail);
+              window.location = '/account';
+            })
+            .catch((error) => {
+              // console.log(error);
+            });
+        }
+      }
+
+      _changePass() {
+        if (!this.email || !this.password) {
+          this.validationMessage = 'Invalid empty email or password.';
+        }
+        else {
+          var myNewPass = this.newPass;
+          this.validationMessage = '';
+          this.$.auth
+            .signInWithEmailAndPassword(this.email, this.password)
+            .then(function (user) {
+              user.updatePassword(myNewPass);
+              firebase.auth().signOut();
+              window.location = '/signin';
+            })
+            .catch((error) => {
+              // console.log(error);
+            });
+        }
+      }
+
+      _reAuthUserP() {
+        if (!this.newPass) {
+          this.validationMessage = 'Invalid empty password.';
+        } else {
+          if (this.newPass.length < 6) {
+            this.validationMessage = 'Password must be greater than or equal to six.'
+          } else {
+            this.validationMessage = '';
+            Polymer.dom(this.root).querySelector("#changePass").close();
+            Polymer.dom(this.root).querySelector("#reAuthP").open();
+          }
+        }
+      }
+
+      _reAuthUserE() {
+        if (!this.newEmail) {
+          this.validationMessage = 'Invalid empty email.';
+        } else {
+          this.validationMessage = '';
+          Polymer.dom(this.root).querySelector("#changeEmail").close();
+          Polymer.dom(this.root).querySelector("#reAuthE").open();
+        }
       }
 
     }
-
 
     window.customElements.define(MyApp.is, MyApp);
   </script>
