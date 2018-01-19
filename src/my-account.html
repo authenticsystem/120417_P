@@ -107,18 +107,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style="border-radius:30px; height:150px; width:150px;"></img>
           <img hidden$="{{user.photoURL}}" src="../images/user.png" style="border-radius:30px; height:150px; width:150px;"></img>
           <img src="{{downloadURL}}"></img>
-          </br>
-          <progress style="height:5px;" value="0" max="100" id="uploader">0%</progress>
-          </br>
-          <input type="file" id="fileButton" on-tap="_upload"></input>
-          </br>
-          <paper-input label="{{user.displayName}}" id="name"></paper-input>
+          <paper-input label="{{_userName(user.displayName)}}" id="name"></paper-input>
           <paper-input label="{{user.email}}" id="email"></paper-input>
           <paper-input label="{{_role(account)}}" readonly></paper-input>
           <div class="card-actions">
             <div class="horizontal justified">
               <div style="float:right">
-                <span hidden$="{{verified}}">
+                <span style="font-size:14px;" hidden$="{{verified}}">
                   Account not link. Link your account
                   <a href="/account-link">here</a>.
                 </span>
@@ -154,6 +149,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: false
         }
+      },
+
+      _userName(e) {
+        if (e) return e;
+        else return 'Name not defined';
       },
 
       _role(e) {

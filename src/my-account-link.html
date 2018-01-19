@@ -203,7 +203,7 @@
                     recaptchaContainer,
                     { size: 'invisible' }
                 );
-                const phoneComplete = this.accountInfo[0].cellphone;
+                const phoneComplete = '+63'+this.accountInfo[0].cellphone;
                 // const phoneComplete = '+639128616318';
                 firebase.auth()
                     .signInWithPhoneNumber(phoneComplete, appVerifier)
@@ -238,7 +238,7 @@
                     var credential = firebase.auth.PhoneAuthProvider
                         .credential(this.confirmationResult.verificationId, this.confirmationCode);
                     var accountKey = this.accountInfo[0].$key;
-                    var userName = this.accountInfo[0].firstname + ' ' + this.accountInfo[0].middlename + ' ' + this.accountInfo[0].lastname + ' ' + this.accountInfo[0].suffix;
+                    var userName = this.accountInfo[0].name.firstname + ' ' + this.accountInfo[0].name.middlename + ' ' + this.accountInfo[0].name.lastname + ' ' + this.accountInfo[0].name.suffix;
 
                     firebase.auth().currentUser.linkWithCredential(credential).then(function (user) {
                         var fbDB = firebase.database().ref();
