@@ -442,81 +442,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </iron-pages>
             </app-drawer-layout>
           </template>
+        
         </template>
-
-
-        <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
-          <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
-            <div style="height: 100%; overflow: auto;">
-
-              <paper-toast id="toast" text=""></paper-toast>
-
-              <app-header fixed>
-                <app-toolbar>
-                  <div>
-                    <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
-                  </div>
-                  <div class="pad">
-                    <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
-                    <div class="shortText">{{_roleAcc(account)}}</div>
-                  </div>
-                </app-toolbar>
-              </app-header>
-
-              <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-                <a name="dashboard" href="[[rootPath]]dashboard">
-                  <paper-icon-item toggles="true" class="menuSelected">
-                    <iron-icon icon="my-icons:dashboard" slot="item-icon"></iron-icon>
-                    <span>Dashboard</span>
-                  </paper-icon-item>
-                </a>
-                <a name="account" href="[[rootPath]]account">
-                  <paper-icon-item toggles="true" class="menuSelected">
-                    <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
-                    <span>My Account</span>
-                  </paper-icon-item>
-                </a>
-                <a name="map" href="[[rootPath]]map">
-                  <paper-icon-item toggles="true" class="menuSelected">
-                    <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
-                    <span>Map</span>
-                  </paper-icon-item>
-                </a>
-                <a name="applications" href="[[rootPath]]applications">
-                  <paper-icon-item toggles="true" class="menuSelected">
-                    <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
-                    <span>Applications</span>
-                  </paper-icon-item>
-                </a>
-                <a style$="{{_access(account)}}" name="accountlist" href="[[rootPath]]accountlist">
-                  <paper-icon-item toggles="true" class="menuSelected">
-                    <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
-                    <span>Account List</span>
-                  </paper-icon-item>
-                </a>
-                <a on-tap="_signOut" href="/">
-                  <paper-icon-item toggles="true">
-                    <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
-                    <span>Sign-out</span>
-                  </paper-icon-item>
-                </a>
-              </iron-selector>
-
-            </div>
-          </app-drawer>
-
-          <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-            <my-dashboard name="dashboard"></my-dashboard>
-            <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
-            <my-applications name="applications" route="[[subroute]]"></my-applications>
-            <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
-            <my-accountlist name="accountlist" route="[[subroute]]"></my-accountlist>
-            <my-account-link user="{{user}}" name="account-link" route="[[subroute]]"></my-account-link>
-            <my-accountlist name="accountlist" route="[[subroute]]"></my-accountlist>
-            <my-view404 name="view404"></my-view404>
-          </iron-pages>
-        </app-drawer-layout>
-
       </template>
       <!-- verified user -->
 
@@ -679,7 +606,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             return e[0].role;
           }
           else {
-            return 'Unknown';
+            return 'Role Unknown';
           }
         }
         else {
