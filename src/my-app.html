@@ -214,6 +214,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <!-- verified user -->
       <template is="dom-if" if="{{user.emailVerified}}">
+        
         <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
         </firebase-query>
 
@@ -229,8 +230,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
                   </div>
                   <div class="pad">
-                    <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
-                    <div class="shortText">Sales Agent</div>
                     <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
                     <div class="shortText">{{_roleAcc(account)}}</div>
                   </div>
@@ -411,8 +410,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             return e[0].role;
           }
           else {
-            return 'Role unknown';
+            return 'Unknown';
           }
+        }
+        else {
+          return 'Unknown';
         }
       }
 
@@ -538,7 +540,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _alreadySignedIn(e, f) {
         if (f === true) {
-          // e.sendEmailVerification();
           return e !== null;
         }
 
@@ -650,6 +651,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _changeEmail() {
         var user = firebase.auth().currentUser;
         var name = Polymer.dom(this.root).querySelector("#name");
+        console.log(user);
         user.updateEmail(
           'ardie@gmail.com'
         ).then(function () {
