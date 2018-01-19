@@ -100,13 +100,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </span>
 
         <span hidden$="{{!user.emailVerified}}">
-
-          <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style="border-radius:30px; height:150px; width:150px;"></img>
-          <img hidden$="{{user.photoURL}}" src="../images/user.png" style="border-radius:30px; height:150px; width:150px;"></img>
-          <img src="{{downloadURL}}"></img>
-          <paper-input label="{{_userName(user.displayName)}}" id="name"></paper-input>
-          <paper-input readonly label="{{user.email}}" id="email"></paper-input>
-          <paper-input label="{{_role(account)}}" readonly></paper-input>
           <div class="card-actions">
             <div class="horizontal justified">
               <div style="float:right">
@@ -114,6 +107,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   Account not link. Link your account
                   <a href="/account-link">here</a>.
                 </span>
+                
                 <span hidden$="{{!verified}}">
                   <iron-icon icon="my-icons:check"></iron-icon> Account linked
                 </span>
@@ -122,6 +116,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </div>
           </div>
         </span>
+        
         <paper-toast id="toast" text="Successfully updated!"></paper-toast>
 
       </div>
