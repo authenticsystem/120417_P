@@ -79,7 +79,7 @@
         </br>
         <div id="errorMessage" style="display: none;">
           <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}</div>
-        <paper-input label="Name" id="displayName" value="{{displayName}}"></paper-input>
+        <!-- <paper-input label="Name" id="name" value="{{name}}"></paper-input> -->
         <paper-input label="Email" id="email" value="{{email}}"></paper-input>
         <paper-input label="Password" type="password" id="password" value="{{password}}"></paper-input>
         </br>
@@ -121,8 +121,8 @@
             .then(function (user) {
               app = this.document.querySelector('my-app');
               app.set('route.path', '/');
-                user.sendEmailVerification().then(function () {
-                });
+              user.sendEmailVerification().then(function () {
+              });
             })
         }
       }

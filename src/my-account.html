@@ -15,11 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
-<link rel="import" href="../bower_components/paper-alert-dialog/paper-alert-dialog.html">
-<link rel="import" href="../bower_components/paper-alert-dialog/paper-alert-dialog-icon-header.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 
 <dom-module id="my-account">
   <template>
@@ -109,7 +105,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <img src="{{downloadURL}}"></img>
           <paper-input label="{{_userName(user.displayName)}}" id="name"></paper-input>
           <paper-input label="{{user.email}}" id="email"></paper-input>
-          <paper-input label="{{_role(account)}}" readonly></paper-input>
+          <paper-input label="{{_role(account)}}" readonly></paper-input> -->
           <div class="card-actions">
             <div class="horizontal justified">
               <div style="float:right">
@@ -121,18 +117,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <iron-icon icon="my-icons:check"></iron-icon> Account linked
                 </span>
               </div>
-              <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button>
+              <!-- <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button> -->
             </div>
           </div>
         </span>
-
-        <!-- alert dialog -->
-        <!-- <paper-button raised on-tap="openDialog">plain dialog</paper-button>
-        <paper-alert-dialog id="dialog" confirm-button="Got it">
-          <paper-alert-dialog-icon-header icon="icons:done">Well done!</paper-alert-dialog-icon-header>
-          Excellent, you can move on.
-        </paper-alert-dialog> -->
-        <!-- alert dialog -->
+        <paper-toast id="toast" text="Successfully updated!"></paper-toast>
 
       </div>
 
@@ -176,10 +165,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }));
         this.$.narrow = !this.$.narrow;
       },
-      openDialog() {
-        var dialog = Polymer.dom(this.root).querySelector("#dialog");
-        this.$.dialog.open();
-      },
       _upload(e) {
         var fileButton = Polymer.dom(this.root).querySelector("#fileButton");
         var uploader = Polymer.dom(this.root).querySelector("#uploader");
@@ -198,6 +183,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             function progress(snapshot) {
               var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
               uploader.value = percentage;
+              if (percentage === 100) {
+                var user = firebase.auth().currentUser;
+                if (user) {
+                  var photoUrl = user.photoURL;
+                  console.log(user.photoURL);
+                  // Create a reference to the file to delete
+                  var desertRef = firebase.storage().refFromURL(user.photoURL);
+                  // Delete the file
+                  desertRef.delete().then(function () {
+                    // File deleted successfully
+                    //window.location.reload()
+                  }).catch(function (error) {
+                    // Uh-oh, an error occurred!
+                  });
+                }
+              }
             },
             function error(err) {
             },
