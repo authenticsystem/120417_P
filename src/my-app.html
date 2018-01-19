@@ -25,12 +25,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
+
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 
 <link rel="lazy-import" href="my-landing-page.html">
 <link rel="lazy-import" href="my-map.html">
@@ -45,7 +48,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-application-detail.html">
 <link rel="lazy-import" href="my-account.html">
 <link rel="lazy-import" href="my-accountlist.html">
-<link rel="lazy-import" href="my-view2.html">
+<link rel="lazy-import" href="my-reset-password.html">
 <link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
 
@@ -162,6 +165,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         @apply --layout-flex;
         @apply --layout-vertical;
       }
+
+      paper-button.green {
+        background-color: var(--paper-green-500);
+        color: white;
+      }
+
+      paper-button.green[active] {
+        background-color: var(--paper-red-500);
+      }
     </style>
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
@@ -190,6 +202,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <my-landing-page name="landing-page" user="{{user}}"></my-landing-page>
         <my-signin name="signin"></my-signin>
         <my-corporate-account name="corporate-account"></my-corporate-account>
+        <my-reset-password name="reset-password"></my-reset-password>
         <my-register-signin name="register-signin"></my-register-signin>
         <my-view404 name="view404"></my-view404>
       </iron-pages>
@@ -198,6 +211,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
       <!-- <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
+
+      <!-- verified user -->
       <template is="dom-if" if="{{user.emailVerified}}">
         <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
         </firebase-query>
@@ -211,11 +226,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <app-header fixed>
                 <app-toolbar>
                   <div>
-                    <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]"></iron-image>
+                    <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
                   </div>
                   <div class="pad">
-                    <div class="shortText" on-tap="_signOut">[[user.email]]</div>
+
+                    <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
                     <div class="shortText">{{_roleAcc(account)}}</div>
+
                   </div>
                 </app-toolbar>
               </app-header>
@@ -245,12 +262,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <span>Applications</span>
                   </paper-icon-item>
                 </a>
+
                 <a style$="{{_access(account)}}" name="accountlist" href="[[rootPath]]accountlist">
                   <paper-icon-item toggles="true" class="menuSelected">
                     <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
                     <span>Account List</span>
                   </paper-icon-item>
                 </a>
+
                 <a on-tap="_signOut" href="/">
                   <paper-icon-item toggles="true">
                     <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
@@ -272,9 +291,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <my-accountlist name="accountlist" route="[[subroute]]"></my-accountlist>
             <my-view404 name="view404"></my-view404>
           </iron-pages>
-
         </app-drawer-layout>
       </template>
+      <!-- verified user -->
 
       <!-- not yet verify -->
       <template is="dom-if" if="{{!user.emailVerified}}">
@@ -286,9 +305,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               <app-header fixed>
                 <app-toolbar>
-                  <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]"></iron-image>
+                  <div>
+                    <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]"></iron-image>
+                  </div>
                   <div class="pad">
-                    <div class="shortText" on-tap="_signOut">[[user.email]]</div>
+                    <div class="shortText">[[user.email]]</div>
                     <div class="shortText">Sales Agent</div>
                   </div>
                 </app-toolbar>
@@ -326,8 +347,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-drawer-layout>
       </template>
       <!-- not yet verify -->
-      <paper-toast id="toast" text=""></paper-toast>
     </template>
+
+    <!-- alert dialog photoUrl-->
+    <paper-dialog id="photoUrl" confirm-button="Done">
+      <center>
+        <img src="{{user.photoURL}}" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img>
+      </center>
+      <input type="file" id="fileButton" on-tap="_upload" accept="image/*"></input>
+      <progress value="0" max="100" id="uploader" style=" -webkit-appearance: none; width:100%">0%</progress>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus raised>Cancel</paper-button>
+      </div>
+    </paper-dialog>
+    <!-- alert dialog photoUrl-->
+    <!-- alert dialog email-->
+    <paper-dialog id="changeEmail" confirm-button="Done">
+      <h3>Update Email</h3>
+      <paper-input label="{{user.email}}" id="email"></paper-input>
+      <div class="buttons">
+        <paper-button on-tap="_changeEmail" toggles raised class="custom green">Update</paper-button>
+        <paper-button dialog-confirm autofocus raised>Cancel</paper-button>
+      </div>
+    </paper-dialog>
+    <!-- alert dialog email-->
+
   </template>
 
   <script>
@@ -541,7 +585,89 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         window.location.reload()
         this.set("route.path", "");
       }
+      openPhotoUrl() {
+        var photoUrl = Polymer.dom(this.root).querySelector("#photoUrl");
+        this.$.photoUrl.open();
+      }
+      openChangeEmail() {
+        var changeEmail = Polymer.dom(this.root).querySelector("#changeEmail");
+        this.$.changeEmail.open();
+      }
+      _upload(e) {
+        var fileButton = Polymer.dom(this.root).querySelector("#fileButton");
+        var uploader = Polymer.dom(this.root).querySelector("#uploader");
+
+        fileButton.addEventListener('change', function (e) {
+          //get file
+          var file = e.target.files[0];
+          //create storage
+          var storageRef = firebase.storage().ref('profilePic/' + file.name);
+          //upload file
+          var uploadTask = storageRef.put(file);
+          //update progressbar
+          uploadTask.on('state_changed',
+
+            function progress(snapshot) {
+              var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              uploader.value = percentage;
+              if (percentage === 100) {
+                var user = firebase.auth().currentUser;
+                var photoUrl = user.photoURL;
+                if (user) {
+                  console.log(user.photoURL);
+                  // Create a reference to the file to delete
+                  var desertRef = firebase.storage().refFromURL(user.photoURL);
+                  // Delete the file
+                  desertRef.delete().then(function () {
+                    // File deleted successfully
+                  }).catch(function (error) {
+                    // Uh-oh, an error occurred!
+                  });
+                }
+              }
+            },
+            function error(err) {
+            },
+            function () {
+              var downloadURL = uploadTask.snapshot.downloadURL;
+              var user = firebase.auth().currentUser;
+              user.updateProfile({
+                photoURL: downloadURL
+              }).then(function () {
+                // Update successful.
+                window.location.reload()
+              }).catch(function (error) {
+                // An error happened.
+              });
+            }
+
+          );
+        });
+      }
+
+      _update() {
+
+      }
+
+      _changeEmail() {
+        var user = firebase.auth().currentUser;
+        var name = Polymer.dom(this.root).querySelector("#name");
+        user.updateEmail(
+          'ardie@gmail.com'
+        ).then(function () {
+          // var user = firebase.auth().currentUser;
+          // var credentials = firebase.auth.EmailAuthProvider.credential(
+          //   user.email,
+          //   '1234567'
+          // );
+          // user.reauthenticateWithCredential(credentials);
+      }).catch(function(error) {
+        // An error happened.
+      });
     }
+
+    }
+
 
     window.customElements.define(MyApp.is, MyApp);
   </script>
