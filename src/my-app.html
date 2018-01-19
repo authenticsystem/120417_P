@@ -229,8 +229,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
                   </div>
                   <div class="pad">
+<<<<<<< HEAD
                     <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
                     <div class="shortText">{{_roleAcc(account)}}</div>
+=======
+
+                    <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
+                    <div class="shortText">{{_roleAcc(account)}}</div>
+
+>>>>>>> a715433efcb61d6d658391d9e2c6ea2a21d93036
                   </div>
                 </app-toolbar>
               </app-header>
@@ -260,12 +267,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <span>Applications</span>
                   </paper-icon-item>
                 </a>
+<<<<<<< HEAD
+=======
+
+>>>>>>> a715433efcb61d6d658391d9e2c6ea2a21d93036
                 <a style$="{{_access(account)}}" name="accountlist" href="[[rootPath]]accountlist">
                   <paper-icon-item toggles="true" class="menuSelected">
                     <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
                     <span>Account List</span>
                   </paper-icon-item>
                 </a>
+<<<<<<< HEAD
+=======
+
+>>>>>>> a715433efcb61d6d658391d9e2c6ea2a21d93036
                 <a on-tap="_signOut" href="/">
                   <paper-icon-item toggles="true">
                     <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
