@@ -48,7 +48,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-application-detail.html">
 <link rel="lazy-import" href="my-account.html">
 <link rel="lazy-import" href="my-accountlist.html">
-<link rel="lazy-import" href="my-view2.html">
+<link rel="lazy-import" href="my-reset-password.html">
 <link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
 
@@ -202,6 +202,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <my-landing-page name="landing-page" user="{{user}}"></my-landing-page>
         <my-signin name="signin"></my-signin>
         <my-corporate-account name="corporate-account"></my-corporate-account>
+        <my-reset-password name="reset-password"></my-reset-password>
         <my-register-signin name="register-signin"></my-register-signin>
         <my-view404 name="view404"></my-view404>
       </iron-pages>
@@ -225,10 +226,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <app-header fixed>
                 <app-toolbar>
                   <div>
-                    <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openDialog"></iron-image>
+                    <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
                   </div>
                   <div class="pad">
-                    <div class="shortText" on-tap="_signOut">[[user.email]]</div>
+                    <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
                     <div class="shortText">Sales Agent</div>
                   </div>
                 </app-toolbar>
@@ -294,9 +295,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               <app-header fixed>
                 <app-toolbar>
-                  <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]"></iron-image>
+                  <div>
+                    <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]"></iron-image>
+                  </div>
                   <div class="pad">
-                    <div class="shortText" on-tap="_signOut">[[user.email]]</div>
+                    <div class="shortText">[[user.email]]</div>
                     <div class="shortText">Sales Agent</div>
                   </div>
                 </app-toolbar>
@@ -336,25 +339,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- not yet verify -->
     </template>
 
-    <!-- alert dialog -->
-    <paper-dialog id="dialog" confirm-button="Done">
-      <!-- <paper-alert-dialog-icon-header icon="icons:done">Well done!</paper-alert-dialog-icon-header> -->
+    <!-- alert dialog photoUrl-->
+    <paper-dialog id="photoUrl" confirm-button="Done">
       <center>
         <img src="{{user.photoURL}}" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img>
-        </br>
-        <progress value="0" max="100" id="uploader" style=" -webkit-appearance: none; margin-bottom: 10px; display:none">0%</progress>
-        </br>
-        <input type="file" id="fileButton" on-tap="_upload"></input>
       </center>
-      <paper-input value="{{user.displayName}}" id="name" label="Fullname" always-float-label></paper-input>
-      <paper-input value="{{user.email}}" id="email" label="Email" always-float-label></paper-input>
+      <input type="file" id="fileButton" on-tap="_upload" accept="image/*"></input>
+      <progress value="0" max="100" id="uploader" style=" -webkit-appearance: none; width:100%">0%</progress>
       <div class="buttons">
         <paper-button dialog-confirm autofocus raised>Cancel</paper-button>
-        <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button>
       </div>
-
     </paper-dialog>
-    <!-- alert dialog -->
+    <!-- alert dialog photoUrl-->
+    <!-- alert dialog email-->
+    <paper-dialog id="changeEmail" confirm-button="Done">
+      <h3>Update Email</h3>
+      <paper-input label="{{user.email}}" id="email"></paper-input>
+      <div class="buttons">
+        <paper-button on-tap="_changeEmail" toggles raised class="custom green">Update</paper-button>
+        <paper-button dialog-confirm autofocus raised>Cancel</paper-button>
+      </div>
+    </paper-dialog>
+    <!-- alert dialog email-->
 
   </template>
 
@@ -550,60 +556,89 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         window.location.reload()
         this.set("route.path", "");
       }
-      openDialog() {
-        var dialog = Polymer.dom(this.root).querySelector("#dialog");
-        this.$.dialog.open();
+      openPhotoUrl() {
+        var photoUrl = Polymer.dom(this.root).querySelector("#photoUrl");
+        this.$.photoUrl.open();
+      }
+      openChangeEmail() {
+        var changeEmail = Polymer.dom(this.root).querySelector("#changeEmail");
+        this.$.changeEmail.open();
       }
       _upload(e) {
-        var file = Polymer.dom(this.root).querySelector("#fileButton");
-        var storageRef = firebase.storage().ref();
-        var uploadTask = storageRef.child('images/' + file.name).put(file);
-        // Listen for state changes, errors, and completion of the upload.
-        uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
-          function (snapshot) {
-            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            console.log('Upload is ' + progress + '% done');
-          }, function (error) {
-          },
-          function () {
-            // Upload completed successfully, now we can get the download URL
-            var downloadURL = uploadTask.snapshot.downloadURL;
-          }
+        var fileButton = Polymer.dom(this.root).querySelector("#fileButton");
+        var uploader = Polymer.dom(this.root).querySelector("#uploader");
+
+        fileButton.addEventListener('change', function (e) {
+          //get file
+          var file = e.target.files[0];
+          //create storage
+          var storageRef = firebase.storage().ref('profilePic/' + file.name);
+          //upload file
+          var uploadTask = storageRef.put(file);
+          //update progressbar
+          uploadTask.on('state_changed',
+
+            function progress(snapshot) {
+              var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              uploader.value = percentage;
+              if (percentage === 100) {
+                var user = firebase.auth().currentUser;
+                var photoUrl = user.photoURL;
+                if (user) {
+                  console.log(user.photoURL);
+                  // Create a reference to the file to delete
+                  var desertRef = firebase.storage().refFromURL(user.photoURL);
+                  // Delete the file
+                  desertRef.delete().then(function () {
+                    // File deleted successfully
+                  }).catch(function (error) {
+                    // Uh-oh, an error occurred!
+                  });
+                }
+              }
+            },
+            function error(err) {
+            },
+            function () {
+              var downloadURL = uploadTask.snapshot.downloadURL;
+              var user = firebase.auth().currentUser;
+              user.updateProfile({
+                photoURL: downloadURL
+              }).then(function () {
+                // Update successful.
+                window.location.reload()
+              }).catch(function (error) {
+                // An error happened.
+              });
+            }
+
           );
-
-        // var fileButton = Polymer.dom(this.root).querySelector("#fileButton");
-        // var uploader = Polymer.dom(this.root).querySelector("#uploader");
-
-        // fileButton.addEventListener('change', function (e) {
-        //   //get file
-        //   var file = e.target.files[0];
-        //   //create storage
-        //   var storageRef = firebase.storage().ref('profilePic/' + file.name);
-        //   //upload file
-        //   var uploadTask = storageRef.put(file);
-        //   //update progressbar
-        //   uploadTask.on('state_changed',
-
-        //     function progress(snapshot) {
-        //       var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        //       uploader.value = percentage;
-        //     },
-        //     function error(err) {
-        //     },
-        //     function () {
-        //       var downloadURL = uploadTask.snapshot.downloadURL;
-        //     }
-
-        //   );
-        // });
+        });
       }
 
       _update() {
 
       }
 
+      _changeEmail() {
+        var user = firebase.auth().currentUser;
+        var name = Polymer.dom(this.root).querySelector("#name");
+        user.updateEmail(
+          'ardie@gmail.com'
+        ).then(function () {
+          // var user = firebase.auth().currentUser;
+          // var credentials = firebase.auth.EmailAuthProvider.credential(
+          //   user.email,
+          //   '1234567'
+          // );
+          // user.reauthenticateWithCredential(credentials);
+      }).catch(function(error) {
+        // An error happened.
+      });
     }
+
+    }
+
 
     window.customElements.define(MyApp.is, MyApp);
   </script>

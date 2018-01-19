@@ -15,7 +15,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 
 <dom-module id="my-account">
@@ -101,7 +100,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </span>
 
         <span hidden$="{{!user.emailVerified}}">
-          <img src="{{user.photoURL}}" style="border:1px solid black;padding:5px; width:50px; height:50px"></img>
+          <!-- <img src="{{user.photoURL}}" style="border:1px solid black;padding:5px; width:50px; height:50px"></img>
           <img src="" id="photoViewer" alt="your image"></img>
           </br>
           <progress style="height:5px;" value="0" max="100" id="uploader">0%</progress>
@@ -110,7 +109,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </br>
           <paper-input label="{{user.displayName}}" id="name"></paper-input>
           <paper-input label="{{user.email}}" id="email"></paper-input>
-          <paper-input label="{{_role(account)}}" readonly></paper-input>
+          <paper-input label="{{_role(account)}}" readonly></paper-input> -->
           <div class="card-actions">
             <div class="horizontal justified">
               <div style="float:right">
@@ -122,7 +121,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <iron-icon icon="my-icons:check"></iron-icon> Account linked
                 </span>
               </div>
-              <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button>
+              <!-- <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button> -->
             </div>
           </div>
         </span>
@@ -183,6 +182,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             function progress(snapshot) {
               var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
               uploader.value = percentage;
+              if (percentage === 100) {
+                var user = firebase.auth().currentUser;
+                if (user) {
+                  var photoUrl = user.photoURL;
+                  console.log(user.photoURL);
+                  // Create a reference to the file to delete
+                  var desertRef = firebase.storage().refFromURL(user.photoURL);
+                  // Delete the file
+                  desertRef.delete().then(function () {
+                    // File deleted successfully
+                    //window.location.reload()
+                  }).catch(function (error) {
+                    // Uh-oh, an error occurred!
+                  });
+                }
+              }
             },
             function error(err) {
             },
@@ -209,8 +224,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           displayName: name.value
         }).then(function () {
           // Update successful.
-          var Toast = Polymer.dom(this.root).querySelector("#toast");
-        Toast.open();
           window.location.reload()
         }).catch(function (error) {
           // An error happened.
