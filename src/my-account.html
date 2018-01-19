@@ -113,7 +113,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div class="card-actions">
             <div class="horizontal justified">
               <div style="float:right">
-                <span hidden$="{{verified}}">
+                <span style="font-size:14px;" hidden$="{{verified}}">
                   Account not link. Link your account
                   <a href="/account-link">here</a>.
                 </span>
@@ -142,6 +142,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: false
         }
+      },
+
+      _userName(e) {
+        if (e) return e;
+        else return 'Name not defined';
       },
 
       _role(e) {

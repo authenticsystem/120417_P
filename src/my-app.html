@@ -397,10 +397,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         ];
       }
 
+      _roleAcc(e) {
+        if (Object.keys(e).length > 0) {
+          if (e[0].role) {
+            return e[0].role;
+          }
+          else {
+            return 'Role unknown';
+          }
+        }
+      }
+
       _access(e) {
         if (Object.keys(e).length > 0) {
-          if (e[0].role == 'Manager') {
-            return 'display:block';
+          if (e[0].role) {
+            if (e[0].role == 'Manager') {
+              return 'display:block';
+            }
+            else {
+              return 'display:none';
+            }
+          }
+          else {
+            return 'display:none';
           }
         }
         else {
@@ -539,11 +558,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // alert(this.offline);
 
           if (this.offline === false) {
-            this.$.toast.close();
+            // this.$.toast.close();
             this.$.toast.duration = 3000;
           }
           else {
-            this.$.toast.close();
+            // this.$.toast.close();
             this.$.toast.duration = 0;
           }
 
