@@ -69,26 +69,25 @@
     <firebase-auth id="auth" user="{{user}}" provider="google" on-error="handleError"></firebase-auth>
 
     <div class="main-container">
-      <a href="/">
+      <a style="text-decoration:none;" href="/">
         <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
           fade style="width:128px; height:128px;"></iron-image>
       </a>
       </br>
       <div>
         <div class="header">Create account</div>
+        <div>for Haven of Peace Memorial Garden inventory and reservation system</div>
         </br>
         <div id="errorMessage" style="display: none;">
           <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}</div>
-        <paper-input label="Name" id="displayName" value="{{displayName}}"></paper-input>
+        <!-- <paper-input label="Name" id="name" value="{{name}}"></paper-input> -->
         <paper-input label="Email" id="email" value="{{email}}"></paper-input>
         <paper-input label="Password" type="password" id="password" value="{{password}}"></paper-input>
         </br>
         </br>
         <div class="footer">
           <div class="action">
-            <a style="text-decoration:none;" href="/signin">
-              <paper-button>cancel</paper-button>
-            </a>
+            <paper-button on-tap="_canCel">cancel</paper-button>
             <paper-button class="green" on-tap="_registerAccount">next</paper-button>
           </div>
         </div>
@@ -106,7 +105,15 @@
       handleError() {
         var errormsg = Polymer.dom(this.root).querySelector("#errorMessage");
         errormsg.setAttribute("style", "display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");
-        this.validationMessage = 'Invalid username/password';
+        this.validationMessage = 'Invalid email or password';
+      },
+
+      _canCel() {
+        window.location = '/signin';
+        Polymer.dom(this.root).querySelector("#errorMessage").setAttribute('style', 'display:none;');
+        this.validationMessage = '';
+        this.email = '';
+        this.password = '';
       },
 
       _registerAccount() {
@@ -114,16 +121,23 @@
         if (!this.email || !this.password) {
           var errormsg = Polymer.dom(this.root).querySelector("#errorMessage");
           errormsg.setAttribute("style", "display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");
-          this.validationMessage = 'Invalid empty email/password.';
+          this.validationMessage = 'Invalid empty email or password.';
         }
         else {
-          this.$.auth.createUserWithEmailAndPassword(this.email, this.password)
-            .then(function (user) {
-              app = this.document.querySelector('my-app');
-              app.set('route.path', '/');
+          if (this.password.length < 6) {
+            var errormsg = Polymer.dom(this.root).querySelector("#errorMessage");
+            errormsg.setAttribute("style", "display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");
+            this.validationMessage = 'Password must be greater than or equal to six.';
+          }
+          else {
+            this.$.auth.createUserWithEmailAndPassword(this.email, this.password)
+              .then(function (user) {
+                app = this.document.querySelector('my-app');
+                app.set('route.path', '/');
                 user.sendEmailVerification().then(function () {
                 });
-            })
+              })
+          }
         }
       }
     })

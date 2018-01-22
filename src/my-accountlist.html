@@ -77,7 +77,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: inline-block;
       }
 
-      paper-dialog#addUser {
+      paper-dialog#editUser,
+      #addUser {
         width: 60%;
         margin: 0 auto;
         padding: 40px;
@@ -114,58 +115,113 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-toolbar>
       </app-header>
 
-
       <paper-dialog id="addUser">
         <h2>Add New User</h2>
         <div>
           <div class="horizontal layout">
-            <paper-input auto-validate pattern="[a-zA-Z-.]*" value="{{firstname}}" always-float-label="First Name" label="First Name"></paper-input>
-            <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{middlename}}" always-float-label="Middle Name" label="Middle Name"></paper-input>
-            <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{lastname}}" always-float-label="Last Name" label="Last Name"></paper-input>
+            <paper-input required auto-validate pattern="[a-zA-Z-.]*" value="{{firstname}}" always-float-label label="First Name"></paper-input>
+            <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
+            <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{lastname}}" always-float-label label="Last Name"></paper-input>
           </div>
-          <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{suffix}}" always-float-label="Suffix" label="Suffix"></paper-input>
-          <paper-input char-counter maxlength="10" value="{{cellphone}}" always-float-label="Cellphone" label="Cellphone">
+          <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{suffix}}" always-float-label label="Suffix"></paper-input>
+          <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label
+            label="Cellphone">
             <div slot="prefix">+63</div>
           </paper-input>
+          <paper-dropdown-menu label="Role">
+            <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{roleAdd}}">
+              <paper-item>Manager</paper-item>
+              <paper-item>Sales Agent</paper-item>
+            </paper-listbox>
+          </paper-dropdown-menu>
         </div>
+        <span style="color:red; font-size:13px;">{{msg}}</span>
         <div class="buttons">
           <paper-button id="done" class="indigo" on-click="_submit" raised>Add</paper-button>
           <paper-button id="cancel" class="default" on-click="_cancel" raised>Cancel</paper-button>
         </div>
       </paper-dialog>
-      </div>
 
-      <firebase-query id="query" path="/accountlist" data="{{account}}" start-at="{{equal}}" order-by-child="{{selectedType}}"
-        end-at="{{equal}}"></firebase-query>
+      <paper-dialog id="editUser">
+        <h2>Edit User</h2>
+        <div>
+          <div class="horizontal layout">
+            <paper-input required auto-validate pattern="[a-zA-Z-.]*" value="{{myfirstname}}" always-float-label="First Name" label="First Name"></paper-input>
+            <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{mymiddlename}}" always-float-label="Middle Name"
+              label="Middle Name"></paper-input>
+            <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{mylastname}}" always-float-label="Last Name" label="Last Name"></paper-input>
+          </div>
+          <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{mysuffix}}" always-float-label="Suffix" label="Suffix"></paper-input>
+          <paper-input required prevent-invalid-input allowed-pattern="[\d]" char-counter auto-validate maxlength="10" value="{{mycellphone}}"
+            always-float-label="Cellphone" label="Cellphone">
+            <div slot="prefix">+63</div>
+          </paper-input>
+          <paper-dropdown-menu label="Role">
+            <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{myrole}}">
+              <paper-item>Manager</paper-item>
+              <paper-item>Sales Agent</paper-item>
+            </paper-listbox>
+          </paper-dropdown-menu>
+        </div>
+        <span style="color:red; font-size:13px;">{{msg}}</span>
+        <div class="buttons">
+          <paper-button id="done" class="indigo" on-click="_save" raised>Save</paper-button>
+          <paper-button id="cancel" class="default" on-click="_cancel" raised>Cancel</paper-button>
+        </div>
+      </paper-dialog>
 
-      <paper-datatable-card style="padding:17px;" id="myTable">
+      <firebase-query id="query" path="/accountlist" data="{{account}}"></firebase-query>
+
+      <paper-datatable-card style="padding:17px;" header-fixed id-property="$key" header="Accounts" id="datatableCard">
+
+        <!-- <div slot="toolbar-main">
+          <paper-input value="{{searchTerm}}" on-input="retrieveResults" label="Search..." style="display:inline-block" no-label-float>
+            <iron-icon icon="search" slot="prefix"></iron-icon>
+          </paper-input>
+          <paper-icon-button icon="cached" on-tap="retrieveResults"></paper-icon-button>
+        </div> -->
+
         <div slot="toolbar-select">
-          <a href$={{_get($key)}}>
-            <paper-icon-button id="{{$key}}" class="delete" icon="my-icons:delete-forever" no-ink on-tap="deleteSelected"></paper-icon-button>
-            <paper-tooltip for="{{$key}}" position="bottom">Delete</paper-tooltip>
-          </a>
+          <!-- <a href$={{_get($key)}}> -->
+          <paper-icon-button class="delete" icon="my-icons:delete-forever" no-ink on-tap="_deleteSelected"></paper-icon-button>
+          <!-- <paper-tooltip for="{{$key}}" position="bottom">Delete</paper-tooltip>
+          </a> -->
+        </div>
+
+        <div slot="toolbar-select-single">
+          <paper-icon-button icon="datatable:editable" on-tap="_edit"></paper-icon-button>
         </div>
 
         <paper-dialog id="deleteUserInfo">
-          <h2>Delete User Permanently?</h2>
+          <br>
+          <h2>Delete Account Permanently?</h2>
           <div class="buttons">
             <paper-button dialog-dismiss autofocus>No</paper-button>
             <paper-button dialog-confirm on-tap="deleteUser">Yes</paper-button>
           </div>
-          
         </paper-dialog>
-        <paper-datatable data="{{account}}" selectable multi-selection selected-items="{{selectedItems}}" on-row-tap="rowTapped">
-          <paper-datatable-column header="First Name" property="firstname"></paper-datatable-column>
-          <paper-datatable-column header="Middle Name" property="middlename"></paper-datatable-column>
-          <paper-datatable-column header="Last Name" property="lastname"></paper-datatable-column>
-          <paper-datatable-column header="Suffix" property="suffix"></paper-datatable-column>
-          <paper-datatable-column header="Cellphone" property="cellphone"></paper-datatable-column>
-          <paper-datatable-column header="Active" property="active"></paper-datatable-column>
+
+        <paper-datatable data="{{account}}" id="datatable" header-fixed multi-selection selectable selected-items="{{selectedItem}}">
+          <div no-results>
+            Loading or no more items...
+          </div>
+          <paper-datatable-column header="Name" type="Object" property="name">
+            <template>
+              <span>[[value.firstname]]</span>
+              <span>[[value.middlename]]</span>
+              <span>[[value.lastname]]</span>
+              <span>[[value.suffix]]</span>
+            </template>
+          </paper-datatable-column>
+          <paper-datatable-column header="Cellphone" type="String" property="cellphone"></paper-datatable-column>
+          <paper-datatable-column header="Role" type="String" property="role"></paper-datatable-column>
+          <paper-datatable-column header="Account key" type="String" property="accountkey"></paper-datatable-column>
+          <paper-datatable-column header="Active" type="Boolean" property="active"></paper-datatable-column>
         </paper-datatable>
       </paper-datatable-card>
       <paper-fab id="adddialog" class="fab-menu" icon="my-icons:add" on-tap="_addDialog"></paper-fab>
     </app-header-layout>
-    <paper-toast id="toast" text="Successfully Added!"></paper-toast>
+    <paper-toast id="toast" text="{{txt}}"></paper-toast>
   </template>
 
   <script> 
@@ -173,87 +229,221 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-accountlist',
       properties: {
 
-        path: String,
         account: {
           type: Object,
-          value: null,
         },
         equal: {
           type: String,
-          value: ''
-        },
-        firstname: {
-          type: String,
-          value: ''
-        },
-        middlename: {
-          type: String,
-          value: ''
-        },
-        lastname: {
-          type: String,
-          value: ''
-        },
-        suffix: {
-          type: String,
-          value: ''
-        },
-        cellphone: {
-          type: Number,
           value: ''
         },
         accountkey: {
           type: String,
           value: ''
         },
-        selectedType: {
+        selectedItem: {
+          observer: '_selectedItemChanged'
+        },
+        selectedItems: {
+          type: Object,
+        },
+        keyS: {
           type: String,
           value: ''
         },
-        selectedItems:{
-          type:String,
-          value:''
+        roleAdd: {
+          type: Number,
+          value: 1
+        },
+        roleUpdate: {
+          type: String,
+          observer: '_roleUpdateChanged'
         }
       },
+
+      _roleUpdateChanged() {
+        if (this.roleUpdate) {
+          if (this.roleUpdate == 'Manager') {
+            this.myrole = 0;
+          }
+          else {
+            this.myrole = 1;
+          }
+        }
+      },
+
+      _save() {
+        if (!this.myfirstname || !this.mymiddlename || !this.mylastname) {
+          this.msg = 'Please fill-up the required field.';
+        }
+        else {
+          if (this.mycellphone.length != 10) {
+            this.msg = 'Error! Invalid cellphone number.';
+          }
+          else {
+            this.msg = '';
+            if (!this.mysuffix) {
+              this.mysuffix = '';
+            }
+            var role;
+            if (this.myrole == 0) {
+              role = 'Manager';
+            }
+            else {
+              role = 'Sales Agent';
+            }
+            if (this.selectedItems.length > 0) {
+              var ref = firebase.database().ref('/accountlist');
+              ref.child(this.keyS).update({
+                name: {
+                  firstname: this.myfirstname,
+                  middlename: this.mymiddlename,
+                  lastname: this.mylastname,
+                  suffix: this.mysuffix
+                },
+                cellphone: this.mycellphone,
+                role: role,
+              });
+            }
+            Polymer.dom(this.root).querySelector("#toast").open();
+            this.txt = "Account successfully updated.";
+            Polymer.dom(this.root).querySelector("#adddialog").setAttribute("style", "display:block;");
+            Polymer.dom(this.root).querySelector("#datatableCard").setAttribute("style", "display:block;");
+            Polymer.dom(this.root).querySelector("#editUser").setAttribute("style", "display:none;");
+            this.$.datatable._restructureData();
+            this.$.datatable.deselectAll();
+          }
+        }
+      },
+
+      _edit() {
+        Polymer.dom(this.root).querySelector("#adddialog").setAttribute("style", "display:none;");
+        Polymer.dom(this.root).querySelector("#datatableCard").setAttribute("style", "display:none;");
+        Polymer.dom(this.root).querySelector("#editUser").setAttribute("style", "display:block;");
+      },
+
+      deleteUser() {
+        if (this.selectedItems.length > 0) {
+          var ref = firebase.database().ref('/accountlist');
+          for (var i = 0; i < this.selectedItems.length; ++i) {
+            ref.child(this.selectedItems[i].$key).remove();
+          }
+          Polymer.dom(this.root).querySelector("#toast").open();
+          this.txt = "Account successfully deleted.";
+          this.$.datatable.deselectAll();
+        }
+      },
+
+      _deleteSelected() {
+        this.$.deleteUserInfo.open();
+      },
+
+      _selectedItemChanged() {
+        if (this.selectedItem.length > 0) {
+          if (this.selectedItem.length > 1) {
+            this.selectedItems = this.selectedItem;
+            // for (var i = 0; i < this.selectedItem.length; ++i) {
+            //   console.log(this.selectedItem[i].$key);
+            // }
+          }
+          else {
+            this.myfirstname = this.selectedItem[0].name.firstname;
+            this.mymiddlename = this.selectedItem[0].name.middlename;
+            this.mylastname = this.selectedItem[0].name.lastname;
+            this.mysuffix = this.selectedItem[0].name.suffix;
+            this.mycellphone = this.selectedItem[0].cellphone;
+            this.roleUpdate = this.selectedItem[0].role;
+            this.keyS = this.selectedItem[0].$key;
+            this.selectedItems = this.selectedItem;
+          }
+        }
+      },
+
       getpath() {
         this.accountkey = this.guid();
       },
+
       guid: function () {
         var uid = new ShortUniqueId();
         return uid.randomUUID(7);
       },
 
       _submit() {
-        var ref = firebase.database().ref("accountlist");
-        ref.push({
-          accountkey: this.guid(),
-          active: true,
-          firstname: this.firstname,
-          middlename: this.middlename,
-          lastname: this.lastname,
-          cellphone: "+63" + this.cellphone,
-          suffix: this.suffix,
-          uid: 'none'
-        });
+        if (!this.firstname || !this.middlename || !this.lastname) {
+          this.msg = 'Please fill-up the required field.';
+        }
+        else {
+          if (this.cellphone.length != 10) {
+            this.msg = 'Error! Invalid cellphone number.';
+          }
+          else {
+            this.msg = '';
+            if (!this.suffix) {
+              this.suffix = '';
+            }
+            var role;
+            if (this.roleAdd == 0) {
+              role = 'Manager';
+            }
+            else {
+              role = 'Sales Agent';
+            }
 
-        var list = Polymer.dom(this.root).querySelector("#addUser");
-        list.style.display = "none";
-        var table = Polymer.dom(this.root).querySelector("#myTable");
-        table.setAttribute("style", "display:block;padding:17px;");
-        var NewUser = Polymer.dom(this.root).querySelector("#addAccount");
-        NewUser.setAttribute("style", "display:block");
-        var New = Polymer.dom(this.root).querySelector("#addNew");
-        New.setAttribute("style", "display:none");
-        var Toast = Polymer.dom(this.root).querySelector("#toast");
-        Toast.open();
-        var NewDialog = Polymer.dom(this.root).querySelector("#adddialog");
-        NewDialog.setAttribute("style", "display:block");
+            var ref = firebase.database().ref("accountlist");
+            var push = ref.push({
+              accountkey: this.guid(),
+              active: true,
+              name: {
+                firstname: this.firstname,
+                middlename: this.middlename,
+                lastname: this.lastname,
+                suffix: this.suffix
+              },
+              cellphone: this.cellphone,
+              role: role,
+              uid: 'none'
+
+            });
+            if (push) {
+              var list = Polymer.dom(this.root).querySelector("#addUser");
+              list.style.display = "none";
+              var table = Polymer.dom(this.root).querySelector("#datatableCard");
+              table.setAttribute("style", "display:block;padding:17px;");
+              var NewUser = Polymer.dom(this.root).querySelector("#addAccount");
+              NewUser.setAttribute("style", "display:block");
+              var New = Polymer.dom(this.root).querySelector("#addNew");
+              New.setAttribute("style", "display:none");
+              var Toast = Polymer.dom(this.root).querySelector("#toast");
+              Toast.open();
+              this.txt = "Account successfully added.";
+              var NewDialog = Polymer.dom(this.root).querySelector("#adddialog");
+              NewDialog.setAttribute("style", "display:block");
+              this.firstname = '';
+              this.middlename = '';
+              this.lastname = '';
+              this.suffix = '';
+              this.cellphone = '';
+              this.roleAdd = 1;
+            }
+            else {
+              this.msg = 'Error submitting!';
+            }
+          }
+        }
       },
 
       _cancel() {
+        this.$.datatable.deselectAll();
+        this.firstname = "";
+        this.middlename = "";
+        this.lastname = "";
+        this.suffix = "";
+        this.cellphone = "";
+        this.msg = '';
+
+        Polymer.dom(this.root).querySelector("#editUser").setAttribute("style", "display:none;");
         var list = Polymer.dom(this.root).querySelector("#addUser");
         list.style.display = "none";
-        var table = Polymer.dom(this.root).querySelector("#myTable");
+        var table = Polymer.dom(this.root).querySelector("#datatableCard");
         table.setAttribute("style", "display:block;padding:17px;");
         var NewUser = Polymer.dom(this.root).querySelector("#addAccount");
         NewUser.setAttribute("style", "display:block");
@@ -264,14 +454,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _addDialog() {
-        this.firstname = "";
-        this.middlename = "";
-        this.lastname = "";
+        this.name = "";
         this.cellphone = "";
-        this.suffix = "";
 
         var add = Polymer.dom(this.root).querySelector("#addUser");
-        var table = Polymer.dom(this.root).querySelector("#myTable");
+        var table = Polymer.dom(this.root).querySelector("#datatableCard");
         var NewUser = Polymer.dom(this.root).querySelector("#addAccount");
         NewUser.setAttribute("style", "display:none");
         var NewDialog = Polymer.dom(this.root).querySelector("#adddialog");
@@ -294,15 +481,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }));
         this.$.narrow = !this.$.narrow;
-      },
-      deleteSelected() {
-        this.$.deleteUserInfo.open();
-      },
-      deleteUser() {
-
-      },
-      rowTapped(){
-
       }
     })
   </script>

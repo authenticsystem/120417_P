@@ -7,6 +7,7 @@
     "src/my-register-signin.html",
     "src/my-map.html",
     "src/my-dashboard.html",
+    "src/my-lot-details.html",
     "src/my-briefcase.html",
     "src/my-applications.html",
     "src/my-accountlist.html",
@@ -14,8 +15,6 @@
     "src/my-account-link.html",
     "src/my-application-detail.html",
     "src/my-account.html",
-    "src/my-accountlist.html",
-    "src/my-view2.html",
     "src/my-view3.html",
     "src/my-view404.html"
   ],

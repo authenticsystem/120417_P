@@ -16,7 +16,6 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
-<link rel="import" href="../bower_components/skeleton-auth/skeleton-auth.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 
@@ -131,8 +130,6 @@
                     </div>
 
                     <div id="codeSubmittion" style="display:none;">
-                        <!-- <skeleton-auth phone on-error="handleError">
-                        </skeleton-auth> -->
                         Enter verification code that was sent to your mobile device.
                         <div id="holder">
                             <paper-input value="{{confirmationCode}}" allowed-pattern="[\d]" label="Verification code" maxlength="6" prevent-invalid-input
@@ -203,7 +200,7 @@
                     recaptchaContainer,
                     { size: 'invisible' }
                 );
-                const phoneComplete = this.accountInfo[0].cellphone;
+                const phoneComplete = '+63'+this.accountInfo[0].cellphone;
                 // const phoneComplete = '+639128616318';
                 firebase.auth()
                     .signInWithPhoneNumber(phoneComplete, appVerifier)
@@ -238,7 +235,7 @@
                     var credential = firebase.auth.PhoneAuthProvider
                         .credential(this.confirmationResult.verificationId, this.confirmationCode);
                     var accountKey = this.accountInfo[0].$key;
-                    var userName = this.accountInfo[0].firstname + ' ' + this.accountInfo[0].middlename + ' ' + this.accountInfo[0].lastname + ' ' + this.accountInfo[0].suffix;
+                    var userName = this.accountInfo[0].name.firstname + ' ' + this.accountInfo[0].name.middlename + ' ' + this.accountInfo[0].name.lastname + ' ' + this.accountInfo[0].name.suffix;
 
                     firebase.auth().currentUser.linkWithCredential(credential).then(function (user) {
                         var fbDB = firebase.database().ref();
