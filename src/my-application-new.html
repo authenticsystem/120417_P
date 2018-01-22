@@ -985,7 +985,7 @@
                 this.draftdata_agentdetails_cellphone = '';
 
                 this.minStartDateTime = '';
-                this.saveErrorDetails = 'saving...';
+                this.saveErrorDetails = '...';
             },
 
             _select1(e) {
@@ -1255,7 +1255,7 @@
                                     var favRightVar = Polymer.dom(this.root).querySelector("#favright");
 
                                     if (this.fullLotData.status != 'available') {
-                                        this.saveErrorDetails = 'Lot status changed just now. Please check the status of the lot.';
+                                        this.saveErrorDetails = 'Lot status has changed. Please check the status of the lot.';
                                         saveSuccess.setAttribute("style", "display: none; color: green;");
                                         saveFailed.setAttribute("style", "display: block; color: red;");
                                     }
