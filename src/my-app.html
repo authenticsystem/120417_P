@@ -214,7 +214,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <!-- verified user -->
       <template is="dom-if" if="{{user.emailVerified}}">
-        
+
         <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
         </firebase-query>
 
@@ -826,18 +826,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _changeEmail() {
         var user = firebase.auth().currentUser;
-        var name = Polymer.dom(this.root).querySelector("#name");
-        user.updateEmail(
-          'ardie@gmail.com'
-        ).then(function () {
-          //var user = firebase.auth().currentUser;
-          //firebase.auth().currentUser.reauthenticate(firebase.auth.EmailAuthProvider.credential(firebase.auth().currentUser.email, providedPassword))
-
-          // var credentials = firebase.auth.EmailAuthProvider.credential(
-          //   user.email,
-          //   '1234567'
-          // );
-          // user.reauthenticateWithCredential(credentials);
+        user.updateEmail("user@example.com").then(function () {
+          // Update successful..
         }).catch(function (error) {
           // An error happened.
         });

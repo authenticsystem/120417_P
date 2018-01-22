@@ -55,6 +55,13 @@
         float: right;
       }
 
+      .action paper-button {
+        height: 35px;
+        font-size: 12px;
+        font-weight: 400;
+        width: 80px;
+      }
+
       .footer {
         height: 48px;
         /* align-items: middle; */
@@ -64,36 +71,42 @@
         font-size: 24px;
         font-weight: 400;
       }
+
+      paper-button.green {
+        background-color: var(--paper-green-500);
+        color: white;
+      }
+
+      paper-button.green[active] {
+        background-color: var(--paper-red-500);
+      }
     </style>
 
     <firebase-auth id="auth" user="{{user}}" provider="google" on-error="handleError"></firebase-auth>
 
     <div class="main-container">
-      <a style="text-decoration:none;" href="/">
-        <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
-          fade style="width:128px; height:128px;"></iron-image>
-      </a>
+      <center>
+        <a style="text-decoration:none;" href="/">
+          <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
+            fade style="width:128px; height:128px;"></iron-image>
+        </a>
+      </center>
+      <div class="header">Create account</div>
+      <div>to Haven of Peace Memorial Garden inventory and reservation system</div>
+      <div id="errorMessage" style="display: none;">
+        <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}</div>
+      <!-- <paper-input label="Name" id="name" value="{{name}}"></paper-input> -->
+      <paper-input label="Email" id="email" value="{{email}}" required auto-validate error-message=""></paper-input>
+      <paper-input label="Password" type="password" id="password" value="{{password}}" required auto-validate error-message=""></paper-input>
       </br>
-      <div>
-        <div class="header">Create account</div>
-        </br>
-        <div id="errorMessage" style="display: none;">
-          <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}</div>
-        <!-- <paper-input label="Name" id="name" value="{{name}}"></paper-input> -->
-        <paper-input label="Email" id="email" value="{{email}}"></paper-input>
-        <paper-input label="Password" type="password" id="password" value="{{password}}"></paper-input>
-        </br>
-        </br>
-        <div class="footer">
-          <div class="action">
-            <a style="text-decoration:none;" href="/signin">
-              <paper-button>cancel</paper-button>
-            </a>
-            <paper-button class="green" on-tap="_registerAccount">next</paper-button>
-          </div>
+      <div class="footer">
+        <div class="action">
+          <a style="text-decoration:none;" href="/signin">
+            <paper-button>cancel</paper-button>
+          </a>
+          <paper-button toggles raised class="custom green" on-tap="_registerAccount">next</paper-button>
         </div>
       </div>
-
     </div>
 
 
