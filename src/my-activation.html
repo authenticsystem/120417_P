@@ -1,0 +1,220 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="my-icons.html">
+
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+
+<dom-module id="my-activation">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+
+            @media (min-width: 767px) {
+                .main-container {
+                    height: 100%;
+                    background-color: white;
+                    max-width: 370px;
+                    margin: 16px auto;
+                    padding: 40px;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                }
+
+            }
+
+            @media (max-width: 767px) {
+                :host {
+                    height: 100%;
+                }
+                .main-container {
+                    height: 100%;
+                    background-color: white;
+                    margin: 0 auto;
+                    padding: 40px;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                }
+
+            }
+
+            paper-button {
+                height: 32px;
+                font-size: 12px;
+                font-weight: 400;
+                width: 80px;
+                text-align: center;
+            }
+
+            /* .action1 {
+                float: right;
+            } */
+
+            paper-button.green {
+                background-color: var(--paper-green-500);
+                color: white;
+                margin-top: 3px;
+            }
+
+            paper-button.green[active] {
+                background-color: var(--paper-red-500);
+            }
+
+            /* multi-step progres */
+
+            /* .container {
+                width: 100%;
+            }
+
+            .progressbar {
+                counter-reset: step;
+            }
+
+            .progressbar li {
+                list-style: none;
+                display: inline-block;
+                width: 10%;
+                position: relative;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            .progressbar li:before {
+                content: counter(step);
+                counter-increment: step;
+                width: 30px;
+                height: 30px;
+                line-height: 30px;
+                border: 1px solid #ddd;
+                border-radius: 100%;
+                display: block;
+                text-align: center;
+                margin: 0 auto 5px auto;
+                background-color: #fff;
+            }
+
+            .progressbar li:after {
+                content: "";
+                position: absolute;
+                width: 100%;
+                height: 1px;
+                background-color: #ddd;
+                top: 15px;
+                left: -50%;
+                z-index: -1;
+            }
+
+            .progressbar li:first-child:after {
+                content: none;
+            }
+
+            .progressbar li.active {
+                color: green;
+            }
+
+            .progressbar li.active:before {
+                border-color: green;
+            }
+
+            .progressbar li.active+li:after {
+                background-color: green;
+            } */
+
+            /* multi-step progres */
+        </style>
+
+        <!-- <div class="container">
+            <ul class="progressbar">
+                <li class="active">Create Account</li>
+                <li>Email Verification</li>
+                <li>Account Linkage</li>
+                <li>Finish</li>
+            </ul>
+        </div> -->
+
+        <div class="main-container">
+            <center>
+                <a style="text-decoration:none;" href="/">
+                    <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
+                        fade style="width:128px; height:128px;"></iron-image>
+                </a>
+            </center>
+            <div hidden$="{{user.emailVerified}}">
+                <h1>Verify Email</h1>
+                <span>Let us know if this email belongs to you.
+                    <br> Click the link in the email sent to
+                    <b>[[user.email]]</b>.
+                </span>
+                <br>
+                <br>
+                <div>
+                
+                <div class="action">
+                    <span style="font-size:12px; cursor:pointer; margin-right:110px" on-tap="_signOut"><iron-icon icon="my-icons:close" on-tap="_signOut" title="Sign Out"></iron-icon>Sign Out</span>
+                    <paper-button on-tap="_resend" title="Resend Verification">Resend</paper-button>
+                    <paper-button on-tap="_reload" toggles raised class="custom green" title="Already Verified">Next</paper-button>
+                </div>
+                </div>
+            </div>
+
+            <div hidden$="{{user.emailVerified}}">
+
+            </div>
+
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-activation',
+            // properties:{
+            //     user: {
+            //         type: Object,
+            //         notify: true
+            //     }
+            // },
+            // observers:[
+            //     'userChanged(user.emailVerified)'
+            // ],
+
+            // userChanged(e){
+            //     console.log(e);
+            // },
+
+            _signOut() {
+                firebase.auth().signOut().then(function () {
+                    // Sign-out successful.
+                    window.location.reload()
+                    this.set("route.path", "");
+                }).catch(function (error) {
+                    // An error happened.
+                });
+
+            },
+            _resend() {
+                var user = firebase.auth().currentUser;
+                user.sendEmailVerification().then(function () {
+                    // Email sent.
+                    window.location.reload();
+                }).catch(function (error) {
+                    // An error happened.
+                });
+            },
+            _reload() {
+                window.location.reload();
+            },
+        })
+    </script>
+</dom-module>

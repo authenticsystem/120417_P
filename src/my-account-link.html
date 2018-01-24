@@ -63,85 +63,121 @@
             paper-button.green {
                 background-color: var(--paper-green-500);
                 color: white;
-                align-self: flex-end;
-                height: 40px;
-
+                margin-top: 3px;
             }
 
-            paper-input {
-                flex: 1;
+            paper-button.green[active] {
+                background-color: var(--paper-red-500);
+            }
+
+            .action paper-button {
+                height: 32px;
+                font-size: 12px;
+                font-weight: 400;
+                width: 80px;
+                text-align: center;
             }
 
             .action {
-                float: right;
-            }
-
-            .footer {
-                height: 48px;
-            }
-
-            .header {
-                font-size: 24px;
-                font-weight: 400;
-            }
-
-            #holder {
-                display: flex;
+                float: right
             }
         </style>
 
-        <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
-        </firebase-query>
+        <app-header-layout>
 
-        <app-header-layout fullbleed has-scrolling-region>
-            <app-header fixed slot="header">
+            <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
+            </firebase-query>
+
+            <div class="main-container">
+                <center>
+                    <a style="text-decoration:none;" href="/">
+                        <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
+                            fade style="width:128px; height:128px;"></iron-image>
+                    </a>
+                </center>
+                <firebase-query id="query" path="/accountlist" order-by-child="accountkey" equal-to="{{accountKey}}" data="{{accountInfo}}">
+                </firebase-query>
+
+                <div id="keySubmittion">
+                    Your email
+                    <b>{{user.email}}</b> has been verified. Enter your account number to continue.
+                    <br>
+                    <span style="color:red; font-size:12px;">{{msg}}</span>
+                    <paper-input auto-validate required label="Account number" value="{{accKey}}"></paper-input>
+                    <br>
+                    <div class="action">
+                        <!-- <paper-icon-button icon="my-icons:close" on-tap="_signOut" title="Sign Out" style="float: left"></paper-icon-button> -->
+                        <paper-button on-tap="_signOut">Sign out</paper-button>
+                        <paper-button toggles raised class="custom green" on-tap="_submitKey">Next</paper-button>
+                    </div>
+                </div>
+                <br>
+
+                <div id="codeSubmittion" style="display:none;">
+                    Enter verification code that was sent to your mobile device.
+                    <br>
+                    <span style="color:red; font-size:12px;">{{msg}}</span>
+                    <paper-input value="{{confirmationCode}}" allowed-pattern="[\d]" label="Verification code" maxlength="6" prevent-invalid-input
+                        auto-validate required></paper-input>
+                    <br>
+                    <div class="action">
+                        <paper-button toggles raised class="custom green" on-tap="_verifyCode">Verify</paper-button>
+                    </div>
+
+                    <br>
+                </div>
+
+                <!-- <app-header-layout fullbleed has-scrolling-region> -->
+                <!-- <app-header fixed slot="header">
                 <app-toolbar primary>
                     <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
                     <div main-title>My Account</div>
                 </app-toolbar>
-            </app-header>
+            </app-header> -->
 
-            <div class="card">
-                <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
-                    fade style="width:200px; height:200px;"></iron-image>
-                </br>
+                <!-- <div class="card">
+                    <paper-icon-button icon="my-icons:close" on-tap="_signOut" title="Sign Out" style="float:right"></paper-icon-button>
 
-                <template is="dom-if" if="{{_accountLink(accountKnown)}}">
-                    ACCOUNT SUCCESSFULLY LINK
-                    <div>
-                        <a href="/account">
-                            <button>OK</button>
-                        </a>
-                    </div>
-                </template>
+                    <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
+                        fade style="width:200px; height:200px;"></iron-image>
+                    </br>
 
-                <template is="dom-if" if="{{_accountNotLink(accountKnown)}}">
-
-                    <firebase-query id="query" path="/accountlist" order-by-child="accountkey" equal-to="{{accountKey}}" data="{{accountInfo}}">
-                    </firebase-query>
-
-                    <div id="keySubmittion">
-                        Enter key to link your account.
-                        <div id="holder">
-                            <paper-input auto-validate required label="Key" value="{{accKey}}"></paper-input>
-                            <paper-button class="green" on-tap="_submitKey">Submit</paper-button>
+                    <template is="dom-if" if="{{_accountLink(accountKnown)}}">
+                        ACCOUNT SUCCESSFULLY LINK
+                        <div>
+                            <a href="/account">
+                                <button>OK</button>
+                            </a>
                         </div>
-                        <span style="color:red; font-size:12px;">{{msg}}</span>
-                    </div>
+                    </template>
 
-                    <div id="codeSubmittion" style="display:none;">
-                        Enter verification code that was sent to your mobile device.
-                        <div id="holder">
-                            <paper-input value="{{confirmationCode}}" allowed-pattern="[\d]" label="Verification code" maxlength="6" prevent-invalid-input
-                                auto-validate required></paper-input>
-                            <paper-button class="green" on-tap="_verifyCode">Verify</paper-button>
+                    <template is="dom-if" if="{{_accountNotLink(accountKnown)}}">
+
+                        <firebase-query id="query" path="/accountlist" order-by-child="accountkey" equal-to="{{accountKey}}" data="{{accountInfo}}">
+                        </firebase-query>
+
+                        <div id="keySubmittion">
+                            Enter key to link your account.
+                            <div id="holder">
+                                <paper-input auto-validate required label="Key" value="{{accKey}}"></paper-input>
+                                <paper-button class="green" on-tap="_submitKey">Submit</paper-button>
+                            </div>
+                            <span style="color:red; font-size:12px;">{{msg}}</span>
                         </div>
-                        <span style="color:red; font-size:12px;">{{msg}}</span>
-                    </div>
 
-                </template>
+                        <div id="codeSubmittion" style="display:none;">
+                            Enter verification code that was sent to your mobile device.
+                            <div id="holder">
+                                <paper-input value="{{confirmationCode}}" allowed-pattern="[\d]" label="Verification code" maxlength="6" prevent-invalid-input
+                                    auto-validate required></paper-input>
+                                <paper-button class="green" on-tap="_verifyCode">Verify</paper-button>
+                            </div>
+                            <span style="color:red; font-size:12px;">{{msg}}</span>
+                        </div>
 
-            </div>
+                    </template>
+
+                </div> -->
         </app-header-layout>
 
     </template>
@@ -171,7 +207,7 @@
 
             _submitKey() {
                 if (!this.accKey) {
-                    this.msg = 'Please enter key.';
+                    this.msg = 'Please enter account number.';
                 }
                 else {
 
@@ -180,7 +216,7 @@
                         this.msg = '';
                     }
                     else {
-                        this.msg = 'Must be a valid key.';
+                        this.msg = 'Invalid account number.';
                     }
                 }
             },
@@ -200,7 +236,7 @@
                     recaptchaContainer,
                     { size: 'invisible' }
                 );
-                const phoneComplete = '+63'+this.accountInfo[0].cellphone;
+                const phoneComplete = '+63' + this.accountInfo[0].cellphone;
                 // const phoneComplete = '+639128616318';
                 firebase.auth()
                     .signInWithPhoneNumber(phoneComplete, appVerifier)
@@ -229,7 +265,7 @@
 
             _verifyCode() {
                 if (!this.confirmationCode) {
-                    this.msg = 'Please enter the code.'
+                    this.msg = 'Please enter verification code.'
                 }
                 else {
                     var credential = firebase.auth.PhoneAuthProvider
@@ -243,8 +279,8 @@
                         user.updateProfile({ displayName: userName });
                         fbDB.child('accountlist/' + accountKey + '/uid').set(data);
                         window.location.reload();
-                    }, function (error) {
-                        console.log(error);
+                    }).catch(function (error) {
+                        this.msg = 'Invalid verification code.'
                     });
                 }
             },
@@ -283,7 +319,18 @@
                     }
                 }));
                 this.$.narrow = !this.$.narrow;
-            }
+            },
+
+            _signOut() {
+                firebase.auth().signOut().then(function () {
+                    // Sign-out successful.
+                    window.location.reload()
+                    this.set("route.path", "");
+                }).catch(function (error) {
+                    // An error happened.
+                });
+
+            },
 
         })
     </script>
