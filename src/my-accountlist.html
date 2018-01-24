@@ -57,18 +57,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         right: 32px;
       }
 
-      paper-dialog#editUser,
-      #addUser {
-        width: 60%;
-        margin: 0 auto;
-        padding: 16px;
-        margin-top: 2%
-      }
-
-      h2 {
-        margin-top: 2px;
-      }
-
       paper-toast {
         width: 20%;
         position: fixed;
@@ -103,10 +91,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width: 80px;
       }
     </style>
-    <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
-    <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
+    <app-route route="{{route}}" pattern="" active="{{accountActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/edit/:key" data="{{editData}}" active="{{editActive}}"></app-route>
 
-    <div hidden$="{{!applicationActive}}">
+    <div hidden$="{{!accountActive}}">
       <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
         <div name="">
           <app-header-layout fullbleed has-scrolling-region>
@@ -114,7 +102,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <app-toolbar primary>
                 <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
                 <div main-title id="addAccount">Accounts</div>
-                <div main-title id="addNew" style="display:none">New Account</div>
               </app-toolbar>
             </app-header>
             <firebase-query id="query" path="/accountlist" data="{{account}}"></firebase-query>
@@ -168,19 +155,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div id="appnew"></div>
           <my-accountlist-new id="d23" path="" prev-route="{{route.prefix}}"></my-accountlist-new>
         </div>
-
         <div name="view404">Not found.</div>
-
       </iron-pages>
-    </div>
-
-    <div hidden$="{{!editActive}}">
-      <div id="appedit"></div>
-      <my-accountlist-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-accountlist-edit>
-    </div>
-
-    <paper-toast id="toast" text="{{txt}}"></paper-toast>
-
+      </div>
+      <div hidden$="{{!editActive}}">
+        <div id="appedit"></div>
+        <my-accountlist-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-accountlist-edit>
+      </div>
+      <paper-toast id="toast" text="{{txt}}"></paper-toast>
+      
   </template>
 
   <script> 
