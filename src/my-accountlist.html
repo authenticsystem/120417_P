@@ -96,6 +96,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div hidden$="{{!accountActive}}">
       <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
+        
         <div name="">
           <app-header-layout fullbleed has-scrolling-region>
             <app-header fixed slot="header">
@@ -104,7 +105,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div main-title id="addAccount">Accounts</div>
               </app-toolbar>
             </app-header>
-            <firebase-query id="query" path="/accountlist" data="{{account}}"></firebase-query>
+
+            <firebase-query id="accQuery" path="/accountlist" data="{{account}}"></firebase-query>
 
             <paper-datatable-card style="padding:17px;" header-fixed id-property="$key" header="Accounts" id="datatableCard">
 
@@ -155,15 +157,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div id="appnew"></div>
           <my-accountlist-new id="d23" path="" prev-route="{{route.prefix}}"></my-accountlist-new>
         </div>
+
         <div name="view404">Not found.</div>
+
       </iron-pages>
-      </div>
-      <div hidden$="{{!editActive}}">
-        <div id="appedit"></div>
-        <my-accountlist-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-accountlist-edit>
-      </div>
-      <paper-toast id="toast" text="{{txt}}"></paper-toast>
-      
+    </div>
+
+    <div hidden$="{{!editActive}}">
+      <div id="appedit"></div>
+      <my-accountlist-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-accountlist-edit>
+    </div>
+
+    <paper-toast id="toast" text="{{txt}}"></paper-toast>
+
   </template>
 
   <script> 
@@ -171,18 +177,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-accountlist',
       properties: {
         route: Object,
-        account: {
-          type: Object,
-          observer: '_accountChanged'
-        },
-        equal: {
-          type: String,
-          value: ''
-        },
-        accountkey: {
-          type: String,
-          value: ''
-        },
+        account: Object,
         selectedItem: {
           type: String,
           observer: '_selectedItemChanged'
@@ -193,15 +188,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         keyS: {
           type: String,
           value: ''
-        },
-        roleAdd: {
-          type: Number,
-          value: 1
         }
-      },
-
-      _accountChanged() {
-        console.log(this.account);
       },
 
       _getAccount(e) {

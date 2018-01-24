@@ -230,7 +230,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
       <!-- <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
-      <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
+      <firebase-query id="query" path="/accountlist" data="{{myaccount}}" order-by-child="uid" equal-to="{{user.uid}}">
       </firebase-query>
 
       <template is="dom-if" if="{{!user.emailVerified}}">
@@ -267,7 +267,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <div class="pad">
 
                       <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
-                      <div class="shortText">{{_roleAcc(account)}}</div>
+                      <div class="shortText">{{_roleAcc(myaccount)}}</div>
 
                     </div>
                   </app-toolbar>
@@ -424,9 +424,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean,
             notify: true
           },
-          account: {
+          myaccount: {
             type: Object,
-            observer: '_accountChanged'
+            observer: '_myaccountChanged'
           },
           dashAccess: {
             type: Boolean,
@@ -463,18 +463,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      _accountChanged() {
-        if (this.account.length > 0) {
+      _myaccountChanged() {
+        if (this.myaccount.length > 0) {
           this.isLink = true;
 
-          if (this.account[0].role) {
-            if (this.account[0].access.dashboard == true) {
+          if (this.myaccount[0].role) {
+            if (this.myaccount[0].access.dashboard == true) {
               this.dashAccess = true;
             }
-            if (this.account[0].access.applications == true) {
+            if (this.myaccount[0].access.applications == true) {
               this.appAccess = true;
             }
-            if (this.account[0].access.accountlist == true) {
+            if (this.myaccount[0].access.accountlist == true) {
               this.accountAccess = true;
             }
           }
@@ -531,18 +531,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _routePageChanged(page, user, link) {
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'view1' in that case.
-        //console.log(user);
         if (user) {
           if (user.emailVerified) {
-            this.page = page || 'account';
-            var drawer = Polymer.dom(this.root).querySelector("#drawerMain");
-            if (drawer) {
-              if (!drawer.persistent) {
-                drawer.close();
-              }
-            }
             if (link == true) {
-              this.page = page || 'account';
+              this.page = page || 'accountlist';
               var drawer = Polymer.dom(this.root).querySelector("#drawerMain");
               if (drawer) {
                 if (!drawer.persistent) {
@@ -556,12 +548,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           else {
             this.page = page || 'activation';
-            var drawer = Polymer.dom(this.root).querySelector("#drawerMain");
-            if (drawer) {
-              if (!drawer.persistent) {
-                drawer.close();
-              }
-            }
           }
         }
         else {
