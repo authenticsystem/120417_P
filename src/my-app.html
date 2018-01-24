@@ -249,7 +249,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
                   </div>
                   <div hidden$="{{user.photoURL}}">
-                    <iron-image class="avatar" sizing="contain" src="../images/user.png" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
+                      <paper-icon-button class="avatar" sizing="contain" icon="my-icons:account-circle" on-tap="openPhotoUrl"></paper-icon-button>
+                    <!-- <iron-image class="avatar" sizing="contain" src="../images/user.png" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image> -->
                   </div>
                   <div class="pad">
 
