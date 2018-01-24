@@ -279,8 +279,9 @@
                         user.updateProfile({ displayName: userName });
                         fbDB.child('accountlist/' + accountKey + '/uid').set(data);
                         window.location.reload();
-                    }).catch(function (error) {
-                        this.msg = 'Invalid verification code.'
+                    }, function (error) {
+                        window.alert(error.message);
+                        // window.alert(error.message + '\nPhone number: ' + error.phoneNumber);
                     });
                 }
             },
