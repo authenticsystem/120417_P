@@ -172,6 +172,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       }
     </style>
+    <style is="custom-style">
+      :root {
+        /* Label and underline color when the input is not focused */
+        --paper-input-container-color: white;
+
+        /* Label and underline color when the input is focused */
+        --paper-input-container-focus-color: white;
+
+        /* Label and underline color when the input is invalid */
+        --paper-input-container-invalid-color: green;
+
+        /* Input foreground color */
+        --paper-input-container-input-color: white;
+      }
+    </style>
 
 
 
@@ -192,6 +207,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <app-toolbar primary>
                 <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
                 <div main-title>Applications</div>
+                <div style="color:white;">
+                  <paper-input label="Search.."></paper-input>
+                </div>
+                <paper-icon-button icon="my-icons:search" style="float:right"></paper-icon-button>
+
               </app-toolbar>
             </app-header>
 
