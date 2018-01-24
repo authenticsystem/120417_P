@@ -47,9 +47,10 @@
     "vaadin-upload": "vaadin/vaadin-upload#^3.0.0",
     "paper-alert-dialog": "Collaborne/paper-alert-dialog#^2.0.1",
     "paper-toolbar": "PolymerElements/paper-toolbar#^2.0.0",
-    "skeleton-auth":"FabricElements/skeleton-auth",
+    "paper-header-panel": "PolymerElements/paper-header-panel#^2.0.0",
     "polymer": "Polymer/polymer#^2.2.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
+    "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.1"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"

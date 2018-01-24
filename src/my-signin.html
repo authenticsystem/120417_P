@@ -6,6 +6,7 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
@@ -44,6 +45,7 @@
                     margin: 0 auto;
                     padding: 40px;
                     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+
                 }
 
             }
@@ -51,6 +53,13 @@
             .action {
                 /* display: inline-block; */
                 float: right;
+            }
+
+            .action paper-button {
+                height: 32px;
+                font-size: 12px;
+                font-weight: 400;
+                width: 80px;
             }
 
             .moreoption {
@@ -72,20 +81,6 @@
                 color: red;
             }
 
-            /* .socialBtn{
-                text-align: center;
-            } */
-
-            .hr1 {
-                width: 35%;
-                float: left
-            }
-
-            .hr2 {
-                width: 35%;
-                float: right
-            }
-
             paper-button.green {
                 background-color: var(--paper-green-500);
                 color: white;
@@ -95,16 +90,14 @@
                 background-color: var(--paper-red-500);
             }
         </style>
-
         <firebase-auth id="auth" user="{{user}}" provider="password" on-error="handleError"></firebase-auth>
-
         <div class="main-container">
-            <a style="text-decoration:none;" href="/">
-                <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
-                    fade style="width:128px; height:128px;"></iron-image>
-            </a>
-            </br>
-
+            <center>
+                <a style="text-decoration:none;" href="/">
+                    <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
+                        fade style="width:128px; height:128px;"></iron-image>
+                </a>
+            </center>
             <div class="header">Sign in</div>
             <div>to continue to Haven of Peace Memorial Garden inventory and reservation system</div>
             <br>
@@ -113,42 +106,46 @@
 
             <paper-input label="Email" value="{{email}}" always-float-label required auto-validate error-message=""></paper-input>
             <paper-input label="Password" type="password" value="{{password}}" always-float-label required auto-validate error-message=""></paper-input>
+            <br>
             <div class="footer">
-                <!-- <div class="moreoption">
+                <div class="moreoption">
                     <paper-menu-button>
                         <div slot="dropdown-trigger" style="color: royalblue;">More options</div>
                         <paper-listbox slot="dropdown-content">
                             <paper-item>
                                 <a style="text-decoration:none;" href="/register-signin">Create Account?</a>
                             </paper-item>
-                            <paper-item>Forgot Password?</paper-item>
+                            <paper-item>
+                                <a style="text-decoration:none;" href="/reset-password">Forgot Password?</a>
+                            </paper-item>
                         </paper-listbox>
                     </paper-menu-button>
-                </div> -->
-                <a href="/reset-password">
-                    <span style="float:left; font-size:14px;">Forgot password?</span>
-                </a>
+                </div>
                 <div class="action">
-                    <a style="text-decoration:none;" href="/register-signin">
-                        <paper-button id="signUp" raised>Sign Up</paper-button>
-                    </a>
-                    <paper-button on-tap="_signIn" toggles raised class="custom green">Sign In</paper-button>
+                    <paper-button on-tap="_signIn" toggles raised class="custom green">Next</paper-button>
                 </div>
             </div>
-            <!-- <div style="text-align: center; margin-top:10px">
-                <hr class="hr1">OR LOGIN AS
-                <hr class="hr2">
+            <!-- <paper-button on-tap="_signIn" toggles raised class="custom green">Sign In</paper-button>
+            <div style="margin-top:5px">
+            <center>
+                <a style="text-decoration:none;" href="/reset-password">
+                    <span>Forgot password?</span>
+                </a> |
+                <a style="text-decoration:none;" href="/register-signin">
+                    <span>Create account?</span>
+                </a>
+            </center>
             </div> -->
-
-
-
-            <!-- </div> -->
+            <!-- <div class="action">
+                    <a style="text-decoration:none;" href="/register-signin">
+                        <paper-button id="signUp" raised >Sign Up</paper-button>
+                    </a>
+                    <paper-button on-tap="_signIn" toggles raised class="custom green">Sign In</paper-button>
+                </div> -->
             <!-- </div> -->
             <!-- end of main container -->
         </div>
-
     </template>
-
     <script>
         Polymer({
             is: 'my-signin',
