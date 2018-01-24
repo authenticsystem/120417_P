@@ -98,19 +98,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           border-radius: 3px;
           /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
         }
-        paper-button {
-          background: white;
-        }
         paper-search-bar {
-          margin: 15px;
-          margin-top: 0;
-          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-        }
-        .div1 {
-          display: flex;
-          flex-direction: column;
-          margin: 15px auto;
-          background: #ddd;
+          margin-left: 80px;
+          width: 50%;
+          color: black;
         }
       }
 
@@ -123,26 +114,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           border-radius: 3px;
           /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
         }
-        .div1 {
-          display: flex;
-          width: 765px;
-          margin: 15px auto;
-          background: #ddd;
-        }
         paper-search-bar {
-          flex: 1;
-          margin: 8px;
-          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-        }
-        paper-button {
-          background: white;
-          flex: 1;
+          margin-left: 50px;
+          width: 50%;
+          color: black;
         }
       }
 
-      app-header {
+      #tool1 {
         color: rgb(255, 255, 255);
         background-color: #388E3C;
+      }
+
+      #tool2 {
+        background-color: white;
+      }
+
+      #btn-arrow {
+        position: absolute;
+        color: black;
+      }
+
+      #btn-menu {
+        color: gray;
+        position: fixed;
+        right: 40px;
+      }
+
+      #btn-clear {
+        position: fixed;
+        right: 80px;
+        color: gray;
       }
 
       paper-fab.fab-menu {
@@ -169,7 +171,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         cursor: pointer;
         margin-bottom: 10px;
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-
       }
     </style>
     <style is="custom-style">
@@ -188,15 +189,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-
-
     <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
     <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
     <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
 
-
     <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
-
     <div hidden$="{{!applicationActive}}">
       <!-- <template is="dom-if" if="{{_checkIfApplicationActive(applicationActive)}}"> -->
       <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
@@ -204,15 +201,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!-- <iron-ajax auto url="src/data.json" last-response="{{items}}"></iron-ajax> -->
           <app-header-layout fullbleed has-scrolling-region>
             <app-header fixed slot="header">
-              <app-toolbar primary>
-                <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-                <div main-title>Applications</div>
-                <div style="color:white;">
-                  <paper-input label="Search.."></paper-input>
-                </div>
-                <paper-icon-button icon="my-icons:search" style="float:right"></paper-icon-button>
+              <template is="dom-if" if="{{!openSearch}}">
+                <app-toolbar primary id="tool1">
+                  <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                  <div main-title>Applications</div>
+                  <paper-icon-button class="menu" icon="my-icons:search" drawer-toggle on-tap="toggleSearch"></paper-icon-button>
+                </app-toolbar>
+              </template>
 
-              </app-toolbar>
+              <template is="dom-if" if="{{openSearch}}">
+                <app-toolbar primary id="tool2">
+                  <paper-icon-button id="btn-arrow" icon="my-icons:arrow-back" drawer-toggle on-tap="toggleReturn"></paper-icon-button>
+                  <paper-search-bar id="search" query="{{search}}" disable-filter-button></paper-search-bar>
+                  <template is="dom-if" if="{{search}}">
+                    <paper-icon-button id="btn-clear" icon="my-icons:close" drawer-toggle on-tap="toggleClear"></paper-icon-button>
+                  </template>
+                  <paper-menu-button id="btn-menu" horizontal-align="right">
+                    <paper-icon-button slot="dropdown-trigger" icon="my-icons:tune"></paper-icon-button>
+                    <paper-listbox style="cursor:pointer" slot="dropdown-content" selected="{{filterBy}}">
+                      <paper-item style="display:none;">Filter By</paper-item>
+                      <paper-item>By Reference</paper-item>
+                      <paper-item>By Lot</paper-item>
+                      <paper-item>By Type</paper-item>
+                      <paper-item>By Buyer Lastname</paper-item>
+                      <paper-item>By Agent Lastname</paper-item>
+                    </paper-listbox>
+                  </paper-menu-button>
+                </app-toolbar>
+              </template>
             </app-header>
 
             <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
@@ -221,23 +237,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <!-- on-lower-threshold="loadMoreData" -->
             <iron-scroll-threshold id="threshold">
-              <div class="div1">
-                <paper-menu-button>
-                  <paper-button slot="dropdown-trigger" raised>
-                    <iron-icon icon="check"></iron-icon>
-                    <span style="text-transform:capitalize">{{selectedLabel}}</span>
-                  </paper-button>
-                  <paper-listbox style="cursor:pointer" slot="dropdown-content" selected="{{filterBy}}">
-                    <paper-item style="display:none;">Filter By</paper-item>
-                    <paper-item>By Reference</paper-item>
-                    <paper-item>By Lot</paper-item>
-                    <paper-item>By Type</paper-item>
-                    <paper-item>By Buyer Lastname</paper-item>
-                    <paper-item>By Agent Lastname</paper-item>
-                  </paper-listbox>
-                </paper-menu-button>
-                <paper-search-bar query="{{search}}" disable-filter-button></paper-search-bar>
-              </div>
               <!-- threshold -->
               <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
                 <div style="text-align:center">{{msg}}</div>
@@ -247,7 +246,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
 
                       <my-application-card item="{{item}}"></my-application-card>
-
 
                       <div tabindex="0">
                         <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
@@ -337,21 +335,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Number,
           value: 2
         },
-        selectedLabel: {
-          type: String,
-          value: 'By Lot'
+        openSearch: {
+          type: Boolean,
+          value: false,
+          notify: true
         },
+        // selectedLabel: {
+        //   type: String,
+        //   value: 'By Lot'
+        // },
         search: {
           type: String,
           value: '',
         },
         route: Object,
         routeData: Object,
-        // applicationActive: {
-        //   type: Boolean,
-        //   value: true
-        // }
-
       },
 
       observers: [
@@ -370,35 +368,48 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
+      toggleSearch() {
+        this.openSearch = true;
+      },
+
+      toggleReturn() {
+        this.openSearch = false;
+        this.search = '';
+      },
+
+      toggleClear() {
+        this.search = '';
+      },
+
       _searchChanged(g, e) {
 
         if (g) {
           if (g == 1) {
-            this.selectedLabel = 'by reference';
+            // this.selectedLabel = 'by reference';
             if (e) {
               this.selectedType = 'reference';
             }
           }
           else if (g == 2) {
-            this.selectedLabel = 'by lot';
+            // this.selectedLabel = 'by lot';
             if (e) {
               this.selectedType = 'lot';
             }
           }
           else if (g == 3) {
-            this.selectedLabel = 'by type';
+            // this.selectedLabel = 'by type';
             if (e) {
               this.selectedType = 'type';
             }
           }
           else if (g == 4) {
-            this.selectedLabel = 'by buyer lastname';
+            // this.selectedLabel = 'by buyer lastname';
             if (e) {
               this.selectedType = 'buyerdetails/lastname';
             }
           }
           else {
-            this.selectedLabel = 'by agent lastname';
+            // this.selectedLabel = 'by agent lastname';
             if (e) {
               this.selectedType = 'agentdetails/lastname';
             }
