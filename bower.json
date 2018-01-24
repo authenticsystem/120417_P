@@ -37,7 +37,7 @@
     "bwt-datatable": "bluewatertracks/bwt-datatable#^2.0.4",
     "paper-search": "Collaborne/paper-search#^2.0.9",
     "paper-spinner": "PolymerElements/paper-spinner#^2.0.0",
-    "datetime-picker": "fooloomanzoo/datetime-picker#^2.5.10",
+    "datetime-picker": "fooloomanzoo/datetime-picker#^2.5.5",
     "paper-dropdown-menu": "PolymerElements/paper-dropdown-menu#^2.0.1",
     "titanium-date-input": "LssPolymerElements/titanium-date-input#^1.0.25",
     "paper-time-input": "ryanburns23/paper-time-input#^2.0.4",
@@ -47,10 +47,9 @@
     "vaadin-upload": "vaadin/vaadin-upload#^3.0.0",
     "paper-alert-dialog": "Collaborne/paper-alert-dialog#^2.0.1",
     "paper-toolbar": "PolymerElements/paper-toolbar#^2.0.0",
-    "skeleton-auth": "FabricElements/skeleton-auth",
+    "skeleton-auth":"FabricElements/skeleton-auth",
     "polymer": "Polymer/polymer#^2.2.0",
-    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
-    "paper-checkbox": "PolymerElements/paper-checkbox#^2.0.1"
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"
