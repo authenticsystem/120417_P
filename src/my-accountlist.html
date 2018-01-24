@@ -85,6 +85,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: rgb(233, 79, 164);
       }
 
+      paper-icon-button.menu {
+        margin-right: 16px;
+      }
+
       paper-search-bar#searching {
         color: #388E3C
       }
@@ -168,15 +172,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div name="view404">Not found.</div>
 
       </iron-pages>
-      <div hidden$="{{!editActive}}">
-        <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
-        <div id="appedit"></div>
-        <my-accountlist-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-accountlist-edit>
-        <!-- </template> -->
-      </div>
-      
-      <paper-toast id="toast" text="{{txt}}"></paper-toast>
-      
+    </div>
+
+    <div hidden$="{{!editActive}}">
+      <div id="appedit"></div>
+      <my-accountlist-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-accountlist-edit>
+    </div>
+
+    <paper-toast id="toast" text="{{txt}}"></paper-toast>
+
   </template>
 
   <script> 
@@ -186,6 +190,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         route: Object,
         account: {
           type: Object,
+          observer: '_accountChanged'
         },
         equal: {
           type: String,
@@ -211,13 +216,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: 1
         }
       },
-      
+
+      _accountChanged() {
+        console.log(this.account);
+      },
+
       _getAccount(e) {
         if (e) {
           return '/accountlist/edit/' + e;
         }
       },
-      
+
       _appsnew() {
         var node = Polymer.dom(this.root).querySelector("#appnew");
         if (node) {
@@ -234,7 +243,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       },
-      
+
       editDetails(e) {
         var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
         var node = Polymer.dom(this.root).querySelector("#appedit");
@@ -252,7 +261,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       },
-      
+
       deleteUser() {
         if (this.selectedItems.length > 0) {
           var ref = firebase.database().ref('/accountlist');
@@ -264,11 +273,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.datatable.deselectAll();
         }
       },
-      
+
       _deleteSelected() {
         this.$.deleteUserInfo.open();
       },
-      
+
       _selectedItemChanged() {
         if (this.selectedItem.length > 0) {
           if (this.selectedItem.length > 1) {
@@ -289,7 +298,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
       },
-      
+
       toggleDrawer() {
         this.dispatchEvent(new CustomEvent('toggleDrawer', {
           bubbles: true, composed: true, detail: {
@@ -298,7 +307,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }));
         this.$.narrow = !this.$.narrow;
       }
-      
+
     })
   </script>
 </dom-module>
