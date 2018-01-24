@@ -13,13 +13,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
-<link rel="import" href="../bower_components/paper-alert-dialog/paper-alert-dialog.html">
-<link rel="import" href="../bower_components/paper-alert-dialog/paper-alert-dialog-icon-header.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 
 <dom-module id="my-account">
   <template>
@@ -83,15 +80,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         border-radius: 3px;
         font-weight: 500;
       }
+
+      .action paper-button {
+        height: 35px;
+        font-size: 12px;
+        font-weight: 400;
+        width: 80px;
+        text-align: center;
+      }
     </style>
+
+    <!-- <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth> -->
+
 
     <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
     </firebase-query>
-    <!-- <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth> -->
 
     <app-header-layout fullbleed has-scrolling-region>
       <app-header fixed slot="header">
         <app-toolbar primary>
+          <!-- <paper-icon-button icon="my-icons:close" drawer-toggle on-tap="toggleDrawer"></paper-icon-button> -->
           <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
           <div main-title>My Account</div>
         </app-toolbar>
@@ -100,25 +108,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div class="card">
 
         <span hidden$="{{user.emailVerified}}">
-          <h1>Please verify your account first</h1>
+          <paper-icon-button icon="my-icons:close" on-tap="_signOut" style="float:right" title="Sign Out"></paper-icon-button>
+          <h1>Verify Email</h1>
+          <span>Let us know if this email belongs to you.
+            <br> Click the link in the email sent to
+            <b>[[user.email]]</b>.
+          </span>
+          <br>
+          <br>
+          <div class="action" style="float:right">
+            <paper-button on-tap="_reload" title="Already Verified">Verified</paper-button>
+            <paper-button on-tap="_resend" toggles raised class="custom green" title="Resend Verification">Resend</paper-button>
+          </div>
         </span>
 
         <span hidden$="{{!user.emailVerified}}">
+
           <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style="border-radius:30px; height:150px; width:150px;"></img>
           <img hidden$="{{user.photoURL}}" src="../images/user.png" style="border-radius:30px; height:150px; width:150px;"></img>
           <img src="{{downloadURL}}"></img>
-          </br>
-          <progress style="height:5px;" value="0" max="100" id="uploader">0%</progress>
-          </br>
-          <input type="file" id="fileButton" on-tap="_upload"></input>
-          </br>
-          <paper-input label="{{user.displayName}}" id="name"></paper-input>
-          <paper-input label="{{user.email}}" id="email"></paper-input>
+          <paper-input label="{{_userName(user.displayName)}}" id="name"></paper-input>
+          <paper-input readonly label="{{user.email}}" id="email"></paper-input>
           <paper-input label="{{_role(account)}}" readonly></paper-input>
+
           <div class="card-actions">
             <div class="horizontal justified">
               <div style="float:right">
-                <span hidden$="{{verified}}">
+                <span style="font-size:14px;" hidden$="{{verified}}">
                   Account not link. Link your account
                   <a href="/account-link">here</a>.
                 </span>
@@ -126,18 +142,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <iron-icon icon="my-icons:check"></iron-icon> Account linked
                 </span>
               </div>
-              <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button>
             </div>
           </div>
-        </span>
 
-        <!-- alert dialog -->
-        <!-- <paper-button raised on-tap="openDialog">plain dialog</paper-button>
-        <paper-alert-dialog id="dialog" confirm-button="Got it">
-          <paper-alert-dialog-icon-header icon="icons:done">Well done!</paper-alert-dialog-icon-header>
-          Excellent, you can move on.
-        </paper-alert-dialog> -->
-        <!-- alert dialog -->
+        </span>
+        <paper-toast id="toast" text="Successfully updated!"></paper-toast>
 
       </div>
 
@@ -154,6 +163,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: false
         }
+      },
+
+      _resend() {
+        var user = firebase.auth().currentUser;
+        user.sendEmailVerification().then(function () {
+          // Email sent.
+          window.location.reload();
+        }).catch(function (error) {
+          // An error happened.
+        });
+      },
+
+      _reload() {
+        window.location.reload();
+      },
+
+      _userName(e) {
+        if (e) return e;
+        else return 'Name not defined';
       },
 
       _role(e) {
@@ -176,47 +204,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }));
         this.$.narrow = !this.$.narrow;
       },
-      openDialog() {
-        var dialog = Polymer.dom(this.root).querySelector("#dialog");
-        this.$.dialog.open();
-      },
-      _upload(e) {
-        var fileButton = Polymer.dom(this.root).querySelector("#fileButton");
-        var uploader = Polymer.dom(this.root).querySelector("#uploader");
 
-        fileButton.addEventListener('change', function (e) {
-          //get file
-          var file = e.target.files[0];
-          //create storage
-          var user = firebase.auth().currentUser;
-          var storageRef = firebase.storage().ref('profilePic/' + file.name);
-          //upload file
-          var uploadTask = storageRef.put(file);
-          //update progressbar
-          uploadTask.on('state_changed',
-
-            function progress(snapshot) {
-              var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-              uploader.value = percentage;
-            },
-            function error(err) {
-            },
-            function () {
-              var downloadURL = uploadTask.snapshot.downloadURL;
-              var user = firebase.auth().currentUser;
-              user.updateProfile({
-                photoURL: downloadURL
-              }).then(function () {
-                // Update successful.
-                window.location.reload()
-              }).catch(function (error) {
-                // An error happened.
-              });
-            }
-
-          );
-        });
-      },
       _update() {
         var user = firebase.auth().currentUser;
         var name = Polymer.dom(this.root).querySelector("#name");
@@ -228,6 +216,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }).catch(function (error) {
           // An error happened.
         });
+      },
+
+      _signOut() {
+        firebase.auth().signOut().then(function () {
+          // Sign-out successful.
+          window.location.reload()
+          this.set("route.path", "");
+        }).catch(function (error) {
+          // An error happened.
+        });
+
       }
     })
 

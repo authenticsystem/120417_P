@@ -71,7 +71,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
 
 
-<firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth>
+    <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth>
 
     <firebase-query path="/reports/lotstatus/Today" limit-to-first=50 data="{{todayLotStatus}}"></firebase-query>
 
@@ -80,7 +80,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <app-header fixed slot="header">
         <app-toolbar primary>
           <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-          <div main-title>Dashboard</div>
+          <div main-title hidden$="{{!access}}">Dashboard</div>
+          <div main-title hidden$="{{access}}">Opps!</div>
         </app-toolbar>
       </app-header>
 
@@ -133,9 +134,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
       </skeleton-carousel> -->
 
+      <template is="dom-if" if="{{!access}}">
+        <div class="card">
+          <h3>Sorry!</h3>
+          <div>Your not allow to access this content.</div>
+        </div>
+      </template>
       <!-- <div class="bg"> -->
-      <div class="card">
-        <!-- <iron-icon on-tap="gettotal" icon="my-icons:map" slot="item-icon"></iron-icon> -->
+      <template is="dom-if" if="{{access}}">
+        <div class="card">
+          <!-- <iron-icon on-tap="gettotal" icon="my-icons:map" slot="item-icon"></iron-icon> -->
           <h3 style="display: inline-block;">
             Activity Report: Today
             <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
@@ -143,28 +151,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </span>
           </h3>
 
-
-        <div style="padding-top: 3px; font-size: 14px;">
-          <table>
-            <tr>
-              <th style="text-align: left;">Type</th>
-              <th style="color: orange;">Hold</th>
-              <th style="color: rgb(145, 145, 0);">Reserved</th>
-              <th style="color: red;">Sold</th>
-            </tr>
-            <template is="dom-repeat" items="{{todayLotStatus}}">
+          <div style="padding-top: 3px; font-size: 14px;">
+            <table>
               <tr>
-                <td style="text-align: left;">{{_formatType(item.$key)}}</td>
-                <td style="color: black;">{{_formatNumber(item.hold)}}</td>
-                <td style="color: black;">{{_formatNumber(item.reserved)}}</td>
-                <td style="color: black;">{{_formatNumber(item.sold)}}</td>
+                <th style="text-align: left;">Type</th>
+                <th style="color: orange;">Hold</th>
+                <th style="color: rgb(145, 145, 0);">Reserved</th>
+                <th style="color: red;">Sold</th>
               </tr>
-            </template>
-          </table>
+              <template is="dom-repeat" items="{{todayLotStatus}}">
+                <tr>
+                  <td style="text-align: left;">{{_formatType(item.$key)}}</td>
+                  <td style="color: black;">{{_formatNumber(item.hold)}}</td>
+                  <td style="color: black;">{{_formatNumber(item.reserved)}}</td>
+                  <td style="color: black;">{{_formatNumber(item.sold)}}</td>
+                </tr>
+              </template>
+            </table>
+          </div>
         </div>
-        
-
-      </div>
+      </template>
 
 
       <!-- </div> -->
@@ -185,6 +191,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           narrow: {
             type: Boolean,
             notify: true
+          },
+          access: {
+            type: Boolean,
+            value: false
           }
         };
       }
