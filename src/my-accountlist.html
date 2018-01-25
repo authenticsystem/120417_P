@@ -121,7 +121,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               <paper-dialog id="deleteUserInfo">
                 <br>
-                <h2>Delete Account Permanently?</h2>
+                <h3>Deactivate account?</h3>
                 <div class="buttons">
                   <paper-button dialog-dismiss autofocus>No</paper-button>
                   <paper-button dialog-confirm on-tap="deleteUser">Yes</paper-button>
@@ -236,11 +236,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (this.selectedItems.length > 0) {
           var ref = firebase.database().ref('/accountlist');
           for (var i = 0; i < this.selectedItems.length; ++i) {
-            ref.child(this.selectedItems[i].$key).remove();
+            ref.child(this.selectedItems[i].$key).update({active:false});
           }
-          Polymer.dom(this.root).querySelector("#toast").open();
-          this.txt = "Account successfully deleted.";
-          this.$.datatable.deselectAll();
+          window.location.reload();
+          // Polymer.dom(this.root).querySelector("#toast").open();
+          // this.txt = "Account deactivated!";
+          // this.$.datatable.deselectAll();
         }
       },
 
