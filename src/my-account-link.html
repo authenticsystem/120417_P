@@ -99,16 +99,9 @@
                 </firebase-query>
 
                 <div id="keySubmittion">
-                    <span hidden$="{{user.phoneNumber}}">
-                        Your email
-                        <b>{{user.email}}</b> has been verified. Enter your account number to continue.
-                        <br>
-                    </span>
-                    <span hidden$="{{!user.phoneNumber}}">
-                        Your account might have been removed or deleted from the system.
-                        <br><span style="font-size:14px"> Please contact Heaven of Peace administrator for the recovery of your account.</span>
-                        <br>
-                    </span>
+                    Your email
+                    <b>{{user.email}}</b> has been verified. Enter your account number to continue.
+                    <br>
                     <span style="color:red; font-size:12px;">{{msg}}</span>
                     <paper-input auto-validate required label="Account number" value="{{accKey}}"></paper-input>
                     <br>
@@ -287,7 +280,7 @@
                     });
                 }
             },
-            
+
             toggleDrawer() {
                 this.dispatchEvent(new CustomEvent('toggleDrawer', {
                     bubbles: true, composed: true, detail: {
