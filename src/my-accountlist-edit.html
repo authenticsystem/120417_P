@@ -127,13 +127,13 @@
             }
         </style>
         <!-- <firebase-document id="transactionFire" path="/accountlist/{{transactionKey}}" data="{{transactionData}}" disabled="true"></firebase-document> -->
-        <firebase-query id="query" path="/accountlist/{{transactionKey}}" data="{{account}}"></firebase-query>
+        <firebase-query id="query" path="/accountlist/{{transactionKey}}" data="{{editData}}"></firebase-query>
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-header-layout id="appheader" has-scrolling-region>
                 <app-header fixed slot="header">
                     <app-toolbar>
                         <a href="/accountlist">
-                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="toggleDrawer"></paper-icon-button>
+                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>Edit Account</div>
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
@@ -176,9 +176,9 @@
         Polymer({
             is: 'my-accountlist-edit',
             properties: {
-                account: {
+                editData: {
                     type: Object,
-                    observer: '_accountChanged'
+                    observer: '_editDataChanged'
                 },
                 equal: {
                     type: String,
@@ -216,17 +216,17 @@
                     value: ''
                 },
             },
-            _accountChanged() {
-                if (this.account.length > 0) {
-                    this.accountkey = this.account[1].$val;
-                    this.firstname = this.account[4].firstname;
-                    this.middlename = this.account[4].middlename;
-                    this.lastname = this.account[4].lastname;
-                    this.suffix = this.account[4].suffix;
-                    this.cellphone = this.account[3].$val;
+            _editDataChanged() {
+                if (this.editData.length > 0) {
+                    this.accountkey = this.editData[1].$val;
+                    this.firstname = this.editData[4].firstname;
+                    this.middlename = this.editData[4].middlename;
+                    this.lastname = this.editData[4].lastname;
+                    this.suffix = this.editData[4].suffix;
+                    this.cellphone = this.editData[3].$val;
                     // console.log(this.account);
                     // console.log(this.account[0].accountlist);
-                    var role = this.account[5].$val;
+                    var role = this.editData[5].$val;
                     if (role == "Manager") {
                         this.roleAdd = 0;
                     }

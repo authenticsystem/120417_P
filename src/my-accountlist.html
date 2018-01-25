@@ -57,18 +57,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         right: 32px;
       }
 
-      paper-dialog#editUser,
-      #addUser {
-        width: 60%;
-        margin: 0 auto;
-        padding: 16px;
-        margin-top: 2%
-      }
-
-      h2 {
-        margin-top: 2px;
-      }
-
       paper-toast {
         width: 20%;
         position: fixed;
@@ -85,6 +73,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: rgb(233, 79, 164);
       }
 
+      paper-icon-button.menu {
+        margin-right: 16px;
+      }
+
       paper-search-bar#searching {
         color: #388E3C
       }
@@ -99,21 +91,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width: 80px;
       }
     </style>
-    <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
-    <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
+    <app-route route="{{route}}" pattern="" active="{{accountActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/edit/:key" data="{{editData}}" active="{{editActive}}"></app-route>
 
-    <div hidden$="{{!applicationActive}}">
+    <div hidden$="{{!accountActive}}">
       <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
+        
         <div name="">
           <app-header-layout fullbleed has-scrolling-region>
             <app-header fixed slot="header">
               <app-toolbar primary>
                 <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
                 <div main-title id="addAccount">Accounts</div>
-                <div main-title id="addNew" style="display:none">New Account</div>
               </app-toolbar>
             </app-header>
-            <firebase-query id="query" path="/accountlist" data="{{account}}"></firebase-query>
+
+            <firebase-query id="accQuery" path="/accountlist" data="{{account}}"></firebase-query>
 
             <paper-datatable-card style="padding:17px;" header-fixed id-property="$key" header="Accounts" id="datatableCard">
 
@@ -168,15 +161,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div name="view404">Not found.</div>
 
       </iron-pages>
-      <div hidden$="{{!editActive}}">
-        <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
-        <div id="appedit"></div>
-        <my-accountlist-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-accountlist-edit>
-        <!-- </template> -->
-      </div>
-      
-      <paper-toast id="toast" text="{{txt}}"></paper-toast>
-      
+    </div>
+
+    <div hidden$="{{!editActive}}">
+      <div id="appedit"></div>
+      <my-accountlist-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-accountlist-edit>
+    </div>
+
+    <paper-toast id="toast" text="{{txt}}"></paper-toast>
+
   </template>
 
   <script> 
@@ -184,17 +177,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-accountlist',
       properties: {
         route: Object,
-        account: {
-          type: Object,
-        },
-        equal: {
-          type: String,
-          value: ''
-        },
-        accountkey: {
-          type: String,
-          value: ''
-        },
+        account: Object,
         selectedItem: {
           type: String,
           observer: '_selectedItemChanged'
@@ -205,19 +188,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         keyS: {
           type: String,
           value: ''
-        },
-        roleAdd: {
-          type: Number,
-          value: 1
         }
       },
-      
+
       _getAccount(e) {
         if (e) {
           return '/accountlist/edit/' + e;
         }
       },
-      
+
       _appsnew() {
         var node = Polymer.dom(this.root).querySelector("#appnew");
         if (node) {
@@ -234,7 +213,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       },
-      
+
       editDetails(e) {
         var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
         var node = Polymer.dom(this.root).querySelector("#appedit");
@@ -252,7 +231,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       },
-      
+
       deleteUser() {
         if (this.selectedItems.length > 0) {
           var ref = firebase.database().ref('/accountlist');
@@ -264,11 +243,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.$.datatable.deselectAll();
         }
       },
-      
+
       _deleteSelected() {
         this.$.deleteUserInfo.open();
       },
-      
+
       _selectedItemChanged() {
         if (this.selectedItem.length > 0) {
           if (this.selectedItem.length > 1) {
@@ -289,7 +268,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
       },
-      
+
       toggleDrawer() {
         this.dispatchEvent(new CustomEvent('toggleDrawer', {
           bubbles: true, composed: true, detail: {
@@ -298,7 +277,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }));
         this.$.narrow = !this.$.narrow;
       }
-      
+
     })
   </script>
 </dom-module>
