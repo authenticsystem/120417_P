@@ -104,8 +104,8 @@
             <div id="errorMsgDiv" style="display: none;">
                 <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}</div>
 
-            <paper-input label="Email" value="{{email}}" always-float-label required auto-validate error-message=""></paper-input>
-            <paper-input label="Password" type="password" value="{{password}}" always-float-label required auto-validate error-message=""></paper-input>
+            <paper-input label="Email" id="email" value="{{email}}" always-float-label required auto-validate error-message=""></paper-input>
+            <paper-input label="Password" type="password" id="password" value="{{password}}" always-float-label required auto-validate error-message=""></paper-input>
             <br>
             <div class="footer">
                 <div class="moreoption">
@@ -153,7 +153,6 @@
             handleError() {
                 var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                 errormsg.setAttribute("style", "display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");
-                this.validationMessage = 'Invalid username/password';
                 this.validationMessage = 'Invalid email or password.';
             },
             // _facebook() {
@@ -183,30 +182,29 @@
                         .then(function (response) {
                             app = this.document.querySelector('my-app');
                             app.set('route.path', '/');
-                        })
-                        .catch(function (error) {
-                            // Handle Errors here.
-
-                            // var errorCode = error.code;
-                            // var errorMessage = error.message;
-
-                            // if (errorCode === 'auth/wrong-password') {
-                            //     // alert('Wrong password');
-                            //     this.validationMessage = 'Wrong password';
-                            // }
-                            // else if (errorCode === 'auth/user-not-found') {
-                            //     // alert('There is no user corresponding to the given email.');
-                            //     this.validationMessage = 'There is no user corresponding to the given email.';
-                            // }
-                            // else if (errorCode === 'auth/invalid-email') {
-                            //     //    alert('The email address is not valid.');
-                            //     this.validationMessage = 'The email address is not valid.';
-                            // }
-                            // else {
-                            //     // alert(errorMessage);
-                            //     this.validationMessage = errorMessage;
-                            // }
                         });
+                    // .catch(function (error) {
+
+                    //     var errorCode = error.code;
+                    //     var errorMessage = error.message;
+
+                    //     if (errorCode === 'auth/wrong-password') {
+                    //         alert('Wrong password');
+                    //         this.validationMessage = 'Wrong password';
+                    //     }
+                    //     else if (errorCode === 'auth/user-not-found') {
+                    //         alert('There is no user corresponding to the given email.');
+                    //         this.validationMessage = 'There is no user corresponding to the given email.';
+                    //     }
+                    //     else if (errorCode === 'auth/invalid-email') {
+                    //            alert('The email address is not valid.');
+                    //         this.validationMessage = 'The email address is not valid.';
+                    //     }
+                    //     else {
+                    //         alert(errorMessage);
+                    //         this.validationMessage = errorMessage;
+                    //     }
+                    // });
                 }
             }
 
