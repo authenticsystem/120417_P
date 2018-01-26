@@ -243,88 +243,95 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <template is="dom-if" if="{{user.emailVerified}}">
 
-        <template is="dom-if" if="{{!isActive}}">
+        <template is="dom-if" if="{{!user.phoneNumber}}">
           <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-            <my-account-deactivated name="account-deactivated"></my-account-deactivated>
+            <my-account-link name="account-link"></my-account-link>
             <my-view404 name="view404"></my-view404>
           </iron-pages>
         </template>
 
-        <template is="dom-if" if="{{isActive}}">
-          <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
-            <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
-              <div style="height: 100%; overflow: auto;">
+        <template is="dom-if" if="{{user.phoneNumber}}">
 
-                <paper-toast id="toast" text=""></paper-toast>
-
-                <app-header fixed>
-                  <app-toolbar>
-                    <div hidden$="{{!user.photoURL}}">
-                      <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
-                    </div>
-                    <div hidden$="{{user.photoURL}}">
-                      <iron-image class="avatar" sizing="contain" src="../images/user.png" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
-                    </div>
-                    <div class="pad">
-
-                      <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
-                      <div class="shortText">{{_roleAcc(myaccount)}}</div>
-
-                    </div>
-                  </app-toolbar>
-                </app-header>
-
-                <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
-                  <a style$="{{access(dashAccess)}}" name="dashboard" href="[[rootPath]]dashboard">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:dashboard" slot="item-icon"></iron-icon>
-                      <span>Dashboard</span>
-                    </paper-icon-item>
-                  </a>
-                  <a name="account" href="[[rootPath]]account">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
-                      <span>My Account</span>
-                    </paper-icon-item>
-                  </a>
-                  <a name="map" href="[[rootPath]]map">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
-                      <span>Map</span>
-                    </paper-icon-item>
-                  </a>
-                  <a style$="{{access(appAccess)}}" name="applications" href="[[rootPath]]applications">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
-                      <span>Applications</span>
-                    </paper-icon-item>
-                  </a>
-                  <a style$="{{access(accountAccess)}}" name="accountlist" href="[[rootPath]]accountlist">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
-                      <span>Accounts</span>
-                    </paper-icon-item>
-                  </a>
-                  <a on-tap="_signOut" href="/">
-                    <paper-icon-item toggles="true">
-                      <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
-                      <span>Sign-out</span>
-                    </paper-icon-item>
-                  </a>
-                </iron-selector>
-
-              </div>
-            </app-drawer>
-
+          <template is="dom-if" if="{{!isActive}}">
             <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-              <my-dashboard name="dashboard" access="{{dashAccess}}"></my-dashboard>
-              <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
-              <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]"></my-applications>
-              <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
-              <my-accountlist name="accountlist" access="{{accountAccess}}" route="[[subroute]]"></my-accountlist>
+              <my-account-deactivated name="account-deactivated"></my-account-deactivated>
               <my-view404 name="view404"></my-view404>
             </iron-pages>
-          </app-drawer-layout>
+          </template>
+
+          <template is="dom-if" if="{{isActive}}">
+            <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
+              <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
+                <div style="height: 100%; overflow: auto;">
+                  <app-header fixed>
+                    <app-toolbar>
+                      <div hidden$="{{!user.photoURL}}">
+                        <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
+                      </div>
+                      <div hidden$="{{user.photoURL}}">
+                        <iron-image class="avatar" sizing="contain" src="../images/user.png" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
+                      </div>
+                      <div class="pad">
+
+                        <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
+                        <div class="shortText">{{_roleAcc(myaccount)}}</div>
+
+                      </div>
+                    </app-toolbar>
+                  </app-header>
+
+                  <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
+                    <a style$="{{access(dashAccess)}}" name="dashboard" href="[[rootPath]]dashboard">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:dashboard" slot="item-icon"></iron-icon>
+                        <span>Dashboard</span>
+                      </paper-icon-item>
+                    </a>
+                    <a name="account" href="[[rootPath]]account">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
+                        <span>My Account</span>
+                      </paper-icon-item>
+                    </a>
+                    <a name="map" href="[[rootPath]]map">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
+                        <span>Map</span>
+                      </paper-icon-item>
+                    </a>
+                    <a style$="{{access(appAccess)}}" name="applications" href="[[rootPath]]applications">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
+                        <span>Applications</span>
+                      </paper-icon-item>
+                    </a>
+                    <a style$="{{access(accountAccess)}}" name="accountlist" href="[[rootPath]]accountlist">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
+                        <span>Accounts</span>
+                      </paper-icon-item>
+                    </a>
+                    <a on-tap="_signOut" href="/">
+                      <paper-icon-item toggles="true">
+                        <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
+                        <span>Sign-out</span>
+                      </paper-icon-item>
+                    </a>
+                  </iron-selector>
+
+                </div>
+              </app-drawer>
+
+              <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
+                <my-dashboard name="dashboard" access="{{dashAccess}}"></my-dashboard>
+                <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
+                <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]"></my-applications>
+                <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
+                <my-accountlist name="accountlist" access="{{accountAccess}}" route="[[subroute]]"></my-accountlist>
+                <my-view404 name="view404"></my-view404>
+              </iron-pages>
+            </app-drawer-layout>
+          </template>
         </template>
       </template>
 
@@ -444,7 +451,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean,
             value: false,
             notify: true
-          }
+          },
+          // hasAccount: {
+          //   type: Boolean,
+          //   value: false,
+          //   notify: true
+          // }
         };
       }
 
@@ -465,6 +477,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _myaccountChanged() {
         if (this.myaccount.length > 0) {
+          // this.hasAccount = true;
           if (this.myaccount[0].active == true) {
             this.isActive = true;
             if (this.myaccount[0].role) {
