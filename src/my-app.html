@@ -288,12 +288,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>Dashboard</span>
                       </paper-icon-item>
                     </a>
-                    <a name="account" href="[[rootPath]]account">
-                      <paper-icon-item toggles="true" class="menuSelected">
-                        <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
-                        <span>My Account</span>
-                      </paper-icon-item>
-                    </a>
                     <a name="map" href="[[rootPath]]map">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
@@ -306,12 +300,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>Applications</span>
                       </paper-icon-item>
                     </a>
+                    <hr>
                     <a style$="{{access(accountAccess)}}" name="accountlist" href="[[rootPath]]accountlist">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
                         <span>Accounts</span>
                       </paper-icon-item>
                     </a>
+                    <a name="account" href="[[rootPath]]account">
+                        <paper-icon-item toggles="true" class="menuSelected">
+                          <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
+                          <span>My Account</span>
+                        </paper-icon-item>
+                      </a>
                     <a on-tap="_signOut" href="/">
                       <paper-icon-item toggles="true">
                         <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
