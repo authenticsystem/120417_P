@@ -149,10 +149,10 @@
                     <div class="docu-header">Edit Account</div>
                     <div class="details">
                         <paper-input readonly="true" value="{{accountkey}}" always-float-label label="Account no"></paper-input>
-                        <paper-input  value="{{firstname}}" always-float-label label="First Name"></paper-input>
-                        <paper-input  value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
-                        <paper-input  value="{{lastname}}" always-float-label label="Last Name"></paper-input>
-                        <paper-input  value="{{suffix}}" always-float-label label="Suffix"></paper-input>
+                        <paper-input value="{{firstname}}" always-float-label label="First Name"></paper-input>
+                        <paper-input value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
+                        <paper-input value="{{lastname}}" always-float-label label="Last Name"></paper-input>
+                        <paper-input value="{{suffix}}" always-float-label label="Suffix"></paper-input>
                         <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label
                             label="Cellphone">
                             <div slot="prefix">+63</div>
@@ -168,6 +168,7 @@
                         <paper-checkbox id="dash">Dashboard</paper-checkbox>
                         <paper-checkbox id="app">Applications</paper-checkbox>
                         <paper-checkbox id="acc">Accounts</paper-checkbox>
+                        <paper-checkbox id="brief">Briefcase</paper-checkbox>
                     </div>
                     <br>
                     <br>
@@ -277,9 +278,11 @@
                 var box1 = Polymer.dom(this.root).querySelector("#dash");
                 var box2 = Polymer.dom(this.root).querySelector("#app");
                 var box3 = Polymer.dom(this.root).querySelector("#acc");
+                var box4 = Polymer.dom(this.root).querySelector("#brief");
                 var dashboard = false;
                 var applications = false;
                 var accounts = false;
+                var briefcase = false;
 
                 if (!this.firstname || !this.middlename || !this.lastname) {
                     this.msg = 'Please fill-up the required field.';
@@ -293,6 +296,9 @@
                     }
                     if (box3.checked == true) {
                         accounts = true;
+                    }
+                    if (box4.checked == true) {
+                        briefcase = true;
                     }
                     if (this.cellphone.length != 10) {
                         this.msg = 'Error! Invalid cellphone number.';
@@ -308,7 +314,8 @@
                             access: {
                                 accountlist: accounts,
                                 applications: applications,
-                                dashboard: dashboard
+                                dashboard: dashboard,
+                                briefcase: briefcase
                             },
                             name: {
                                 firstname: this.firstname,

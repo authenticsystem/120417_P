@@ -299,6 +299,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>Map</span>
                       </paper-icon-item>
                     </a>
+                    <a name="briefcase" href="[[rootPath]]briefcase">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:folder-shared" slot="item-icon"></iron-icon>
+                        <span>Briefcase</span>
+                      </paper-icon-item>
+                    </a>
                     <a style$="{{access(appAccess)}}" name="applications" href="[[rootPath]]applications">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
@@ -325,6 +331,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
                 <my-dashboard name="dashboard" access="{{dashAccess}}"></my-dashboard>
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
+                <my-briefcase name="briefcase" access="{{appAccess}}" status-known="{{statusKnown}}" user="{{user}}" route="[[subroute]]"></my-briefcase>
                 <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]"></my-applications>
                 <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
                 <my-accountlist name="accountlist" access="{{accountAccess}}" route="[[subroute]]"></my-accountlist>

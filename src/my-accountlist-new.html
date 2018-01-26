@@ -127,10 +127,10 @@
                     <!-- <div class="docu-header">Add New Account</div> -->
                     <div class="details">
                         <paper-input readonly="true" value="{{accountkey}}" always-float-label label="Account No."></paper-input>
-                        <paper-input  value="{{firstname}}" always-float-label label="First Name"></paper-input>
-                        <paper-input  value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
-                        <paper-input  value="{{lastname}}" always-float-label label="Last Name"></paper-input>
-                        <paper-input  value="{{suffix}}" always-float-label label="Suffix"></paper-input>
+                        <paper-input value="{{firstname}}" always-float-label label="First Name"></paper-input>
+                        <paper-input value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
+                        <paper-input value="{{lastname}}" always-float-label label="Last Name"></paper-input>
+                        <paper-input value="{{suffix}}" always-float-label label="Suffix"></paper-input>
                         <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label
                             label="Cellphone">
                             <div slot="prefix">+63</div>
@@ -146,6 +146,7 @@
                         <paper-checkbox id="dash">Dashboard</paper-checkbox>
                         <paper-checkbox id="app">Applications</paper-checkbox>
                         <paper-checkbox id="acc">Accounts</paper-checkbox>
+                        <paper-checkbox id="brief">Briefcase</paper-checkbox>
                         <!-- <paper-checkbox noink value="{{checked}}" >Allow Access</paper-checkbox> -->
                     </div>
                     <br>
@@ -174,11 +175,14 @@
                         <div>Contact No. +63{{cellphone}}</div>
                         <div>Position: {{role}}</div>
                         <br>
-                        <div><strong>To login to Haven of Peace, Please follow instructions below.</strong></div>
+                        <div>
+                            <strong>To login to Haven of Peace, Please follow instructions below.</strong>
+                        </div>
                         <div>Step 1. Create an account to Haven of Peace under more options</div>
                         <div>Step 2. Verify Email, click the link that was sent to your email account.</div>
                         <div>Step 3. Enter the account number above to link your Haven of Peace account.</div>
-                        <div>Step 4. Enter the account code that was sent to your phone number provided above to complete the login procedure.</div>    
+                        <div>Step 4. Enter the account code that was sent to your phone number provided above to complete the
+                            login procedure.</div>
                     </div>
                 </div>
                 <!-- <paper-toast id="toast" text="{{txt}}"></paper-toast> -->
@@ -243,8 +247,9 @@
                 }
                 else {
                     this.role = 'Sales Agent';
+                    Polymer.dom(this.root).querySelector("#brief").checked = true;
                     Polymer.dom(this.root).querySelector("#dash").checked = false;
-                    Polymer.dom(this.root).querySelector("#app").checked = true;
+                    Polymer.dom(this.root).querySelector("#app").checked = false;
                     Polymer.dom(this.root).querySelector("#acc").checked = false;
                 }
             },
@@ -259,17 +264,19 @@
                 this.path = 'accountlist/' + this.accountkey;
                 return this.path;
             },
-            guid: function () { 
-                return Math.floor((Math.random() * 1234567)/(17));
+            guid: function () {
+                return Math.floor((Math.random() * 1234567) / (17));
             },
 
             _submit() {
                 var box1 = Polymer.dom(this.root).querySelector("#dash");
                 var box2 = Polymer.dom(this.root).querySelector("#app");
                 var box3 = Polymer.dom(this.root).querySelector("#acc");
+                var box4 = Polymer.dom(this.root).querySelector("#brief");
                 var dashboard = false;
                 var applications = false;
                 var accounts = false;
+                var briefcase = false;
 
                 if (!this.firstname || !this.middlename || !this.lastname) {
                     this.msg = 'Please fill-up the required field.';
@@ -283,6 +290,9 @@
                     }
                     if (box3.checked == true) {
                         accounts = true;
+                    }
+                    if (box4.ckecked == true) {
+                        briefcase = true;
                     }
                     if (this.cellphone.length != 10) {
                         this.msg = 'Error! Invalid cellphone number.';
@@ -299,7 +309,8 @@
                             access: {
                                 accountlist: accounts,
                                 applications: applications,
-                                dashboard: dashboard
+                                dashboard: dashboard,
+                                briefcase: briefcase
                             },
                             active: true,
                             name: {
