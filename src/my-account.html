@@ -17,6 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 
 <dom-module id="my-account">
   <template>
@@ -88,6 +89,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width: 80px;
         text-align: center;
       }
+
+      /* label {
+        padding: 10px;
+        background: #dedede;
+        margin: 20px auto;
+        display: block;
+        width: 150px;
+        cursor: pointer;
+        color: #444;
+        font-size: 70%;
+        background: linear-gradient(#eee, #ddd);
+        color: #666;
+        border-radius: 2px;
+        box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.5);
+        border: 1px solid #d2d2d2;
+        text-align: center;
+      } */
+
+      .action paper-button {
+        height: 32px;
+        font-size: 12px;
+        font-weight: 400;
+        width: 80px;
+      }
+
+      paper-button.green {
+        background-color: var(--paper-green-500);
+        color: white;
+      }
+
+      paper-button.green[active] {
+        background-color: var(--paper-red-500);
+      }
     </style>
 
     <!-- <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth> -->
@@ -106,6 +140,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </app-header>
 
       <div class="card">
+        <div class="profilePhoto">
+          <iron-icon hidden$="{{user.photoURL}}" icon="my-icons:account-circle" style=" height:180px;width:180px; max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></iron-icon>
+          <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img>
+          <br>
+          <progress value="0" max="100" id="uploader" style=" -webkit-appearance: none; width:180px; height:5px;">0%</progress>
+          <br>
+          <input type="file" id="fileButton" on-tap="_upload" accept="image/*"></input>
+          <!-- <label for="file">Upload new picture</label> -->
+          <!-- <input type="file" id="file" id="fileButton" on-tap="_upload" accept="image/*" style="display:none" /> -->
+        </div>
+        <br>
+        <div class="info">
+          <paper-input label="Firstname" value="{{firstname}}" id="fname"></paper-input>
+          <paper-input label="Middlename" value="{{middlename}}" id="mname"></paper-input>
+          <paper-input label="Lastname" value="{{lastname}}" id="lname"></paper-input>
+          <paper-input label="Suffix" value="{{suffix}}" id="suffix"></paper-input>
+          <!-- <paper-input label="Email address" value="{{user.email}}" id="email"></paper-input> -->
+        </div>
+        <div class="action">
+          <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button>
+        </div>
+      </div>
+    </app-header-layout>
+
+    <!-- <div class="card">
 
         <span hidden$="{{user.emailVerified}}">
           <paper-icon-button icon="my-icons:close" on-tap="_signOut" style="float:right" title="Sign Out"></paper-icon-button>
@@ -148,9 +207,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </span>
         <paper-toast id="toast" text="Successfully updated!"></paper-toast>
 
-      </div>
+      </div> -->
 
-    </app-header-layout>
   </template>
   <script>
     Polymer({
@@ -158,10 +216,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       properties: {
         account: {
           type: Object,
+          observer: 'accountChanged'
         },
         verified: {
           type: Boolean,
           value: false
+        }
+      },
+      accountChanged() {
+        if (this.account.length > 0) {
+          this.account[0].name.firstname;
+          this.account[0].name.middlename;
+          this.account[0].name.lastname;
+          this.account[0].name.suffix;
+          this.account[0].$key;
+          this.firstname = this.account[0].name.firstname;
+          this.middlename = this.account[0].name.middlename;
+          this.lastname = this.account[0].name.lastname;
+          this.suffix = this.account[0].name.suffix;
+          this.key = this.account[0].$key;
         }
       },
 
@@ -205,19 +278,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.narrow = !this.$.narrow;
       },
 
-      _update() {
-        var user = firebase.auth().currentUser;
-        var name = Polymer.dom(this.root).querySelector("#name");
-        user.updateProfile({
-          displayName: name.value
-        }).then(function () {
-          // Update successful.
-          window.location.reload()
-        }).catch(function (error) {
-          // An error happened.
-        });
-      },
-
       _signOut() {
         firebase.auth().signOut().then(function () {
           // Sign-out successful.
@@ -227,7 +287,94 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // An error happened.
         });
 
-      }
+      },
+
+      _upload(e) {
+        var fileButton = Polymer.dom(this.root).querySelector("#fileButton");
+        var uploader = Polymer.dom(this.root).querySelector("#uploader");
+
+        fileButton.addEventListener('change', function (e) {
+          //get file
+          var file = e.target.files[0];
+          //create storage
+          var storageRef = firebase.storage().ref('profilePic/' + file.name);
+          //upload file
+          var uploadTask = storageRef.put(file);
+          //update progressbar
+          uploadTask.on('state_changed',
+
+            function progress(snapshot) {
+              var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              uploader.value = percentage;
+              if (percentage === 100) {
+                var user = firebase.auth().currentUser;
+                var photoUrl = user.photoURL;
+                if (user) {
+                  console.log(user.photoURL);
+                  // Create a reference to the file to delete
+                  var desertRef = firebase.storage().refFromURL(user.photoURL);
+                  // Delete the file
+                  desertRef.delete().then(function () {
+                    // File deleted successfully
+                  }).catch(function (error) {
+                    // Uh-oh, an error occurred!
+                  });
+                }
+              }
+            },
+            function error(err) {
+            },
+            function () {
+              var downloadURL = uploadTask.snapshot.downloadURL;
+              var user = firebase.auth().currentUser;
+              user.updateProfile({
+                photoURL: downloadURL
+              }).then(function () {
+                // Update successful.
+                window.location.reload()
+              }).catch(function (error) {
+                // An error happened.
+              });
+            }
+
+          );
+        });
+      },
+
+      _update() {
+        if (!this.firstname || !this.middlename || !this.lastname) {
+          this.msg = 'Please fill-up the required field.';
+        }
+          else {
+            this.msg = '';
+            if (!this.suffix) {
+              this.suffix = '';
+            }
+            var ref = firebase.database().ref('/accountlist');
+            ref.child(this.key).update({
+              name: {
+                firstname: this.firstname,
+                middlename: this.middlename,
+                lastname: this.lastname,
+                suffix: this.suffix
+              },
+            });
+          }
+          window.location = "/account"
+        }
+
+      // _update() {
+      //   var user = firebase.auth().currentUser;
+      //   var name = Polymer.dom(this.root).querySelector("#name");
+      //   user.updateProfile({
+      //     displayName: name.value
+      //   }).then(function () {
+      //     // Update successful.
+      //     window.location.reload()
+      //   }).catch(function (error) {
+      //     // An error happened.
+      //   });
+      // },
     })
 
 

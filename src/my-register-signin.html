@@ -103,9 +103,7 @@
       </br>
       <div class="footer">
         <div class="action">
-          <a style="text-decoration:none;" href="/signin">
-            <paper-button>cancel</paper-button>
-          </a>
+            <paper-button on-tap="_cancel">cancel</paper-button>
           <paper-button toggles raised class="custom green" on-tap="_registerAccount">next</paper-button>
         </div>
       </div>
@@ -120,11 +118,11 @@
 
       handleError() {
         var errormsg = Polymer.dom(this.root).querySelector("#errorMessage");
-        errormsg.setAttribute("style", "display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");
+        errormsg.setAttribute("style", "font-size:12px; display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");
         this.validationMessage = 'The email address is already in use by another account.';
       },
 
-      _canCel() {
+      _cancel() {
         window.location = '/signin';
         Polymer.dom(this.root).querySelector("#errorMessage").setAttribute('style', 'display:none;');
         this.validationMessage = '';
@@ -133,34 +131,36 @@
       },
 
       _registerAccount() {
-        var x = this.email;
-        var atpos = x.indexOf("@");
-        var dotpos = x.lastIndexOf(".");
         // here 1am
         if (!this.email || !this.password) {
           var errormsg = Polymer.dom(this.root).querySelector("#errorMessage");
-          errormsg.setAttribute("style", "display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");
+          errormsg.setAttribute("style", "font-size:12px; display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");
           this.validationMessage = 'Invalid empty email or password.';
         }
         else {
           if (this.password.length < 6) {
             var errormsg = Polymer.dom(this.root).querySelector("#errorMessage");
-            errormsg.setAttribute("style", "display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");
+            errormsg.setAttribute("style", "font-size:12px; display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");
             this.validationMessage = 'Password must be greater than or equal to six.';
           }
-          else if (atpos<1 || dotpos<atpos+2 || dotpos+2>=x.length) {
-            var errormsg = Polymer.dom(this.root).querySelector("#errorMessage");
-            errormsg.setAttribute("style", "display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");
-            this.validationMessage = 'Invalid email address.';
-          }
           else {
-            this.$.auth.createUserWithEmailAndPassword(this.email, this.password)
-              .then(function (user) {
-                app = this.document.querySelector('my-app');
-                app.set('route.path', '/');
-                user.sendEmailVerification().then(function () {
+            var x = this.email;
+            var atpos = x.indexOf("@");
+            var dotpos = x.lastIndexOf(".");
+            if (atpos < 1 || dotpos < atpos + 2 || dotpos + 2 >= x.length) {
+              var errormsg = Polymer.dom(this.root).querySelector("#errorMessage");
+              errormsg.setAttribute("style", "font-size:12px; display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");
+              this.validationMessage = 'Invalid email address.';
+            }
+            else {
+              this.$.auth.createUserWithEmailAndPassword(this.email, this.password)
+                .then(function (user) {
+                  app = this.document.querySelector('my-app');
+                  app.set('route.path', '/');
+                  user.sendEmailVerification().then(function () {
+                  });
                 });
-              })
+            }
           }
         }
       }

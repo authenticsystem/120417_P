@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/bwt-datatable/bwt-datatable.html">
 <link rel="import" href="../bower_components/bwt-datatable/bwt-datatable-card.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-toolbar/paper-toolbar.html">
@@ -127,7 +128,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <paper-button dialog-confirm on-tap="deleteUser">Yes</paper-button>
                 </div>
               </paper-dialog>
-
+            <!-- <paper-datatable-card> -->
               <paper-datatable data="{{account}}" id="datatable" header-fixed multi-selection selectable selected-items="{{selectedItem}}">
                 <div no-results>
                   Loading or no more items...
@@ -145,7 +146,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <paper-datatable-column header="Role" type="String" property="role" sortable></paper-datatable-column>
                 <paper-datatable-column header="Active" type="Boolean" property="active" sortable></paper-datatable-column>
               </paper-datatable>
-            </paper-datatable-card>
+            <!-- </paper-datatable-card> -->
+            
 
           </app-header-layout>
           <a href="/accountlist/new" style="text-decoration: none;">

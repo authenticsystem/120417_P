@@ -22,6 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-dropdown/iron-dropdown.html">
 <link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
@@ -263,7 +264,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
                     </div>
                     <div hidden$="{{user.photoURL}}">
-                      <iron-image class="avatar" sizing="contain" src="../images/user.png" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
+                      <iron-icon class="avatar" sizing="contain" icon="my-icons:account-circle" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-icon>
                     </div>
                     <div class="pad">
 
@@ -281,12 +282,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <span>Dashboard</span>
                     </paper-icon-item>
                   </a>
-                  <a name="account" href="[[rootPath]]account">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
-                      <span>My Account</span>
-                    </paper-icon-item>
-                  </a>
                   <a name="map" href="[[rootPath]]map">
                     <paper-icon-item toggles="true" class="menuSelected">
                       <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
@@ -299,18 +294,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <span>Applications</span>
                     </paper-icon-item>
                   </a>
-                  <a style$="{{access(accountAccess)}}" name="accountlist" href="[[rootPath]]accountlist">
-                    <paper-icon-item toggles="true" class="menuSelected">
-                      <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
-                      <span>Accounts</span>
-                    </paper-icon-item>
-                  </a>
-                  <a on-tap="_signOut" href="/">
-                    <paper-icon-item toggles="true">
-                      <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
-                      <span>Sign-out</span>
-                    </paper-icon-item>
-                  </a>
+                    <hr>
+                    <a style$="{{access(accountAccess)}}" name="accountlist" href="[[rootPath]]accountlist">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
+                        <span>Accounts</span>
+                      </paper-icon-item>
+                    </a>
+                    <a name="account" href="[[rootPath]]account">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
+                        <span>My Account</span>
+                      </paper-icon-item>
+                    </a>
+                    <a on-tap="_signOut" href="/">
+                      <paper-icon-item toggles="true">
+                        <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
+                        <span>Sign-out</span>
+                      </paper-icon-item>
+                    </a>
                 </iron-selector>
 
               </div>
@@ -333,7 +335,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <center>
           <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img>
           <!-- <img hidden$="{{user.photoURL}}" src="../images/user.png" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img> -->
-          <paper-icon-button hidden$="{{user.photoURL}}" icon="my-icons:account-circle" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></paper-icon-button>
+          <iron-icon hidden$="{{user.photoURL}}" icon="my-icons:account-circle" style=" height:180px;width:180px; max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></iron-icon>
         </center>
         <input type="file" id="fileButton" on-tap="_upload" accept="image/*"></input>
         <progress value="0" max="100" id="uploader" style=" -webkit-appearance: none; width:100%; height:5px;">0%</progress>
