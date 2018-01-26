@@ -1,0 +1,130 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-account-removed">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                /* overflow: hidden; */
+            }
+
+            @media (min-width: 767px) {
+                .main-container {
+                    height: 100%;
+                    background-color: white;
+                    max-width: 370px;
+                    margin: 16px auto;
+                    padding: 40px;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                }
+
+            }
+
+            @media (max-width: 767px) {
+                :host {
+                    height: 100%;
+                }
+                .main-container {
+                    height: 100%;
+                    background-color: white;
+                    margin: 0 auto;
+                    padding: 40px;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                }
+
+            }
+
+            app-header {
+                color: rgb(255, 255, 255);
+                background-color: #388E3C;
+            }
+
+            paper-button.green {
+                background-color: var(--paper-green-500);
+                color: white;
+                margin-top: 3px;
+            }
+
+            paper-button.green[active] {
+                background-color: var(--paper-red-500);
+            }
+
+            .action paper-button {
+                height: 32px;
+                font-size: 12px;
+                font-weight: 400;
+                width: 80px;
+                text-align: center;
+            }
+
+            .action {
+                float: right
+            }
+        </style>
+
+        <app-header-layout>
+            <div class="main-container">
+                <center>
+                    <a style="text-decoration:none;" href="/">
+                        <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload
+                            fade style="width:128px; height:128px;"></iron-image>
+                    </a>
+                </center>
+
+                <div>
+                    <b>Sorry!</b>
+                    <br>
+                    <span style="font-size:14px;">Your account had been removed or deleted from the system.
+                        <br> If you wish to create a new one, please contact Heaven of Peace administrator.
+                        <br>
+                        <br>
+                        <b>Thank you!</b>
+                    </span>
+                </div>
+                <br>
+                <div class="action">
+                    <paper-button on-tap="_signOut" class="custom green">Sign out</paper-button>
+                </div>
+                <br>
+        </app-header-layout>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-account-removed',
+
+            _signOut() {
+                firebase.auth().signOut().then(function () {
+                    // Sign-out successful.
+                    window.location.reload()
+                    this.set("route.path", "");
+                }).catch(function (error) {
+                    // An error happened.
+                });
+
+            }
+        })
+    </script>
+</dom-module>

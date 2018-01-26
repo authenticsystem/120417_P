@@ -189,7 +189,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <template is="dom-if" if="{{!openSearch}}">
                 <app-toolbar primary id="tool1">
                   <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-                  <div main-title>Applications</div>
+                  <div main-title hidden$="{{!access}}">Applications</div>
+                  <div main-title hidden$="{{access}}">Opps!</div>
                   <paper-icon-button class="menu" icon="my-icons:search" drawer-toggle on-tap="toggleSearch"></paper-icon-button>
                 </app-toolbar>
               </template>
@@ -222,54 +223,65 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <!-- on-lower-threshold="loadMoreData" -->
             <iron-scroll-threshold id="threshold">
+
+              <template is="dom-if" if="{{!access}}">
+                <div class="card">
+                  <h3>Sorry!</h3>
+                  <div>You're not allowed to access this content.</div>
+                </div>
+              </template>
+
               <!-- threshold -->
-              <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
-                <div style="text-align:center">{{msg}}</div>
-                <paper-toast id="toast" text="" duration="0"></paper-toast>
-                <template>
-                  <div class="divSeparator">
-                    <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
+              <template is="dom-if" if="{{access}}">
+                <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
+                  <div style="text-align:center">{{msg}}</div>
+                  <paper-toast id="toast" text="" duration="0"></paper-toast>
+                  <template>
+                    <div class="divSeparator">
+                      <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
 
-                      <my-application-card item="{{item}}"></my-application-card>
+                        <my-application-card item="{{item}}"></my-application-card>
 
-                      <div tabindex="0">
-                        <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
-                          <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
-                            style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
-                          <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
-                        </a>
+                        <div tabindex="0">
+                          <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
+                            <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
+                              style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
+                            <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
+                          </a>
+                        </div>
+
+                        <div tabindex="1">
+                          <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
+                            <paper-icon-button id="openDetailButton" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new"
+                              alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                            <paper-tooltip position="left">view details</paper-tooltip>
+                          </a>
+                        </div>
+
                       </div>
-
-                      <div tabindex="1">
-                        <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
-                          <paper-icon-button id="openDetailButton" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new"
-                            alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
-                          <paper-tooltip position="left">view details</paper-tooltip>
-                        </a>
-                      </div>
-
-
 
                     </div>
 
-                  </div>
-
-
-                </template>
-              </iron-list>
-
+                  </template>
+                </iron-list>
+              </template>
             </iron-scroll-threshold>
 
           </app-header-layout>
-          <a href="/applications/new" style="text-decoration: none;">
-            <paper-fab noink class="fab-menu" on-tap="_appsnew" icon="my-icons:add"></paper-fab>
-          </a>
+          <template is="dom-if" if="{{access}}">
+            <a href="/applications/new" style="text-decoration: none;">
+              <paper-fab noink class="fab-menu" on-tap="_appsnew" icon="my-icons:add"></paper-fab>
+            </a>
+          </template>
+
         </div>
 
-        <div name="/new">
-          <div id="appnew"></div>
-          <my-application-new id="d23" path="" prev-route="{{route.prefix}}"></my-application-new>
-        </div>
+        <template is="dom-if" if="{{access}}">
+          <div name="/new">
+            <div id="appnew"></div>
+            <my-application-new id="d23" path="" prev-route="{{route.prefix}}"></my-application-new>
+          </div>
+        </template>
 
         <div name="view404">Not found.</div>
 
@@ -277,20 +289,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- </template> -->
     </div>
 
-    <div hidden$="{{!detailActive}}">
-      <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
-      <div id="appdetail"></div>
-      <my-application-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"></my-application-detail>
-      <!-- [[detailData.key]] -->
-      <!-- </template> -->
-    </div>
+    <template is="dom-if" if="{{access}}">
+      <div hidden$="{{!detailActive}}">
+        <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
+        <div id="appdetail"></div>
+        <my-application-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"></my-application-detail>
+        <!-- [[detailData.key]] -->
+        <!-- </template> -->
+      </div>
 
-    <div hidden$="{{!editActive}}">
-      <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
-      <div id="appedit"></div>
-      <my-application-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-application-edit>
-      <!-- </template> -->
-    </div>
+      <div hidden$="{{!editActive}}">
+        <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
+        <div id="appedit"></div>
+        <my-application-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-application-edit>
+        <!-- </template> -->
+      </div>
+    </template>
 
   </template>
 
@@ -319,6 +333,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         filterBy: {
           type: Number,
           value: 2
+        },
+        access: {
+          type: Boolean,
+          value: false
         },
         openSearch: {
           type: Boolean,
