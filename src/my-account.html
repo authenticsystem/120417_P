@@ -152,15 +152,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
         <br>
         <div class="info">
-          <paper-input label="Firstname" value="{{firstname}}" id="fname"></paper-input>
-          <paper-input label="Middlename" value="{{middlename}}" id="mname"></paper-input>
-          <paper-input label="Lastname" value="{{lastname}}" id="lname"></paper-input>
-          <paper-input label="Suffix" value="{{suffix}}" id="suffix"></paper-input>
+          <paper-input label="Firstname" value="{{firstname}}" id="fname" readonly></paper-input>
+          <paper-input label="Middlename" value="{{middlename}}" id="mname" readonly></paper-input>
+          <paper-input label="Lastname" value="{{lastname}}" id="lname" readonly></paper-input>
+          <paper-input label="Suffix" value="{{suffix}}" id="suffix" readonly></paper-input>
           <!-- <paper-input label="Email address" value="{{user.email}}" id="email"></paper-input> -->
         </div>
         <div class="action">
           <!-- <paper-button style="width:180px">Change email/password</paper-button> -->
-          <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button>
+          <!-- <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button> -->
         </div>
       </div>
     </app-header-layout>

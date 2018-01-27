@@ -1,0 +1,485 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+
+<link rel="import" href="search-bar.html">
+<link rel="import" href="my-briefcase-new.html">
+<link rel="import" href="my-application-detail.html">
+<link rel="import" href="my-application-edit.html">
+
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+
+<link rel="import" href="time-element.html">
+<!-- <script src="../bower_components/time-elements/time-elements.js"></script> -->
+
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="my-application-card.html">
+
+<dom-module id="my-briefcase-draft">
+  <template>
+    <style include="shared-styles">
+      :host {
+        height: 100vh;
+        margin: 0;
+
+        display: flex;
+        flex-direction: column;
+      }
+
+      .avatar {
+        height: 40px;
+        width: 40px;
+        border-radius: 20px;
+        box-sizing: border-box;
+        background-color: #DDD;
+      }
+
+      .pad {
+        padding: 0 16px;
+        @apply --layout-flex;
+        @apply --layout-vertical;
+      }
+
+      .primary {
+        font-size: 18px;
+        text-transform: capitalize;
+      }
+
+      .shortText,
+      .longText {
+        font-size: 12px;
+      }
+
+      .longText {
+        color: gray;
+        margin-bottom: -0.5em;
+      }
+
+      .spacer {
+        @apply --layout-flex;
+      }
+
+      @media (max-width: 768px) {
+        iron-list {
+          margin: 16px;
+          /* margin-top: 16px; */
+          display: flex;
+          height: 100vh;
+          flex-direction: column;
+          border-radius: 3px;
+          /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
+        }
+        paper-search-bar {
+          margin-left: 80px;
+          width: 50%;
+          color: black;
+        }
+      }
+
+      @media (min-width: 768px) {
+        iron-list {
+          width: 765px;
+          margin: 16px auto;
+          /* margin-top: 16px; */
+          height: 100vh;
+          border-radius: 3px;
+          /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
+        }
+        paper-search-bar {
+          margin-left: 50px;
+          width: 50%;
+          color: black;
+        }
+      }
+
+      #tool1 {
+        color: rgb(255, 255, 255);
+        background-color: #388E3C;
+      }
+
+      #tool2 {
+        background-color: white;
+      }
+
+      #btn-arrow {
+        position: absolute;
+        color: black;
+      }
+
+      #btn-menu {
+        color: gray;
+        position: fixed;
+        right: 40px;
+      }
+
+      #btn-clear {
+        position: fixed;
+        right: 80px;
+        color: gray;
+      }
+
+      paper-fab.fab-menu {
+        position: fixed;
+        right: 32px;
+        bottom: 32px;
+      }
+
+      paper-fab.fab-search {
+        position: fixed;
+        right: 40px;
+        bottom: 104px;
+      }
+
+      paper-icon-button.menu {
+        margin-right: 16px;
+      }
+
+      .item {
+        @apply --layout-horizontal;
+        /* padding: 20px; */
+        background-color: white;
+        border-bottom: 1px solid #ddd;
+        cursor: pointer;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+      }
+    </style>
+
+    <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
+
+    <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
+    <div hidden$="{{!applicationActive}}">
+      <!-- <template is="dom-if" if="{{_checkIfApplicationActive(applicationActive)}}"> -->
+      <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
+        <div name="">
+          <!-- <iron-ajax auto url="src/data.json" last-response="{{items}}"></iron-ajax> -->
+          <app-header-layout fullbleed has-scrolling-region>
+            <app-header fixed slot="header">
+              <template is="dom-if" if="{{!openSearch}}">
+                <app-toolbar primary id="tool1">
+                  <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                  <div main-title hidden$="{{!access}}">Draft Application</div>
+                  <div main-title hidden$="{{access}}">Opps!</div>
+                  <paper-icon-button class="menu" icon="my-icons:search" drawer-toggle on-tap="toggleSearch"></paper-icon-button>
+                </app-toolbar>
+              </template>
+
+              <template is="dom-if" if="{{openSearch}}">
+                <app-toolbar primary id="tool2">
+                  <paper-icon-button id="btn-arrow" icon="my-icons:arrow-back" drawer-toggle on-tap="toggleReturn"></paper-icon-button>
+                  <paper-search-bar id="search" query="{{search}}" disable-filter-button></paper-search-bar>
+                  <template is="dom-if" if="{{search}}">
+                    <paper-icon-button id="btn-clear" icon="my-icons:close" drawer-toggle on-tap="toggleClear"></paper-icon-button>
+                  </template>
+                  <paper-menu-button id="btn-menu" horizontal-align="right">
+                    <paper-icon-button slot="dropdown-trigger" icon="my-icons:tune"></paper-icon-button>
+                    <paper-listbox style="cursor:pointer" slot="dropdown-content" selected="{{filterBy}}">
+                      <paper-item style="display:none;">Filter By</paper-item>
+                      <paper-item>By Reference</paper-item>
+                      <paper-item>By Lot</paper-item>
+                      <paper-item>By Status</paper-item>
+                      <paper-item>By Buyer Lastname</paper-item>
+                      <paper-item>By Agent Lastname</paper-item>
+                    </paper-listbox>
+                  </paper-menu-button>
+                </app-toolbar>
+              </template>
+            </app-header>
+
+            <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
+              end-at="{{typeValue}}" limit-to-last="50">
+            </firebase-query>
+
+
+
+          </app-header-layout>
+          <template is="dom-if" if="{{access}}">
+            <a href="/briefcase-draft/new" style="text-decoration: none;">
+              <paper-fab noink class="fab-menu" on-tap="_appsnew" icon="my-icons:add"></paper-fab>
+            </a>
+          </template>
+
+        </div>
+
+        <template is="dom-if" if="{{access}}">
+          <div name="/new">
+            <div id="briefcasenew"></div>
+            <my-briefcase-new id="d23" path="" prev-route="{{route.prefix}}"></my-briefcase-new>
+          </div>
+        </template>
+
+        <div name="view404">Not found.</div>
+
+      </iron-pages>
+      <!-- </template> -->
+    </div>
+
+    <template is="dom-if" if="{{access}}">
+      <div hidden$="{{!detailActive}}">
+        <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
+        <div id="appdetail"></div>
+        <my-application-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"></my-application-detail>
+        <!-- [[detailData.key]] -->
+        <!-- </template> -->
+      </div>
+
+      <div hidden$="{{!editActive}}">
+        <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
+        <div id="appedit"></div>
+        <my-application-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-application-edit>
+        <!-- </template> -->
+      </div>
+    </template>
+
+  </template>
+
+  <script>
+    Polymer({
+      is: 'my-briefcase-draft',
+
+      properties: {
+        items: {
+          type: Array,
+          value: function () {
+            return [];
+          }
+        },
+        narrow: {
+          type: Boolean,
+          notify: true
+        },
+        applications: {
+          type: Object,
+        },
+        selectedType: {
+          type: String,
+          value: ''
+        },
+        filterBy: {
+          type: Number,
+          value: 2
+        },
+        access: {
+          type: Boolean,
+          value: false
+        },
+        openSearch: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+        // selectedLabel: {
+        //   type: String,
+        //   value: 'By Lot'
+        // },
+        search: {
+          type: String,
+          value: '',
+        },
+        route: Object,
+        routeData: Object,
+      },
+
+      observers: [
+        '_searchChanged(filterBy, search)',
+        '_applicationChanged(applications)'
+      ],
+
+      _applicationChanged(e) {
+        if (this.search) {
+          if (e.length == 0) {
+            this.msg = 'No result found.';
+          }
+          else {
+            this.msg = '';
+          }
+        }
+      },
+
+      toggleSearch() {
+        this.openSearch = true;
+      },
+
+      toggleReturn() {
+        this.openSearch = false;
+        this.search = '';
+      },
+
+      toggleClear() {
+        this.search = '';
+      },
+
+      _searchChanged(g, e) {
+
+        if (g) {
+          if (g == 1) {
+            // this.selectedLabel = 'by reference';
+            if (e) {
+              this.selectedType = 'reference';
+            }
+          }
+          else if (g == 2) {
+            // this.selectedLabel = 'by lot';
+            if (e) {
+              this.selectedType = 'lot';
+            }
+          }
+          else if (g == 3) {
+            // this.selectedLabel = 'by type';
+            if (e) {
+              this.selectedType = 'type';
+              e = e.charAt(0).toUpperCase() + e.slice(1);
+            }
+          }
+          else if (g == 4) {
+            // this.selectedLabel = 'by buyer lastname';
+            if (e) {
+              this.selectedType = 'buyerdetails/lastname';
+            }
+          }
+          else {
+            // this.selectedLabel = 'by agent lastname';
+            if (e) {
+              this.selectedType = 'agentdetails/lastname';
+            }
+          }
+        }
+
+        if (e) {
+          this.typeValue = e;
+        }
+        else {
+          this.selectedType = '';
+          this.typeValue = '';
+          this.msg = '';
+        }
+      },
+
+      iconForItem(item) {
+        return item ? (item.integer < 50 ? 'my-icons:star-border' : 'my-icons:star') : '';
+      },
+
+      getClassForItem(item, selected) {
+        // this.colorSelected = item.type;
+        // console.log(this.colorSelected);
+        return selected ? 'item expanded' : 'item';
+      },
+
+      toggleDrawer() {
+        this.dispatchEvent(new CustomEvent('toggleDrawer', {
+          bubbles: true, composed: true, detail: {
+            narrow: this.$.narrow
+          }
+        }));
+        this.$.narrow = !this.$.narrow;
+      },
+
+      loadMoreDat() {
+        var self = this;
+        var people = e.detail.response.results;
+        people.forEach(function (element) {
+          self.push('items', element);
+        });
+
+        asyncStuff(function done() {
+          ironScrollTheshold.clearTriggers();
+        });
+      },
+
+      _appsnew() {
+        var node = Polymer.dom(this.root).querySelector("#briefcasenew");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-briefcase-new");
+          newDiv.setAttribute("id", "d23");
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          var currentDiv = document.getElementById("briefcasenew");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+        }
+      },
+
+      _getViewDetailsLink(e) {
+        return '/applications/detail/' + e.toString();
+      },
+
+      _getEditAppLink(e) {
+        return '/applications/edit/' + e.toString();
+      },
+
+      viewDetails(e) {
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var node = Polymer.dom(this.root).querySelector("#appdetail");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-application-detail");
+          newDiv.setAttribute("id", "d24")
+          newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          //if open existing
+          var currentDiv = document.getElementById("appdetail");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+
+        }
+      },
+
+      editDetails(e) {
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var node = Polymer.dom(this.root).querySelector("#appedit");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-application-edit");
+          newDiv.setAttribute("id", "d25")
+          newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          //if open existing
+          var currentDiv = document.getElementById("appedit");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+        }
+      }
+
+
+
+    })
+
+  </script>
+</dom-module>

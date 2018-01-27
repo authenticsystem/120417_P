@@ -8,18 +8,42 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
+<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
-<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="my-icons.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="my-draft-card.html">
+<link rel="import" href="my-application-card.html">
 
 <dom-module id="my-briefcase">
   <template>
     <style include="shared-styles">
       :host {
-        display: block;
+        height: 100vh;
+        margin: 0;
 
-        padding: 10px;
+        display: flex;
+        flex-direction: column;
       }
 
       app-header {
@@ -34,20 +58,76 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       iron-image {
         margin: 0 auto;
       }
-      /* .bg { */
-        /* The image used */
-        /* background-image: url("/images/manifest/icon-72x72.png"); */
 
-        /* Full height */
-        /* height: 100%; */
+      paper-fab.fab-menu {
+        position: fixed;
+        right: 32px;
+        bottom: 32px;
+      }
 
-        /* Center and scale the image nicely */
-        /* background-position: center; */
-        /* background-repeat: no-repeat; */
-        /* background-size: cover; */
-      /* } */
+      .spacer {
+        @apply --layout-flex;
+      }
+
+      @media (max-width: 768px) {
+        iron-list {
+          margin: 16px;
+          /* margin-top: 16px; */
+          display: flex;
+          height: 100vh;
+          flex-direction: column;
+          border-radius: 3px;
+          /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
+        }
+        paper-search-bar {
+          margin-left: 80px;
+          width: 50%;
+          color: black;
+        }
+      }
+
+      @media (min-width: 768px) {
+        iron-list {
+          width: 765px;
+          margin: 16px auto;
+          /* margin-top: 16px; */
+          height: 100vh;
+          border-radius: 3px;
+          /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
+        }
+        paper-search-bar {
+          margin-left: 50px;
+          width: 50%;
+          color: black;
+        }
+      }
+
+      paper-fab.fab-menu {
+        position: fixed;
+        right: 32px;
+        bottom: 32px;
+      }
+
+      paper-fab.fab-search {
+        position: fixed;
+        right: 40px;
+        bottom: 104px;
+      }
+
+      paper-icon-button.menu {
+        margin-right: 16px;
+      }
+
+      .item {
+        @apply --layout-horizontal;
+        /* padding: 20px; */
+        background-color: white;
+        border-bottom: 1px solid #ddd;
+        cursor: pointer;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+      }
     </style>
-
 
     <app-header-layout fullbleed has-scrolling-region>
       <app-header fixed slot="header">
@@ -55,70 +135,97 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
           <div main-title>Briefcase</div>
         </app-toolbar>
+        <app-toolbar style="margin-left:45px">
+          <paper-tabs selected="{{selected}}">
+            <paper-tab>Draft</paper-tab>
+            <paper-tab>Applied</paper-tab>
+          </paper-tabs>
+        </app-toolbar>
       </app-header>
 
-      <!-- <skeleton-carousel dots nav loop>
-        <div>
-          <iron-image placeholder="images/brochure/b1-alt.jpg" data-src="images/brochure/b1.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b2-alt.jpg" data-src="images/brochure/b2.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b3-1-alt.jpg" data-src="images/brochure/b3-1.jpg" sizing="contain" preload fade
-            style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b3-2-alt.jpg" data-src="images/brochure/b3-2.jpg" sizing="contain" preload fade
-            style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b3-3-alt.jpg" data-src="images/brochure/b3-3.jpg" sizing="contain" preload fade
-            style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b3-4-alt.jpg" data-src="images/brochure/b3-4.jpg" sizing="contain" preload fade
-            style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b4-alt.jpg" data-src="images/brochure/b4.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b5-alt.jpg" data-src="images/brochure/b5.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b6-alt.jpg" data-src="images/brochure/b6.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b7-alt.jpg" data-src="images/brochure/b7.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b8-alt.jpg" data-src="images/brochure/b8.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b9-alt.jpg" data-src="images/brochure/b9.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b10-alt.jpg" data-src="images/brochure/b10.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b11-alt.jpg" data-src="images/brochure/b11.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-      </skeleton-carousel> -->
+      <iron-pages selected="{{selected}}">
 
-      <!-- <div class="bg"> -->
+        <iron-scroll-threshold id="threshold">
+          <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
 
-        <div class="card">
-            <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload fade style="width:200px; height:200px;"></iron-image></br>
+            <div class="divSeparator">
+              <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
 
-          Content (later): </br>
-            BRIEFCASE
+                <my-draft-card item="{{item}}"></my-draft-card>
+                <!-- <my-application-card item="{{item}}"></my-application-card> -->
+
+                <!-- <div tabindex="0">
+                  <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
+                    <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
+                      style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
+                    <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
+                  </a>
+                </div> -->
+
+                <div tabindex="0">
+                  <!-- <paper-menu-button tabindex="-1">
+                    <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="option"></paper-icon-button>
+                    <paper-listbox slot="dropdown-content">
+                      <paper-item>Edit</paper-item>
+                      <paper-item>Send Request</paper-item>
+                    </paper-listbox>
+                  </paper-menu-button> -->
+
+                  <!-- <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
+                    <paper-icon-button id="sendRequest" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:send" alt="{{item.$key}}"
+                      style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                    <paper-tooltip position="bottom" for="sendRequest">Send</paper-tooltip>
+                  </a> -->
+                </div>
+
+              </div>
+            </div>
+
+          </iron-list>
+        </iron-scroll-threshold>
+
+        <div>
+            <iron-scroll-threshold id="threshold">
+                <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
+      
+                  <div class="divSeparator">
+                    <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
+      
+                      <my-draft-card item="{{item}}"></my-draft-card>
+                      <!-- <my-application-card item="{{item}}"></my-application-card> -->
+      
+                      <!-- <div tabindex="0">
+                        <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
+                          <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
+                            style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
+                          <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
+                        </a>
+                      </div> -->
+      
+                      <div tabindex="0">
+                        <!-- <paper-menu-button tabindex="-1">
+                          <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="option"></paper-icon-button>
+                          <paper-listbox slot="dropdown-content">
+                            <paper-item>Edit</paper-item>
+                            <paper-item>Send Request</paper-item>
+                          </paper-listbox>
+                        </paper-menu-button> -->
+      
+                        <!-- <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
+                          <paper-icon-button id="sendRequest" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:send" alt="{{item.$key}}"
+                            style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                          <paper-tooltip position="bottom" for="sendRequest">Send</paper-tooltip>
+                        </a> -->
+                      </div>
+      
+                    </div>
+                  </div>
+      
+                </iron-list>
+              </iron-scroll-threshold>
         </div>
 
-
-      <!-- </div> -->
-
-
+      </iron-pages>
 
     </app-header-layout>
 
@@ -126,17 +233,136 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
-    class MyBriefcase extends Polymer.Element {
-      static get is() { return 'my-briefcase'; }
+    Polymer({
+      is: 'my-briefcase',
 
-      static get properties() {
-        return {
-          narrow: {
-            type: Boolean,
-            notify: true
+      properties: {
+        items: {
+          type: Array,
+          value: function () {
+            return [];
           }
-        };
-      }
+        },
+        narrow: {
+          type: Boolean,
+          notify: true
+        },
+        selected: {
+          type: Object,
+          value: 0
+        },
+        applications: {
+          type: Object,
+        },
+        selectedType: {
+          type: String,
+          value: ''
+        },
+        filterBy: {
+          type: Number,
+          value: 2
+        },
+        access: {
+          type: Boolean,
+          value: false
+        },
+        openSearch: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+        // selectedLabel: {
+        //   type: String,
+        //   value: 'By Lot'
+        // },
+        search: {
+          type: String,
+          value: '',
+        },
+        route: Object,
+        routeData: Object,
+      },
+
+      observers: [
+        '_searchChanged(filterBy, search)',
+        '_applicationChanged(applications)'
+      ],
+
+      _applicationChanged(e) {
+        if (this.search) {
+          if (e.length == 0) {
+            this.msg = 'No result found.';
+          }
+          else {
+            this.msg = '';
+          }
+        }
+      },
+
+      toggleSearch() {
+        this.openSearch = true;
+      },
+
+      toggleReturn() {
+        this.openSearch = false;
+        this.search = '';
+      },
+
+      toggleClear() {
+        this.search = '';
+      },
+
+      _searchChanged(g, e) {
+
+        if (g) {
+          if (g == 1) {
+            // this.selectedLabel = 'by reference';
+            if (e) {
+              this.selectedType = 'reference';
+            }
+          }
+          else if (g == 2) {
+            // this.selectedLabel = 'by lot';
+            if (e) {
+              this.selectedType = 'lot';
+            }
+          }
+          else if (g == 3) {
+            // this.selectedLabel = 'by type';
+            if (e) {
+              this.selectedType = 'type';
+              e = e.charAt(0).toUpperCase() + e.slice(1);
+            }
+          }
+          else if (g == 4) {
+            // this.selectedLabel = 'by buyer lastname';
+            if (e) {
+              this.selectedType = 'buyerdetails/lastname';
+            }
+          }
+          else {
+            // this.selectedLabel = 'by agent lastname';
+            if (e) {
+              this.selectedType = 'agentdetails/lastname';
+            }
+          }
+        }
+
+        if (e) {
+          this.typeValue = e;
+        }
+        else {
+          this.selectedType = '';
+          this.typeValue = '';
+          this.msg = '';
+        }
+      },
+
+      getClassForItem(item, selected) {
+        // this.colorSelected = item.type;
+        // console.log(this.colorSelected);
+        return selected ? 'item expanded' : 'item';
+      },
 
       toggleDrawer() {
         this.dispatchEvent(new CustomEvent('toggleDrawer', {
@@ -145,14 +371,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }));
         this.$.narrow = !this.$.narrow;
+      },
+
+      loadMoreDat() {
+        var self = this;
+        var people = e.detail.response.results;
+        people.forEach(function (element) {
+          self.push('items', element);
+        });
+
+        asyncStuff(function done() {
+          ironScrollTheshold.clearTriggers();
+        });
       }
 
-    }
+    })
 
-
-
-
-
-    window.customElements.define(MyBriefcase.is, MyBriefcase);
   </script>
 </dom-module>

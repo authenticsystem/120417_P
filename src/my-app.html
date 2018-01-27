@@ -35,6 +35,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-collapse-item/paper-collapse-item.html">
 
 <link rel="lazy-import" href="my-landing-page.html">
 <link rel="lazy-import" href="my-map.html">
@@ -43,6 +44,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-dashboard.html">
 <link rel="lazy-import" href="my-briefcase.html">
 <link rel="lazy-import" href="my-applications.html">
+<link rel="lazy-import" href="my-briefcase-draft.html">
 <link rel="lazy-import" href="my-corporate-account.html">
 <link rel="lazy-import" href="my-account-link.html">
 <link rel="lazy-import" href="my-account-deactivated.html">
@@ -300,19 +302,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>Applications</span>
                       </paper-icon-item>
                     </a>
+                    <!-- <paper-collapse-item icon="my-icons:work" header="Briefcase">
+                      <a style$="{{access(appAccess)}}" name="briefcase-draft" href="[[rootPath]]briefcase-draft">
+                        <paper-icon-item toggles="true" class="menuSelected">
+                          <iron-icon icon="my-icons:" slot="item-icon"></iron-icon>
+                          <span>Draft</span>
+                        </paper-icon-item>
+                      </a>
+                    </paper-collapse-item> -->
+                    <a style$="{{access(appAccess)}}" name="view3" href="[[rootPath]]view3">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:work" slot="item-icon"></iron-icon>
+                        <span>Briefcase</span>
+                      </paper-icon-item>
+                    </a>
+                    <!-- <a style$="{{access(appAccess)}}" name="briefcase" href="[[rootPath]]briefcase">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:work" slot="item-icon"></iron-icon>
+                        <span>Briefcase</span>
+                      </paper-icon-item>
+                    </a> -->
                     <hr>
                     <a style$="{{access(accountAccess)}}" name="accountlist" href="[[rootPath]]accountlist">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
-                        <span>Accounts</span>
+                        <span>Accounts
+                          <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+                            DRY RUN
+                          </span>
+                        </span>
                       </paper-icon-item>
                     </a>
                     <a name="account" href="[[rootPath]]account">
-                        <paper-icon-item toggles="true" class="menuSelected">
-                          <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
-                          <span>My Account</span>
-                        </paper-icon-item>
-                      </a>
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
+                        <span>My Account
+                          <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+                            DRY RUN
+                          </span>
+                        </span>
+                      </paper-icon-item>
+                    </a>
                     <a on-tap="_signOut" href="/">
                       <paper-icon-item toggles="true">
                         <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
@@ -328,8 +358,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-dashboard name="dashboard" access="{{dashAccess}}"></my-dashboard>
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
                 <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]"></my-applications>
+                <my-briefcase name="briefcase" access="{{appAccess}}" route="[[subroute]]"></my-briefcase>
+                <my-briefcase-draft name="briefcase-draft" access="{{appAccess}}" route="[[subroute]]"></my-briefcase-draft>
                 <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
                 <my-accountlist name="accountlist" access="{{accountAccess}}" route="[[subroute]]"></my-accountlist>
+                <my-view3 name="view3"></my-view3>
                 <my-view404 name="view404"></my-view404>
               </iron-pages>
             </app-drawer-layout>

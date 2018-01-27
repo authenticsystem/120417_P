@@ -137,8 +137,10 @@
                         </paper-input>
                         <paper-dropdown-menu style="cursor:pointer" label="Role">
                             <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{roleAdd}}">
+                                <paper-item>Owner</paper-item>
                                 <paper-item>Manager</paper-item>
                                 <paper-item>Sales Agent</paper-item>
+                                <paper-item>Staff</paper-item>
                             </paper-listbox>
                         </paper-dropdown-menu>
                         <br>
@@ -169,7 +171,7 @@
                         </span>
                     </div>
                     <div class="details" id="printMe">
-                        <div>Account No. {{accountkey}}</div>
+                        <div>Account No. <span style="font-family: Courier New; font-size: 20px">{{accountkey}}</span></div>
                         <div>Name: {{firstname}} {{middlename}} {{lastname}}</div>
                         <div>Contact No. +63{{cellphone}}</div>
                         <div>Position: {{role}}</div>
@@ -222,7 +224,7 @@
                 },
                 roleAdd: {
                     type: Number,
-                    value: 1,
+                    value: 0,
                     observer: 'roleAddChanged'
                 },
                 access: {
@@ -236,16 +238,16 @@
             },
             roleAddChanged() {
                 if (this.roleAdd == 0) {
-                    this.role = 'Manager';
-                    Polymer.dom(this.root).querySelector("#dash").checked = true;
-                    Polymer.dom(this.root).querySelector("#app").checked = true;
-                    Polymer.dom(this.root).querySelector("#acc").checked = true;
+                    this.role = 'Owner';
+                    // Polymer.dom(this.root).querySelector("#dash").checked = true;
+                    // Polymer.dom(this.root).querySelector("#app").checked = true;
+                    // Polymer.dom(this.root).querySelector("#acc").checked = true;
                 }
                 else {
                     this.role = 'Sales Agent';
-                    Polymer.dom(this.root).querySelector("#dash").checked = false;
-                    Polymer.dom(this.root).querySelector("#app").checked = true;
-                    Polymer.dom(this.root).querySelector("#acc").checked = false;
+                    // Polymer.dom(this.root).querySelector("#dash").checked = false;
+                    // Polymer.dom(this.root).querySelector("#app").checked = true;
+                    // Polymer.dom(this.root).querySelector("#acc").checked = false;
                 }
             },
             _print() {
@@ -259,8 +261,9 @@
                 this.path = 'accountlist/' + this.accountkey;
                 return this.path;
             },
-            guid: function () { 
-                return Math.floor((Math.random() * 1234567)/(17));
+            guid: function () {
+                var uid = new ShortUniqueId();
+                return uid.randomUUID(6);
             },
 
             _submit() {
