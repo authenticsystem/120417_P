@@ -93,6 +93,11 @@
                 margin-left: 20%;
             }
 
+            paper-checkbox {
+                font-size: 14px;
+                margin-right: 5px;
+            }
+
             /* @media print {
                  .ok {
                      visibility: hidden;
@@ -122,21 +127,28 @@
                     <!-- <div class="docu-header">Add New Account</div> -->
                     <div class="details">
                         <paper-input readonly="true" value="{{accountkey}}" always-float-label label="Account No."></paper-input>
-                        <paper-input required auto-validate pattern="[a-zA-Z-.]*" value="{{firstname}}" always-float-label label="First Name"></paper-input>
-                        <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
-                        <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{lastname}}" always-float-label label="Last Name"></paper-input>
-                        <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{suffix}}" always-float-label label="Suffix"></paper-input>
+                        <paper-input  value="{{firstname}}" always-float-label label="First Name"></paper-input>
+                        <paper-input  value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
+                        <paper-input  value="{{lastname}}" always-float-label label="Last Name"></paper-input>
+                        <paper-input  value="{{suffix}}" always-float-label label="Suffix"></paper-input>
                         <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label
                             label="Cellphone">
                             <div slot="prefix">+63</div>
                         </paper-input>
-                        <paper-dropdown-menu label="Role">
+                        <paper-dropdown-menu style="cursor:pointer" label="Role">
                             <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{roleAdd}}">
+                                <paper-item>Owner</paper-item>
                                 <paper-item>Manager</paper-item>
                                 <paper-item>Sales Agent</paper-item>
+                                <paper-item>Staff</paper-item>
                             </paper-listbox>
                         </paper-dropdown-menu>
-                        <!-- <paper-checkbox noink value="{{checked}}" disabled >Allow Access</paper-checkbox> -->
+                        <br>
+                        <div style="font-size:12px; margin-top:1em;">Access</div>
+                        <paper-checkbox id="dash">Dashboard</paper-checkbox>
+                        <paper-checkbox id="app">Applications</paper-checkbox>
+                        <paper-checkbox id="acc">Accounts</paper-checkbox>
+                        <!-- <paper-checkbox noink value="{{checked}}" >Allow Access</paper-checkbox> -->
                     </div>
                     <br>
                     <br>
@@ -159,10 +171,16 @@
                         </span>
                     </div>
                     <div class="details" id="printMe">
-                        <div>Account No. {{accountkey}}</div>
+                        <div>Account No. <span style="font-family: Courier New; font-size: 20px">{{accountkey}}</span></div>
                         <div>Name: {{firstname}} {{middlename}} {{lastname}}</div>
                         <div>Contact No. +63{{cellphone}}</div>
                         <div>Position: {{role}}</div>
+                        <br>
+                        <div><strong>To login to Haven of Peace, Please follow instructions below.</strong></div>
+                        <div>Step 1. Create an account to Haven of Peace under more options</div>
+                        <div>Step 2. Verify Email, click the link that was sent to your email account.</div>
+                        <div>Step 3. Enter the account number above to link your Haven of Peace account.</div>
+                        <div>Step 4. Enter the account code that was sent to your phone number provided above to complete the login procedure.</div>    
                     </div>
                 </div>
                 <!-- <paper-toast id="toast" text="{{txt}}"></paper-toast> -->
@@ -206,7 +224,8 @@
                 },
                 roleAdd: {
                     type: Number,
-                    value: 1
+                    value: 0,
+                    observer: 'roleAddChanged'
                 },
                 access: {
                     type: Boolean,
@@ -215,7 +234,21 @@
                 role: {
                     type: String,
                     value: ''
-                },
+                }
+            },
+            roleAddChanged() {
+                if (this.roleAdd == 0) {
+                    this.role = 'Owner';
+                    // Polymer.dom(this.root).querySelector("#dash").checked = true;
+                    // Polymer.dom(this.root).querySelector("#app").checked = true;
+                    // Polymer.dom(this.root).querySelector("#acc").checked = true;
+                }
+                else {
+                    this.role = 'Sales Agent';
+                    // Polymer.dom(this.root).querySelector("#dash").checked = false;
+                    // Polymer.dom(this.root).querySelector("#app").checked = true;
+                    // Polymer.dom(this.root).querySelector("#acc").checked = false;
+                }
             },
             _print() {
                 var content = Polymer.dom(this.root).querySelector("#printMe").innerHTML;
@@ -230,13 +263,30 @@
             },
             guid: function () {
                 var uid = new ShortUniqueId();
-                return uid.randomUUID(7);
+                return uid.randomUUID(6);
             },
+
             _submit() {
+                var box1 = Polymer.dom(this.root).querySelector("#dash");
+                var box2 = Polymer.dom(this.root).querySelector("#app");
+                var box3 = Polymer.dom(this.root).querySelector("#acc");
+                var dashboard = false;
+                var applications = false;
+                var accounts = false;
+
                 if (!this.firstname || !this.middlename || !this.lastname) {
                     this.msg = 'Please fill-up the required field.';
                 }
                 else {
+                    if (box1.checked == true) {
+                        dashboard = true;
+                    }
+                    if (box2.checked == true) {
+                        applications = true;
+                    }
+                    if (box3.checked == true) {
+                        accounts = true;
+                    }
                     if (this.cellphone.length != 10) {
                         this.msg = 'Error! Invalid cellphone number.';
                     }
@@ -245,21 +295,14 @@
                         if (!this.suffix) {
                             this.suffix = '';
                         }
-                        if (this.roleAdd == 0) {
-                            this.role = 'Manager';
-                            this.access = true;
-                        }
-                        else {
-                            this.role = 'Sales Agent';
-                            this.access = false;
-                        }
+
                         var ref = firebase.database().ref("accountlist");
                         var push = ref.push({
                             accountkey: this.accountkey,
                             access: {
-                                accountlist: this.access,
-                                applications: this.access,
-                                dashboard: this.access
+                                accountlist: accounts,
+                                applications: applications,
+                                dashboard: dashboard
                             },
                             active: true,
                             name: {
@@ -270,7 +313,7 @@
                             },
                             cellphone: this.cellphone,
                             role: this.role,
-                            uid: 'none'
+                            uid: ''
                         });
                         // Polymer.dom(this.root).querySelector("#toast").open();
                         // this.txt = "Account successfully added.";

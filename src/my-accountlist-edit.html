@@ -125,6 +125,11 @@
                 background-color: var(--paper-green-500);
                 color: white;
             }
+
+            paper-checkbox {
+                font-size: 14px;
+                margin-right: 5px;
+            }
         </style>
         <!-- <firebase-document id="transactionFire" path="/accountlist/{{transactionKey}}" data="{{transactionData}}" disabled="true"></firebase-document> -->
         <firebase-query id="query" path="/accountlist/{{transactionKey}}" data="{{editData}}"></firebase-query>
@@ -144,20 +149,25 @@
                     <div class="docu-header">Edit Account</div>
                     <div class="details">
                         <paper-input readonly="true" value="{{accountkey}}" always-float-label label="Account no"></paper-input>
-                        <paper-input required auto-validate pattern="[a-zA-Z-.]*" value="{{firstname}}" always-float-label label="First Name"></paper-input>
-                        <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
-                        <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{lastname}}" always-float-label label="Last Name"></paper-input>
-                        <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{suffix}}" always-float-label label="Suffix"></paper-input>
+                        <paper-input  value="{{firstname}}" always-float-label label="First Name"></paper-input>
+                        <paper-input  value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
+                        <paper-input  value="{{lastname}}" always-float-label label="Last Name"></paper-input>
+                        <paper-input  value="{{suffix}}" always-float-label label="Suffix"></paper-input>
                         <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label
                             label="Cellphone">
                             <div slot="prefix">+63</div>
                         </paper-input>
-                        <paper-dropdown-menu label="Role">
+                        <paper-dropdown-menu style="cursor:pointer" label="Role">
                             <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{roleAdd}}">
                                 <paper-item>Manager</paper-item>
                                 <paper-item>Sales Agent</paper-item>
                             </paper-listbox>
                         </paper-dropdown-menu>
+                        <br>
+                        <div style="font-size:12px; margin-top:1em;">Access</div>
+                        <paper-checkbox id="dash">Dashboard</paper-checkbox>
+                        <paper-checkbox id="app">Applications</paper-checkbox>
+                        <paper-checkbox id="acc">Accounts</paper-checkbox>
                     </div>
                     <br>
                     <br>
@@ -166,7 +176,6 @@
                         <paper-button class="cancel" on-tap="_cancel">Cancel</paper-button>
                     </a>
                     <span style="color:red; font-size:13px; float:right">{{msg}}</span>
-
                 </div>
             </app-header-layout>
         </app-drawer-layout>
@@ -191,7 +200,7 @@
                 transactionKey: {
                     type: String,
                     value: '',
-                    // observer: 'transactionKeyChanged'
+                    observer: 'transactionKeyChanged'
                 },
                 selectedItem: {
                     observer: '_selectedItemChanged'
@@ -205,7 +214,8 @@
                 },
                 roleAdd: {
                     type: Number,
-                    value: 1
+                    value: 1,
+                    observer: 'roleAddChanged'
                 },
                 role: {
                     type: String,
@@ -216,6 +226,14 @@
                     value: ''
                 },
             },
+            roleAddChanged() {
+                if (this.roleAdd == 0) {
+                    this.role = 'Manager';
+                }
+                else {
+                    this.role = 'Sales Agent';
+                }
+            },
             _editDataChanged() {
                 if (this.editData.length > 0) {
                     this.accountkey = this.editData[1].$val;
@@ -224,10 +242,20 @@
                     this.lastname = this.editData[4].lastname;
                     this.suffix = this.editData[4].suffix;
                     this.cellphone = this.editData[3].$val;
-                    // console.log(this.account);
-                    // console.log(this.account[0].accountlist);
-                    var role = this.editData[5].$val;
-                    if (role == "Manager") {
+
+                    if (this.editData[0].accountlist == true) {
+                        Polymer.dom(this.root).querySelector("#acc").checked = true;
+                    }
+
+                    if (this.editData[0].applications == true) {
+                        Polymer.dom(this.root).querySelector("#app").checked = true;
+                    }
+
+                    if (this.editData[0].dashboard == true) {
+                        Polymer.dom(this.root).querySelector("#dash").checked = true;
+                    }
+
+                    if (this.editData[5].$val == "Manager") {
                         this.roleAdd = 0;
                     }
                     else {
@@ -235,9 +263,9 @@
                     }
                 }
             },
-            // transactionKeyChanged(){
-            //     console.log('e',this.transactionKey);
-            // },
+            transactionKeyChanged() {
+                this.$.appheader.resetLayout();
+            },
             getpath() {
                 this.accountkey = this.guid();
             },
@@ -246,10 +274,26 @@
                 return uid.randomUUID(7);
             },
             _done() {
+                var box1 = Polymer.dom(this.root).querySelector("#dash");
+                var box2 = Polymer.dom(this.root).querySelector("#app");
+                var box3 = Polymer.dom(this.root).querySelector("#acc");
+                var dashboard = false;
+                var applications = false;
+                var accounts = false;
+
                 if (!this.firstname || !this.middlename || !this.lastname) {
                     this.msg = 'Please fill-up the required field.';
                 }
                 else {
+                    if (box1.checked == true) {
+                        dashboard = true;
+                    }
+                    if (box2.checked == true) {
+                        applications = true;
+                    }
+                    if (box3.checked == true) {
+                        accounts = true;
+                    }
                     if (this.cellphone.length != 10) {
                         this.msg = 'Error! Invalid cellphone number.';
                     }
@@ -258,20 +302,13 @@
                         if (!this.suffix) {
                             this.suffix = '';
                         }
-                        if (this.roleAdd == 0) {
-                            this.role = 'Manager';
-                            this.access = true;
-                        }
-                        else {
-                            this.role = 'Sales Agent';
-                            this.access = false;
-                        }
+
                         var ref = firebase.database().ref('/accountlist');
                         ref.child(this.transactionKey).update({
                             access: {
-                                accountlist: this.access,
-                                applications: this.access,
-                                dashboard: this.access
+                                accountlist: accounts,
+                                applications: applications,
+                                dashboard: dashboard
                             },
                             name: {
                                 firstname: this.firstname,

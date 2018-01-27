@@ -99,16 +99,8 @@
                 </firebase-query>
 
                 <div id="keySubmittion">
-                    <span hidden$="{{user.phoneNumber}}">
-                        Your email
-                        <b>{{user.email}}</b> has been verified. Enter your account number to continue.
-                        <br>
-                    </span>
-                    <span hidden$="{{!user.phoneNumber}}">
-                        Your account might have been removed or deleted from the system.
-                        <br><span style="font-size:14px"> Please contact Heaven of Peace administrator for the recovery of your account.</span>
-                        <br>
-                    </span>
+                    Your email<b>{{user.email}}</b> has been verified. Enter your account number to continue.
+                    <br>
                     <span style="color:red; font-size:12px;">{{msg}}</span>
                     <paper-input auto-validate required label="Account number" value="{{accKey}}"></paper-input>
                     <br>
@@ -121,7 +113,7 @@
                 <br>
 
                 <div id="codeSubmittion" style="display:none;">
-                    Enter verification code that was sent to your mobile device.
+                    Enter verification code that was sent to your mobile phone number <b>{{phoneNumber}}</b>.
                     <br>
                     <span style="color:red; font-size:12px;">{{msg}}</span>
                     <paper-input value="{{confirmationCode}}" allowed-pattern="[\d]" label="Verification code" maxlength="6" prevent-invalid-input
@@ -198,7 +190,7 @@
                     type: String,
                     observer: '_accKeyChanged'
                 },
-                accountInfo: Object
+                accountInfo: Object,
             },
 
             _accKeyChanged() {
@@ -214,6 +206,8 @@
                     if (this.accountInfo.length > 0) {
                         this.signInWithPhone();
                         this.msg = '';
+                        var str = this.accountInfo[0].cellphone;
+                        this.phoneNumber = "+63" + str.substring(0, 4) + "....." + str.substring(7,11);
                     }
                     else {
                         this.msg = 'Invalid account number.';
@@ -285,7 +279,7 @@
                     });
                 }
             },
-            
+
             toggleDrawer() {
                 this.dispatchEvent(new CustomEvent('toggleDrawer', {
                     bubbles: true, composed: true, detail: {

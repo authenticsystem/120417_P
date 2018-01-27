@@ -9,26 +9,26 @@
                 width: 100%;
             }
         </style>
+        
+            <div class="card-content" style="width: 100%;">
+                <div id="header" class="header" style="background-color: gray; padding: 16px; padding-bottom: 5px;">
+                    <span id="type" style="background: black; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
+                        [[item.type]]
+                    </span>
 
-        <div class="card-content" style="width: 100%;">
-            <div id="header" class="header" style="background-color: gray; padding: 16px; padding-bottom: 5px;">
-                <span id="type" style="background: black; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
-                    [[item.type]]
-                </span>
-
-                <div style="display:inline-block; margin-left: 8px;">
-                    <!-- <iron-icon id="iconStart" icon="my-icons:access-time" style="color: white;"></iron-icon> -->
-                    <div id="startValue" style="display:inline-block; color: white; font-size: 12px;">
-                        <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
+                    <div style="display:inline-block; margin-left: 8px;">
+                        <!-- <iron-icon id="iconStart" icon="my-icons:access-time" style="color: white;"></iron-icon> -->
+                        <div id="startValue" style="display:inline-block; color: white; font-size: 12px;">
+                            <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
+                        </div>
                     </div>
-                </div>
 
-                <!-- <a href$="{{_getViewDetailsLink(item.$key)}}" target="_top"> -->
-                <!-- <paper-icon-button id="openDetailButton" on-tap="viewDetails" icon="my-icons:open-in-new" alt="View details" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                    <!-- <a href$="{{_getViewDetailsLink(item.$key)}}" target="_top"> -->
+                    <!-- <paper-icon-button id="openDetailButton" on-tap="viewDetails" icon="my-icons:open-in-new" alt="View details" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
                 <paper-tooltip for="openDetailButton" position="left">view details</paper-tooltip> -->
-                <!-- </a> -->
+                    <!-- </a> -->
 
-                <!-- <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
+                    <!-- <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
                     <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
                     <paper-listbox slot="dropdown-content">
                         <paper-item>Lacking</paper-item>
@@ -36,50 +36,50 @@
                     </paper-listbox>
                 </paper-menu-button> -->
 
-                <div id="lotName" style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">
-                    <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
-                    <span id="level" style="display: none;">&nbsp;- Level {{item.lotdetails.level}}</span>
+                    <div id="lotName" style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">
+                        <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
+                        <span id="level" style="display: none;">&nbsp;- Level {{item.lotdetails.level}}</span>
+                    </div>
+
+                    <div id="lotdetails" style="margin-top: -.3em; font-size: 12px; color: white;">{{lotsubdetail}}</div>
+
                 </div>
 
-                <div id="lotdetails" style="margin-top: -.3em; font-size: 12px; color: white;">{{lotsubdetail}}</div>
+                <div style="padding: 16px;">
 
-            </div>
+                    <div id="refKey" style="font-size: 12px; color: black;padding-bottom: 8px;">
+                        Ref. [[item.reference]]
+                    </div>
 
-            <div style="padding: 16px;">
+                    <div>
+                        <iron-icon id="iconStart" icon="my-icons:event" style="color: gray;font-size: 12px;"></iron-icon>
+                        <span style="font-size: 12px;">
+                            [[_getLocalDatetimeFormat(item.start)]]
+                        </span>
+                    </div>
 
-                <div id="refKey" style="font-size: 12px; color: black;padding-bottom: 8px;">
-                    Ref. [[item.reference]]
+                    <div style="padding-bottom: 10px;">
+                        <iron-icon id="expiryPart" icon="my-icons:alarm" style="display: none; color: gray;font-size: 12px;"></iron-icon>
+                        <span id="expiryPartSpan" style="font-size: 12px;">
+                            [[_getLocalDatetimeFormat(item.expiry)]] &nbsp;
+                            <time-until style="color: rgba(255, 5, 5, 0.774);" datetime$="{{item.expiry}}">{{item.expiry}}</time-until>
+                        </span>
+                    </div>
+
+                    <div style="padding-bottom: 8px;">
+                        <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Buyer</div>
+                        <span style="font-weight: 400;">
+                            [[item.buyerdetails.firstname]] [[item.buyerdetails.middlename]] [[item.buyerdetails.lastname]]
+                        </span>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Agent</div>
+                        <span style="font-weight: 400;">[[item.agentdetails.firstname]] [[item.agentdetails.middlename]] [[item.agentdetails.lastname]]</span>
+                    </div>
                 </div>
 
-                <div>
-                    <iron-icon id="iconStart" icon="my-icons:event" style="color: gray;font-size: 12px;"></iron-icon>
-                    <span style="font-size: 12px;">
-                        [[_getLocalDatetimeFormat(item.start)]]
-                    </span>
-                </div>
 
-                <div style="padding-bottom: 10px;">
-                    <iron-icon id="expiryPart" icon="my-icons:alarm" style="display: none; color: gray;font-size: 12px;"></iron-icon>
-                    <span id="expiryPartSpan" style="font-size: 12px;">
-                        [[_getLocalDatetimeFormat(item.expiry)]] &nbsp;
-                        <time-until style="color: rgba(255, 5, 5, 0.774);" datetime$="{{item.expiry}}">{{item.expiry}}</time-until>
-                    </span>
-                </div>
-
-                <div style="padding-bottom: 8px;">
-                    <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Buyer</div>
-                    <span style="font-weight: 400;">
-                        [[item.buyerdetails.firstname]] [[item.buyerdetails.middlename]] [[item.buyerdetails.lastname]]
-                    </span>
-                </div>
-                <div>
-                    <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Agent</div>
-                    <span style="font-weight: 400;">[[item.agentdetails.firstname]] [[item.agentdetails.middlename]] [[item.agentdetails.lastname]]</span>
-                </div>
-            </div>
-
-
-            <!-- <div style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle; ">
+                <!-- <div style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle; ">
                 <div style="margin-left: 16px; margin-top: 8px;">
                     <iron-icon id="expiryPart" icon="my-icons:alarm" style="display: none; color: rgba(255, 5, 5, 0.774);"></iron-icon>
                     <span id="expiryPartSpan" style="display: none;  color:rgba(255, 5, 5, 0.774); font-size: 12px;">
@@ -87,7 +87,7 @@
                 </div>
             </div> -->
 
-        </div>
+            </div>
 
     </template>
 
