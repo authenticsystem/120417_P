@@ -15,6 +15,7 @@
                 <span id="type" style="background: black; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
                     [[item.type]]
                 </span>
+                <br><span style="background: rgb(168, 228, 134); border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">[[item.approval]]</span>
 
                 <div style="display:inline-block; margin-left: 8px;">
                     <!-- <iron-icon id="iconStart" icon="my-icons:access-time" style="color: white;"></iron-icon> -->
@@ -64,6 +65,7 @@
                         [[_getLocalDatetimeFormat(item.expiry)]] &nbsp;
                         <time-until style="color: rgba(255, 5, 5, 0.774);" datetime$="{{item.expiry}}">{{item.expiry}}</time-until>
                     </span>
+              
                 </div>
 
                 <div style="padding-bottom: 8px;">
