@@ -8,135 +8,399 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
+<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
-<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="my-icons.html">
+<link rel="import" href="shared-styles.html">
+
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+
+<link rel="import" href="search-bar.html">
+<link rel="import" href="my-briefcase-new.html">
+<link rel="import" href="my-briefcase-edit.html">
+<link rel="import" href="my-briefcase-card.html">
+<link rel="import" href="my-application-detail.html">
+
+
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+
+<link rel="import" href="time-element.html">
+<!-- <script src="../bower_components/time-elements/time-elements.js"></script> -->
+
+<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+
 
 <dom-module id="my-briefcase">
   <template>
     <style include="shared-styles">
       :host {
-        display: block;
+        height: 100vh;
+        margin: 0;
 
-        padding: 10px;
+        display: flex;
+        flex-direction: column;
       }
 
-      app-header {
+      .avatar {
+        height: 40px;
+        width: 40px;
+        border-radius: 20px;
+        box-sizing: border-box;
+        background-color: #DDD;
+      }
+
+      .pad {
+        padding: 0 16px;
+        @apply --layout-flex;
+        @apply --layout-vertical;
+      }
+
+      .primary {
+        font-size: 18px;
+        text-transform: capitalize;
+      }
+
+      .shortText,
+      .longText {
+        font-size: 12px;
+      }
+
+      .longText {
+        color: gray;
+        margin-bottom: -0.5em;
+      }
+
+      .spacer {
+        @apply --layout-flex;
+      }
+
+      @media (max-width: 768px) {
+        iron-list {
+          margin: 16px;
+          /* margin-top: 16px; */
+          display: flex;
+          height: 100vh;
+          flex-direction: column;
+          border-radius: 3px;
+          /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
+        }
+        paper-search-bar {
+          margin-left: 80px;
+          width: 50%;
+          color: black;
+        }
+      }
+
+      @media (min-width: 768px) {
+        iron-list {
+          width: 765px;
+          margin: 16px auto;
+          /* margin-top: 16px; */
+          height: 100vh;
+          border-radius: 3px;
+          /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
+        }
+        paper-search-bar {
+          margin-left: 50px;
+          width: 50%;
+          color: black;
+        }
+      }
+
+      #tool1 {
         color: rgb(255, 255, 255);
         background-color: #388E3C;
+      }
+
+      #tool2 {
+        background-color: white;
+      }
+
+      #btn-arrow {
+        position: absolute;
+        color: black;
+      }
+
+      #btn-menu {
+        color: gray;
+        position: fixed;
+        right: 40px;
+      }
+
+      #btn-clear {
+        position: fixed;
+        right: 80px;
+        color: gray;
+      }
+
+      paper-fab.fab-menu {
+        position: fixed;
+        right: 32px;
+        bottom: 32px;
+      }
+
+      paper-fab.fab-search {
+        position: fixed;
+        right: 40px;
+        bottom: 104px;
       }
 
       paper-icon-button.menu {
         margin-right: 16px;
       }
 
-      iron-image {
-        margin: 0 auto;
+      .item {
+        @apply --layout-horizontal;
+        /* padding: 20px; */
+        background-color: white;
+        border-bottom: 1px solid #ddd;
+        cursor: pointer;
+        margin-bottom: 10px;
+        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
       }
-      /* .bg { */
-        /* The image used */
-        /* background-image: url("/images/manifest/icon-72x72.png"); */
-
-        /* Full height */
-        /* height: 100%; */
-
-        /* Center and scale the image nicely */
-        /* background-position: center; */
-        /* background-repeat: no-repeat; */
-        /* background-size: cover; */
-      /* } */
     </style>
 
+    <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
+    <!-- <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route> -->
+    <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
 
-    <app-header-layout fullbleed has-scrolling-region>
-      <app-header fixed slot="header">
-        <app-toolbar primary>
-          <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-          <div main-title>Briefcase</div>
-        </app-toolbar>
-      </app-header>
+    <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
+    <div hidden$="{{!applicationActive}}">
+      <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
+        <div name="">
+          <app-header-layout fullbleed has-scrolling-region>
+            <app-header fixed slot="header">
+              <app-toolbar primary id="tool1">
+                <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                <div main-title>Draft Briefcase</div>
+              </app-toolbar>
+            </app-header>
 
-      <!-- <skeleton-carousel dots nav loop>
-        <div>
-          <iron-image placeholder="images/brochure/b1-alt.jpg" data-src="images/brochure/b1.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b2-alt.jpg" data-src="images/brochure/b2.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b3-1-alt.jpg" data-src="images/brochure/b3-1.jpg" sizing="contain" preload fade
-            style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b3-2-alt.jpg" data-src="images/brochure/b3-2.jpg" sizing="contain" preload fade
-            style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b3-3-alt.jpg" data-src="images/brochure/b3-3.jpg" sizing="contain" preload fade
-            style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b3-4-alt.jpg" data-src="images/brochure/b3-4.jpg" sizing="contain" preload fade
-            style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b4-alt.jpg" data-src="images/brochure/b4.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b5-alt.jpg" data-src="images/brochure/b5.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b6-alt.jpg" data-src="images/brochure/b6.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b7-alt.jpg" data-src="images/brochure/b7.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b8-alt.jpg" data-src="images/brochure/b8.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b9-alt.jpg" data-src="images/brochure/b9.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b10-alt.jpg" data-src="images/brochure/b10.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b11-alt.jpg" data-src="images/brochure/b11.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-      </skeleton-carousel> -->
+            <firebase-query id="query" path="/briefcasedraft" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
+              end-at="{{typeValue}}" limit-to-last="2">
+            </firebase-query>
+            
+          <iron-scroll-threshold id="threshold">
 
-      <!-- <div class="bg"> -->
+              <template is="dom-if" if="{{access}}">
+                <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
+                  <div style="text-align:center">{{msg}}</div>
+                  <paper-toast id="toast" text="" duration="0"></paper-toast>
+                  <template>
+                    <div class="divSeparator">
+                      <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
 
-        <div class="card">
-            <iron-image placeholder="images/manifest/icon-512x512.png" data-src="images/manifest/icon-512x512.png" sizing="cover" preload fade style="width:200px; height:200px;"></iron-image></br>
+                        <my-briefcase-card item="{{item}}"></my-briefcase-card>
 
-          Content (later): </br>
-            BRIEFCASE
+                        <div tabindex="0">
+                          <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
+                            <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
+                              style="display:inline-block;position: absolute;  right: 10px; color: white; top:8px;"></paper-icon-button>
+                            <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
+                          </a>
+                        </div>
+
+                        <!-- <div tabindex="1">
+                          <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
+                            <paper-icon-button id="openDetailButton" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new"
+                              alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                            <paper-tooltip position="left">view details</paper-tooltip>
+                          </a>
+                        </div> -->
+
+                      </div>
+
+                    </div>
+
+                  </template>
+                </iron-list>
+              </template>
+
+            </iron-scroll-threshold>
+          </app-header-layout>
+
+          <template is="dom-if" if="{{access}}">
+            <a href="/briefcase/new" style="text-decoration: none;">
+              <paper-fab noink class="fab-menu" on-tap="_briefcasenew" icon="my-icons:add"></paper-fab>
+            </a>
+          </template>
+
         </div>
 
+        <template is="dom-if" if="{{access}}">
+          <div name="/new">
+            <div id="appnew"></div>
+            <my-briefcase-new id="d23" path="" prev-route="{{route.prefix}}" user-id="0"></my-briefcase-new>
+          </div>
+        </template>
 
-      <!-- </div> -->
+        <div name="view404">Not found.</div>
+      </iron-pages>
+    </div>
 
+    <template is="dom-if" if="{{access}}">
 
-
-    </app-header-layout>
-
+      <div hidden$="{{!editActive}}">
+        <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
+        <div id="appedit"></div>
+        <my-briefcase-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-briefcase-edit>
+        <!-- </template> -->
+      </div>
+    </template>
 
   </template>
-
   <script>
-    class MyBriefcase extends Polymer.Element {
-      static get is() { return 'my-briefcase'; }
+    Polymer({
+      is: 'my-briefcase',
 
-      static get properties() {
-        return {
-          narrow: {
-            type: Boolean,
-            notify: true
+      properties: {
+        user: Object,
+        items: {
+          type: Array,
+          value: function () {
+            return [];
           }
-        };
-      }
+        },
+        narrow: {
+          type: Boolean,
+          notify: true
+        },
+        applications: {
+          type: Object,
+        },
+        selectedType: {
+          type: String,
+          value: ''
+        },
+        filterBy: {
+          type: Number,
+          value: 2
+        },
+        access: {
+          type: Boolean,
+          value: false
+        },
+        openSearch: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+        search: {
+          type: String,
+          value: '',
+        },
+        route: Object,
+        routeData: Object,
+      },
+
+      observers: [
+        '_searchChanged(filterBy, search)',
+        '_applicationChanged(applications)'
+      ],
+      // _userChanged(){
+      //   console.log(this.user)
+      // },
+      _applicationChanged(e) {
+        // console.log(this.user)
+        if (this.search) {
+          if (e.length == 0) {
+            this.msg = 'No result found.';
+          }
+          else {
+            this.msg = '';
+          }
+        }
+      },
+      // ready() {
+      //   var ref = firebase.database().ref("accountlist");
+      //   var ref = new Firebase("hpmg-56df3");
+      //   var authData = ref.getAuth();
+
+
+      //   if (authData) {
+      //     console.log("Authenticated user with uid:", authData.uid);
+      //   }
+      // },
+
+      toggleSearch() {
+        this.openSearch = true;
+      },
+
+      toggleReturn() {
+        this.openSearch = false;
+        this.search = '';
+      },
+
+      toggleClear() {
+        this.search = '';
+      },
+
+      _searchChanged(g, e) {
+
+        if (g) {
+          if (g == 1) {
+            // this.selectedLabel = 'by reference';
+            if (e) {
+              this.selectedType = 'reference';
+            }
+          }
+          else if (g == 2) {
+            // this.selectedLabel = 'by lot';
+            if (e) {
+              this.selectedType = 'lot';
+            }
+          }
+          else if (g == 3) {
+            // this.selectedLabel = 'by type';
+            if (e) {
+              this.selectedType = 'type';
+              e = e.charAt(0).toUpperCase() + e.slice(1);
+            }
+          }
+          else if (g == 4) {
+            // this.selectedLabel = 'by buyer lastname';
+            if (e) {
+              this.selectedType = 'buyerdetails/lastname';
+            }
+          }
+        }
+
+        if (e) {
+          this.typeValue = e;
+        }
+        else {
+          this.selectedType = '';
+          this.typeValue = '';
+          this.msg = '';
+        }
+      },
+
+      iconForItem(item) {
+        return item ? (item.integer < 50 ? 'my-icons:star-border' : 'my-icons:star') : '';
+      },
+
+      getClassForItem(item, selected) {
+        // this.colorSelected = item.type;
+        // console.log(this.colorSelected);
+        return selected ? 'item expanded' : 'item';
+      },
 
       toggleDrawer() {
         this.dispatchEvent(new CustomEvent('toggleDrawer', {
@@ -145,14 +409,86 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }));
         this.$.narrow = !this.$.narrow;
+      },
+
+      loadMoreDat() {
+        var self = this;
+        var people = e.detail.response.results;
+        people.forEach(function (element) {
+          self.push('items', element);
+        });
+
+        asyncStuff(function done() {
+          ironScrollTheshold.clearTriggers();
+        });
+      },
+
+      _briefcasenew() {
+        var node = Polymer.dom(this.root).querySelector("#appnew");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-briefcase-new");
+          newDiv.setAttribute("id", "d23");
+          newDiv.setAttribute("user-id", this.user.uid);
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          // newDiv.setAttribute("block", "3")
+          //if open existing
+          var currentDiv = document.getElementById("appnew");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+        }
+      },
+
+      // _getViewDetailsLink(e) {
+      //   return '/applications/detail/' + e.toString();
+      // },
+
+      _getEditAppLink(e) {
+        return '/briefcase/edit/' + e.toString();
+      },
+
+      // viewDetails(e) {
+      //   var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+      //   var node = Polymer.dom(this.root).querySelector("#appdetail");
+      //   if (node) {
+      //     var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
+      //     if (oldDiv) {
+      //       Polymer.dom(node.parentNode).removeChild(oldDiv);
+      //     }
+      //     var newDiv = document.createElement("my-application-detail");
+      //     newDiv.setAttribute("id", "d24")
+      //     newDiv.setAttribute("transaction-key", data_args)
+      //     newDiv.setAttribute("prev-route", this.route.prefix);
+      //     //if open existing
+      //     var currentDiv = document.getElementById("appdetail");
+      //     Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+
+      //   }
+      // },
+
+      editDetails(e) {
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var node = Polymer.dom(this.root).querySelector("#appedit");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-briefcase-edit");
+          newDiv.setAttribute("id", "d25")
+          newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          //if open existing
+          var currentDiv = document.getElementById("appedit");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+        }
       }
 
-    }
 
 
+    })
 
-
-
-    window.customElements.define(MyBriefcase.is, MyBriefcase);
   </script>
 </dom-module>
