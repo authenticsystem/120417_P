@@ -130,53 +130,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
       </div>
     </app-header-layout>
-
-    <!-- <div class="card">
-
-        <span hidden$="{{user.emailVerified}}">
-          <paper-icon-button icon="my-icons:close" on-tap="_signOut" style="float:right" title="Sign Out"></paper-icon-button>
-          <h1>Verify Email</h1>
-          <span>Let us know if this email belongs to you.
-            <br> Click the link in the email sent to
-            <b>[[user.email]]</b>.
-          </span>
-          <br>
-          <br>
-          <div class="action" style="float:right">
-            <paper-button on-tap="_reload" title="Already Verified">Verified</paper-button>
-            <paper-button on-tap="_resend" toggles raised class="custom green" title="Resend Verification">Resend</paper-button>
-          </div>
-        </span>
-
-        <span hidden$="{{!user.emailVerified}}">
-
-          <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style="border-radius:30px; height:150px; width:150px;"></img>
-          <img hidden$="{{user.photoURL}}" src="../images/user.png" style="border-radius:30px; height:150px; width:150px;"></img>
-          <img src="{{downloadURL}}"></img>
-          <paper-input label="{{_userName(user.displayName)}}" id="name"></paper-input>
-          <paper-input readonly label="{{user.email}}" id="email"></paper-input>
-          <paper-input label="{{_role(account)}}" readonly></paper-input>
-
-          <div class="card-actions">
-            <div class="horizontal justified">
-              <div style="float:right">
-                <span style="font-size:14px;" hidden$="{{verified}}">
-                  Account not link. Link your account
-                  <a href="/account-link">here</a>.
-                </span>
-                <span hidden$="{{!verified}}">
-                  <iron-icon icon="my-icons:check"></iron-icon> Account linked
-                </span>
-              </div>
-            </div>
-          </div>
-
-        </span>
-        <paper-toast id="toast" text="Successfully updated!"></paper-toast>
-
-      </div>
-
-    </app-header-layout>
   </template>
   <script>
     Polymer({
@@ -184,42 +137,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       properties: {
         account: {
           type: Object,
+          observer: 'accountChanged'
         },
-        verified: {
-          type: Boolean,
-          value: false
-        }
       },
 
-      _resend() {
-        var user = firebase.auth().currentUser;
-        user.sendEmailVerification().then(function () {
-          // Email sent.
-          window.location.reload();
-        }).catch(function (error) {
-          // An error happened.
-        });
-      },
-
-      _reload() {
-        window.location.reload();
-      },
-
-      _userName(e) {
-        if (e) return e;
-        else return 'Name not defined';
-      },
-
-      _role(e) {
-        if (Object.keys(e).length > 0) {
-          this.verified = true;
-          if (e[0].role) return e[0].role;
-          else return 'Role not yet assign'
-        }
-        else {
-          this.verified = false;
-          return 'Role Unknown'
-        };
+      accountChanged(){
+        this.firstname = this.account[0].name.firstname;
+        this.middlename = this.account[0].name.middlename;
+        this.lastname = this.account[0].name.lastname;
+        this.suffix = this.account[0].name.suffix;
+        console.log(account);
       },
 
       toggleDrawer() {
@@ -230,30 +157,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }));
         this.$.narrow = !this.$.narrow;
       },
-
-      _update() {
-        var user = firebase.auth().currentUser;
-        var name = Polymer.dom(this.root).querySelector("#name");
-        user.updateProfile({
-          displayName: name.value
-        }).then(function () {
-          // Update successful.
-          window.location.reload()
-        }).catch(function (error) {
-          // An error happened.
-        });
-      },
-
-      _signOut() {
-        firebase.auth().signOut().then(function () {
-          // Sign-out successful.
-          window.location.reload()
-          this.set("route.path", "");
-        }).catch(function (error) {
-          // An error happened.
-        });
-
-      }
     })
 
 

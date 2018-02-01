@@ -24,12 +24,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
-<<<<<<< HEAD
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../bower_components/paper-badge/paper-badge.html">
-=======
->>>>>>> origin/peter
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 
@@ -39,15 +36,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="search-bar.html">
 <link rel="import" href="my-briefcase-new.html">
-<<<<<<< HEAD
 <link rel="import" href="my-briefcasedraft-detail.html">
 <link rel="import" href="my-application-edit.html">
-=======
 <link rel="import" href="my-briefcase-edit.html">
 <link rel="import" href="my-briefcase-card.html">
 <link rel="import" href="my-application-detail.html">
 
->>>>>>> origin/peter
 
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 
@@ -55,12 +49,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!-- <script src="../bower_components/time-elements/time-elements.js"></script> -->
 
 <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
-<<<<<<< HEAD
 <link rel="import" href="my-briefcase-card.html">
-=======
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
->>>>>>> origin/peter
 
 <dom-module id="my-briefcase">
   <template>
@@ -105,16 +96,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .spacer {
         @apply --layout-flex;
       }
-<<<<<<< HEAD
-
-      @media (max-width: 768px) {
-        iron-list {
-          margin: 16px;
-          /* margin-top: 16px; */
-          display: flex;
-          height: 100vh;
-          flex-direction: column;
-=======
 
       @media (max-width: 768px) {
         iron-list {
@@ -139,28 +120,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           margin: 16px auto;
           /* margin-top: 16px; */
           height: 100vh;
->>>>>>> origin/peter
-          border-radius: 3px;
-          /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
-        }
-        paper-search-bar {
-<<<<<<< HEAD
-          margin-left: 80px;
-=======
-          margin-left: 50px;
->>>>>>> origin/peter
-          width: 50%;
-          color: black;
-        }
-      }
-
-<<<<<<< HEAD
-      @media (min-width: 768px) {
-        iron-list {
-          width: 765px;
-          margin: 16px auto;
-          /* margin-top: 16px; */
-          height: 100vh;
           border-radius: 3px;
           /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
         }
@@ -171,8 +130,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-=======
->>>>>>> origin/peter
       #tool1 {
         color: rgb(255, 255, 255);
         background-color: #388E3C;
@@ -225,7 +182,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
       }
     </style>
-<<<<<<< HEAD
     <iron-pages selected="{{selected}}">
       <div>
         <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
@@ -519,86 +475,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </template>
       </div>
     </iron-pages>
-=======
-
-    <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
-    <!-- <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route> -->
-    <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
-
-    <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
-    <div hidden$="{{!applicationActive}}">
-      <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
-        <div name="">
-          <app-header-layout fullbleed has-scrolling-region>
-            <app-header fixed slot="header">
-              <app-toolbar primary id="tool1">
-                <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-                <div main-title>Draft Briefcase</div>
-              </app-toolbar>
-            </app-header>
-
-            <firebase-query id="query" path="/briefcasedraft" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
-              end-at="{{typeValue}}" limit-to-last="2">
-            </firebase-query>
-            
-          <iron-scroll-threshold id="threshold">
-
-              <template is="dom-if" if="{{access}}">
-                <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
-                  <div style="text-align:center">{{msg}}</div>
-                  <paper-toast id="toast" text="" duration="0"></paper-toast>
-                  <template>
-                    <div class="divSeparator">
-                      <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
-
-                        <my-briefcase-card item="{{item}}"></my-briefcase-card>
-
-                        <div tabindex="0">
-                          <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
-                            <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
-                              style="display:inline-block;position: absolute;  right: 10px; color: white; top:8px;"></paper-icon-button>
-                            <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
-                          </a>
-                        </div>
-
-                        <!-- <div tabindex="1">
-                          <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
-                            <paper-icon-button id="openDetailButton" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new"
-                              alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
-                            <paper-tooltip position="left">view details</paper-tooltip>
-                          </a>
-                        </div> -->
-
-                      </div>
-
-                    </div>
-
-                  </template>
-                </iron-list>
-              </template>
-
-            </iron-scroll-threshold>
-          </app-header-layout>
-
-          <template is="dom-if" if="{{access}}">
-            <a href="/briefcase/new" style="text-decoration: none;">
-              <paper-fab noink class="fab-menu" on-tap="_briefcasenew" icon="my-icons:add"></paper-fab>
-            </a>
-          </template>
-
-        </div>
-
-        <template is="dom-if" if="{{access}}">
-          <div name="/new">
-            <div id="appnew"></div>
-            <my-briefcase-new id="d23" path="" prev-route="{{route.prefix}}" user-id="0"></my-briefcase-new>
-          </div>
-        </template>
-
-        <div name="view404">Not found.</div>
-      </iron-pages>
-    </div>
->>>>>>> origin/peter
 
     <template is="dom-if" if="{{access}}">
 
@@ -616,28 +492,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-briefcase',
 
       properties: {
-<<<<<<< HEAD
-=======
         user: Object,
->>>>>>> origin/peter
         items: {
           type: Array,
           value: function () {
             return [];
           }
         },
-<<<<<<< HEAD
         selected: {
           type: Object,
           value: 0
         },
-=======
->>>>>>> origin/peter
         narrow: {
           type: Boolean,
           notify: true
         },
-<<<<<<< HEAD
         briefcasedraft: {
           type: Object,
         },
@@ -647,11 +516,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         key: {
           type: String
         },
-=======
-        applications: {
-          type: Object,
-        },
->>>>>>> origin/peter
         selectedType: {
           type: String,
           value: ''
@@ -669,20 +533,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: false,
           notify: true
         },
-<<<<<<< HEAD
-        // selectedLabel: {
-        //   type: String,
-        //   value: 'By Lot'
-        // },
-=======
->>>>>>> origin/peter
         search: {
           type: String,
           value: '',
         },
         route: Object,
         routeData: Object,
-<<<<<<< HEAD
         count: Number
       },
       observers: [
@@ -699,19 +555,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _applicationChanged(e) {
-=======
-      },
-
-      observers: [
-        '_searchChanged(filterBy, search)',
-        '_applicationChanged(applications)'
-      ],
-      // _userChanged(){
-      //   console.log(this.user)
-      // },
-      _applicationChanged(e) {
-        // console.log(this.user)
->>>>>>> origin/peter
         if (this.search) {
           if (e.length == 0) {
             this.msg = 'No result found.';
@@ -721,19 +564,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
       },
-<<<<<<< HEAD
-=======
-      // ready() {
-      //   var ref = firebase.database().ref("accountlist");
-      //   var ref = new Firebase("hpmg-56df3");
-      //   var authData = ref.getAuth();
-
-
-      //   if (authData) {
-      //     console.log("Authenticated user with uid:", authData.uid);
-      //   }
-      // },
->>>>>>> origin/peter
 
       toggleSearch() {
         this.openSearch = true;
@@ -776,15 +606,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               this.selectedType = 'buyerdetails/lastname';
             }
           }
-<<<<<<< HEAD
           else {
             // this.selectedLabel = 'by agent lastname';
             if (e) {
               this.selectedType = 'agentdetails/lastname';
             }
           }
-=======
->>>>>>> origin/peter
         }
 
         if (e) {
@@ -828,13 +655,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       },
 
-<<<<<<< HEAD
-      _appsnew() {
-        var node = Polymer.dom(this.root).querySelector("#briefcasenew");
-=======
       _briefcasenew() {
         var node = Polymer.dom(this.root).querySelector("#appnew");
->>>>>>> origin/peter
         if (node) {
           var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
           if (oldDiv) {
@@ -842,29 +664,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
           var newDiv = document.createElement("my-briefcase-new");
           newDiv.setAttribute("id", "d23");
-<<<<<<< HEAD
           newDiv.setAttribute("prev-route", this.route.prefix);
           // newDiv.setAttribute("block", "3")
           //if open existing
           var currentDiv = document.getElementById("briefcasenew");
-=======
-          newDiv.setAttribute("user-id", this.user.uid);
-          newDiv.setAttribute("prev-route", this.route.prefix);
-          // newDiv.setAttribute("block", "3")
-          //if open existing
-          var currentDiv = document.getElementById("appnew");
->>>>>>> origin/peter
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       },
 
-<<<<<<< HEAD
       _getViewDetailsLink(e) {
         return '/briefcase/detail/' + e.toString();
-      },
-
-      _getEditAppLink(e) {
-        return '/applications/edit/' + e.toString();
       },
 
       viewDetails(e) {
@@ -883,24 +692,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var currentDiv = document.getElementById("briefcasedraftdetail");
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
 
-        }
-      },
-
-      editDetails(e) {
-        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-        var node = Polymer.dom(this.root).querySelector("#appedit");
-        if (node) {
-          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
-          if (oldDiv) {
-            Polymer.dom(node.parentNode).removeChild(oldDiv);
-          }
-          var newDiv = document.createElement("my-application-edit");
-          newDiv.setAttribute("id", "d25")
-          newDiv.setAttribute("transaction-key", data_args)
-          newDiv.setAttribute("prev-route", this.route.prefix);
-          //if open existing
-          var currentDiv = document.getElementById("appedit");
-          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       },
 
@@ -926,7 +717,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       //     type: this.briefcasedraft[0].type,
       //   });
       // }
-=======
       // _getViewDetailsLink(e) {
       //   return '/applications/detail/' + e.toString();
       // },
@@ -971,7 +761,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       }
->>>>>>> origin/peter
 
 
 
