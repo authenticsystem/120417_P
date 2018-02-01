@@ -638,112 +638,112 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.narrow = !this.$.narrow;
       },
 
-    _briefcasenew() {
-      var node = Polymer.dom(this.root).querySelector("#appnew");
-      if (node) {
-        var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
-        if (oldDiv) {
-          Polymer.dom(node.parentNode).removeChild(oldDiv);
+      _briefcasenew() {
+        var node = Polymer.dom(this.root).querySelector("#appnew");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-briefcase-new");
+          newDiv.setAttribute("id", "d23");
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          // newDiv.setAttribute("block", "3")
+          //if open existing
+          var currentDiv = document.getElementById("briefcasenew");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
-        var newDiv = document.createElement("my-briefcase-new");
-        newDiv.setAttribute("id", "d23");
-        newDiv.setAttribute("prev-route", this.route.prefix);
-        // newDiv.setAttribute("block", "3")
-        //if open existing
-        var currentDiv = document.getElementById("briefcasenew");
-        Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-      }
-    },
+      },
 
-    _getViewDetailsLink(e) {
-      return '/briefcase/detail/' + e.toString();
-    },
+      _getViewDetailsLink(e) {
+        return '/briefcase/detail/' + e.toString();
+      },
 
-    viewDetails(e) {
-      var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-      var node = Polymer.dom(this.root).querySelector("#briefcasedraftdetail");
-      if (node) {
-        var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
-        if (oldDiv) {
-          Polymer.dom(node.parentNode).removeChild(oldDiv);
+      viewDetails(e) {
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var node = Polymer.dom(this.root).querySelector("#briefcasedraftdetail");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-briefcasedraft-detail");
+          newDiv.setAttribute("id", "d24")
+          newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          //if open existing
+          var currentDiv = document.getElementById("briefcasedraftdetail");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+
         }
-        var newDiv = document.createElement("my-briefcasedraft-detail");
-        newDiv.setAttribute("id", "d24")
-        newDiv.setAttribute("transaction-key", data_args)
-        newDiv.setAttribute("prev-route", this.route.prefix);
-        //if open existing
-        var currentDiv = document.getElementById("briefcasedraftdetail");
-        Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+      },
 
-      }
-    },
+      // _sendRequest() {
+      //   var ref = firebase.database().ref("briefcase").push({
+      //     // briefcasedraftkey: this.briefcase[0].$key
+      //     agent: this.briefcasedraft[0].agent,
+      //     agentdetails: this.briefcasedraft[0].agentdetails,
+      //     buyer: this.briefcasedraft[0].buyer,
+      //     buyerdetails: this.briefcasedraft[0].buyerdetails,
+      //     expiry: this.briefcasedraft[0].expiry,
+      //     isdraft: this.briefcasedraft[0].isdraft,
+      //     isserved: this.briefcasedraft[0].isserved,
+      //     lot: this.briefcasedraft[0].lot,
+      //     lotdetails: this.briefcasedraft[0].lotdetails,
+      //     processed: this.briefcasedraft[0].processed,
+      //     processordetails: this.briefcasedraft[0].processordetails,
+      //     reference: this.briefcasedraft[0].reference,
+      //     served: this.briefcasedraft[0].served,
+      //     start: this.briefcasedraft[0].start,
+      //     status: this.briefcasedraft[0].status,
+      //     timestamp: this.briefcasedraft[0].timestamp,
+      //     type: this.briefcasedraft[0].type,
+      //   });
+      // }
+      // _getViewDetailsLink(e) {
+      //   return '/applications/detail/' + e.toString();
+      // },
 
-    // _sendRequest() {
-    //   var ref = firebase.database().ref("briefcase").push({
-    //     // briefcasedraftkey: this.briefcase[0].$key
-    //     agent: this.briefcasedraft[0].agent,
-    //     agentdetails: this.briefcasedraft[0].agentdetails,
-    //     buyer: this.briefcasedraft[0].buyer,
-    //     buyerdetails: this.briefcasedraft[0].buyerdetails,
-    //     expiry: this.briefcasedraft[0].expiry,
-    //     isdraft: this.briefcasedraft[0].isdraft,
-    //     isserved: this.briefcasedraft[0].isserved,
-    //     lot: this.briefcasedraft[0].lot,
-    //     lotdetails: this.briefcasedraft[0].lotdetails,
-    //     processed: this.briefcasedraft[0].processed,
-    //     processordetails: this.briefcasedraft[0].processordetails,
-    //     reference: this.briefcasedraft[0].reference,
-    //     served: this.briefcasedraft[0].served,
-    //     start: this.briefcasedraft[0].start,
-    //     status: this.briefcasedraft[0].status,
-    //     timestamp: this.briefcasedraft[0].timestamp,
-    //     type: this.briefcasedraft[0].type,
-    //   });
-    // }
-    // _getViewDetailsLink(e) {
-    //   return '/applications/detail/' + e.toString();
-    // },
+      _getEditAppLink(e) {
+        return '/briefcase/edit/' + e.toString();
+      },
 
-    _getEditAppLink(e) {
-      return '/briefcase/edit/' + e.toString();
-    },
+      // viewDetails(e) {
+      //   var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+      //   var node = Polymer.dom(this.root).querySelector("#appdetail");
+      //   if (node) {
+      //     var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
+      //     if (oldDiv) {
+      //       Polymer.dom(node.parentNode).removeChild(oldDiv);
+      //     }
+      //     var newDiv = document.createElement("my-application-detail");
+      //     newDiv.setAttribute("id", "d24")
+      //     newDiv.setAttribute("transaction-key", data_args)
+      //     newDiv.setAttribute("prev-route", this.route.prefix);
+      //     //if open existing
+      //     var currentDiv = document.getElementById("appdetail");
+      //     Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
 
-    // viewDetails(e) {
-    //   var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-    //   var node = Polymer.dom(this.root).querySelector("#appdetail");
-    //   if (node) {
-    //     var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
-    //     if (oldDiv) {
-    //       Polymer.dom(node.parentNode).removeChild(oldDiv);
-    //     }
-    //     var newDiv = document.createElement("my-application-detail");
-    //     newDiv.setAttribute("id", "d24")
-    //     newDiv.setAttribute("transaction-key", data_args)
-    //     newDiv.setAttribute("prev-route", this.route.prefix);
-    //     //if open existing
-    //     var currentDiv = document.getElementById("appdetail");
-    //     Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+      //   }
+      // },
 
-    //   }
-    // },
-
-    editDetails(e) {
-      var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-      var node = Polymer.dom(this.root).querySelector("#appedit");
-      if (node) {
-        var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
-        if (oldDiv) {
-          Polymer.dom(node.parentNode).removeChild(oldDiv);
+      editDetails(e) {
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var node = Polymer.dom(this.root).querySelector("#appedit");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-briefcase-edit");
+          newDiv.setAttribute("id", "d25")
+          newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          //if open existing
+          var currentDiv = document.getElementById("appedit");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
-        var newDiv = document.createElement("my-briefcase-edit");
-        newDiv.setAttribute("id", "d25")
-        newDiv.setAttribute("transaction-key", data_args)
-        newDiv.setAttribute("prev-route", this.route.prefix);
-        //if open existing
-        var currentDiv = document.getElementById("appedit");
-        Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
       }
-    }
 
 
 
