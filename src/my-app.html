@@ -22,7 +22,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/iron-dropdown/iron-dropdown.html">
 <link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
@@ -53,6 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-accountlist.html">
 <link rel="lazy-import" href="my-reset-password.html">
 <link rel="lazy-import" href="my-activation.html">
+<!-- <link rel="lazy-import" href="my-applied-application.html"> -->
 <link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
 
@@ -290,10 +290,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>Dashboard</span>
                       </paper-icon-item>
                     </a>
+                    <a name="account" href="[[rootPath]]account">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
+                        <span>My Account</span>
+                      </paper-icon-item>
+                    </a>
                     <a name="map" href="[[rootPath]]map">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:map" slot="item-icon"></iron-icon>
                         <span>Map</span>
+                      </paper-icon-item>
+                    </a>
+                    <a name="briefcase" href="[[rootPath]]briefcase">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:folder-shared" slot="item-icon"></iron-icon>
+                        <span>Briefcase</span>
                       </paper-icon-item>
                     </a>
                     <a style$="{{access(appAccess)}}" name="applications" href="[[rootPath]]applications">
@@ -357,6 +369,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
                 <my-dashboard name="dashboard" access="{{dashAccess}}"></my-dashboard>
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
+                <my-briefcase name="briefcase" access="{{appAccess}}" status-known="{{statusKnown}}" user="{{user}}" route="[[subroute]]"></my-briefcase>
                 <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]"></my-applications>
                 <my-briefcase name="briefcase" access="{{appAccess}}" route="[[subroute]]" user="{{user}}"></my-briefcase>
                 <my-briefcase-draft name="briefcase-draft" access="{{appAccess}}" route="[[subroute]]"></my-briefcase-draft>
@@ -375,7 +388,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <center>
           <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img>
           <!-- <img hidden$="{{user.photoURL}}" src="../images/user.png" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img> -->
-          <iron-icon hidden$="{{user.photoURL}}" icon="my-icons:account-circle" style=" height:180px;width:180px; max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></iron-icon>
+          <paper-icon-button hidden$="{{user.photoURL}}" icon="my-icons:account-circle" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></paper-icon-button>
         </center>
         <input type="file" id="fileButton" on-tap="_upload" accept="image/*"></input>
         <progress value="0" max="100" id="uploader" style=" -webkit-appearance: none; width:100%; height:5px;">0%</progress>

@@ -1,7 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 
-<dom-module id="my-briefcase-card">
+<dom-module id="my-applied-card">
     <template>
         <style>
             :host {
@@ -12,13 +12,9 @@
 
         <div class="card-content" style="width: 100%;">
             <div id="header" class="header" style="background-color: gray; padding: 16px; padding-bottom: 5px;">
-
-                <!-- <span id="_isdraft" style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; margin-right:10px">
-                        {{isdraft}}
-                </span> -->
-                <!-- <span id="type" style="background: black; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
+                <span id="type" style="background: black; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
                     [[item.type]]
-                </span> -->
+                </span>
 
                 <div style="display:inline-block; margin-left: 8px;">
                     <!-- <iron-icon id="iconStart" icon="my-icons:access-time" style="color: white;"></iron-icon> -->
@@ -76,10 +72,10 @@
                         [[item.buyerdetails.firstname]] [[item.buyerdetails.middlename]] [[item.buyerdetails.lastname]]
                     </span>
                 </div>
-                <!-- <div>
-                        <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Agent</div>
-                        <span style="font-weight: 400;">[[item.agentdetails.firstname]] [[item.agentdetails.middlename]] [[item.agentdetails.lastname]]</span>
-                    </div> -->
+                <div>
+                    <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Agent</div>
+                    <span style="font-weight: 400;">[[item.agentdetails.firstname]] [[item.agentdetails.middlename]] [[item.agentdetails.lastname]]</span>
+                </div>
             </div>
 
 
@@ -97,7 +93,7 @@
 
     <script>
         Polymer({
-            is: 'my-briefcase-card',
+            is: 'my-applied-card',
             properties: {
                 item: {
                     type: Object,
@@ -111,12 +107,7 @@
             },
             _itemChanged() {
                 if (this.item) {
-                    // if (this.item.isdraft == "false") {
-                    //     this.isdraft = "PENDING";
-                    //     Polymer.dom(this.root).querySelector("#_isdraft").setAttribute("style", "background: yellow; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px; margin-right:10px")
-                    // } else {
-                    //     this.isdraft = "DRAFT"
-                    // }
+
                     this.lotsubdetail = '';
                     if (this.item.lotdetails.maprenderdetails.type_name) this.lotsubdetail = this.item.lotdetails.maprenderdetails.type_name;
                     if (this.item.lotdetails.area) {
@@ -130,15 +121,15 @@
                     if (this.item.lotdetails.maprenderdetails) {
                         Polymer.dom(this.root).querySelector("#header").setAttribute("style", "background-color: " + this.item.lotdetails.maprenderdetails.type_bg_color + "; padding: 16px; padding-bottom: 5px;");
 
-                        // if (this.item.type === 'Hold') {
-                        //     Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: #E65100; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
-                        // }
-                        // else if (this.item.type === 'Reserve') {
-                        //     Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: #FFD600; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px;");
-                        // }
-                        // else if (this.item.type === 'Buy') {
-                        //     Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
-                        // }
+                        if (this.item.type === 'Hold') {
+                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: #E65100; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
+                        }
+                        else if (this.item.type === 'Reserve') {
+                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: #FFD600; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px;");
+                        }
+                        else if (this.item.type === 'Buy') {
+                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
+                        }
 
                         // Polymer.dom(this.root).querySelector("#iconStart").setAttribute("style", "color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";");
                         Polymer.dom(this.root).querySelector("#startValue").setAttribute("style", "display:inline-block; color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";font-size: 12px;");
@@ -179,8 +170,9 @@
             },
 
             _getViewDetailsLink(e) {
-                return '/applications/detail/' + e.toString();
+                return '/applied-application/detail/' + e.toString();
             },
+
 
 
 
