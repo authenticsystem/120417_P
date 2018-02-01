@@ -8,12 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
@@ -52,16 +47,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="my-briefcase-card.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="my-icons.html">
 
 <dom-module id="my-briefcase">
   <template>
     <style include="shared-styles">
       :host {
-        height: 100vh;
-        margin: 0;
+        display: block;
 
-        display: flex;
-        flex-direction: column;
+        padding: 10px;
       }
 
       .avatar {
@@ -385,8 +380,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </template>
                 </app-header>
 
-                <firebase-query id="query" path="/briefcase" data="{{briefcase}}" order-by-child="agent" start-at="{{user.uid}}"
-                  end-at="{{user.uid}}" limit-to-last="50">
+                <firebase-query id="query" path="/briefcase" data="{{briefcase}}" order-by-child="agent" start-at="{{user.uid}}" end-at="{{user.uid}}"
+                  limit-to-last="50">
                 </firebase-query>
 
                 <!-- on-lower-threshold="loadMoreData" -->
@@ -643,128 +638,115 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.narrow = !this.$.narrow;
       },
 
-      loadMoreDat() {
-        var self = this;
-        var people = e.detail.response.results;
-        people.forEach(function (element) {
-          self.push('items', element);
-        });
-
-        asyncStuff(function done() {
-          ironScrollTheshold.clearTriggers();
-        });
-      },
-
-      _briefcasenew() {
-        var node = Polymer.dom(this.root).querySelector("#appnew");
-        if (node) {
-          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
-          if (oldDiv) {
-            Polymer.dom(node.parentNode).removeChild(oldDiv);
-          }
-          var newDiv = document.createElement("my-briefcase-new");
-          newDiv.setAttribute("id", "d23");
-          newDiv.setAttribute("prev-route", this.route.prefix);
-          // newDiv.setAttribute("block", "3")
-          //if open existing
-          var currentDiv = document.getElementById("briefcasenew");
-          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+    _briefcasenew() {
+      var node = Polymer.dom(this.root).querySelector("#appnew");
+      if (node) {
+        var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
+        if (oldDiv) {
+          Polymer.dom(node.parentNode).removeChild(oldDiv);
         }
-      },
-
-      _getViewDetailsLink(e) {
-        return '/briefcase/detail/' + e.toString();
-      },
-
-      viewDetails(e) {
-        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-        var node = Polymer.dom(this.root).querySelector("#briefcasedraftdetail");
-        if (node) {
-          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
-          if (oldDiv) {
-            Polymer.dom(node.parentNode).removeChild(oldDiv);
-          }
-          var newDiv = document.createElement("my-briefcasedraft-detail");
-          newDiv.setAttribute("id", "d24")
-          newDiv.setAttribute("transaction-key", data_args)
-          newDiv.setAttribute("prev-route", this.route.prefix);
-          //if open existing
-          var currentDiv = document.getElementById("briefcasedraftdetail");
-          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-
-        }
-      },
-
-      // _sendRequest() {
-      //   var ref = firebase.database().ref("briefcase").push({
-      //     // briefcasedraftkey: this.briefcase[0].$key
-      //     agent: this.briefcasedraft[0].agent,
-      //     agentdetails: this.briefcasedraft[0].agentdetails,
-      //     buyer: this.briefcasedraft[0].buyer,
-      //     buyerdetails: this.briefcasedraft[0].buyerdetails,
-      //     expiry: this.briefcasedraft[0].expiry,
-      //     isdraft: this.briefcasedraft[0].isdraft,
-      //     isserved: this.briefcasedraft[0].isserved,
-      //     lot: this.briefcasedraft[0].lot,
-      //     lotdetails: this.briefcasedraft[0].lotdetails,
-      //     processed: this.briefcasedraft[0].processed,
-      //     processordetails: this.briefcasedraft[0].processordetails,
-      //     reference: this.briefcasedraft[0].reference,
-      //     served: this.briefcasedraft[0].served,
-      //     start: this.briefcasedraft[0].start,
-      //     status: this.briefcasedraft[0].status,
-      //     timestamp: this.briefcasedraft[0].timestamp,
-      //     type: this.briefcasedraft[0].type,
-      //   });
-      // }
-      // _getViewDetailsLink(e) {
-      //   return '/applications/detail/' + e.toString();
-      // },
-
-      _getEditAppLink(e) {
-        return '/briefcase/edit/' + e.toString();
-      },
-
-      // viewDetails(e) {
-      //   var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-      //   var node = Polymer.dom(this.root).querySelector("#appdetail");
-      //   if (node) {
-      //     var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
-      //     if (oldDiv) {
-      //       Polymer.dom(node.parentNode).removeChild(oldDiv);
-      //     }
-      //     var newDiv = document.createElement("my-application-detail");
-      //     newDiv.setAttribute("id", "d24")
-      //     newDiv.setAttribute("transaction-key", data_args)
-      //     newDiv.setAttribute("prev-route", this.route.prefix);
-      //     //if open existing
-      //     var currentDiv = document.getElementById("appdetail");
-      //     Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-
-      //   }
-      // },
-
-      editDetails(e) {
-        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-        var node = Polymer.dom(this.root).querySelector("#appedit");
-        if (node) {
-          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
-          if (oldDiv) {
-            Polymer.dom(node.parentNode).removeChild(oldDiv);
-          }
-          var newDiv = document.createElement("my-briefcase-edit");
-          newDiv.setAttribute("id", "d25")
-          newDiv.setAttribute("transaction-key", data_args)
-          newDiv.setAttribute("prev-route", this.route.prefix);
-          //if open existing
-          var currentDiv = document.getElementById("appedit");
-          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-        }
+        var newDiv = document.createElement("my-briefcase-new");
+        newDiv.setAttribute("id", "d23");
+        newDiv.setAttribute("prev-route", this.route.prefix);
+        // newDiv.setAttribute("block", "3")
+        //if open existing
+        var currentDiv = document.getElementById("briefcasenew");
+        Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
       }
+    },
+
+    _getViewDetailsLink(e) {
+      return '/briefcase/detail/' + e.toString();
+    },
+
+    viewDetails(e) {
+      var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+      var node = Polymer.dom(this.root).querySelector("#briefcasedraftdetail");
+      if (node) {
+        var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
+        if (oldDiv) {
+          Polymer.dom(node.parentNode).removeChild(oldDiv);
+        }
+        var newDiv = document.createElement("my-briefcasedraft-detail");
+        newDiv.setAttribute("id", "d24")
+        newDiv.setAttribute("transaction-key", data_args)
+        newDiv.setAttribute("prev-route", this.route.prefix);
+        //if open existing
+        var currentDiv = document.getElementById("briefcasedraftdetail");
+        Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+
+      }
+    },
+
+    // _sendRequest() {
+    //   var ref = firebase.database().ref("briefcase").push({
+    //     // briefcasedraftkey: this.briefcase[0].$key
+    //     agent: this.briefcasedraft[0].agent,
+    //     agentdetails: this.briefcasedraft[0].agentdetails,
+    //     buyer: this.briefcasedraft[0].buyer,
+    //     buyerdetails: this.briefcasedraft[0].buyerdetails,
+    //     expiry: this.briefcasedraft[0].expiry,
+    //     isdraft: this.briefcasedraft[0].isdraft,
+    //     isserved: this.briefcasedraft[0].isserved,
+    //     lot: this.briefcasedraft[0].lot,
+    //     lotdetails: this.briefcasedraft[0].lotdetails,
+    //     processed: this.briefcasedraft[0].processed,
+    //     processordetails: this.briefcasedraft[0].processordetails,
+    //     reference: this.briefcasedraft[0].reference,
+    //     served: this.briefcasedraft[0].served,
+    //     start: this.briefcasedraft[0].start,
+    //     status: this.briefcasedraft[0].status,
+    //     timestamp: this.briefcasedraft[0].timestamp,
+    //     type: this.briefcasedraft[0].type,
+    //   });
+    // }
+    // _getViewDetailsLink(e) {
+    //   return '/applications/detail/' + e.toString();
+    // },
+
+    _getEditAppLink(e) {
+      return '/briefcase/edit/' + e.toString();
+    },
+
+    // viewDetails(e) {
+    //   var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+    //   var node = Polymer.dom(this.root).querySelector("#appdetail");
+    //   if (node) {
+    //     var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
+    //     if (oldDiv) {
+    //       Polymer.dom(node.parentNode).removeChild(oldDiv);
+    //     }
+    //     var newDiv = document.createElement("my-application-detail");
+    //     newDiv.setAttribute("id", "d24")
+    //     newDiv.setAttribute("transaction-key", data_args)
+    //     newDiv.setAttribute("prev-route", this.route.prefix);
+    //     //if open existing
+    //     var currentDiv = document.getElementById("appdetail");
+    //     Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+
+    //   }
+    // },
+
+    editDetails(e) {
+      var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+      var node = Polymer.dom(this.root).querySelector("#appedit");
+      if (node) {
+        var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
+        if (oldDiv) {
+          Polymer.dom(node.parentNode).removeChild(oldDiv);
+        }
+        var newDiv = document.createElement("my-briefcase-edit");
+        newDiv.setAttribute("id", "d25")
+        newDiv.setAttribute("transaction-key", data_args)
+        newDiv.setAttribute("prev-route", this.route.prefix);
+        //if open existing
+        var currentDiv = document.getElementById("appedit");
+        Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+      }
+    }
 
 
 
     })
-
   </script>
 </dom-module>
