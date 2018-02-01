@@ -32,7 +32,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 
 <link rel="import" href="search-bar.html">
-<link rel="import" href="my-application-new.html">
+<link rel="import" href="my-briefcase-new.html">
 <link rel="import" href="my-application-detail.html">
 <link rel="import" href="my-application-edit.html">
 
@@ -44,7 +44,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
 <link rel="import" href="my-application-card.html">
 
-<dom-module id="my-applications">
+<dom-module id="my-briefcase-draft">
   <template>
     <style include="shared-styles">
       :host {
@@ -189,7 +189,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <template is="dom-if" if="{{!openSearch}}">
                 <app-toolbar primary id="tool1">
                   <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-                  <div main-title hidden$="{{!access}}">Applications</div>
+                  <div main-title hidden$="{{!access}}">Draft Application</div>
                   <div main-title hidden$="{{access}}">Opps!</div>
                   <paper-icon-button class="menu" icon="my-icons:search" drawer-toggle on-tap="toggleSearch"></paper-icon-button>
                 </app-toolbar>
@@ -216,61 +216,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-toolbar>
               </template>
             </app-header>
-            
 
             <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
               end-at="{{typeValue}}" limit-to-last="50">
             </firebase-query>
 
-            <!-- on-lower-threshold="loadMoreData" -->
-            <iron-scroll-threshold id="threshold">
 
-              <template is="dom-if" if="{{!access}}">
-                <div class="card">
-                  <h3>Sorry!</h3>
-                  <div>You're not allowed to access this content.</div>
-                </div>
-              </template>
-
-              <!-- threshold -->
-              <template is="dom-if" if="{{access}}">
-                <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
-                  <div style="text-align:center">{{msg}}</div>
-                  <paper-toast id="toast" text="" duration="0"></paper-toast>
-                  <template>
-                    <div class="divSeparator">
-                      <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
-
-                        <my-application-card item="{{item}}"></my-application-card>
-
-                        <div tabindex="0">
-                          <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
-                            <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
-                              style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
-                            <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
-                          </a>
-                        </div>
-
-                        <div tabindex="1">
-                          <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
-                            <paper-icon-button id="openDetailButton" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new"
-                              alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
-                            <paper-tooltip position="left">view details</paper-tooltip>
-                          </a>
-                        </div>
-
-                      </div>
-
-                    </div>
-
-                  </template>
-                </iron-list>
-              </template>
-            </iron-scroll-threshold>
 
           </app-header-layout>
           <template is="dom-if" if="{{access}}">
-            <a href="/applications/new" style="text-decoration: none;">
+            <a href="/briefcase-draft/new" style="text-decoration: none;">
               <paper-fab noink class="fab-menu" on-tap="_appsnew" icon="my-icons:add"></paper-fab>
             </a>
           </template>
@@ -279,8 +234,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <template is="dom-if" if="{{access}}">
           <div name="/new">
-            <div id="appnew"></div>
-            <my-application-new id="d23" path="" prev-route="{{route.prefix}}"></my-application-new>
+            <div id="briefcasenew"></div>
+            <my-briefcase-new id="d23" path="" prev-route="{{route.prefix}}"></my-briefcase-new>
           </div>
         </template>
 
@@ -311,7 +266,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <script>
     Polymer({
-      is: 'my-applications',
+      is: 'my-briefcase-draft',
 
       properties: {
         items: {
@@ -463,18 +418,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _appsnew() {
-        var node = Polymer.dom(this.root).querySelector("#appnew");
+        var node = Polymer.dom(this.root).querySelector("#briefcasenew");
         if (node) {
           var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
           if (oldDiv) {
             Polymer.dom(node.parentNode).removeChild(oldDiv);
           }
-          var newDiv = document.createElement("my-application-new");
+          var newDiv = document.createElement("my-briefcase-new");
           newDiv.setAttribute("id", "d23");
           newDiv.setAttribute("prev-route", this.route.prefix);
-          // newDiv.setAttribute("block", "3")
-          //if open existing
-          var currentDiv = document.getElementById("appnew");
+          var currentDiv = document.getElementById("briefcasenew");
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       },

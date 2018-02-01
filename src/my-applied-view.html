@@ -193,7 +193,9 @@
                             <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{applicationKey}}</div>
+
                         <paper-icon-button id="approval" icon="my-icons:check-circle" on-tap="_approvedThis"></paper-icon-button>
+
                         <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteApplicationOpen"></paper-icon-button>
                         <paper-dialog id="deleteApplicationPD">
                             <h2>Delete Application?</h2>
@@ -237,12 +239,9 @@
                                 <span>1. Lot Details</span>
                             </div>
                             <div class="details">
-                                <paper-input label="Block" required="true" auto-validate="true" always-float-label value="{{block}}" style="display: inline-block; width: 20%;"
-                                    readonly></paper-input>
-                                <paper-input label="Lot" required="true" auto-validate="true" always-float-label value="{{lot}}" style="display: inline-block; width: 20%; padding-left: 2px;"
-                                    readonly></paper-input>
-                                <paper-input label="Level" always-float-label value="{{level}}" style="display: inline-block; width: 20%; padding-left: 2px;"
-                                    readonly></paper-input>
+                                <paper-input label="Block" required="true" auto-validate="true" always-float-label value="{{block}}" style="display: inline-block; width: 20%;"></paper-input>
+                                <paper-input label="Lot" required="true" auto-validate="true" always-float-label value="{{lot}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
+                                <paper-input label="Level" always-float-label value="{{level}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
 
                                 <paper-spinner id="spinnerDetails" alt="Getting details...." style="height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
 
@@ -293,8 +292,8 @@
                                             <paper-radio-button name="Hold" on-click="selectHold">Hold</paper-radio-button>
                                             <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button>
                                             <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button>
-                                        </paper-radio-group>
-                                    </div> -->
+                                        </paper-radio-group> -->
+
                                     </br>
                                     <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
                                         <div id="start">
@@ -333,16 +332,12 @@
                         <div class="docu">
                             <div class="docu-header">2. Buyer's Information</div>
                             <div class="details">
-                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_buyerdetails_cellphone}}"
-                                    readonly></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_buyerdetails_firstname}}"
-                                    readonly></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_buyerdetails_middlename}}"
-                                    readonly></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_buyerdetails_lastname}}"
-                                    readonly></paper-input>
-                                <paper-input always-float-label="true" label="Suffix" value="{{draftdata_buyerdetails_suffix}}" readonly></paper-input>
-                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_buyerdetails_email}}" readonly></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_buyerdetails_cellphone}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_buyerdetails_firstname}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_buyerdetails_middlename}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_buyerdetails_lastname}}"></paper-input>
+                                <paper-input always-float-label="true" label="Suffix" value="{{draftdata_buyerdetails_suffix}}"></paper-input>
+                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_buyerdetails_email}}"></paper-input>
                             </div>
                         </div>
                     </neon-animatable>
@@ -354,16 +349,12 @@
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
                             <div class="detais">
-                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"
-                                    readonly></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}"
-                                    readonly></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"
-                                    readonly></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_agentdetails_lastname}}"
-                                    readonly></paper-input>
-                                <paper-input always-float-label="true" label="Suffix" value="{{draftdata_agentdetails_suffix}}" readonly></paper-input>
-                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}" readonly></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_agentdetails_lastname}}"></paper-input>
+                                <paper-input always-float-label="true" label="Suffix" value="{{draftdata_agentdetails_suffix}}"></paper-input>
+                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
                             </div>
                         </div>
                     </neon-animatable>
@@ -2103,6 +2094,7 @@ window.location="/applications"
                 // console.log(uid.randomUUID(8));
                 // var shortid = new shortid();
                 return uid.randomUUID(8);
+
 
 
             },
