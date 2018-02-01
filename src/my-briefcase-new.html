@@ -31,1383 +31,1360 @@
 
 <link rel="import" href="../bower_components/titanium-date-input/titanium-date-input.html">
 <link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
 <link rel="import" href="short-unique-id.html">
 
 
 <dom-module id="my-briefcase-new">
-  <template>
-    <style include="shared-styles">
-      :host {
-        display: block;
-      }
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
 
-      app-header {
-        color: rgb(255, 255, 255);
-        background-color: #388E3C;
-      }
+            app-header {
+                color: rgb(255, 255, 255);
+                background-color: #388E3C;
+            }
 
-      app-header paper-icon-button {
-        --paper-icon-button-ink-color: #000000;
-      }
+            app-header paper-icon-button {
+                --paper-icon-button-ink-color: #000000;
+            }
 
-      app-drawer-layout:not([narrow]) [drawer-toggle] {
-        display: none;
-      }
+            app-drawer-layout:not([narrow]) [drawer-toggle] {
+                display: none;
+            }
 
-      app-drawer {
-        --app-drawer-content-container: {
-          background-color: #F4F5F6;
-        }
-      }
+            app-drawer {
+                --app-drawer-content-container: {
+                    background-color: #F4F5F6;
+                }
+            }
 
-      paper-icon-button.menu {
-        margin-right: 16px;
-      }
+            paper-icon-button.menu {
+                margin-right: 16px;
+            }
 
-      paper-item {
-        height: 64px;
-      }
+            paper-item {
+                height: 64px;
+            }
 
-      .mnu {
-        padding: 16px;
-      }
+            .mnu {
+                padding: 16px;
+            }
 
-      paper-fab {
-        background: #1976d2;
-      }
+            paper-fab {
+                background: #1976d2;
+            }
 
-      .labelitem {
-        padding: 0px;
-        margin: 0;
-      }
-
-
-
-      @media (min-width: 800px) {
-        .footer {
-          position: absolute;
-          bottom: 16px;
-          width: 100%;
-        }
-        .paper-fab-0 {
-          position: absolute;
-          left: 48px;
-          bottom: 48px;
-        }
-
-        .paper-fab-1 {
-          position: absolute;
-          right: 48px;
-          bottom: 48px;
-        }
-
-      }
-
-      @media (max-width: 800px) {
-        .paper-fab-0 {
-          position: absolute;
-          left: 16px;
-          bottom: 48px;
-        }
-
-        .paper-fab-1 {
-          position: absolute;
-          right: 16px;
-          bottom: 48px;
-        }
-
-        .docu {
-          margin-left: 16px;
-          margin-right: 16px;
-        }
-
-      }
+            .labelitem {
+                padding: 0px;
+                margin: 0;
+            }
 
 
-      paper-button.green {
-        background-color: var(--paper-green-500);
-        color: white;
-      }
+
+            @media (min-width: 800px) {
+                .footer {
+                    position: absolute;
+                    bottom: 16px;
+                    width: 100%;
+                }
+                .paper-fab-0 {
+                    position: absolute;
+                    left: 48px;
+                    bottom: 48px;
+                }
+
+                .paper-fab-1 {
+                    position: absolute;
+                    right: 48px;
+                    bottom: 48px;
+                }
+
+            }
+
+            @media (max-width: 800px) {
+                .paper-fab-0 {
+                    position: absolute;
+                    left: 16px;
+                    bottom: 48px;
+                }
+
+                .paper-fab-1 {
+                    position: absolute;
+                    right: 16px;
+                    bottom: 48px;
+                }
+
+                .docu {
+                    margin-left: 16px;
+                    margin-right: 16px;
+                }
+
+            }
 
 
-      datetime-picker.begin {
-        --datetime-selected-background: #2362EC;
-        --datetime-background: #071533;
-        --datetime-color: #eeeeee;
-      }
+            paper-button.green {
+                background-color: var(--paper-green-500);
+                color: white;
+            }
 
-      datetime-picker.end {
-        --datetime-selected-background: #CC1C1C;
-        --datetime-background: #071533;
-        --datetime-color: #eeeeee;
-      }
-    </style>
 
-    <!-- <app-route route="{{route}}" pattern="/:key" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
+            datetime-picker.begin {
+                --datetime-selected-background: #2362EC;
+                --datetime-background: #071533;
+                --datetime-color: #eeeeee;
+            }
 
-    <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
+            datetime-picker.end {
+                --datetime-selected-background: #CC1C1C;
+                --datetime-background: #071533;
+                --datetime-color: #eeeeee;
+            }
+        </style>
+
+        <!-- <app-route route="{{route}}" pattern="/:key" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
+
+        <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
         </firebase-document> -->
 
-    <firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}"></firebase-document>
+        <firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}"></firebase-document>
 
-    <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
-      <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
-        <div class="mnu" role="listbox">
-          <!-- <iron-selector attr-for-selected="value" class="drawer-list"> -->
+        <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
+            <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
+                <div class="mnu" role="listbox">
+                    <!-- <iron-selector attr-for-selected="value" class="drawer-list"> -->
 
-          <!-- on-tap="_selectPage" data-args="0" -->
-          <paper-item id="lotdetails">
-            <div class="circle-mini-first">1</div>
-            <span>Lot Details</span>
-          </paper-item>
+                    <!-- on-tap="_selectPage" data-args="0" -->
+                    <paper-item id="lotdetails">
+                        <div class="circle-mini-first">1</div>
+                        <span>Lot Details</span>
+                    </paper-item>
 
-          <!-- on-tap="_selectPage" data-args="1" -->
-          <paper-item id="buyersinformation">
-            <div class="circle-mini">2</div>
-            <span>Buyer's Information</span>
-          </paper-item>
+                    <!-- on-tap="_selectPage" data-args="1" -->
+                    <paper-item id="buyersinformation">
+                        <div class="circle-mini">2</div>
+                        <span>Buyer's Information</span>
+                    </paper-item>
 
-          <!-- on-tap="_selectPage" data-args="2" -->
-          <paper-item id="samplecomputation">
-            <div class="circle-mini">3</div>
-            <span>Agent's Information</span>
-          </paper-item>
+                    <!-- on-tap="_selectPage" data-args="2" -->
+                    <paper-item id="samplecomputation">
+                        <div class="circle-mini">3</div>
+                        <span>Agent's Information</span>
+                    </paper-item>
 
-          <!-- on-tap="_selectPage" data-args="3" -->
-          <paper-item id="finalize">
-            <div class="circle-mini">4</div>
-            <span>Finalize</span>
-          </paper-item>
+                    <!-- on-tap="_selectPage" data-args="3" -->
+                    <paper-item id="finalize">
+                        <div class="circle-mini">4</div>
+                        <span>Finalize</span>
+                    </paper-item>
 
-          <!-- on-tap="_selectPage" data-args="4" -->
-          <paper-item id="complete">
-            <div class="circle-mini-last">5</div>
-            <span>Complete</span>
-          </paper-item>
+                    <!-- on-tap="_selectPage" data-args="4" -->
+                    <paper-item id="complete">
+                        <div class="circle-mini-last">5</div>
+                        <span>Complete</span>
+                    </paper-item>
 
-          <!-- </iron-selector> -->
-        </div>
-      </app-drawer>
-
-      <app-header-layout id="appheader" has-scrolling-region>
-        <app-header fixed slot="header">
-          <app-toolbar>
-            <a href="/briefcase">
-              <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
-            </a>
-            <div main-title>New Application</div>
-            <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
-            <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
-          </app-toolbar>
-
-        </app-header>
-
-        <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
-          <neon-animatable>
-
-            <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
-
-            <firebase-document id="fdColor"></firebase-document>
-
-            <firebase-query path="/applications" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1 data="{{lastApplication}}"></firebase-query>
-
-            <firebase-query path="/reservations/{{fullLot}}" order-by-child='isexpired' equal-to='false' limit-to-last=1 data="{{lastReservation}}"></firebase-query>
-            <!-- <firebase-query path="/reservations/{{fullLot}}" order-by-key limit-to-last=1 data="{{lastReservation}}"></firebase-query> -->
-
-            <div class="docu">
-
-              <div class="docu-header">
-                <span>1. Lot Details</span>
-              </div>
-              <div class="details">
-                <paper-input label="Block" required="true" auto-validate="true" always-float-label value="{{block}}" style="display: inline-block; width: 20%;"></paper-input>
-                <paper-input label="Lot" required="true" auto-validate="true" always-float-label value="{{lot}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
-                <paper-input label="Level" always-float-label value="{{level}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
-
-                <paper-spinner id="spinnerDetails" alt="Getting details...." style="height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
-
-                <div id="errorMsgDiv" style="display: none; color:red; ">
-                  <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}
+                    <!-- </iron-selector> -->
                 </div>
+            </app-drawer>
 
-                <paper-card id="stepOneCard" heading="" style="width:100%; margin-top: 16px; display: none;">
-                  <div id="cardcontentlotDetails" class="card-content" style="height: 48px; background-color: rgb(122, 122, 122); color: white;">
-                    <div style="position: absolute; padding-left: 16px; bottom: 5px; left: 0px; font-weight: 400; font-size: 20px;">
-                      [[fullLotName]]
-                    </div>
-                  </div>
-                  <div class="card-content" style="top: -4px;">
-                    <div style="display: inline-block; padding-right: 24px;">
-                      <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{areaLabel}}</div>
-                      <span style="font-weight: 400;">
-                        [[fullLotData.area]]
-                      </span>
-                    </div>
+            <app-header-layout id="appheader" has-scrolling-region>
+                <app-header fixed slot="header">
+                    <app-toolbar>
+                        <a href="/briefcase">
+                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
+                        </a>
+                        <div main-title>New Application For Briefcase</div>
+                        <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
+                        <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
+                    </app-toolbar>
 
-                    <div style="display: inline-block; padding-left: 24px; padding-right: 24px;">
-                      <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{designationLabel}}</div>
-                      <span style="font-weight: 400;">
-                        [[fullLotData.maprenderdetails.designation_name]]
-                      </span>
-                    </div>
+                </app-header>
 
-                    <!-- style="padding-top: 8px;" -->
-                    <div style="padding-top: 5px;">
-                      <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{typeLabel}}</div>
-                      <span style="font-weight: 400;">
-                        [[fullLotData.maprenderdetails.type_name]]
-                      </span>
-                    </div>
+                <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
+                    <neon-animatable>
 
-                    <!-- style="padding-top: 8px;" -->
-                    <div style="padding-top: 5px;">
-                      <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{statusLabel}}</div>
-                      <span style="font-weight: 400;" id="statusValue">
-                        [[fullLotData.maprenderdetails.status_name]]
-                      </span>
-                    </div>
+                        <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
 
-                  </div>
-                  <div class="card-actions" style="display: none;" id="cardActions">
-                    <paper-radio-group selected="{{draftdata_type}}">
-                      <paper-radio-button name="Hold" on-click="selectHold">Hold</paper-radio-button>
-                      <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button>
-                      <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button>
-                    </paper-radio-group>
+                        <firebase-document id="fdColor"></firebase-document>
 
-                    </br>
-                    <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
-                      <div id="start">
-                        <!-- <span style="color: blue;">Date:</span> -->
-                        <!-- <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker> -->
+                        <firebase-query path="/applications" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1 data="{{lastApplication}}"></firebase-query>
 
-                        <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
-                        <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
+                        <firebase-query path="/reservations/{{fullLot}}" order-by-child='isexpired' equal-to='false' limit-to-last=1 data="{{lastReservation}}"></firebase-query>
+                        <!-- <firebase-query path="/reservations/{{fullLot}}" order-by-key limit-to-last=1 data="{{lastReservation}}"></firebase-query> -->
+
+                        <div class="docu">
+
+                            <div class="docu-header">
+                                <span>1. Lot Details</span>
+                            </div>
+                            <div class="details">
+                                <paper-input label="Block" required="true" auto-validate="true" always-float-label value="{{block}}" style="display: inline-block; width: 20%;"></paper-input>
+                                <paper-input label="Lot" required="true" auto-validate="true" always-float-label value="{{lot}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
+                                <paper-input label="Level" always-float-label value="{{level}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
+
+                                <paper-spinner id="spinnerDetails" alt="Getting details...." style="height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
+
+                                <div id="errorMsgDiv" style="display: none; color:red; ">
+                                    <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}
+                                </div>
+
+                                <paper-card id="stepOneCard" heading="" style="width:100%; margin-top: 16px; display: none;">
+                                    <div id="cardcontentlotDetails" class="card-content" style="height: 48px; background-color: rgb(122, 122, 122); color: white;">
+                                        <div style="position: absolute; padding-left: 16px; bottom: 5px; left: 0px; font-weight: 400; font-size: 20px;">
+                                            [[fullLotName]]
+                                        </div>
+                                    </div>
+                                    <div class="card-content" style="top: -4px;">
+                                        <div style="display: inline-block; padding-right: 24px;">
+                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{areaLabel}}</div>
+                                            <span style="font-weight: 400;">
+                                                [[fullLotData.area]]
+                                            </span>
+                                        </div>
+
+                                        <div style="display: inline-block; padding-left: 24px; padding-right: 24px;">
+                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{designationLabel}}</div>
+                                            <span style="font-weight: 400;">
+                                                [[fullLotData.maprenderdetails.designation_name]]
+                                            </span>
+                                        </div>
+
+                                        <!-- style="padding-top: 8px;" -->
+                                        <div style="padding-top: 5px;">
+                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{typeLabel}}</div>
+                                            <span style="font-weight: 400;">
+                                                [[fullLotData.maprenderdetails.type_name]]
+                                            </span>
+                                        </div>
+
+                                        <!-- style="padding-top: 8px;" -->
+                                        <div style="padding-top: 5px;">
+                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{statusLabel}}</div>
+                                            <span style="font-weight: 400;" id="statusValue">
+                                                [[fullLotData.maprenderdetails.status_name]]
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                    <div class="card-actions" style="display: none;" id="cardActions">
+                                        <paper-radio-group selected="{{draftdata_type}}">
+                                            <paper-radio-button name="Hold" on-click="selectHold">Hold</paper-radio-button>
+                                            <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button>
+                                            <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button>
+                                        </paper-radio-group>
+
+                                        </br>
+                                        <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
+                                            <div id="start">
+                                                <!-- <span style="color: blue;">Date:</span> -->
+                                                <!-- <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker> -->
+
+                                                <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
+                                                <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
                                                 <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
-                        <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" type="datetime-local" no-label-float="true"
-                          value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
+                                                <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" type="datetime-local" no-label-float="true"
+                                                    value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
 
-                      </div>
-                      <div id="expiry" style="position: relative; padding-top: 16px;">
-                        <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon>
-                        <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span>
-                        <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input>
-                        <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span>
-                        <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span>
-                        <!-- <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker> -->
-                      </div>
-                    </div>
-
-
-                  </div>
-                </paper-card>
-
-              </div>
-            </div>
-          </neon-animatable>
-
-          <neon-animatable>
-            <firebase-query path="/buyers" order-by-child='cellphone' equal-to='{{draftdata_buyerdetails_cellphone}}' limit-to-first=1
-              data="{{buyersList}}"></firebase-query>
-
-            <div class="docu">
-              <div class="docu-header">2. Buyer's Information</div>
-              <div class="details">
-                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_buyerdetails_cellphone}}"></paper-input>
-                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_buyerdetails_firstname}}"></paper-input>
-                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_buyerdetails_middlename}}"></paper-input>
-                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_buyerdetails_lastname}}"></paper-input>
-                <paper-input always-float-label="true" label="Suffix" value="{{draftdata_buyerdetails_suffix}}"></paper-input>
-                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_buyerdetails_email}}"></paper-input>
-              </div>
-            </div>
-          </neon-animatable>
-
-          <neon-animatable>
-            <firebase-query path="/agents" order-by-child='cellphone' equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1
-              data="{{agentsList}}"></firebase-query>
-            <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
-            </firebase-query>
-            <div class="docu">
-              <div class="docu-header">3. Agent's Information</div>
-              <div class="detais">
-                <paper-input always-float-label="true" required="true" auto-validate="true" value="{{cellphone}}" type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
-                <paper-input always-float-label="true" required="true" auto-validate="true" value="{{firstname}}" label="First Name" value="{{draftdata_agentdetails_firstname}}"></paper-input>
-                <paper-input always-float-label="true" required="true" auto-validate="true" value="{{middlename}}" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"></paper-input>
-                <paper-input always-float-label="true" required="true" auto-validate="true" value="{{lastname}}" label="Last Name" value="{{draftdata_agentdetails_lastname}}"></paper-input>
-                <paper-input always-float-label="true" label="Suffix" value="{{suffix}}"></paper-input>
-                <paper-input always-float-label="true" type="email" value="{{user.email}}" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
-              </div>
-            </div>
-          </neon-animatable>
-
-          <neon-animatable>
-            <div class="docu">
-              <div class="docu-header">4. Finalize</div>
-
-              <div class="details">
-                <div>Please review the following details:</div>
-                <div>Block: {{block}}</div>
-                <div>Lot: {{lot}}</div>
-                <div>Level: {{level}}</div>
-                <div>Area: {{fullLotData.area}}</div>
-                <div>Designation: {{fullLotData.maprenderdetails.designation_name}}</div>
-                <div>Type: {{fullLotData.maprenderdetails.type_name}}</div>
-                <div>Transaction: {{draftdata_type}}</div>
-                <div>Start: {{startDateTimeValue}}</div>
-                <div>Expires: {{expiryDate}}</div>
-                <div>Buyer's First Name: {{draftdata_buyerdetails_firstname}}</div>
-                <div>Buyer's Middle Name: {{draftdata_buyerdetails_middlename}}</div>
-                <div>Buyer's Last Name: {{draftdata_buyerdetails_lastname}}</div>
-                <div>Buyer's Suffix: {{draftdata_buyerdetails_suffix}}</div>
-                <div>Buyer's Cellphone: {{draftdata_buyerdetails_cellphone}}</div>
-                <div>Buyer's Email: {{draftdata_buyerdetails_email}}</div>
-                <div>Agent's First Name: {{draftdata_agentdetails_firstname}}</div>
-                <div>Agent's Middle Name: {{draftdata_agentdetails_middlename}}</div>
-                <div>Agent's Last Name: {{draftdata_agentdetails_lastname}}</div>
-                <div>Agent's Suffix: {{draftdata_agentdetails_suffix}}</div>
-                <div>Agent's Cellphone: {{draftdata_agentdetails_cellphone}}</div>
-                <div>Agent's Email: {{draftdata_agentdetails_email}}</div>
-
-              </div>
-            </div>
-          </neon-animatable>
-
-          <neon-animatable>
-            <div class="docu">
-              <div class="docu-header">5. Completed</div>
-
-              <div class="details">
-                <paper-item>
-                  <paper-item-body>
-                    <div id="saveSuccess" style="display: none; color: green;">Application saved. Ref. {{applicationKey}}</div>
-                    <div id="saveFailed" style="display: none; color: red;">Error updating data. {{saveErrorDetails}}</div>
-                  </paper-item-body>
-                </paper-item>
-
-              </div>
-            </div>
-          </neon-animatable>
-        </neon-animated-pages>
+                                            </div>
+                                            <div id="expiry" style="position: relative; padding-top: 16px;">
+                                                <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon>
+                                                <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span>
+                                                <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input>
+                                                <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span>
+                                                <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span>
+                                                <!-- <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker> -->
+                                            </div>
+                                        </div>
 
 
+                                    </div>
+                                </paper-card>
 
-        <!-- <template is="dom-if" if="{{_currentPage('lotdetails',selectedPage)}}">
+                            </div>
+                        </div>
+                    </neon-animatable>
+
+                    <neon-animatable>
+                        <firebase-query path="/buyers" order-by-child='cellphone' equal-to='{{draftdata_buyerdetails_cellphone}}' limit-to-first=1
+                            data="{{buyersList}}"></firebase-query>
+
+                        <div class="docu">
+                            <div class="docu-header">2. Buyer's Information</div>
+                            <div class="details">
+                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_buyerdetails_cellphone}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_buyerdetails_firstname}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_buyerdetails_middlename}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_buyerdetails_lastname}}"></paper-input>
+                                <paper-input always-float-label="true" label="Suffix" value="{{draftdata_buyerdetails_suffix}}"></paper-input>
+                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_buyerdetails_email}}"></paper-input>
+                            </div>
+                        </div>
+                    </neon-animatable>
+
+                    <neon-animatable>
+                        <firebase-query path="/agents" order-by-child='cellphone' equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1
+                            data="{{agentsList}}"></firebase-query>
+
+                        <div class="docu">
+                            <div class="docu-header">3. Agent's Information</div>
+                            <div class="detais">
+                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_agentdetails_lastname}}"></paper-input>
+                                <paper-input always-float-label="true" label="Suffix" value="{{draftdata_agentdetails_suffix}}"></paper-input>
+                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
+                            </div>
+                        </div>
+                    </neon-animatable>
+
+                    <neon-animatable>
+                        <div class="docu">
+                            <div class="docu-header">4. Finalize</div>
+
+                            <div class="details">
+                                <div>Please review the following details:</div>
+                                <div>Block: {{block}}</div>
+                                <div>Lot: {{lot}}</div>
+                                <div>Level: {{level}}</div>
+                                <div>Area: {{fullLotData.area}}</div>
+                                <div>Designation: {{fullLotData.maprenderdetails.designation_name}}</div>
+                                <div>Type: {{fullLotData.maprenderdetails.type_name}}</div>
+                                <div>Transaction: {{draftdata_type}}</div>
+                                <div>Start: {{startDateTimeValue}}</div>
+                                <div>Expires: {{expiryDate}}</div>
+                                <div>Buyer's First Name: {{draftdata_buyerdetails_firstname}}</div>
+                                <div>Buyer's Middle Name: {{draftdata_buyerdetails_middlename}}</div>
+                                <div>Buyer's Last Name: {{draftdata_buyerdetails_lastname}}</div>
+                                <div>Buyer's Suffix: {{draftdata_buyerdetails_suffix}}</div>
+                                <div>Buyer's Cellphone: {{draftdata_buyerdetails_cellphone}}</div>
+                                <div>Buyer's Email: {{draftdata_buyerdetails_email}}</div>
+                                <div>Agent's First Name: {{draftdata_agentdetails_firstname}}</div>
+                                <div>Agent's Middle Name: {{draftdata_agentdetails_middlename}}</div>
+                                <div>Agent's Last Name: {{draftdata_agentdetails_lastname}}</div>
+                                <div>Agent's Suffix: {{draftdata_agentdetails_suffix}}</div>
+                                <div>Agent's Cellphone: {{draftdata_agentdetails_cellphone}}</div>
+                                <div>Agent's Email: {{draftdata_agentdetails_email}}</div>
+
+                            </div>
+                        </div>
+                    </neon-animatable>
+
+                    <neon-animatable>
+                        <div class="docu">
+                            <div class="docu-header">5. Completed</div>
+
+                            <div class="details">
+                                <paper-item>
+                                    <paper-item-body>
+                                        <div id="saveSuccess" style="display: none; color: green;">Application saved. Ref. {{applicationKey}}</div>
+                                        <div id="saveFailed" style="display: none; color: red;">Error updating data. {{saveErrorDetails}}</div>
+                                    </paper-item-body>
+                                </paper-item>
+
+                            </div>
+                        </div>
+                    </neon-animatable>
+                </neon-animated-pages>
+
+
+
+                <!-- <template is="dom-if" if="{{_currentPage('lotdetails',selectedPage)}}">
                         <div>Lot Details</div>
                     </template> -->
 
 
-      </app-header-layout>
-
-      <div class="footer">
-        <div hidden$="[[favlefthide]]">
-          <paper-fab id="favleft" class="paper-fab-0" icon="my-icons:chevron-left" on-tap="_select1"></paper-fab>
-        </div>
-        <div hidden$="[[favrighthide]]">
-          <paper-fab style="background: #1976d2;" id="favright" class="paper-fab-1" icon="my-icons:chevron-right" on-tap="_select2"></paper-fab>
-        </div>
-      </div>
-
-
-
-    </app-drawer-layout>
-
-
-
-
-  </template>
-
-  <script>
-    Polymer({
-      is: 'my-briefcase-new',
-
-      properties: {
-        blocklot: String,
-        details: Object,
-        narrow: {
-          type: Boolean,
-          notify: true
-        },
-        selectedPage: Number,
-        entryanimation: {
-          type: String,
-          value: "slide-from-right-animation"
-        },
-        exitanimation: {
-          type: String,
-          value: "slide-left-animation"
-        },
-        route: Object,
-        prevRoute: String,
-        routeData: Object,
-        lotdetailsAPP: {
-          type: Object,
-          observer: '_ldChanged'
-        },
-        reservationdetailsAPP: {
-          type: Object,
-          observer: '_rdChanged'
-        },
-        favlefthide: {
-          type: Boolean,
-          value: true
-        },
-        favrighthide: {
-          type: Boolean,
-          value: true
-        },
-        block: {
-          type: String,
-          // value: '',
-          observer: 'blocklotplotChanged'
-        },
-        lot: {
-          type: String,
-          // value: '',
-          observer: 'blocklotplotChanged'
-        },
-        level: {
-          type: String,
-          // value: '',
-          observer: 'blocklotplotChanged'
-        },
-        fullLot: String,
-        fullLotData: {
-          type: Object,
-        },
-        path: String,
-        newdata: Object,
-        buyersList: {
-          type: Object,
-          value: null,
-          notify: true,
-          observer: 'buyersListChanged'
-        },
-        agentsList: {
-          type: Object,
-          value: null,
-          observer: 'agentsListChanged'
-        },
-        buyerKey: {
-          type: String,
-          value: ''
-        },
-        agentKey: {
-          type: String,
-          value: ''
-        },
-        expiryDate: String,
-        isStartDateTimeInvalidGlobal: Boolean,
-        applicationKey: {
-          type: String,
-          value: ''
-        },
-        transTypeCorrespondingColor: Object,
-
-        account: {
-          type: Object,
-          observer: 'accountChanged'
-        },
-
-      },
-
-      observers: [
-        'fulllotDataChanged(fullLotData.*)',
-        'draftdatatypeChanged(draftdata_type.*)',
-        'startDateTimeValueChanged(startDateTimeValue,expiryHoursDaysValue)',
-        'draftdata_buyerdetails_cellphoneChanged(draftdata_buyerdetails_cellphone,draftdata_buyerdetails_firstname,draftdata_buyerdetails_middlename,draftdata_buyerdetails_lastname)',
-        'draftdata_agentdetails_cellphoneChanged(draftdata_agentdetails_cellphone,draftdata_agentdetails_firstname,draftdata_agentdetails_middlename,draftdata_agentdetails_lastname)',
-        'lastApplicationChanged(lastApplication.*)',
-        'isStartDateTimeInvalidChanged(isStartDateTimeInvalid.*)',
-      ],
-
-      // attached() {
-      //     // console.log(this.localName + '#' + this.id + ' was attached');
-      //     // if(!this.applicationKey) {
-      //     this.getpath();
-      //     // console.log(this.applicationKey);
-      // },
-
-      // newdataChanged() {
-      //     if(Object.keys(this.newdata).length > 0){
-      //     console.log(this.newdata);
-      //     }
-      // },
-      accountChanged() {
-        if (this.account.length > 0) {
-          this.account[0].name.firstname;
-          this.account[0].name.middlename;
-          this.account[0].name.lastname;
-          this.account[0].name.suffix;
-          this.account[0].cellphone;
-          this.account[0].$key;
-          this.firstname = this.account[0].name.firstname;
-          this.middlename = this.account[0].name.middlename;
-          this.lastname = this.account[0].name.lastname;
-          this.suffix = this.account[0].name.suffix;
-          this.cellphone = this.account[0].cellphone;
-          this.key = this.account[0].$key;
-        }
-      },
-
-      _getPrevRoute() {
-        return this.prevRoute || '/briefcase'
-      },
-
-      isStartDateTimeInvalidChanged() {
-        this.favrighthide = this.isStartDateTimeInvalid;
-        this.isStartDateTimeInvalidGlobal = this.isStartDateTimeInvalid;
-        // console.log(this.isStartDateTimeInvalid);
-      },
-
-      lastApplicationChanged() {
-        if (this.lastApplication[0]) {
-          if (this.lastApplication[0].expiry) {
-            this.minStartDateTime = this.lastApplication[0].expiry;
-
-            if (this.startDateTimeValue) {
-              var startDTV = new Date(this.startDateTimeValue);
-              var minStartDT = new Date(this.minStartDateTime);
-              if (startDTV > minStartDT) {
-                this.isStartDateTimeInvalidGlobal = false;
-              }
-              else {
-                this.isStartDateTimeInvalidGlobal = true;
-              }
-            }
-          }
-          else {
-            this.minStartDateTime = '';
-          }
-
-        }
-        else {
-          this.minStartDateTime = '';
-        }
-
-        // console.log(this.lastApplication[0]);
-
-      },
-
-      draftdata_buyerdetails_cellphoneChanged() {
-        if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname) {
-          this.favrighthide = false;
-        }
-        else {
-          this.favrighthide = true;
-        }
-      },
-
-      draftdata_agentdetails_cellphoneChanged() {
-        if (this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
-          this.favrighthide = false;
-        }
-        else {
-          this.favrighthide = true;
-        }
-      },
-
-      startDateTimeValueChanged() {
-        if (this.draftdata_type === 'Reserve') {
-          var xdate = new Date(this.$.startDateTimeValueV.value);
-          xdate.setDate(xdate.getDate() + Number(this.expiryHoursDaysValue));
-          this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-          this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
-            + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-        }
-        else if (this.draftdata_type === 'Hold') {
-          var xdate = new Date(this.$.startDateTimeValueV.value);
-          xdate.setHours(xdate.getHours() + Number(this.expiryHoursDaysValue));
-          this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-          this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
-            + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-        }
-        else if (this.draftdata_type === 'Buy') {
-          this.expiryDate = '';
-        }
-
-        if (this.$.startDateTimeValueV.value) {
-          if (this.isStartDateTimeInvalid === true) {
-            this.favrighthide = true;
-          }
-          else {
-            this.favrighthide = false;
-          }
-        }
-        else {
-          this.favrighthide = true;
-        }
-
-      },
-
-      draftdatatypeChanged(e) {
-        if (e) {
-          if (this.isStartDateTimeInvalid === true) {
-            this.favrighthide = true;
-          }
-          else {
-            this.favrighthide = false;
-          }
-        }
-        else {
-          this.favrighthide = true;
-        }
-      },
-
-      buyersListChanged(e) {
-        if (e) {
-          if (e.length > 0) {
-            this.buyerKey = e[0].$key;
-            this.draftdata_buyerdetails_firstname = e[0].firstname;
-            this.draftdata_buyerdetails_middlename = e[0].middlename;
-            this.draftdata_buyerdetails_lastname = e[0].lastname;
-            this.draftdata_buyerdetails_suffix = e[0].suffix;
-            this.draftdata_buyerdetails_email = e[0].email;
-          }
-          else {
-            this.buyerKey = '';
-          }
-        }
-        else {
-          this.buyerKey = '';
-        }
-      },
-
-      agentsListChanged(e) {
-        if (e) {
-          if (e.length > 0) {
-            this.agentKey = e[0].$key;
-            this.draftdata_agentdetails_firstname = e[0].firstname;
-            this.draftdata_agentdetails_middlename = e[0].middlename;
-            this.draftdata_agentdetails_lastname = e[0].lastname;
-            this.draftdata_agentdetails_suffix = e[0].suffix;
-            this.draftdata_agentdetails_email = e[0].email;
-          }
-          else {
-            this.agentKey = '';
-          }
-        }
-        else {
-          this.agentKey = '';
-        }
-      },
-
-      selectReserve() {
-        var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
-        showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
-
-        var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
-        showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
-
-        var ddate = new Date();
-        this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
-          + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
-        this.expiryHoursDaysLabel = "days";
-        this.expiryHoursDaysValue = 30;
-        var xdate = new Date(this.$.startDateTimeValueV.value);
-        xdate.setDate(xdate.getDate() + this.expiryHoursDaysValue);
-        this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-
-        this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
-          + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-
-
-        //get color
-        var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/reserved');
-        transTypeCorrespondingColorRef.on('value', snapshot => {
-          if (snapshot) {
-            this.transTypeCorrespondingColor = snapshot.val()
-          }
-        });
-
-      },
-      selectHold() {
-        var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
-        showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
-
-        var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
-        showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
-
-        var ddate = new Date();
-        this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
-          + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
-        this.expiryHoursDaysLabel = "hours";
-        this.expiryHoursDaysValue = 24;
-        var xdate = new Date(this.$.startDateTimeValueV.value);
-        xdate.setHours(xdate.getHours() + this.expiryHoursDaysValue);
-        this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-
-        this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
-          + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-
-        //get color
-        var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/hold');
-        transTypeCorrespondingColorRef.on('value', snapshot => {
-          if (snapshot.exists()) {
-            this.transTypeCorrespondingColor = snapshot.val()
-          }
-        });
-      },
-      selectBuy() {
-        var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
-        showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
-
-        var hideExpiry = Polymer.dom(this.root).querySelector("#expiry");
-        hideExpiry.setAttribute("style", "display: none;");
-
-        this.set('draftdata.expiry', '');
-
-        var ddate = new Date();
-        this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
-          + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
-
-        this.expiryDate = '';
-
-        //get color
-        var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/sold');
-        transTypeCorrespondingColorRef.on('value', snapshot => {
-          if (snapshot) {
-            this.transTypeCorrespondingColor = snapshot.val()
-          }
-        });
-      },
-
-      getpath() {
-        this.applicationKey = this.guid();
-        this.path = 'applications/' + this.applicationKey;
-
-        return this.path;
-      },
-
-      fulllotDataChanged() {
-        if (this.fullLotData) {
-          if (this.fullLotData.inventoriable == "yes") {
-
-            if (this.fullLotData.lot) {
-              var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-              spinnerDetails.active = false;
-              //ok we have value
-              var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
-              errormsg.setAttribute("style", "display: none;");
-
-              var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
-              cardcontentlotDetails.setAttribute("style", "height: 48px; background-color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_bg_color : "rgb(122, 122, 122)") + "; color: " + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_fore_color : "white") + ";");
-
-              this.fullLotName = "Block " + this.fullLotData.block + " - Lot " + this.fullLotData.lot + (this.fullLotData.level ? " - Level " + this.fullLotData.level : "");
-              this.areaLabel = this.fullLotData.area ? "Area" : "";
-              this.designationLabel = this.fullLotData.designation ? "Designation" : "";
-              this.typeLabel = this.fullLotData.type ? "Type" : "";
-              this.statusLabel = this.fullLotData.status ? "Status" : "";
-
-              var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
-              statusValue.setAttribute("style", "font-weight: 400; color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.fore_color : "black") + "; background:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.bg_color : "gray") + "; border-radius: 2px; padding-left: 2px;padding-right: 2px;");
-
-              var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
-              stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: block;");
-
-
-              var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
-              if (this.fullLotData.status == 'available') { // || this.fullLotData.status == 'hold' || this.fullLotData.status == 'reserved'
-                cardActions.setAttribute("style", "display: block;");
-
-                if (this.draftdata_type) {
-                  this.favrighthide = false;
-                }
-                else {
-                  this.favrighthide = true;
-                }
-
-
-              }
-              else {
-                cardActions.setAttribute("style", "display: none;");
-                this.favrighthide = true;
-              }
-
-
-            }
-            else {
-              if (this.fullLot) {
-                var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-                spinnerDetails.active = false;
-
-                var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
-                errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
-                this.validationMessage = 'Not found!';
-
-                var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
-                cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
-
-                var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
-                stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
-
-                this.fullLotName = "";
-                this.areaLabel = "";
-                this.designationLabel = "";
-                this.typeLabel = "";
-                this.statusLabel = "";
-
-                var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
-                statusValue.setAttribute("style", "font-weight: 400;");
-
-                var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
-                cardActions.setAttribute("style", "display: none;");
-
-                this.favrighthide = true;
-              }
-            }
-
-          }
-          else {
-            if (this.fullLot) {
-              var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-              spinnerDetails.active = false;
-
-              var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
-              errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
-              this.validationMessage = 'Not found!';
-
-              var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
-              cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
-
-              var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
-              stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
-
-              this.fullLotName = "";
-              this.areaLabel = "";
-              this.designationLabel = "";
-              this.typeLabel = "";
-              this.statusLabel = "";
-
-              var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
-              statusValue.setAttribute("style", "font-weight: 400;");
-
-              var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
-              cardActions.setAttribute("style", "display: none;");
-
-              this.favrighthide = true;
-            }
-          }
-
-        }
-        else {
-          if (this.fullLot) {
-
-            var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-            spinnerDetails.active = false;
-
-            var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
-            errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
-            this.validationMessage = 'Not found!';
-
-            var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
-            cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
-
-            var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
-            stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
-
-            this.fullLotName = "";
-            this.areaLabel = "";
-            this.designationLabel = "";
-            this.typeLabel = "";
-            this.statusLabel = "";
-
-            var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
-            statusValue.setAttribute("style", "font-weight: 400;");
-
-            var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
-            cardActions.setAttribute("style", "display: none;");
-
-            this.favrighthide = true;
-          }
-
-
-        }
-      },
-
-      blocklotplotChanged() {
-        if (this.block) { this.block = this.block.toString().toUpperCase(); }
-        if (this.lot) { this.lot = this.lot.toString().toUpperCase(); }
-        if (this.level) { this.level = this.level.toString().toLowerCase(); }
-
-        this.fullLot = "block" + this.block + "lot" + this.lot + (this.level ? "level" + this.level : "");
-
-        var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-        spinnerDetails.active = true;
-
-
-        // var lastApplicationDateTimeRef = this.$.lastApplicationDateTime.db.ref('applications');
-        // lastApplicationDateTimeRef.orderByChild('lot').equalTo(this.fullLot).limitToLast(1).on('child_added', snapshot => {
-        //     if (snapshot) {
-        //         console.log((snapshot.val()));
-        //         this.minStartDateTime = snapshot.val().expiry;
-        //     }
-        // });
-        // lastApplicationDateTime
-
-
-        // var cont2 = Polymer.dom(this.root).querySelector("#container2");
-        // toast.duration = 0;
-        // toast.fitInto = cont2;
-        // toast.show({ text: 'Getting details...' });
-      },
-
-      toggleDrawer() {
-        // this.dispatchEvent(new CustomEvent('toggleDrawer', {
-        //     bubbles: true, composed: true, detail: {
-        //         narrow: this.$.narrow
-        //     }
-        // }));
-        // this.$.narrow = !this.$.narrow;
-
-        Polymer.dom(this.parentNode).removeChild(this);
-
-      },
-
-      _currentPage(e, s) {
-        return s === e;
-      },
-
-      _selectPage(e) {
-        // var data_args = Polymer.dom(e).rootTarget.getAttribute("data-args");
-
-        // // console.log(this.selectedPage);
-        // // console.log(data_args);
-
-        // if (Number(data_args) < this.selectedPage) {
-        //     this.selectedPage = Number(data_args);
-        //     this._select1();
-        // }
-        // else if (Number(data_args) > this.selectedPage) {
-        //     this.selectedPage = Number(data_args);
-        //     this._select2();
-        // }
-
-      },
-
-
-      ready() {
-        this.selectedPage = 0;
-
-        this.draftdata_buyerdetails_cellphone = '';
-        this.draftdata_buyerdetails_firstname = '';
-        this.draftdata_buyerdetails_middlename = '';
-        this.draftdata_buyerdetails_lastname = '';
-        this.draftdata_buyerdetails_suffix = '';
-        this.draftdata_buyerdetails_email = '';
-        this.draftdata_buyerdetails_cellphone = '';
-
-        this.draftdata_agentdetails_cellphone = '';
-        this.draftdata_agentdetails_firstname = '';
-        this.draftdata_agentdetails_middlename = '';
-        this.draftdata_agentdetails_lastname = '';
-        this.draftdata_agentdetails_suffix = '';
-        this.draftdata_agentdetails_email = '';
-        this.draftdata_agentdetails_cellphone = '';
-
-        this.minStartDateTime = '';
-        this.saveErrorDetails = '...';
-      },
-
-      _select1(e) {
-        this.entryanimation = "slide-from-left-animation";
-        this.exitanimation = "slide-right-animation";
-
-        if (parseInt(this.selectedPage) <= 3) {
-          if (parseInt(this.selectedPage) !== 0) {
-            this.selectedPage = (parseInt(this.selectedPage) - 1);
-
-            Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: #1976d2;");
-            Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:chevron-right");
-
-
-            if (this.selectedPage === 0) {
-              this.favlefthide = true;
-            }
-
-            this.favrighthide = false;
-          }
-          else {
-            this.favlefthide = true;
-            this.favrighthide = false;
-          }
-        }
-        else {
-          this.selectedPage = 3;
-        }
-
-      },
-
-      _select2(e) {
-        this.entryanimation = "slide-from-right-animation";
-        this.exitanimation = "slide-left-animation";
-        if (parseInt(this.selectedPage) >= 0) {
-          if (parseInt(this.selectedPage) == 3) {
-            //complete
-
-            if (this.transTypeCorrespondingColor) {
-
-              if (this.isStartDateTimeInvalidGlobal == true) {
-                var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                this.saveErrorDetails = "Start date conflict, please change the start date accordingly.";
-                saveFailed.setAttribute("style", "display: block; color: red;");
-              }
-              else {
-
-                this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
-                this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
-
-                var draftdata = {
-                  agent: this.agentKey,
-                  agentdetails: {
-                    firstname: this.draftdata_agentdetails_firstname,
-                    middlename: this.draftdata_agentdetails_middlename,
-                    lastname: this.draftdata_agentdetails_lastname,
-                    suffix: this.draftdata_agentdetails_suffix,
-                    email: this.draftdata_agentdetails_email,
-                    cellphone: this.draftdata_agentdetails_cellphone
-                  },
-                  buyer: this.buyerKey,
-                  buyerdetails: {
-                    firstname: this.draftdata_buyerdetails_firstname,
-                    middlename: this.draftdata_buyerdetails_middlename,
-                    lastname: this.draftdata_buyerdetails_lastname,
-                    suffix: this.draftdata_buyerdetails_suffix,
-                    cellphone: this.draftdata_buyerdetails_cellphone,
-                    email: this.draftdata_buyerdetails_email
-                  },
-                  expiry: this.expiryDate,
-                  isdraft: 'false',
-                  isserved: 'false',
-                  lot: this.fullLot,
-                  lotdetails: this.fullLotData,
-                  processed: '',
-                  processordetails: '',
-                  served: '',
-                  start: this.startDateTimeValue,
-                  status: '',
-                  timestamp: { ".sv": "timestamp" },
-                  type: this.draftdata_type,
-                  reference: this.applicationKey
-                };
-
-                var draftBuyer = {
-                  firstname: this.draftdata_buyerdetails_firstname,
-                  middlename: this.draftdata_buyerdetails_middlename,
-                  lastname: this.draftdata_buyerdetails_lastname,
-                  suffix: this.draftdata_buyerdetails_suffix,
-                  cellphone: this.draftdata_buyerdetails_cellphone,
-                  email: this.draftdata_buyerdetails_email
-                };
-
-
-                var draftAgent = {
-                  firstname: this.draftdata_agentdetails_firstname,
-                  middlename: this.draftdata_agentdetails_middlename,
-                  lastname: this.draftdata_agentdetails_lastname,
-                  suffix: this.draftdata_agentdetails_suffix,
-                  email: this.draftdata_agentdetails_email,
-                  cellphone: this.draftdata_agentdetails_cellphone
-                };
-
-                var firebaseDb = this.$.idd.db;
-                var firebaseDbRef = firebaseDb.ref();
-                var firebaseUpdate = {};
-
-                var transactionPush = firebaseDbRef.child('applications').push();
-                this.transactionKey = transactionPush.key;
-
-                if (this.transactionKey) {
-
-                  //save to /applications/{id}
-                  firebaseUpdate["/applications/" + this.transactionKey] = draftdata;
-                  //this.path
-
-                  if (this.buyerKey) {
-                    //save to /buyers/{new id}
-                    firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
-                  }
-                  else {
-                    this.saveErrorDetails = "Buyer Key is empty.";
-                    saveSuccess.setAttribute("style", "display: none; color: green;");
-                    saveFailed.setAttribute("style", "display: block; color: red;");
-                  }
-
-                  if (this.agentKey) {
-                    //save to /agents/{new id}
-                    firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
-                  }
-                  else {
-                    this.saveErrorDetails = "Agent Key is empty.";
-                    saveSuccess.setAttribute("style", "display: none; color: green;");
-                    saveFailed.setAttribute("style", "display: block; color: red;");
-                  }
-
-
-
-                  //how to get last two reservation with iscurrent and not iscurrent
-                  //what if there is no iscurrent but there is a reservation???
-                  //--- no need to get the current iscurrent=true, we just need the last-reservation to check if we can set the current reservation as iscurrent
-
-                  // applications filter
-                  // edit
-
-                  // save to application and conditionally to Reservations & Lot Details Reservation
-                  // ---check for applications in-line and determine the start date and time
-                  // ---save to reservation will be after checking of docs approval
-
-                  // midnight update
-
-
-                  //will be transferred later, when docs checking and approval are up
-                  //save to /reservations/{new id}
-                  var isCurrentReservation = false;
-                  if (this.lastReservation) {
-                    if (this.lastReservation.length > 0) {
-                      //check if this.lastReservation is expired, check for previous reservation --done thru query
-                      isCurrentReservation = false;
+            </app-header-layout>
+
+            <div class="footer">
+                <div hidden$="[[favlefthide]]">
+                    <paper-fab id="favleft" class="paper-fab-0" icon="my-icons:chevron-left" on-tap="_select1"></paper-fab>
+                </div>
+                <div hidden$="[[favrighthide]]">
+                    <paper-fab style="background: #1976d2;" id="favright" class="paper-fab-1" icon="my-icons:chevron-right" on-tap="_select2"></paper-fab>
+                </div>
+            </div>
+
+
+
+        </app-drawer-layout>
+
+
+
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-briefcase-new',
+
+            properties: {
+                blocklot: String,
+                details: Object,
+                narrow: {
+                    type: Boolean,
+                    notify: true
+                },
+                selectedPage: Number,
+                entryanimation: {
+                    type: String,
+                    value: "slide-from-right-animation"
+                },
+                exitanimation: {
+                    type: String,
+                    value: "slide-left-animation"
+                },
+                route: Object,
+                prevRoute: String,
+                routeData: Object,
+                lotdetailsAPP: {
+                    type: Object,
+                    observer: '_ldChanged'
+                },
+                reservationdetailsAPP: {
+                    type: Object,
+                    observer: '_rdChanged'
+                },
+                favlefthide: {
+                    type: Boolean,
+                    value: true
+                },
+                favrighthide: {
+                    type: Boolean,
+                    value: true
+                },
+                block: {
+                    type: String,
+                    // value: '',
+                    observer: 'blocklotplotChanged'
+                },
+                lot: {
+                    type: String,
+                    // value: '',
+                    observer: 'blocklotplotChanged'
+                },
+                level: {
+                    type: String,
+                    // value: '',
+                    observer: 'blocklotplotChanged'
+                },
+                fullLot: String,
+                fullLotData: {
+                    type: Object,
+                },
+                path: String,
+                newdata: Object,
+                buyersList: {
+                    type: Object,
+                    value: null,
+                    notify: true,
+                    observer: 'buyersListChanged'
+                },
+                agentsList: {
+                    type: Object,
+                    value: null,
+                    observer: 'agentsListChanged'
+                },
+                buyerKey: {
+                    type: String,
+                    value: ''
+                },
+                agentKey: {
+                    type: String,
+                    value: ''
+                },
+                expiryDate: String,
+                isStartDateTimeInvalidGlobal: Boolean,
+                applicationKey: {
+                    type: String,
+                    value: ''
+                },
+                transTypeCorrespondingColor: Object
+
+            },
+
+            observers: [
+                'fulllotDataChanged(fullLotData.*)',
+                'draftdatatypeChanged(draftdata_type.*)',
+                'startDateTimeValueChanged(startDateTimeValue,expiryHoursDaysValue)',
+                'draftdata_buyerdetails_cellphoneChanged(draftdata_buyerdetails_cellphone,draftdata_buyerdetails_firstname,draftdata_buyerdetails_middlename,draftdata_buyerdetails_lastname)',
+                'draftdata_agentdetails_cellphoneChanged(draftdata_agentdetails_cellphone,draftdata_agentdetails_firstname,draftdata_agentdetails_middlename,draftdata_agentdetails_lastname)',
+                'lastApplicationChanged(lastApplication.*)',
+                'isStartDateTimeInvalidChanged(isStartDateTimeInvalid.*)',
+            ],
+
+            // attached() {
+            //     // console.log(this.localName + '#' + this.id + ' was attached');
+            //     // if(!this.applicationKey) {
+            //     this.getpath();
+            //     // console.log(this.applicationKey);
+            // },
+
+            // newdataChanged() {
+            //     if(Object.keys(this.newdata).length > 0){
+            //     console.log(this.newdata);
+            //     }
+            // },
+
+            _getPrevRoute() {
+                return this.prevRoute || '/applications'
+            },
+
+            isStartDateTimeInvalidChanged() {
+                this.favrighthide = this.isStartDateTimeInvalid;
+                this.isStartDateTimeInvalidGlobal = this.isStartDateTimeInvalid;
+                // console.log(this.isStartDateTimeInvalid);
+            },
+
+            lastApplicationChanged() {
+                if (this.lastApplication[0]) {
+                    if (this.lastApplication[0].expiry) {
+                        this.minStartDateTime = this.lastApplication[0].expiry;
+
+                        if (this.startDateTimeValue) {
+                            var startDTV = new Date(this.startDateTimeValue);
+                            var minStartDT = new Date(this.minStartDateTime);
+                            if (startDTV > minStartDT) {
+                                this.isStartDateTimeInvalidGlobal = false;
+                            }
+                            else {
+                                this.isStartDateTimeInvalidGlobal = true;
+                            }
+                        }
                     }
                     else {
-                      isCurrentReservation = true;
-                    }
-                  }
-                  else {
-                    isCurrentReservation = true;
-                  }
-
-                  // console.log(this.lastReservation);
-
-
-                  var dataForReservation = {
-                    agent: this.agentKey,
-                    agentdetails: {
-                      firstname: this.draftdata_agentdetails_firstname,
-                      middlename: this.draftdata_agentdetails_middlename,
-                      lastname: this.draftdata_agentdetails_lastname,
-                      suffix: this.draftdata_agentdetails_suffix,
-                      email: this.draftdata_agentdetails_email,
-                      cellphone: this.draftdata_agentdetails_cellphone
-                    },
-                    buyer: this.buyerKey,
-                    buyerdetails: {
-                      firstname: this.draftdata_buyerdetails_firstname,
-                      middlename: this.draftdata_buyerdetails_middlename,
-                      lastname: this.draftdata_buyerdetails_lastname,
-                      suffix: this.draftdata_buyerdetails_suffix,
-                      cellphone: this.draftdata_buyerdetails_cellphone,
-                      email: this.draftdata_buyerdetails_email
-                    },
-                    expiry: this.expiryDate,
-                    isexpired: false,
-                    start: this.startDateTimeValue,
-                    timestamp: { ".sv": "timestamp" },
-                    iscurrent: isCurrentReservation,
-                    type: (this.draftdata_type === 'Reserve' ? 'reserved' :
-                      this.draftdata_type === 'Hold' ? 'hold' :
-                        this.draftdata_type === 'Buy' ? 'sold' : ''),
-                    reference: this.applicationKey
-                  };
-
-                  firebaseUpdate["/reservations/" + this.fullLot + "/" + this.transactionKey] = dataForReservation;
-
-                  if (isCurrentReservation == true) {
-                    firebaseUpdate["/lots/" + this.fullLot + "/reservation"] = this.transactionKey;
-                    firebaseUpdate["/lots/" + this.fullLot + "/reservationdetails"] = dataForReservation;
-                    firebaseUpdate["/lots/" + this.fullLot + "/status"] = (this.draftdata_type === 'Reserve' ? 'reserved' : this.draftdata_type === 'Hold' ? 'hold' : this.draftdata_type === 'Buy' ? 'sold' : '');
-                    firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = this.transTypeCorrespondingColor.name;
-                    firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = this.transTypeCorrespondingColor.bg_color;
-                    firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = this.transTypeCorrespondingColor.fore_color;
-
-                    //shb 01/04
-                    //for lots with level/map_lot: check other lots by map_lot, compare and get winning map_lot status
-                    //get lots thru map_lot
-                    if (this.fullLotData.level) {
-                      var otherLotsRef = this.$.fdColor.db.ref('lots');
-                      var otherLotMapLot = 'block' + this.fullLotData.block + 'lot' + this.fullLotData.lot;
-                      otherLotsRef.orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
-                        if (snap.exists()) {
-                          var winningValStat = 0;
-                          snap.forEach(element => {
-                            var valStat = 0;
-                            var stat = element.val().status;
-                            if (stat) {
-                              if (stat === 'available') valStat = 5;
-                              else if (stat === 'hold') valStat = 4;
-                              else if (stat === 'reserved') valStat = 3;
-                              else if (stat === 'soldlacking') valStat = 2;
-                              else if (stat === 'sold') valStat = 1;
-                              else valStat = 0; //notyetavailable
-                            }
-                            if (valStat > winningValStat) {
-                              winningValStat = valStat;
-                            }
-                          });
-
-                          var winningColor;
-                          if (winningValStat == 5) winningColor = 'available';
-                          else if (winningValStat == 4) winningColor = 'hold';
-                          else if (winningValStat == 3) winningColor = 'reserved';
-                          else if (winningValStat == 2) winningColor = 'soldlacking';
-                          else if (winningValStat == 1) winningColor = 'sold';
-                          else winningColor = 'notyetavailable';
-
-                          var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + winningColor);
-                          transTypeCorrespondingColorRef.on('value', statusColor => {
-                            if (statusColor.exists()) {
-                              corresStatusColor = statusColor.val()
-                              firebaseUpdate["/lots/" + otherLotMapLot + "/status"] = winningColor;
-                              firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
-                              firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
-                              firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
-                            }
-                          });
-                        }
-                      });
-
+                        this.minStartDateTime = '';
                     }
 
-                  }
-                  //if ok, update bg_color, status_name
-                  //check reservations if current is expired, then check if there is prior reservation, then iscurrent=false
-
-
-                  var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
-                  var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                  var favRightVar = Polymer.dom(this.root).querySelector("#favright");
-
-                  if (this.fullLotData.status != 'available') {
-                    this.saveErrorDetails = 'Lot status has changed. Please check the status of the lot.';
-                    saveSuccess.setAttribute("style", "display: none; color: green;");
-                    saveFailed.setAttribute("style", "display: block; color: red;");
-                  }
-                  else {
-
-                    // console.log(firebaseUpdate);
-                    firebaseDbRef.update(firebaseUpdate, function (error) {
-                      if (error) {
-                        console.log("Error updating data:", error);
-                        this.saveErrorDetails = error;
-                        saveSuccess.setAttribute("style", "display: none; color: green;");
-                        saveFailed.setAttribute("style", "display: block; color: red;");
-
-                        this.favlefthide = false;
-                        this.favrighthide = true;
-
-                        // console.log('1');
-                      }
-                      else {
-                        this.saveErrorDetails = "";
-                        saveSuccess.setAttribute("style", "display: block; color: green;");
-                        saveFailed.setAttribute("style", "display: none; color: red;");
-
-                        this.favlefthide = true;
-                        this.favrighthide = true;
-
-                        favRightVar.setAttribute("style", "display: none; background: #1976d2;");
-
-                        // console.log('2');
-                      }
-                    });
-                  }
                 }
                 else {
-                  //transactionKey is missing
-                  var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                  this.saveErrorDetails = "Transaction Key is missing.";
-                  saveFailed.setAttribute("style", "display: block; color: red;");
+                    this.minStartDateTime = '';
                 }
-              }
+
+                // console.log(this.lastApplication[0]);
+
+            },
+
+            draftdata_buyerdetails_cellphoneChanged() {
+                if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname) {
+                    this.favrighthide = false;
+                }
+                else {
+                    this.favrighthide = true;
+                }
+            },
+
+            draftdata_agentdetails_cellphoneChanged() {
+                if (this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
+                    this.favrighthide = false;
+                }
+                else {
+                    this.favrighthide = true;
+                }
+            },
+
+            startDateTimeValueChanged() {
+                if (this.draftdata_type === 'Reserve') {
+                    var xdate = new Date(this.$.startDateTimeValueV.value);
+                    xdate.setDate(xdate.getDate() + Number(this.expiryHoursDaysValue));
+                    this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+                    this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
+                        + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+                }
+                else if (this.draftdata_type === 'Hold') {
+                    var xdate = new Date(this.$.startDateTimeValueV.value);
+                    xdate.setHours(xdate.getHours() + Number(this.expiryHoursDaysValue));
+                    this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+                    this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
+                        + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+                }
+                else if (this.draftdata_type === 'Buy') {
+                    this.expiryDate = '';
+                }
+
+                if (this.$.startDateTimeValueV.value) {
+                    if (this.isStartDateTimeInvalid === true) {
+                        this.favrighthide = true;
+                    }
+                    else {
+                        this.favrighthide = false;
+                    }
+                }
+                else {
+                    this.favrighthide = true;
+                }
+
+            },
+
+            draftdatatypeChanged(e) {
+                if (e) {
+                    if (this.isStartDateTimeInvalid === true) {
+                        this.favrighthide = true;
+                    }
+                    else {
+                        this.favrighthide = false;
+                    }
+                }
+                else {
+                    this.favrighthide = true;
+                }
+            },
+
+            buyersListChanged(e) {
+                if (e) {
+                    if (e.length > 0) {
+                        this.buyerKey = e[0].$key;
+                        this.draftdata_buyerdetails_firstname = e[0].firstname;
+                        this.draftdata_buyerdetails_middlename = e[0].middlename;
+                        this.draftdata_buyerdetails_lastname = e[0].lastname;
+                        this.draftdata_buyerdetails_suffix = e[0].suffix;
+                        this.draftdata_buyerdetails_email = e[0].email;
+                    }
+                    else {
+                        this.buyerKey = '';
+                    }
+                }
+                else {
+                    this.buyerKey = '';
+                }
+            },
+
+            agentsListChanged(e) {
+                if (e) {
+                    if (e.length > 0) {
+                        this.agentKey = e[0].$key;
+                        this.draftdata_agentdetails_firstname = e[0].firstname;
+                        this.draftdata_agentdetails_middlename = e[0].middlename;
+                        this.draftdata_agentdetails_lastname = e[0].lastname;
+                        this.draftdata_agentdetails_suffix = e[0].suffix;
+                        this.draftdata_agentdetails_email = e[0].email;
+                    }
+                    else {
+                        this.agentKey = '';
+                    }
+                }
+                else {
+                    this.agentKey = '';
+                }
+            },
+
+            selectReserve() {
+                var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
+                showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
+
+                var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
+                showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
+
+                var ddate = new Date();
+                this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+                this.expiryHoursDaysLabel = "days";
+                this.expiryHoursDaysValue = 30;
+                var xdate = new Date(this.$.startDateTimeValueV.value);
+                xdate.setDate(xdate.getDate() + this.expiryHoursDaysValue);
+                this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+
+                this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
+                    + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+
+
+                //get color
+                var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/reserved');
+                transTypeCorrespondingColorRef.on('value', snapshot => {
+                    if (snapshot) {
+                        this.transTypeCorrespondingColor = snapshot.val()
+                    }
+                });
+
+            },
+            selectHold() {
+                var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
+                showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
+
+                var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
+                showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
+
+                var ddate = new Date();
+                this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+                this.expiryHoursDaysLabel = "hours";
+                this.expiryHoursDaysValue = 24;
+                var xdate = new Date(this.$.startDateTimeValueV.value);
+                xdate.setHours(xdate.getHours() + this.expiryHoursDaysValue);
+                this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+
+                this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
+                    + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+
+                //get color
+                var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/hold');
+                transTypeCorrespondingColorRef.on('value', snapshot => {
+                    if (snapshot.exists()) {
+                        this.transTypeCorrespondingColor = snapshot.val()
+                    }
+                });
+            },
+            selectBuy() {
+                var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
+                showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
+
+                var hideExpiry = Polymer.dom(this.root).querySelector("#expiry");
+                hideExpiry.setAttribute("style", "display: none;");
+
+                this.set('draftdata.expiry', '');
+
+                var ddate = new Date();
+                this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
+                this.expiryDate = '';
+
+                //get color
+                var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/sold');
+                transTypeCorrespondingColorRef.on('value', snapshot => {
+                    if (snapshot) {
+                        this.transTypeCorrespondingColor = snapshot.val()
+                    }
+                });
+            },
+
+            getpath() {
+                this.applicationKey = this.guid();
+                this.path = 'applications/' + this.applicationKey;
+
+                return this.path;
+            },
+
+            fulllotDataChanged() {
+                if (this.fullLotData) {
+                    if (this.fullLotData.inventoriable == "yes") {
+
+                        if (this.fullLotData.lot) {
+                            var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
+                            spinnerDetails.active = false;
+                            //ok we have value
+                            var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
+                            errormsg.setAttribute("style", "display: none;");
+
+                            var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
+                            cardcontentlotDetails.setAttribute("style", "height: 48px; background-color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_bg_color : "rgb(122, 122, 122)") + "; color: " + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_fore_color : "white") + ";");
+
+                            this.fullLotName = "Block " + this.fullLotData.block + " - Lot " + this.fullLotData.lot + (this.fullLotData.level ? " - Level " + this.fullLotData.level : "");
+                            this.areaLabel = this.fullLotData.area ? "Area" : "";
+                            this.designationLabel = this.fullLotData.designation ? "Designation" : "";
+                            this.typeLabel = this.fullLotData.type ? "Type" : "";
+                            this.statusLabel = this.fullLotData.status ? "Status" : "";
+
+                            var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
+                            statusValue.setAttribute("style", "font-weight: 400; color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.fore_color : "black") + "; background:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.bg_color : "gray") + "; border-radius: 2px; padding-left: 2px;padding-right: 2px;");
+
+                            var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
+                            stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: block;");
+
+
+                            var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
+                            if (this.fullLotData.status == 'available') { // || this.fullLotData.status == 'hold' || this.fullLotData.status == 'reserved'
+                                cardActions.setAttribute("style", "display: block;");
+
+                                if (this.draftdata_type) {
+                                    this.favrighthide = false;
+                                }
+                                else {
+                                    this.favrighthide = true;
+                                }
+
+
+                            }
+                            else {
+                                cardActions.setAttribute("style", "display: none;");
+                                this.favrighthide = true;
+                            }
+
+
+                        }
+                        else {
+                            if (this.fullLot) {
+                                var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
+                                spinnerDetails.active = false;
+
+                                var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
+                                errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
+                                this.validationMessage = 'Not found!';
+
+                                var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
+                                cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
+
+                                var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
+                                stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
+
+                                this.fullLotName = "";
+                                this.areaLabel = "";
+                                this.designationLabel = "";
+                                this.typeLabel = "";
+                                this.statusLabel = "";
+
+                                var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
+                                statusValue.setAttribute("style", "font-weight: 400;");
+
+                                var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
+                                cardActions.setAttribute("style", "display: none;");
+
+                                this.favrighthide = true;
+                            }
+                        }
+
+                    }
+                    else {
+                        if (this.fullLot) {
+                            var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
+                            spinnerDetails.active = false;
+
+                            var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
+                            errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
+                            this.validationMessage = 'Not found!';
+
+                            var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
+                            cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
+
+                            var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
+                            stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
+
+                            this.fullLotName = "";
+                            this.areaLabel = "";
+                            this.designationLabel = "";
+                            this.typeLabel = "";
+                            this.statusLabel = "";
+
+                            var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
+                            statusValue.setAttribute("style", "font-weight: 400;");
+
+                            var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
+                            cardActions.setAttribute("style", "display: none;");
+
+                            this.favrighthide = true;
+                        }
+                    }
+
+                }
+                else {
+                    if (this.fullLot) {
+
+                        var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
+                        spinnerDetails.active = false;
+
+                        var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
+                        errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
+                        this.validationMessage = 'Not found!';
+
+                        var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
+                        cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
+
+                        var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
+                        stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
+
+                        this.fullLotName = "";
+                        this.areaLabel = "";
+                        this.designationLabel = "";
+                        this.typeLabel = "";
+                        this.statusLabel = "";
+
+                        var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
+                        statusValue.setAttribute("style", "font-weight: 400;");
+
+                        var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
+                        cardActions.setAttribute("style", "display: none;");
+
+                        this.favrighthide = true;
+                    }
+
+
+                }
+            },
+
+            blocklotplotChanged() {
+                if (this.block) { this.block = this.block.toString().toUpperCase(); }
+                if (this.lot) { this.lot = this.lot.toString().toUpperCase(); }
+                if (this.level) { this.level = this.level.toString().toLowerCase(); }
+
+                this.fullLot = "block" + this.block + "lot" + this.lot + (this.level ? "level" + this.level : "");
+
+                var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
+                spinnerDetails.active = true;
+
+
+                // var lastApplicationDateTimeRef = this.$.lastApplicationDateTime.db.ref('applications');
+                // lastApplicationDateTimeRef.orderByChild('lot').equalTo(this.fullLot).limitToLast(1).on('child_added', snapshot => {
+                //     if (snapshot) {
+                //         console.log((snapshot.val()));
+                //         this.minStartDateTime = snapshot.val().expiry;
+                //     }
+                // });
+                // lastApplicationDateTime
+
+
+                // var cont2 = Polymer.dom(this.root).querySelector("#container2");
+                // toast.duration = 0;
+                // toast.fitInto = cont2;
+                // toast.show({ text: 'Getting details...' });
+            },
+
+            toggleDrawer() {
+                // this.dispatchEvent(new CustomEvent('toggleDrawer', {
+                //     bubbles: true, composed: true, detail: {
+                //         narrow: this.$.narrow
+                //     }
+                // }));
+                // this.$.narrow = !this.$.narrow;
+
+                Polymer.dom(this.parentNode).removeChild(this);
+
+            },
+
+            _currentPage(e, s) {
+                return s === e;
+            },
+
+            _selectPage(e) {
+                // var data_args = Polymer.dom(e).rootTarget.getAttribute("data-args");
+
+                // // console.log(this.selectedPage);
+                // // console.log(data_args);
+
+                // if (Number(data_args) < this.selectedPage) {
+                //     this.selectedPage = Number(data_args);
+                //     this._select1();
+                // }
+                // else if (Number(data_args) > this.selectedPage) {
+                //     this.selectedPage = Number(data_args);
+                //     this._select2();
+                // }
+
+            },
+
+
+            ready() {
+                this.selectedPage = 0;
+
+                this.draftdata_buyerdetails_cellphone = '';
+                this.draftdata_buyerdetails_firstname = '';
+                this.draftdata_buyerdetails_middlename = '';
+                this.draftdata_buyerdetails_lastname = '';
+                this.draftdata_buyerdetails_suffix = '';
+                this.draftdata_buyerdetails_email = '';
+                this.draftdata_buyerdetails_cellphone = '';
+
+                this.draftdata_agentdetails_cellphone = '';
+                this.draftdata_agentdetails_firstname = '';
+                this.draftdata_agentdetails_middlename = '';
+                this.draftdata_agentdetails_lastname = '';
+                this.draftdata_agentdetails_suffix = '';
+                this.draftdata_agentdetails_email = '';
+                this.draftdata_agentdetails_cellphone = '';
+
+                this.minStartDateTime = '';
+                this.saveErrorDetails = '...';
+            },
+
+            _select1(e) {
+                this.entryanimation = "slide-from-left-animation";
+                this.exitanimation = "slide-right-animation";
+
+                if (parseInt(this.selectedPage) <= 3) {
+                    if (parseInt(this.selectedPage) !== 0) {
+                        this.selectedPage = (parseInt(this.selectedPage) - 1);
+
+                        Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: #1976d2;");
+                        Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:chevron-right");
+
+
+                        if (this.selectedPage === 0) {
+                            this.favlefthide = true;
+                        }
+
+                        this.favrighthide = false;
+                    }
+                    else {
+                        this.favlefthide = true;
+                        this.favrighthide = false;
+                    }
+                }
+                else {
+                    this.selectedPage = 3;
+                }
+
+            },
+
+            _select2(e) {
+                this.entryanimation = "slide-from-right-animation";
+                this.exitanimation = "slide-left-animation";
+                if (parseInt(this.selectedPage) >= 0) {
+                    if (parseInt(this.selectedPage) == 3) {
+                        //complete
+
+                        if (this.transTypeCorrespondingColor) {
+
+                            if (this.isStartDateTimeInvalidGlobal == true) {
+                                var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+                                this.saveErrorDetails = "Start date conflict, please change the start date accordingly.";
+                                saveFailed.setAttribute("style", "display: block; color: red;");
+                            }
+                            else {
+
+                                this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
+                                this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
+
+                                var draftdata = {
+                                    agent: this.agentKey,
+                                    agentdetails: {
+                                        firstname: this.draftdata_agentdetails_firstname,
+                                        middlename: this.draftdata_agentdetails_middlename,
+                                        lastname: this.draftdata_agentdetails_lastname,
+                                        suffix: this.draftdata_agentdetails_suffix,
+                                        email: this.draftdata_agentdetails_email,
+                                        cellphone: this.draftdata_agentdetails_cellphone
+                                    },
+                                    buyer: this.buyerKey,
+                                    buyerdetails: {
+                                        firstname: this.draftdata_buyerdetails_firstname,
+                                        middlename: this.draftdata_buyerdetails_middlename,
+                                        lastname: this.draftdata_buyerdetails_lastname,
+                                        suffix: this.draftdata_buyerdetails_suffix,
+                                        cellphone: this.draftdata_buyerdetails_cellphone,
+                                        email: this.draftdata_buyerdetails_email
+                                    },
+                                    expiry: this.expiryDate,
+                                    isdraft: 'false',
+                                    isserved: 'false',
+                                    lot: this.fullLot,
+                                    lotdetails: this.fullLotData,
+                                    processed: '',
+                                    processordetails: '',
+                                    served: '',
+                                    start: this.startDateTimeValue,
+                                    status: '',
+                                    timestamp: { ".sv": "timestamp" },
+                                    type: this.draftdata_type,
+                                    reference: this.applicationKey
+                                };
+
+                                var draftBuyer = {
+                                    firstname: this.draftdata_buyerdetails_firstname,
+                                    middlename: this.draftdata_buyerdetails_middlename,
+                                    lastname: this.draftdata_buyerdetails_lastname,
+                                    suffix: this.draftdata_buyerdetails_suffix,
+                                    cellphone: this.draftdata_buyerdetails_cellphone,
+                                    email: this.draftdata_buyerdetails_email
+                                };
+
+
+                                var draftAgent = {
+                                    firstname: this.draftdata_agentdetails_firstname,
+                                    middlename: this.draftdata_agentdetails_middlename,
+                                    lastname: this.draftdata_agentdetails_lastname,
+                                    suffix: this.draftdata_agentdetails_suffix,
+                                    email: this.draftdata_agentdetails_email,
+                                    cellphone: this.draftdata_agentdetails_cellphone
+                                };
+
+                                var firebaseDb = this.$.idd.db;
+                                var firebaseDbRef = firebaseDb.ref();
+                                var firebaseUpdate = {};
+
+                                var transactionPush = firebaseDbRef.child('briefcasedraft').push();
+                                this.transactionKey = transactionPush.key;
+
+                                if (this.transactionKey) {
+
+                                    //save to /applications/{id}
+                                    firebaseUpdate["/briefcasedraft/" + this.transactionKey] = draftdata;
+                                    //this.path
+
+                                    if (this.buyerKey) {
+                                        //save to /buyers/{new id}
+                                        firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
+                                    }
+                                    else {
+                                        this.saveErrorDetails = "Buyer Key is empty.";
+                                        saveSuccess.setAttribute("style", "display: none; color: green;");
+                                        saveFailed.setAttribute("style", "display: block; color: red;");
+                                    }
+
+                                    if (this.agentKey) {
+                                        //save to /agents/{new id}
+                                        firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
+                                    }
+                                    else {
+                                        this.saveErrorDetails = "Agent Key is empty.";
+                                        saveSuccess.setAttribute("style", "display: none; color: green;");
+                                        saveFailed.setAttribute("style", "display: block; color: red;");
+                                    }
+
+
+
+                                    //how to get last two reservation with iscurrent and not iscurrent
+                                    //what if there is no iscurrent but there is a reservation???
+                                    //--- no need to get the current iscurrent=true, we just need the last-reservation to check if we can set the current reservation as iscurrent
+
+                                    // applications filter
+                                    // edit
+
+                                    // save to application and conditionally to Reservations & Lot Details Reservation
+                                    // ---check for applications in-line and determine the start date and time
+                                    // ---save to reservation will be after checking of docs approval
+
+                                    // midnight update
+
+
+                                    //will be transferred later, when docs checking and approval are up
+                                    //save to /reservations/{new id}
+                                    var isCurrentReservation = false;
+                                    if (this.lastReservation) {
+                                        if (this.lastReservation.length > 0) {
+                                            //check if this.lastReservation is expired, check for previous reservation --done thru query
+                                            isCurrentReservation = false;
+                                        }
+                                        else {
+                                            isCurrentReservation = true;
+                                        }
+                                    }
+                                    else {
+                                        isCurrentReservation = true;
+                                    }
+
+                                    // console.log(this.lastReservation);
+
+
+                                    var dataForReservation = {
+                                        agent: this.agentKey,
+                                        agentdetails: {
+                                            firstname: this.draftdata_agentdetails_firstname,
+                                            middlename: this.draftdata_agentdetails_middlename,
+                                            lastname: this.draftdata_agentdetails_lastname,
+                                            suffix: this.draftdata_agentdetails_suffix,
+                                            email: this.draftdata_agentdetails_email,
+                                            cellphone: this.draftdata_agentdetails_cellphone
+                                        },
+                                        buyer: this.buyerKey,
+                                        buyerdetails: {
+                                            firstname: this.draftdata_buyerdetails_firstname,
+                                            middlename: this.draftdata_buyerdetails_middlename,
+                                            lastname: this.draftdata_buyerdetails_lastname,
+                                            suffix: this.draftdata_buyerdetails_suffix,
+                                            cellphone: this.draftdata_buyerdetails_cellphone,
+                                            email: this.draftdata_buyerdetails_email
+                                        },
+                                        expiry: this.expiryDate,
+                                        isexpired: false,
+                                        start: this.startDateTimeValue,
+                                        timestamp: { ".sv": "timestamp" },
+                                        iscurrent: isCurrentReservation,
+                                        type: (this.draftdata_type === 'Reserve' ? 'reserved' :
+                                            this.draftdata_type === 'Hold' ? 'hold' :
+                                                this.draftdata_type === 'Buy' ? 'sold' : ''),
+                                        reference: this.applicationKey
+                                    };
+
+                                    firebaseUpdate["/reservations/" + this.fullLot + "/" + this.transactionKey] = dataForReservation;
+
+                                    if (isCurrentReservation == true) {
+                                        firebaseUpdate["/lots/" + this.fullLot + "/reservation"] = this.transactionKey;
+                                        firebaseUpdate["/lots/" + this.fullLot + "/reservationdetails"] = dataForReservation;
+                                        firebaseUpdate["/lots/" + this.fullLot + "/status"] = (this.draftdata_type === 'Reserve' ? 'reserved' : this.draftdata_type === 'Hold' ? 'hold' : this.draftdata_type === 'Buy' ? 'sold' : '');
+                                        firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = this.transTypeCorrespondingColor.name;
+                                        firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = this.transTypeCorrespondingColor.bg_color;
+                                        firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = this.transTypeCorrespondingColor.fore_color;
+
+                                        //shb 01/04
+                                        //for lots with level/map_lot: check other lots by map_lot, compare and get winning map_lot status
+                                        //get lots thru map_lot
+                                        if (this.fullLotData.level) {
+                                            var otherLotsRef = this.$.fdColor.db.ref('lots');
+                                            var otherLotMapLot = 'block' + this.fullLotData.block + 'lot' + this.fullLotData.lot;
+                                            otherLotsRef.orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
+                                                if (snap.exists()) {
+                                                    var winningValStat = 0;
+                                                    snap.forEach(element => {
+                                                        var valStat = 0;
+                                                        var stat = element.val().status;
+                                                        if (stat) {
+                                                            if (stat === 'available') valStat = 5;
+                                                            else if (stat === 'hold') valStat = 4;
+                                                            else if (stat === 'reserved') valStat = 3;
+                                                            else if (stat === 'soldlacking') valStat = 2;
+                                                            else if (stat === 'sold') valStat = 1;
+                                                            else valStat = 0; //notyetavailable
+                                                        }
+                                                        if (valStat > winningValStat) {
+                                                            winningValStat = valStat;
+                                                        }
+                                                    });
+
+                                                    var winningColor;
+                                                    if (winningValStat == 5) winningColor = 'available';
+                                                    else if (winningValStat == 4) winningColor = 'hold';
+                                                    else if (winningValStat == 3) winningColor = 'reserved';
+                                                    else if (winningValStat == 2) winningColor = 'soldlacking';
+                                                    else if (winningValStat == 1) winningColor = 'sold';
+                                                    else winningColor = 'notyetavailable';
+
+                                                    var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + winningColor);
+                                                    transTypeCorrespondingColorRef.on('value', statusColor => {
+                                                        if (statusColor.exists()) {
+                                                            corresStatusColor = statusColor.val()
+                                                            firebaseUpdate["/lots/" + otherLotMapLot + "/status"] = winningColor;
+                                                            firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
+                                                            firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
+                                                            firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
+                                                        }
+                                                    });
+                                                }
+                                            });
+
+                                        }
+
+                                    }
+                                    //if ok, update bg_color, status_name
+                                    //check reservations if current is expired, then check if there is prior reservation, then iscurrent=false
+
+
+                                    var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
+                                    var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+                                    var favRightVar = Polymer.dom(this.root).querySelector("#favright");
+
+                                    if (this.fullLotData.status != 'available') {
+                                        this.saveErrorDetails = 'Lot status has changed. Please check the status of the lot.';
+                                        saveSuccess.setAttribute("style", "display: none; color: green;");
+                                        saveFailed.setAttribute("style", "display: block; color: red;");
+                                    }
+                                    else {
+
+                                        // console.log(firebaseUpdate);
+                                        firebaseDbRef.update(firebaseUpdate, function (error) {
+                                            if (error) {
+                                                console.log("Error updating data:", error);
+                                                this.saveErrorDetails = error;
+                                                saveSuccess.setAttribute("style", "display: none; color: green;");
+                                                saveFailed.setAttribute("style", "display: block; color: red;");
+
+                                                this.favlefthide = false;
+                                                this.favrighthide = true;
+
+                                                // console.log('1');
+                                            }
+                                            else {
+                                                this.saveErrorDetails = "";
+                                                saveSuccess.setAttribute("style", "display: block; color: green;");
+                                                saveFailed.setAttribute("style", "display: none; color: red;");
+
+                                                this.favlefthide = true;
+                                                this.favrighthide = true;
+
+                                                favRightVar.setAttribute("style", "display: none; background: #1976d2;");
+
+                                                // console.log('2');
+                                            }
+                                        });
+                                    }
+                                }
+                                else {
+                                    //transactionKey is missing
+                                    var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+                                    this.saveErrorDetails = "Transaction Key is missing.";
+                                    saveFailed.setAttribute("style", "display: block; color: red;");
+                                }
+                            }
+
+                        }
+                        else {
+                            var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+                            this.saveErrorDetails = "Status color is not yet loaded, please re-select transaction type.";
+                            saveFailed.setAttribute("style", "display: block; color: red;");
+                        }
+                        // console.log('3');
+
+                    }
+                    else {
+                        // console.log('xx ' + this.selectedPage);
+
+                        this.favlefthide = false;
+                        this.favrighthide = false;
+
+                        if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname
+                            && this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
+                            this.favrighthide = false;
+                        }
+                        else {
+                            this.favrighthide = true;
+                        }
+                    }
+
+                    if (parseInt(this.selectedPage) !== 4) {
+                        this.selectedPage = (parseInt(this.selectedPage) + 1);
+
+                        if (this.selectedPage === 3) {
+                            //change color and icon here
+                            Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: green;");
+                            Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:done");
+                        }
+                    }
+
+
+                }
+                else {
+                    this.selectedPage = 0;
+                    this.favlefthide = true;
+                    this.favrighthide = false;
+                }
+
+                //create or update /lot & /isdraft values
+                // if (this.fullLot) {
+                //     this.$.idd.setStoredValue(this.path + '/lot', this.fullLot);
+                //     this.$.idd.setStoredValue(this.path + '/isdraft', true);
+                // }
+
+            },
+            _rdChanged(newData, oldData) {
+                this.fromRD = true;
+
+                // this.isUserClicked = true;
+                // console.log('_rd');
+                // console.log(oldData);
+                // console.log(newData);
+            },
+            _ldChanged(newData, oldData) {
+                this.fromLD = true;
+
+                // this.isUserClicked = true;
+                // console.log('_rd');
+                // console.log(oldData);
+                // console.log(newData);
+            },
+            s4: function () {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
+            },
+            guid: function () {
+                // return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
+                //     this.s4() + '-' + this.s4() + this.s4() + this.s4();
+
+
+                var uid = new ShortUniqueId();
+
+                // console.log(uid.randomUUID(8));
+                // var shortid = new shortid();
+                return uid.randomUUID(8);
+
 
             }
-            else {
-              var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-              this.saveErrorDetails = "Status color is not yet loaded, please re-select transaction type.";
-              saveFailed.setAttribute("style", "display: block; color: red;");
-            }
-            // console.log('3');
-
-          }
-          else {
-            // console.log('xx ' + this.selectedPage);
-
-            this.favlefthide = false;
-            this.favrighthide = false;
-
-            if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname
-              && this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
-              this.favrighthide = false;
-            }
-            else {
-              this.favrighthide = true;
-            }
-          }
-
-          if (parseInt(this.selectedPage) !== 4) {
-            this.selectedPage = (parseInt(this.selectedPage) + 1);
-
-            if (this.selectedPage === 3) {
-              //change color and icon here
-              Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: green;");
-              Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:done");
-            }
-          }
 
 
-        }
-        else {
-          this.selectedPage = 0;
-          this.favlefthide = true;
-          this.favrighthide = false;
-        }
-
-        //create or update /lot & /isdraft values
-        // if (this.fullLot) {
-        //     this.$.idd.setStoredValue(this.path + '/lot', this.fullLot);
-        //     this.$.idd.setStoredValue(this.path + '/isdraft', true);
-        // }
-
-      },
-      _rdChanged(newData, oldData) {
-        this.fromRD = true;
-
-        // this.isUserClicked = true;
-        // console.log('_rd');
-        // console.log(oldData);
-        // console.log(newData);
-      },
-      _ldChanged(newData, oldData) {
-        this.fromLD = true;
-
-        // this.isUserClicked = true;
-        // console.log('_rd');
-        // console.log(oldData);
-        // console.log(newData);
-      },
-      s4: function () {
-        return Math.floor((1 + Math.random()) * 0x10000)
-          .toString(16)
-          .substring(1);
-      },
-      guid: function () {
-        // return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
-        //     this.s4() + '-' + this.s4() + this.s4() + this.s4();
-
-
-        var uid = new ShortUniqueId();
-
-        // console.log(uid.randomUUID(8));
-        // var shortid = new shortid();
-        return uid.randomUUID(8);
-
-
-      }
-
-
-    })
+        })
 
 
 
-  </script>
+    </script>
 </dom-module>

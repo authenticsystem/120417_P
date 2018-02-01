@@ -17,6 +17,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 
 <dom-module id="my-account">
   <template>
@@ -88,6 +89,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width: 80px;
         text-align: center;
       }
+
+      /* label {
+        padding: 10px;
+        background: #dedede;
+        margin: 20px auto;
+        display: block;
+        width: 150px;
+        cursor: pointer;
+        color: #444;
+        font-size: 70%;
+        background: linear-gradient(#eee, #ddd);
+        color: #666;
+        border-radius: 2px;
+        box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.5);
+        border: 1px solid #d2d2d2;
+        text-align: center;
+      } */
+
+      .action paper-button {
+        height: 32px;
+        font-size: 12px;
+        font-weight: 400;
+        width: 80px;
+      }
+
+      paper-button.green {
+        background-color: var(--paper-green-500);
+        color: white;
+      }
+
+      paper-button.green[active] {
+        background-color: var(--paper-red-500);
+      }
     </style>
 
     <!-- <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth> -->
@@ -118,18 +152,64 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
         <br>
         <div class="info">
-          <paper-input label="Firstname" value="{{firstname}}" id="fname"></paper-input>
-          <paper-input label="Middlename" value="{{middlename}}" id="mname"></paper-input>
-          <paper-input label="Lastname" value="{{lastname}}" id="lname"></paper-input>
-          <paper-input label="Suffix" value="{{suffix}}" id="suffix"></paper-input>
+          <paper-input label="Firstname" value="{{firstname}}" id="fname" readonly></paper-input>
+          <paper-input label="Middlename" value="{{middlename}}" id="mname" readonly></paper-input>
+          <paper-input label="Lastname" value="{{lastname}}" id="lname" readonly></paper-input>
+          <paper-input label="Suffix" value="{{suffix}}" id="suffix" readonly></paper-input>
           <!-- <paper-input label="Email address" value="{{user.email}}" id="email"></paper-input> -->
         </div>
         <div class="action">
           <!-- <paper-button style="width:180px">Change email/password</paper-button> -->
-          <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button>
+          <!-- <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button> -->
         </div>
       </div>
     </app-header-layout>
+
+    <!-- <div class="card">
+
+        <span hidden$="{{user.emailVerified}}">
+          <paper-icon-button icon="my-icons:close" on-tap="_signOut" style="float:right" title="Sign Out"></paper-icon-button>
+          <h1>Verify Email</h1>
+          <span>Let us know if this email belongs to you.
+            <br> Click the link in the email sent to
+            <b>[[user.email]]</b>.
+          </span>
+          <br>
+          <br>
+          <div class="action" style="float:right">
+            <paper-button on-tap="_reload" title="Already Verified">Verified</paper-button>
+            <paper-button on-tap="_resend" toggles raised class="custom green" title="Resend Verification">Resend</paper-button>
+          </div>
+        </span>
+
+        <span hidden$="{{!user.emailVerified}}">
+
+          <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style="border-radius:30px; height:150px; width:150px;"></img>
+          <img hidden$="{{user.photoURL}}" src="../images/user.png" style="border-radius:30px; height:150px; width:150px;"></img>
+          <img src="{{downloadURL}}"></img>
+          <paper-input label="{{_userName(user.displayName)}}" id="name"></paper-input>
+          <paper-input readonly label="{{user.email}}" id="email"></paper-input>
+          <paper-input label="{{_role(account)}}" readonly></paper-input>
+
+          <div class="card-actions">
+            <div class="horizontal justified">
+              <div style="float:right">
+                <span style="font-size:14px;" hidden$="{{verified}}">
+                  Account not link. Link your account
+                  <a href="/account-link">here</a>.
+                </span>
+                <span hidden$="{{!verified}}">
+                  <iron-icon icon="my-icons:check"></iron-icon> Account linked
+                </span>
+              </div>
+            </div>
+          </div>
+
+        </span>
+        <paper-toast id="toast" text="Successfully updated!"></paper-toast>
+
+      </div> -->
+
   </template>
   <script>
     Polymer({
@@ -139,15 +219,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Object,
           observer: 'accountChanged'
         },
+        verified: {
+          type: Boolean,
+          value: false
+        }
+      },
+      accountChanged() {
+        if (this.account.length > 0) {
+          this.account[0].name.firstname;
+          this.account[0].name.middlename;
+          this.account[0].name.lastname;
+          this.account[0].name.suffix;
+          this.account[0].$key;
+          this.firstname = this.account[0].name.firstname;
+          this.middlename = this.account[0].name.middlename;
+          this.lastname = this.account[0].name.lastname;
+          this.suffix = this.account[0].name.suffix;
+          this.key = this.account[0].$key;
+        }
       },
 
-      // accountChanged(){
-      //   this.firstname = this.account[0].name.firstname;
-      //   this.middlename = this.account[0].name.middlename;
-      //   this.lastname = this.account[0].name.lastname;
-      //   this.suffix = this.account[0].name.suffix;
-      //   console.log(account);
-      // },
+      _resend() {
+        var user = firebase.auth().currentUser;
+        user.sendEmailVerification().then(function () {
+          // Email sent.
+          window.location.reload();
+        }).catch(function (error) {
+          // An error happened.
+        });
+      },
+
+      _reload() {
+        window.location.reload();
+      },
+
+      _userName(e) {
+        if (e) return e;
+        else return 'Name not defined';
+      },
+
+      _role(e) {
+        if (Object.keys(e).length > 0) {
+          this.verified = true;
+          if (e[0].role) return e[0].role;
+          else return 'Role not yet assign'
+        }
+        else {
+          this.verified = false;
+          return 'Role Unknown'
+        };
+      },
 
       toggleDrawer() {
         this.dispatchEvent(new CustomEvent('toggleDrawer', {
@@ -157,6 +278,104 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }));
         this.$.narrow = !this.$.narrow;
       },
+
+      _signOut() {
+        firebase.auth().signOut().then(function () {
+          // Sign-out successful.
+          window.location.reload()
+          this.set("route.path", "");
+        }).catch(function (error) {
+          // An error happened.
+        });
+
+      },
+
+      _upload(e) {
+        var fileButton = Polymer.dom(this.root).querySelector("#fileButton");
+        var uploader = Polymer.dom(this.root).querySelector("#uploader");
+
+        fileButton.addEventListener('change', function (e) {
+          //get file
+          var file = e.target.files[0];
+          //create storage
+          var storageRef = firebase.storage().ref('profilePic/' + file.name);
+          //upload file
+          var uploadTask = storageRef.put(file);
+          //update progressbar
+          uploadTask.on('state_changed',
+
+            function progress(snapshot) {
+              var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              uploader.value = percentage;
+              if (percentage === 100) {
+                var user = firebase.auth().currentUser;
+                var photoUrl = user.photoURL;
+                if (user) {
+                  console.log(user.photoURL);
+                  // Create a reference to the file to delete
+                  var desertRef = firebase.storage().refFromURL(user.photoURL);
+                  // Delete the file
+                  desertRef.delete().then(function () {
+                    // File deleted successfully
+                  }).catch(function (error) {
+                    // Uh-oh, an error occurred!
+                  });
+                }
+              }
+            },
+            function error(err) {
+            },
+            function () {
+              var downloadURL = uploadTask.snapshot.downloadURL;
+              var user = firebase.auth().currentUser;
+              user.updateProfile({
+                photoURL: downloadURL
+              }).then(function () {
+                // Update successful.
+                window.location.reload()
+              }).catch(function (error) {
+                // An error happened.
+              });
+            }
+
+          );
+        });
+      },
+
+      _update() {
+        if (!this.firstname || !this.middlename || !this.lastname) {
+          this.msg = 'Please fill-up the required field.';
+        }
+          else {
+            this.msg = '';
+            if (!this.suffix) {
+              this.suffix = '';
+            }
+            var ref = firebase.database().ref('/accountlist');
+            ref.child(this.key).update({
+              name: {
+                firstname: this.firstname,
+                middlename: this.middlename,
+                lastname: this.lastname,
+                suffix: this.suffix
+              },
+            });
+          }
+          window.location = "/account"
+        }
+
+      // _update() {
+      //   var user = firebase.auth().currentUser;
+      //   var name = Polymer.dom(this.root).querySelector("#name");
+      //   user.updateProfile({
+      //     displayName: name.value
+      //   }).then(function () {
+      //     // Update successful.
+      //     window.location.reload()
+      //   }).catch(function (error) {
+      //     // An error happened.
+      //   });
+      // },
     })
 
 
