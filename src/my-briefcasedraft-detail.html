@@ -247,8 +247,8 @@
                                                 [[newdata.type]]
                                             </span> -->
                                             <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
-                                                    REQUEST TO HOLD
-                                                  </span>
+                                                REQUEST TO HOLD
+                                            </span>
                                         </div>
 
                                     </div>
@@ -578,13 +578,18 @@
             },
 
             _sendBriefcase() {
-                var d = new Date();
                 var options = {
                     weekday: "long", year: "numeric", month: "short",
                     day: "numeric", hour: "2-digit", minute: "2-digit"
                 };
+
+                var ddate = new Date();
+                this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
                 var timestamp = firebase.database.ServerValue.TIMESTAMP;
-                var datetime = d.toLocaleTimeString("en-us", options);
+                var datetime = this.startDateTimeValue;
+                // var datetime = ddate.toLocaleTimeString("en-us", options);
 
                 if (Object.keys(this.newdata).length > 0) {
                     var agent = this.newdata.agent,
@@ -592,7 +597,7 @@
                         buyer = this.newdata.buyer;
                     buyerdetails = this.newdata.buyerdetails,
                         expiry = this.newdata.expiry,
-                        isdraft = this.newdata.isdraft,
+                        isdraft = false,
                         isserved = this.newdata.isserved,
                         lot = this.newdata.lot,
                         lotdetails = this.newdata.lotdetails,
@@ -600,7 +605,7 @@
                         processordetails = this.newdata.processordetails,
                         reference = this.newdata.reference,
                         served = this.newdata.served,
-                        start = this.newdata.start,
+                        start = this.startDateTimeValue,
                         status = this.newdata.status,
                         timestamp = timestamp,
                         type = this.newdata.type;
@@ -614,6 +619,7 @@
                         var ref = firebase.database().ref("briefcase").push({
                             agent: agent,
                             agentdetails: agentdetails,
+                            approval:'NotYetApproved',
                             buyer: buyer,
                             buyerdetails: buyerdetails,
                             expiry: expiry,

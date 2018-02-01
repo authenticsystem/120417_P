@@ -217,8 +217,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </template>
             </app-header>
 
-            <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="agent" start-at="{{user.uid}}"
-              end-at="{{user.uid}}" limit-to-last="50">
+            <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
+              end-at="{{typeValue}}" limit-to-last="50">
             </firebase-query>
 
             <!-- on-lower-threshold="loadMoreData" -->
