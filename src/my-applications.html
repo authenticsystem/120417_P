@@ -1,3 +1,21 @@
+Skip to content
+This repository
+Search
+Pull requests
+Issues
+Marketplace
+Explore
+ @justsimplepedro
+ Sign out
+ Watch 0
+  Star 0  Fork 0 authenticsystem/120417_P
+ Code  Issues 7  Pull requests 0  Projects 2  Wiki  Insights
+Tree: 4ab25674e9 Find file Copy path120417_P/src/my-applications.html
+4ab2567  29 minutes ago
+@justsimplepedro justsimplepedro sasdsasd
+4 contributors @tigerlegab @arethey @hectorsantillan @justsimplepedro
+RawBlameHistory      
+645 lines (561 sloc)  23.2 KB
 <!--
 @license
 Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
@@ -26,15 +44,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
 
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 
 <link rel="import" href="search-bar.html">
+<link rel="import" href="my-application-card.html">
 <link rel="import" href="my-application-new.html">
 <link rel="import" href="my-application-detail.html">
 <link rel="import" href="my-application-edit.html">
+<link rel="import" href="my-applied-card.html">
+<link rel="import" href="my-applied-view.html">
 
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
 
@@ -42,7 +65,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <!-- <script src="../bower_components/time-elements/time-elements.js"></script> -->
 
 <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
-<link rel="import" href="my-application-card.html">
+
 
 <dom-module id="my-applications">
   <template>
@@ -50,11 +73,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       :host {
         height: 100vh;
         margin: 0;
-
         display: flex;
         flex-direction: column;
       }
-
       .avatar {
         height: 40px;
         width: 40px;
@@ -62,32 +83,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         box-sizing: border-box;
         background-color: #DDD;
       }
-
       .pad {
         padding: 0 16px;
         @apply --layout-flex;
         @apply --layout-vertical;
       }
-
       .primary {
         font-size: 18px;
         text-transform: capitalize;
       }
-
       .shortText,
       .longText {
         font-size: 12px;
       }
-
       .longText {
         color: gray;
         margin-bottom: -0.5em;
       }
-
       .spacer {
         @apply --layout-flex;
       }
-
       @media (max-width: 768px) {
         iron-list {
           margin: 16px;
@@ -104,7 +119,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           color: black;
         }
       }
-
       @media (min-width: 768px) {
         iron-list {
           width: 765px;
@@ -120,49 +134,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           color: black;
         }
       }
-
       #tool1 {
         color: rgb(255, 255, 255);
         background-color: #388E3C;
       }
-
       #tool2 {
         background-color: white;
       }
-
       #btn-arrow {
         position: absolute;
         color: black;
       }
-
       #btn-menu {
         color: gray;
         position: fixed;
         right: 40px;
       }
-
       #btn-clear {
         position: fixed;
         right: 80px;
         color: gray;
       }
-
       paper-fab.fab-menu {
         position: fixed;
         right: 32px;
         bottom: 32px;
       }
-
       paper-fab.fab-search {
         position: fixed;
         right: 40px;
         bottom: 104px;
       }
-
       paper-icon-button.menu {
         margin-right: 16px;
       }
-
       .item {
         @apply --layout-horizontal;
         /* padding: 20px; */
@@ -176,6 +181,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
     <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/view/:key" tail="{{viewRoute}}" data="{{viewData}}" active="{{viewActive}}"></app-route>
     <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
 
     <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
@@ -215,58 +221,106 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </paper-menu-button>
                 </app-toolbar>
               </template>
+              <paper-tabs selected="{{selectedPage}}" scrollable fit-container id="tool1">
+                <paper-tab>New Application</paper-tab>
+                <paper-tab>Application</paper-tab>
+              </paper-tabs>
             </app-header>
             
 
-            <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
-              end-at="{{typeValue}}" limit-to-last="50">
-            </firebase-query>
 
-            <!-- on-lower-threshold="loadMoreData" -->
-            <iron-scroll-threshold id="threshold">
+            <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
+              <neon-animatable>
+                <firebase-query id="query" path="/briefcase" data="{{briefcase}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
+                  end-at="{{typeValue}}" limit-to-last="50">
+                </firebase-query>
+                <iron-scroll-threshold id="threshold">
+                  <template is="dom-if" if="{{access}}">
+                    <iron-list items="[[briefcase]]" as="item" selection-enabled multi-selection scroll-target="threshold">
+                      <div style="text-align:center">{{msg}}</div>
+                      <paper-toast id="toast" text="" duration="0"></paper-toast>
+                      <template>
+                        <div class="divSeparator">
+                          <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
 
-              <template is="dom-if" if="{{!access}}">
-                <div class="card">
-                  <h3>Sorry!</h3>
-                  <div>You're not allowed to access this content.</div>
-                </div>
-              </template>
+                            <my-applied-card item="{{item}}"></my-applied-card>
 
-              <!-- threshold -->
-              <template is="dom-if" if="{{access}}">
-                <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
-                  <div style="text-align:center">{{msg}}</div>
-                  <paper-toast id="toast" text="" duration="0"></paper-toast>
-                  <template>
-                    <div class="divSeparator">
-                      <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
+                            <div tabindex="0">
+                              <a href$="{{_getViewAppLink(item.$key)}}" tabindex="-1">
+                                <!-- <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
+                                  <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
+                                  <paper-listbox slot="dropdown-content">
+                                    <paper-item >Approve</paper-item>
+                                    <paper-item on-tap="_viewThis" id="{{item.$key}}">View</paper-item>
+                                  </paper-listbox>
+                                </paper-menu-button>-->
+                               <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}" 
+                                  style="display:inline-block;position: absolute;  right: 10px; color: white; top:8px;"></paper-icon-button>
+                                <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip> 
+                              </a> 
+                             </div>
+                          </div>
 
-                        <my-application-card item="{{item}}"></my-application-card>
-
-                        <div tabindex="0">
-                          <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
-                            <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
-                              style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
-                            <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
-                          </a>
                         </div>
 
-                        <div tabindex="1">
-                          <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
-                            <paper-icon-button id="openDetailButton" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new"
-                              alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
-                            <paper-tooltip position="left">view details</paper-tooltip>
-                          </a>
-                        </div>
-
-                      </div>
-
-                    </div>
-
+                      </template>
+                    </iron-list>
                   </template>
-                </iron-list>
-              </template>
-            </iron-scroll-threshold>
+                </iron-scroll-threshold>
+              </neon-animatable>
+
+              <neon-animatable>
+                <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
+                  end-at="{{typeValue}}" limit-to-last="50">
+                </firebase-query>
+                <iron-scroll-threshold id="threshold">
+
+                  <template is="dom-if" if="{{!access}}">
+                    <div class="card">
+                      <h3>Sorry!</h3>
+                      <div>You're not allowed to access this content.</div>
+                    </div>
+                  </template>
+
+                  <template is="dom-if" if="{{access}}">
+                    <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
+                      <div style="text-align:center">{{msg}}</div>
+                      <paper-toast id="toast" text="" duration="0"></paper-toast>
+                      <template>
+                        <div class="divSeparator">
+                          <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
+
+                            <my-application-card item="{{item}}"></my-application-card>
+
+                            <div tabindex="0">
+                              <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
+                                <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
+                                  style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
+                                <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
+                              </a>
+                            </div>
+
+                            <div tabindex="1">
+                              <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
+                                <paper-icon-button id="openDetailButton" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new"
+                                  alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                                <paper-tooltip position="left">view details</paper-tooltip>
+                              </a>
+                            </div>
+
+                          </div>
+
+                        </div>
+
+                      </template>
+                    </iron-list>
+                  </template>
+                </iron-scroll-threshold>
+              </neon-animatable>
+
+
+
+            </neon-animated-pages>
 
           </app-header-layout>
           <template is="dom-if" if="{{access}}">
@@ -305,6 +359,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <my-application-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-application-edit>
         <!-- </template> -->
       </div>
+
+      <div hidden$="{{!viewActive}}">
+          <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
+          <div id="appview"></div>
+          <my-applied-view id="d26" transaction-key='{{viewData.key}}' prev-route="{{route.prefix}}"></my-applied-view>
+          <!-- [[detailData.key]] -->
+          <!-- </template> -->
+        </div>
+
     </template>
 
   </template>
@@ -312,7 +375,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     Polymer({
       is: 'my-applications',
-
       properties: {
         items: {
           type: Array,
@@ -324,12 +386,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           notify: true
         },
-        applications: {
-          type: Object,
-        },
+        applications:Object,
+        briefcase:Object,
         selectedType: {
           type: String,
           value: ''
+        },
+        selectedPage: Number,
+        entryanimation: {
+          type: String,
+          value: "slide-from-right-animation"
+        },
+        exitanimation: {
+          type: String,
+          value: "slide-from-left-animation"
         },
         filterBy: {
           type: Number,
@@ -355,12 +425,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         route: Object,
         routeData: Object,
       },
-
       observers: [
         '_searchChanged(filterBy, search)',
-        '_applicationChanged(applications)'
+        '_applicationChanged(applications)',
+        'selectedPageChanged(selectedPage)'
       ],
-
+      ready() {
+        this.selectedPage = 0;
+      },
+      selectedPageChanged(e) {
+        if (e == 0) {
+          // this.entryanimation = "slide-from-right-animation";
+          this.exitanimation = "slide-from-left-animation";
+        }
+        else {
+          // this.entryanimation = "slide-from-left-animation";
+          this.exitanimation = "slide-from-right-animation";
+        }
+        if (e == 1) {
+          this.entryanimation = "slide-from-right-animation";
+        }
+        else {
+          this.entryanimation = "slide-from-left-animation";
+        }
+      },
       _applicationChanged(e) {
         if (this.search) {
           if (e.length == 0) {
@@ -371,22 +459,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
       },
-
       toggleSearch() {
         this.openSearch = true;
       },
-
       toggleReturn() {
         this.openSearch = false;
         this.search = '';
       },
-
       toggleClear() {
         this.search = '';
       },
-
       _searchChanged(g, e) {
-
         if (g) {
           if (g == 1) {
             // this.selectedLabel = 'by reference';
@@ -420,7 +503,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
           }
         }
-
         if (e) {
           this.typeValue = e;
         }
@@ -430,17 +512,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.msg = '';
         }
       },
-
       iconForItem(item) {
         return item ? (item.integer < 50 ? 'my-icons:star-border' : 'my-icons:star') : '';
       },
-
       getClassForItem(item, selected) {
         // this.colorSelected = item.type;
         // console.log(this.colorSelected);
         return selected ? 'item expanded' : 'item';
       },
-
       toggleDrawer() {
         this.dispatchEvent(new CustomEvent('toggleDrawer', {
           bubbles: true, composed: true, detail: {
@@ -449,19 +528,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }));
         this.$.narrow = !this.$.narrow;
       },
-
       loadMoreDat() {
         var self = this;
         var people = e.detail.response.results;
         people.forEach(function (element) {
           self.push('items', element);
         });
-
         asyncStuff(function done() {
           ironScrollTheshold.clearTriggers();
         });
       },
-
       _appsnew() {
         var node = Polymer.dom(this.root).querySelector("#appnew");
         if (node) {
@@ -478,15 +554,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       },
-
       _getViewDetailsLink(e) {
         return '/applications/detail/' + e.toString();
       },
-
       _getEditAppLink(e) {
         return '/applications/edit/' + e.toString();
       },
-
+      _getViewAppLink(e) {
+        return '/applications/view/' + e.toString();
+      },
       viewDetails(e) {
         var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
         var node = Polymer.dom(this.root).querySelector("#appdetail");
@@ -502,10 +578,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //if open existing
           var currentDiv = document.getElementById("appdetail");
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-
         }
       },
-
       editDetails(e) {
         var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
         var node = Polymer.dom(this.root).querySelector("#appedit");
@@ -522,11 +596,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var currentDiv = document.getElementById("appedit");
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
+      },
+      _viewThis(e) {
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var node = Polymer.dom(this.root).querySelector("#appview");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d26");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-applied-view");
+          newDiv.setAttribute("id", "d26");
+          newDiv.setAttribute("transaction-key", data_args);
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          window.location = '/applications/view/' + data_args;
+          //if open existing
+          var currentDiv = document.getElementById("appview");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+        }
       }
-
-
-
     })
-
   </script>
 </dom-module>

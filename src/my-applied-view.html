@@ -563,8 +563,8 @@
             },
 
             deleteApplication() {
-                var db = firebase.database().ref('briefcasedraft').child(this.transactionKey).remove();
-                window.location = 'briefcase';
+                var db = firebase.database().ref('briefcase').child(this.transactionKey).remove();
+                window.location = '/applications';
                 // var ref = db.ref();
                 // var survey = db.ref(path + '/' + path);              
                 // survey
@@ -721,13 +721,13 @@
                         this.lot = this.transactionData.lotdetails.lot;
                         this.level = this.transactionData.lotdetails.level;
                     }
-                    if (this.transactionData.approval === 'Approved') {
-                        var Approved = Polymer.dom(this.root).querySelector("#approval");
-                        Approved.setAttribute("style", "display:none");
-                    }else{
-                        var Approved = Polymer.dom(this.root).querySelector("#approval");
-                        Approved.setAttribute("style", "display:block");
-                    }
+                    // if (this.transactionData.approval === 'Approved') {
+                    //     var Approved = Polymer.dom(this.root).querySelector("#approval");
+                    //     Approved.setAttribute("style", "display:none");
+                    // }else{
+                    //     var Approved = Polymer.dom(this.root).querySelector("#approval");
+                    //     Approved.setAttribute("style", "display:block");
+                    // }
                     this.startDateTimeValue = this.transactionData.start;
                     this.expiryDate = this.transactionData.expiry;
 
