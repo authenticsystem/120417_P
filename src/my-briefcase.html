@@ -237,7 +237,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <firebase-query id="query" path="/briefcasedraft" data="{{briefcasedraftSearch}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
                   end-at="{{typeValue}}" limit-to-last="50">
                 </firebase-query>
-
+                
                 <!-- on-lower-threshold="loadMoreData" -->
                 <iron-scroll-threshold id="threshold">
 
@@ -445,7 +445,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <template is="dom-if" if="{{access}}">
               <div name="/new">
                 <div id="briefcasenew"></div>
-                <my-briefcase-new id="d23" path="" prev-route="{{route.prefix}}"></my-briefcase-new>
+                <my-briefcase-new id="d23" path="" prev-route="{{route.prefix}}" user="{{user}}"></my-briefcase-new>
               </div>
             </template>
 

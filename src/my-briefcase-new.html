@@ -196,7 +196,7 @@
                         <a href="/briefcase">
                             <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
-                        <div main-title>New Application For Briefcase</div>
+                        <div main-title>New Application</div>
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
@@ -325,18 +325,18 @@
                     </neon-animatable>
 
                     <neon-animatable>
-                        <firebase-query path="/agents" order-by-child='cellphone' equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1
+                        <firebase-query path="/accountlist" order-by-child='agent' equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1
                             data="{{agentsList}}"></firebase-query>
 
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
                             <div class="detais">
-                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_agentdetails_lastname}}"></paper-input>
-                                <paper-input always-float-label="true" label="Suffix" value="{{draftdata_agentdetails_suffix}}"></paper-input>
-                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}" readonly></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}" readonly></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}" readonly></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_agentdetails_lastname}}" readonly></paper-input>
+                                <paper-input always-float-label="true" label="Suffix" value="{{draftdata_agentdetails_suffix}}" readonly></paper-input>
+                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}" readonly></paper-input>
                             </div>
                         </div>
                     </neon-animatable>
@@ -653,14 +653,20 @@
             },
 
             agentsListChanged(e) {
+                var user = firebase.auth().currentUser;
+                var userid = user.uid;
+                email = user.email;
+                // uuid = user.uid;
+                // console.log(user.email)
                 if (e) {
                     if (e.length > 0) {
-                        this.agentKey = e[0].$key;
-                        this.draftdata_agentdetails_firstname = e[0].firstname;
-                        this.draftdata_agentdetails_middlename = e[0].middlename;
-                        this.draftdata_agentdetails_lastname = e[0].lastname;
-                        this.draftdata_agentdetails_suffix = e[0].suffix;
-                        this.draftdata_agentdetails_email = e[0].email;
+                        this.agentKey = userid;
+                        this.draftdata_agentdetails_firstname = e[0].name.firstname;
+                        this.draftdata_agentdetails_cellphone = e[0].cellphone;
+                        this.draftdata_agentdetails_middlename = e[0].name.middlename;
+                        this.draftdata_agentdetails_lastname = e[0].name.lastname;
+                        this.draftdata_agentdetails_suffix = e[0].name.suffix;
+                        this.draftdata_agentdetails_email = email;
                     }
                     else {
                         this.agentKey = '';
@@ -976,13 +982,13 @@
                 this.draftdata_buyerdetails_email = '';
                 this.draftdata_buyerdetails_cellphone = '';
 
-                this.draftdata_agentdetails_cellphone = '';
-                this.draftdata_agentdetails_firstname = '';
-                this.draftdata_agentdetails_middlename = '';
-                this.draftdata_agentdetails_lastname = '';
-                this.draftdata_agentdetails_suffix = '';
-                this.draftdata_agentdetails_email = '';
-                this.draftdata_agentdetails_cellphone = '';
+                // this.draftdata_agentdetails_cellphone = '';
+                // this.draftdata_agentdetails_firstname = '';
+                // this.draftdata_agentdetails_middlename = '';
+                // this.draftdata_agentdetails_lastname = '';
+                // this.draftdata_agentdetails_suffix = '';
+                // this.draftdata_agentdetails_email = '';
+                // this.draftdata_agentdetails_cellphone = '';
 
                 this.minStartDateTime = '';
                 this.saveErrorDetails = '...';
