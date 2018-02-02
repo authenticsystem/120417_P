@@ -193,6 +193,9 @@
                             <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{applicationKey}}</div>
+
+                        <paper-icon-button id="approval" icon="my-icons:check-circle" on-tap="_approvedThis"></paper-icon-button>
+
                         <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteApplicationOpen"></paper-icon-button>
                         <paper-dialog id="deleteApplicationPD">
                             <h2>Delete Application?</h2>
@@ -942,6 +945,7 @@
                     this.buyerKey = '';
                 }
             },
+            
 
             agentsListChanged(e) {
                 if (e) {
@@ -1880,7 +1884,13 @@
                 return uid.randomUUID(8);
 
 
+<<<<<<< HEAD
             }
+=======
+
+            },
+
+>>>>>>> 9925d992b9457d073cf45f7183909bbe476ea187
 
 
         })
