@@ -609,8 +609,7 @@
                         served = this.newdata.served,
                         start = this.startDateTimeValue,
                         status = this.newdata.status,
-                        timestamp = timestamp,
-                        type = this.newdata.type;
+                        timestamp = timestamp
                 }
                 var personRef = firebase.database().ref().child("briefcasedraft").child(this.transactionKey);
                 personRef.once('value', function (snapshot) {
@@ -636,7 +635,7 @@
                             start: datetime,
                             status: status,
                             timestamp: timestamp,
-                            type: type,
+                            type: 'For Approval',
                         });
                         personRef.remove();
                         window.location = "/briefcase";

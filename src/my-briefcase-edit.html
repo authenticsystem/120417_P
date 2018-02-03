@@ -230,6 +230,9 @@
                         <firebase-query id="lastReservationFire" path="/reservations/{{fullLot}}" order-by-child='iscurrent' equal-to='true' limit-to-last=1
                             data="{{lastReservation}}" disabled="true"></firebase-query>
 
+                        <firebase-query path="/agents" order-by-child='cellphone' equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1
+                            data="{{agentsList}}"></firebase-query>
+
                         <div class="docu">
 
                             <div class="docu-header">
@@ -614,7 +617,7 @@
                     this.draftdata_buyerdetails_middlename = this.transactionData.buyerdetails.middlename;
                     this.draftdata_buyerdetails_lastname = this.transactionData.buyerdetails.lastname;
                     this.draftdata_buyerdetails_suffix = this.transactionData.buyerdetails.suffix;
-                    // this.draftdata_buyerdetails_email = this.transactionData.buyerdetails.email;
+                    this.draftdata_buyerdetails_email = this.transactionData.buyerdetails.email;
 
                     this.agentKey = this.transactionData.agent;
                     this.draftdata_agentdetails_cellphone = this.transactionData.agentdetails.cellphone;
@@ -622,7 +625,7 @@
                     this.draftdata_agentdetails_middlename = this.transactionData.agentdetails.middlename;
                     this.draftdata_agentdetails_lastname = this.transactionData.agentdetails.lastname;
                     this.draftdata_agentdetails_suffix = this.transactionData.agentdetails.suffix;
-                    // this.draftdata_agentdetails_email = this.transactionData.agentdetails.email;
+                    this.draftdata_agentdetails_email = this.transactionData.agentdetails.email;
 
                     if (typeof (this.transTypeCorrespondingColor) == 'undefined') {
                         var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + (this.transactionData.type == 'Reserve' ? 'reserved' : (this.transactionData.type == 'Hold' ? 'hold' : (this.transactionData.type == 'Buy' ? 'sold' : ''))));
@@ -807,7 +810,7 @@
                         this.draftdata_buyerdetails_middlename = e[0].middlename;
                         this.draftdata_buyerdetails_lastname = e[0].lastname;
                         this.draftdata_buyerdetails_suffix = e[0].suffix;
-                        // this.draftdata_buyerdetails_email = e[0].email;
+                        this.draftdata_buyerdetails_email = e[0].email;
                     }
                     else {
                         this.buyerKey = '';
@@ -821,12 +824,12 @@
             agentsListChanged(e) {
                 if (e) {
                     if (e.length > 0) {
-                        this.agentKey = e[0].$key;
+                        this.agentKey = e[0].agentid;
                         this.draftdata_agentdetails_firstname = e[0].firstname;
                         this.draftdata_agentdetails_middlename = e[0].middlename;
                         this.draftdata_agentdetails_lastname = e[0].lastname;
                         this.draftdata_agentdetails_suffix = e[0].suffix;
-                        // this.draftdata_agentdetails_email = e[0].email;
+                        this.draftdata_agentdetails_email = e[0].email;
                     }
                     else {
                         this.agentKey = '';
@@ -1192,6 +1195,8 @@
                 // this.favrighthide = false;
                 // this.favlefthide = true;
 
+                // this.favrighthide=false;
+
 
             },
 
@@ -1258,7 +1263,7 @@
                                         middlename: this.draftdata_agentdetails_middlename,
                                         lastname: this.draftdata_agentdetails_lastname,
                                         suffix: this.draftdata_agentdetails_suffix,
-                                        // email: this.draftdata_agentdetails_email,
+                                        email: this.draftdata_agentdetails_email,
                                         cellphone: this.draftdata_agentdetails_cellphone
                                     },
                                     buyer: this.buyerKey,
@@ -1268,7 +1273,7 @@
                                         lastname: this.draftdata_buyerdetails_lastname,
                                         suffix: this.draftdata_buyerdetails_suffix,
                                         cellphone: this.draftdata_buyerdetails_cellphone,
-                                        // email: this.draftdata_buyerdetails_email
+                                        email: this.draftdata_buyerdetails_email
                                     },
                                     expiry: '',
                                     isdraft: true,
@@ -1294,7 +1299,7 @@
                                     lastname: this.draftdata_buyerdetails_lastname,
                                     suffix: this.draftdata_buyerdetails_suffix,
                                     cellphone: this.draftdata_buyerdetails_cellphone,
-                                    // email: this.draftdata_buyerdetails_email
+                                    email: this.draftdata_buyerdetails_email
                                 };
                                 if (this.buyerKey) {
                                     //save to /buyers/{new id}
@@ -1312,7 +1317,7 @@
                                     middlename: this.draftdata_agentdetails_middlename,
                                     lastname: this.draftdata_agentdetails_lastname,
                                     suffix: this.draftdata_agentdetails_suffix,
-                                    // email: this.draftdata_agentdetails_email,
+                                    email: this.draftdata_agentdetails_email,
                                     cellphone: this.draftdata_agentdetails_cellphone
                                 };
                                 if (this.agentKey) {

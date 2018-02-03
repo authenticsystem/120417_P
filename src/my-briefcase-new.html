@@ -198,9 +198,10 @@
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
                         <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
-                        <firebase-query id="query" path="/accountlist" data="{{agentsList}}" order-by-child="uid" equal-to="{{account}}">
-                        </firebase-query>
-                        <!-- <firebase-query id="query" path="/accountlist" order-by-child="accountkey" start-at="user.uid" end-at="user.uid" data="{{agentsList}}" equal-to="user.uid"></firebase-query> -->
+                        
+                        <firebase-query id="query" path="/accountlist" order-by-child="uid" equal-to="{{userid}}" data="{{agentsList}}" equal-to="user.uid"></firebase-query>
+                    
+                        <!-- <firebase-query id="query" path="/users" data="{{user}}" order-by-child="{{uid}}" start-at="{{user.uid}}" end-at="{{user.uid}}"> -->
 
                         <!-- <firebase-query id="query" path="/users" data="{{user}}" equal="{{user.uid}}"> -->
 
@@ -319,7 +320,7 @@
                             </div>
                         </div>
                     </neon-animatable>
-
+    
                     <!-- <neon-animatable>
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
@@ -362,7 +363,7 @@
                                 <div>Agent's Last Name: {{agentdetails_lastname}}</div>
                                 <div>Agent's Suffix: {{agentdetails_suffix}}</div>
                                 <div>Agent's Cellphone: {{agentdetails_cellphone}}</div>
-                                <div>Agent's Email: {{draftdata_agentdetails_email}}</div>
+                                <div>Agent's Email: {{agentdetails_email}}</div>
 
                             </div>
                         </div>
@@ -370,7 +371,7 @@
 
                     <neon-animatable>
                         <div class="docu">
-                            <div class="docu-header">5. Completed</div>
+                            <div class="docu-header">4. Completed</div>
 
                             <div class="details">
                                 <paper-item>
@@ -417,6 +418,9 @@
             is: 'my-briefcase-new',
             properties: {
                 account: String,
+                myaccount:{
+                    type: Object,
+                },
                 userId: String,
                 blocklot: String,
                 details: Object,
@@ -481,7 +485,6 @@
                 },
                 agentsList: {
                     type: Object,
-                    value: '',
                     observer: 'agentsListChanged'
                 },
                 buyerKey: {
@@ -498,7 +501,7 @@
                     type: String,
                     value: ''
                 },
-                transTypeCorrespondingColor: Object
+                transTypeCorrespondingColor: Object,
             },
             // accountlistUid:{
             //     type:Object,
@@ -637,7 +640,7 @@
                         this.draftdata_buyerdetails_middlename = e[0].middlename;
                         this.draftdata_buyerdetails_lastname = e[0].lastname;
                         this.draftdata_buyerdetails_suffix = e[0].suffix;
-                        // this.draftdata_buyerdetails_email = e[0].email;
+                        this.draftdata_buyerdetails_email = e[0].email;
                     }
                     else {
                         this.buyerKey = '';
@@ -649,6 +652,10 @@
 
             },
             agentsListChanged(e) {
+                var user = firebase.auth().currentUser;
+                this.userid = user.uid;
+                email = user.email;
+                // console.log(e);
                 if (e) {
                     if (e.length > 0) {
                         this.accountkey = e[0].accountkey;
@@ -658,6 +665,8 @@
                         this.agentdetails_lastname = e[0].name.lastname;
                         this.agentdetails_suffix = e[0].name.suffix;
                         console.log(this.accountkey);
+                        this.agentdetails_email = email;
+                        // console.log(this.accountkey);
                     }
                     else {
                         this.accountkey = '';
@@ -897,13 +906,15 @@
                 this.draftdata_buyerdetails_suffix = '';
                 this.draftdata_buyerdetails_email = '';
                 this.draftdata_buyerdetails_cellphone = '';
-                // this.agentdetails_cellphone =  this.agentdetails_cellphone;
-                // this.agentdetails_firstname = this.agentdetails_firstname;
-                // this.agentdetails_middlename = this.agentdetails_middlename;
-                // this.agentdetails_lastname = this.agentdetails_lastname;
-                // this.agentdetails_suffix = this.agentdetails_suffix;
-                // this.agentdetails_email = '';
-                // this.agentdetails_cellphone = '';
+
+                // this.draftdata_agentdetails_cellphone = '';
+                // this.draftdata_agentdetails_firstname = '';
+                // this.draftdata_agentdetails_middlename = '';
+                // this.draftdata_agentdetails_lastname = '';
+                // this.draftdata_agentdetails_suffix = '';
+                // this.draftdata_agentdetails_email = '';
+                // this.draftdata_agentdetails_cellphone = '';
+
                 this.minStartDateTime = '';
                 this.saveErrorDetails = '...';
             },
@@ -951,7 +962,7 @@
                                         middlename: this.agentdetails_middlename,
                                         lastname: this.agentdetails_lastname,
                                         suffix: this.agentdetails_suffix,
-                                        // email: this.draftdata_agentdetails_email,
+                                        email: this.agentdetails_email,
                                         cellphone: this.agentdetails_cellphone
                                     },
                                     buyer: this.buyerKey,
@@ -961,7 +972,7 @@
                                         lastname: this.draftdata_buyerdetails_lastname,
                                         suffix: this.draftdata_buyerdetails_suffix,
                                         cellphone: this.draftdata_buyerdetails_cellphone,
-                                        // email: this.draftdata_buyerdetails_email
+                                        email: this.draftdata_buyerdetails_email
                                     },
                                     expiry: '',
                                     isdraft: true,
@@ -994,14 +1005,16 @@
                                     middlename: this.agentdetails_middlename,
                                     lastname: this.agentdetails_lastname,
                                     suffix: this.agentdetails_suffix,
-                                    // email: this.draftdata_agentdetails_email,
-                                    cellphone: this.agentdetails_cellphone
+                                    email: this.agentdetails_email,
+                                    cellphone: this.agentdetails_cellphone,
                                 };
+                                
                                 var firebaseDb = this.$.idd.db;
                                 var firebaseDbRef = firebaseDb.ref();
                                 var firebaseUpdate = {};
-                                var transactionPush = firebaseDbRef.child('briefcasedraft').push();
+                                var transactionPush = firebaseDbRef.child("briefcasedraft").push();
                                 this.transactionKey = transactionPush.key;
+                                
                                 if (this.transactionKey) {
                                     //save to /applications/{id}
                                     firebaseUpdate["/briefcasedraft/" + this.accountkey + "/" + this.transactionKey] = draftdata;
@@ -1097,14 +1110,18 @@
                                         });
                                     }
                                 }
+                                //end of transactionKey
                                 else {
                                     //transactionKey is missing
                                     var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                                     this.saveErrorDetails = "Transaction Key is missing.";
                                     saveFailed.setAttribute("style", "display: block; color: red;");
                                 }
+                            
                             }
+                            //end of else from complete
                         }
+                        //end of complete
                         else {
                             var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                             this.saveErrorDetails = "Status color is not yet loaded, please re-select transaction type.";
@@ -1130,6 +1147,9 @@
                             //change color and icon here
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: green;");
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:done");
+                        }
+                        else{
+                            this.favlefthide = true;
                         }
                     }
                 }
