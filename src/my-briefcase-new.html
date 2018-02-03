@@ -199,7 +199,7 @@
                     <neon-animatable>
                         <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
 
-                        <firebase-query id="query" path="/accountlist" order-by-child="uid" equal-to="{{userId}}" data="{{agentsList}}" equal-to="user.uid"></firebase-query>
+                        <firebase-query id="query" path="/accountlist" order-by-child="uid" equal-to="{{userid}}" data="{{agentsList}}" equal-to="user.uid"></firebase-query>
 
                         <!-- <firebase-query id="query" path="/users" data="{{user}}" order-by-child="{{uid}}" start-at="{{user.uid}}" end-at="{{user.uid}}"> -->
 
@@ -652,11 +652,11 @@
 
             },
             agentsListChanged(e) {
-                // var user = firebase.auth().currentUser;
-                // this.userid = user.uid;
-                // email = user.email;
+                var user = firebase.auth().currentUser;
+                this.userid = user.uid;
+                email = user.email;
                 // console.log(e);
-                if (e) {
+                // if (e) {
                     if (e.length > 0) {
                         this.accountkey = e[0].accountkey;
                         this.agentdetails_cellphone = e[0].cellphone;
@@ -665,16 +665,16 @@
                         this.agentdetails_lastname = e[0].name.lastname;
                         this.agentdetails_suffix = e[0].name.suffix;
                         console.log(this.accountkey);
-                        // this.agentdetails_email = email;
+                        this.agentdetails_email = email;
                         // console.log(this.accountkey);
                     }
-                    else {
-                        this.accountkey = '';
-                    }
-                }
-                else {
-                    this.accountkey = '';
-                }
+                    // else {
+                    //     this.accountkey = '';
+                    // }
+                // }
+                // else {
+                //     this.accountkey = '';
+                // }
             },
             // selectReserve() {
             //     var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
@@ -1035,47 +1035,47 @@
                                         saveSuccess.setAttribute("style", "display: none; color: green;");
                                         saveFailed.setAttribute("style", "display: block; color: red;");
                                     }
-                                    if (this.fullLotData.level) {
-                                        var otherLotsRef = this.$.fdColor.db.ref('lots');
-                                        var otherLotMapLot = 'block' + this.fullLotData.block + 'lot' + this.fullLotData.lot;
-                                        otherLotsRef.orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
-                                            if (snap.exists()) {
-                                                var winningValStat = 0;
-                                                snap.forEach(element => {
-                                                    var valStat = 0;
-                                                    var stat = element.val().status;
-                                                    if (stat) {
-                                                        if (stat === 'available') valStat = 5;
-                                                        else if (stat === 'hold') valStat = 4;
-                                                        else if (stat === 'reserved') valStat = 3;
-                                                        else if (stat === 'soldlacking') valStat = 2;
-                                                        else if (stat === 'sold') valStat = 1;
-                                                        else valStat = 0; //notyetavailable
-                                                    }
-                                                    if (valStat > winningValStat) {
-                                                        winningValStat = valStat;
-                                                    }
-                                                });
-                                                var winningColor;
-                                                if (winningValStat == 5) winningColor = 'available';
-                                                else if (winningValStat == 4) winningColor = 'hold';
-                                                else if (winningValStat == 3) winningColor = 'reserved';
-                                                else if (winningValStat == 2) winningColor = 'soldlacking';
-                                                else if (winningValStat == 1) winningColor = 'sold';
-                                                else winningColor = 'notyetavailable';
-                                                var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + winningColor);
-                                                transTypeCorrespondingColorRef.on('value', statusColor => {
-                                                    if (statusColor.exists()) {
-                                                        corresStatusColor = statusColor.val()
-                                                        firebaseUpdate["/lots/" + otherLotMapLot + "/status"] = winningColor;
-                                                        firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
-                                                        firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
-                                                        firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
-                                                    }
-                                                });
-                                            }
-                                        });
-                                    }
+                                    // if (this.fullLotData.level) {
+                                    //     var otherLotsRef = this.$.fdColor.db.ref('lots');
+                                    //     var otherLotMapLot = 'block' + this.fullLotData.block + 'lot' + this.fullLotData.lot;
+                                    //     otherLotsRef.orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
+                                    //         if (snap.exists()) {
+                                    //             var winningValStat = 0;
+                                    //             snap.forEach(element => {
+                                    //                 var valStat = 0;
+                                    //                 var stat = element.val().status;
+                                    //                 if (stat) {
+                                    //                     if (stat === 'available') valStat = 5;
+                                    //                     else if (stat === 'hold') valStat = 4;
+                                    //                     else if (stat === 'reserved') valStat = 3;
+                                    //                     else if (stat === 'soldlacking') valStat = 2;
+                                    //                     else if (stat === 'sold') valStat = 1;
+                                    //                     else valStat = 0; //notyetavailable
+                                    //                 }
+                                    //                 if (valStat > winningValStat) {
+                                    //                     winningValStat = valStat;
+                                    //                 }
+                                    //             });
+                                    //             var winningColor;
+                                    //             if (winningValStat == 5) winningColor = 'available';
+                                    //             else if (winningValStat == 4) winningColor = 'hold';
+                                    //             else if (winningValStat == 3) winningColor = 'reserved';
+                                    //             else if (winningValStat == 2) winningColor = 'soldlacking';
+                                    //             else if (winningValStat == 1) winningColor = 'sold';
+                                    //             else winningColor = 'notyetavailable';
+                                    //             var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + winningColor);
+                                    //             transTypeCorrespondingColorRef.on('value', statusColor => {
+                                    //                 if (statusColor.exists()) {
+                                    //                     corresStatusColor = statusColor.val()
+                                    //                     firebaseUpdate["/lots/" + otherLotMapLot + "/status"] = winningColor;
+                                    //                     firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
+                                    //                     firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
+                                    //                     firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
+                                    //                 }
+                                    //             });
+                                    //         }
+                                    //     });
+                                    // }
                                     var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
                                     var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                                     var favRightVar = Polymer.dom(this.root).querySelector("#favright");
