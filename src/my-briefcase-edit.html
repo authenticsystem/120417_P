@@ -211,7 +211,7 @@
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
                         <!-- for current Transaction Keys data -->
-                        <firebase-document id="transactionFire" path="/briefcasedraft/{{transactionKey}}" data="{{transactionData}}" disabled="true"></firebase-document>
+                        <firebase-document id="transactionFire" path="/briefcasedraft/{{accountKey}}/{{transactionKey}}" data="{{transactionData}}" disabled="true"></firebase-document>
 
                         <!-- for Lot Details when entering Block, Lot, Level -->
                         <firebase-document id="lotFire" path="/lots/{{fullLot}}" data="{{fullLotData}}" disabled="true"></firebase-document>
@@ -503,7 +503,6 @@
                 },
                 agentsList: {
                     type: Object,
-                    value: null,
                     observer: 'agentsListChanged'
                 },
                 buyerKey: {
@@ -556,7 +555,7 @@
             },
 
             deleteApplication() {
-                var db = firebase.database().ref('briefcasedraft').child(this.transactionKey).remove();
+                var db = firebase.database().ref('briefcasedraft').child(this.accountKey).child(this.transactionKey).remove();
                 window.location = 'briefcase';
                 // var ref = db.ref();
                 // var survey = db.ref(path + '/' + path);              
@@ -947,22 +946,24 @@
             },
 
             agentsListChanged(e) {
-                if (e) {
+                // console.log(e)
+                // if (e) {
                     if (e.length > 0) {
-                        this.agentKey = e[0].agentid;
+                        this.agentKey = e[0].$key;
                         this.draftdata_agentdetails_firstname = e[0].firstname;
                         this.draftdata_agentdetails_middlename = e[0].middlename;
                         this.draftdata_agentdetails_lastname = e[0].lastname;
                         this.draftdata_agentdetails_suffix = e[0].suffix;
                         this.draftdata_agentdetails_email = e[0].email;
+                        // console.log(this.agentKey);
                     }
-                    else {
-                        this.agentKey = '';
-                    }
-                }
-                else {
-                    this.agentKey = '';
-                }
+                    // else {
+                    //     this.agentKey = '';
+                    // }
+                // }
+                // else {
+                //     this.agentKey = '';
+                // }
             },
 
             selectReserve() {
@@ -1411,7 +1412,7 @@
                                     reference: this.applicationKey
                                 };
                                 //save to /applications/{id}
-                                firebaseUpdate["/briefcasedraft/" + this.transactionKey] = draftdata;
+                                firebaseUpdate["/briefcasedraft/" + this.accountKey + "/" + this.transactionKey] = draftdata;
 
                                 var draftBuyer = {
                                     firstname: this.draftdata_buyerdetails_firstname,

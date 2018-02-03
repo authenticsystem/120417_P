@@ -336,7 +336,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div hidden$="{{!detailActive}}">
             <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
             <div id="briefcasedraftdetail"></div>
-            <my-briefcasedraft-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"></my-briefcasedraft-detail>
+            <my-briefcasedraft-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}" account-key='{{accountkey}}'></my-briefcasedraft-detail>
             <!-- [[detailData.key]] -->
             <!-- </template> -->
           </div>
@@ -344,7 +344,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div hidden$="{{!editActive}}">
             <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
             <div id="appedit"></div>
-            <my-briefcase-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-briefcase-edit>
+            <my-briefcase-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}" account-key='{{accountkey}}'></my-briefcase-edit>
             <!-- </template> -->
           </div>
         </template>
@@ -413,8 +413,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </template>
                 </app-header>
 
-                <firebase-query id="query" path="/briefcase/{{_getKey(account)}}" data="{{briefcase}}" order-by-child="uid" equal-to={{account}}
-                  limit-to-last="50">
+                <firebase-query id="query" path="/briefcase/{{_getKey(account)}}" data="{{briefcase}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
+                end-at="{{typeValue}}" limit-to-last="50">
                 </firebase-query>
 
                 <!-- on-lower-threshold="loadMoreData" -->
@@ -594,7 +594,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       briefcaseChanged(e) {
         this.countapplied = e.base.length;
         if (this.search) {
-          if (this.countdraft == 0) {
+          if (this.countapplied == 0) {
             this.msg = 'No result found.';
           }
           else {
@@ -749,6 +749,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var newDiv = document.createElement("my-briefcase-edit");
           newDiv.setAttribute("id", "d25")
           newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("account-key", this.accountkey)
           newDiv.setAttribute("prev-route", this.route.prefix);
           //if open existing
           var currentDiv = document.getElementById("appedit");
