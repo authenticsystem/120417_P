@@ -198,9 +198,9 @@
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
                         <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
-                        
-                        <firebase-query id="query" path="/accountlist" order-by-child="uid" equal-to="{{userid}}" data="{{agentsList}}" equal-to="user.uid"></firebase-query>
-                    
+
+                        <firebase-query id="query" path="/accountlist" order-by-child="uid" equal-to="{{userId}}" data="{{agentsList}}" equal-to="user.uid"></firebase-query>
+
                         <!-- <firebase-query id="query" path="/users" data="{{user}}" order-by-child="{{uid}}" start-at="{{user.uid}}" end-at="{{user.uid}}"> -->
 
                         <!-- <firebase-query id="query" path="/users" data="{{user}}" equal="{{user.uid}}"> -->
@@ -320,7 +320,7 @@
                             </div>
                         </div>
                     </neon-animatable>
-    
+
                     <!-- <neon-animatable>
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
@@ -371,7 +371,7 @@
 
                     <neon-animatable>
                         <div class="docu">
-                            <div class="docu-header">4. Completed</div>
+                            <div class="docu-header">5. Completed</div>
 
                             <div class="details">
                                 <paper-item>
@@ -418,7 +418,7 @@
             is: 'my-briefcase-new',
             properties: {
                 account: String,
-                myaccount:{
+                myaccount: {
                     type: Object,
                 },
                 userId: String,
@@ -652,9 +652,9 @@
 
             },
             agentsListChanged(e) {
-                var user = firebase.auth().currentUser;
-                this.userid = user.uid;
-                email = user.email;
+                // var user = firebase.auth().currentUser;
+                // this.userid = user.uid;
+                // email = user.email;
                 // console.log(e);
                 if (e) {
                     if (e.length > 0) {
@@ -665,7 +665,7 @@
                         this.agentdetails_lastname = e[0].name.lastname;
                         this.agentdetails_suffix = e[0].name.suffix;
                         console.log(this.accountkey);
-                        this.agentdetails_email = email;
+                        // this.agentdetails_email = email;
                         // console.log(this.accountkey);
                     }
                     else {
@@ -962,7 +962,7 @@
                                         middlename: this.agentdetails_middlename,
                                         lastname: this.agentdetails_lastname,
                                         suffix: this.agentdetails_suffix,
-                                        email: this.agentdetails_email,
+                                        // email: this.draftdata_agentdetails_email,
                                         cellphone: this.agentdetails_cellphone
                                     },
                                     buyer: this.buyerKey,
@@ -972,7 +972,7 @@
                                         lastname: this.draftdata_buyerdetails_lastname,
                                         suffix: this.draftdata_buyerdetails_suffix,
                                         cellphone: this.draftdata_buyerdetails_cellphone,
-                                        email: this.draftdata_buyerdetails_email
+                                        // email: this.draftdata_buyerdetails_email
                                     },
                                     expiry: '',
                                     isdraft: true,
@@ -1005,16 +1005,14 @@
                                     middlename: this.agentdetails_middlename,
                                     lastname: this.agentdetails_lastname,
                                     suffix: this.agentdetails_suffix,
-                                    email: this.agentdetails_email,
-                                    cellphone: this.agentdetails_cellphone,
+                                    // email: this.draftdata_agentdetails_email,
+                                    cellphone: this.agentdetails_cellphone
                                 };
-                                
                                 var firebaseDb = this.$.idd.db;
                                 var firebaseDbRef = firebaseDb.ref();
                                 var firebaseUpdate = {};
-                                var transactionPush = firebaseDbRef.child("briefcasedraft").push();
+                                var transactionPush = firebaseDbRef.child('briefcasedraft').push();
                                 this.transactionKey = transactionPush.key;
-                                
                                 if (this.transactionKey) {
                                     //save to /applications/{id}
                                     firebaseUpdate["/briefcasedraft/" + this.accountkey + "/" + this.transactionKey] = draftdata;
@@ -1037,47 +1035,47 @@
                                         saveSuccess.setAttribute("style", "display: none; color: green;");
                                         saveFailed.setAttribute("style", "display: block; color: red;");
                                     }
-                                    // if (this.fullLotData.level) {
-                                    //     var otherLotsRef = this.$.fdColor.db.ref('lots');
-                                    //     var otherLotMapLot = 'block' + this.fullLotData.block + 'lot' + this.fullLotData.lot;
-                                    //     otherLotsRef.orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
-                                    //         if (snap.exists()) {
-                                    //             var winningValStat = 0;
-                                    //             snap.forEach(element => {
-                                    //                 var valStat = 0;
-                                    //                 var stat = element.val().status;
-                                    //                 if (stat) {
-                                    //                     if (stat === 'available') valStat = 5;
-                                    //                     else if (stat === 'hold') valStat = 4;
-                                    //                     else if (stat === 'reserved') valStat = 3;
-                                    //                     else if (stat === 'soldlacking') valStat = 2;
-                                    //                     else if (stat === 'sold') valStat = 1;
-                                    //                     else valStat = 0; //notyetavailable
-                                    //                 }
-                                    //                 if (valStat > winningValStat) {
-                                    //                     winningValStat = valStat;
-                                    //                 }
-                                    //             });
-                                    //             var winningColor;
-                                    //             if (winningValStat == 5) winningColor = 'available';
-                                    //             else if (winningValStat == 4) winningColor = 'hold';
-                                    //             else if (winningValStat == 3) winningColor = 'reserved';
-                                    //             else if (winningValStat == 2) winningColor = 'soldlacking';
-                                    //             else if (winningValStat == 1) winningColor = 'sold';
-                                    //             else winningColor = 'notyetavailable';
-                                    //             var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + winningColor);
-                                    //             transTypeCorrespondingColorRef.on('value', statusColor => {
-                                    //                 if (statusColor.exists()) {
-                                    //                     corresStatusColor = statusColor.val()
-                                    //                     firebaseUpdate["/lots/" + otherLotMapLot + "/status"] = winningColor;
-                                    //                     firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
-                                    //                     firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
-                                    //                     firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
-                                    //                 }
-                                    //             });
-                                    //         }
-                                    //     });
-                                    // }
+                                    if (this.fullLotData.level) {
+                                        var otherLotsRef = this.$.fdColor.db.ref('lots');
+                                        var otherLotMapLot = 'block' + this.fullLotData.block + 'lot' + this.fullLotData.lot;
+                                        otherLotsRef.orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
+                                            if (snap.exists()) {
+                                                var winningValStat = 0;
+                                                snap.forEach(element => {
+                                                    var valStat = 0;
+                                                    var stat = element.val().status;
+                                                    if (stat) {
+                                                        if (stat === 'available') valStat = 5;
+                                                        else if (stat === 'hold') valStat = 4;
+                                                        else if (stat === 'reserved') valStat = 3;
+                                                        else if (stat === 'soldlacking') valStat = 2;
+                                                        else if (stat === 'sold') valStat = 1;
+                                                        else valStat = 0; //notyetavailable
+                                                    }
+                                                    if (valStat > winningValStat) {
+                                                        winningValStat = valStat;
+                                                    }
+                                                });
+                                                var winningColor;
+                                                if (winningValStat == 5) winningColor = 'available';
+                                                else if (winningValStat == 4) winningColor = 'hold';
+                                                else if (winningValStat == 3) winningColor = 'reserved';
+                                                else if (winningValStat == 2) winningColor = 'soldlacking';
+                                                else if (winningValStat == 1) winningColor = 'sold';
+                                                else winningColor = 'notyetavailable';
+                                                var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + winningColor);
+                                                transTypeCorrespondingColorRef.on('value', statusColor => {
+                                                    if (statusColor.exists()) {
+                                                        corresStatusColor = statusColor.val()
+                                                        firebaseUpdate["/lots/" + otherLotMapLot + "/status"] = winningColor;
+                                                        firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
+                                                        firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
+                                                        firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
                                     var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
                                     var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                                     var favRightVar = Polymer.dom(this.root).querySelector("#favright");
@@ -1110,18 +1108,14 @@
                                         });
                                     }
                                 }
-                                //end of transactionKey
                                 else {
                                     //transactionKey is missing
                                     var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                                     this.saveErrorDetails = "Transaction Key is missing.";
                                     saveFailed.setAttribute("style", "display: block; color: red;");
                                 }
-                            
                             }
-                            //end of else from complete
                         }
-                        //end of complete
                         else {
                             var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                             this.saveErrorDetails = "Status color is not yet loaded, please re-select transaction type.";
@@ -1147,9 +1141,6 @@
                             //change color and icon here
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: green;");
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:done");
-                        }
-                        else{
-                            this.favlefthide = true;
                         }
                     }
                 }
@@ -1186,6 +1177,6 @@
                 // var shortid = new shortid();
                 return uid.randomUUID(8);
             }
-        })
+        })  
     </script>
 </dom-module>

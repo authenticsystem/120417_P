@@ -114,19 +114,19 @@
                 }
             },
             _itemChanged() {
-                if (this.item) {
-                    // if (this.item.isdraft == false) {
-                    //     this.isdraft = "PENDING";
-                    //     Polymer.dom(this.root).querySelector("#_isdraft").setAttribute("style", "background: yellow; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px; margin-right:10px");
-                    // } 
-                    // else if(this.item.approval == "Approved"){
-                    //     this.isdraft = "APPROVED";
-                    //     Polymer.dom(this.root).querySelector("#_isdraft").setAttribute("style", "background: green; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; margin-right:10px");
-                    // }
-                    // else {
-                    //     this.isdraft = "DRAFT";
-                    //     Polymer.dom(this.root).querySelector("#_isdraft").setAttribute("style", "background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; margin-right:10px");
-                    // }
+                // if (this.item) {
+                //     if (this.item.isdraft == false) {
+                //         this.isdraft = "PENDING";
+                //         Polymer.dom(this.root).querySelector("#_isdraft").setAttribute("style", "background: yellow; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px; margin-right:10px");
+                //     } 
+                //     // else if(this.item.approval == "Approved"){
+                //     //     this.isdraft = "APPROVED";
+                //     //     Polymer.dom(this.root).querySelector("#_isdraft").setAttribute("style", "background: green; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; margin-right:10px");
+                //     // }
+                //     else {
+                //         this.isdraft = "DRAFT";
+                //         Polymer.dom(this.root).querySelector("#_isdraft").setAttribute("style", "background: red; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px; margin-right:10px");
+                //     }
                     this.lotsubdetail = '';
                     if (this.item.lotdetails.maprenderdetails.type_name) this.lotsubdetail = this.item.lotdetails.maprenderdetails.type_name;
                     if (this.item.lotdetails.area) {
@@ -139,18 +139,7 @@
 
                     if (this.item.lotdetails.maprenderdetails) {
                         Polymer.dom(this.root).querySelector("#header").setAttribute("style", "background-color: " + this.item.lotdetails.maprenderdetails.type_bg_color + "; padding: 16px; padding-bottom: 5px;");
-                        if (this.item.type === 'Request') {
-                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
-                            this.type="Draft";
-                        }
-                        else if(this.item.type === 'For Approval'){
-                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: yellow; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px;");
-                            this.type="Pending";
-                        }
-                        else{
-                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: green; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
-                            this.type="Approve";
-                        }
+
                         // if (this.item.type === 'Hold') {
                         //     Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: #E65100; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
                         // }
@@ -187,7 +176,7 @@
 
 
                     }
-                }
+                // }
             },
 
             _timeStampToDateTime(ts) {
