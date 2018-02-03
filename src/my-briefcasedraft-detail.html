@@ -385,7 +385,7 @@
             },
 
             newdataChanged() {
-                // console.log(this.$key);
+                // console.log(this.transactionKey);
 
                 if (Object.keys(this.newdata).length > 0) {
 
@@ -444,8 +444,8 @@
                 // this.applicationKey = this.guid();
                 // this.path = 'applications/' + this.applicationKey;
                 if (this.transactionKey) {
-                    this.path = 'briefcasedraft/' + this.transactionKey;
-                    // console.log(this.path);
+                    this.path = 'briefcasedraft/'+this.accountKey+"/" + this.transactionKey;
+                    console.log(this.path);
                 }
 
 
