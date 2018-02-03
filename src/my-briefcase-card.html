@@ -17,7 +17,7 @@
                         {{isdraft}}
                 </span> -->
                 <span id="type" style="background: black; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
-                    [[type]]
+                    [[item.type]]
                 </span>
 
                 <div style="display:inline-block; margin-left: 8px;">
@@ -135,27 +135,16 @@
 
                     if (this.item.lotdetails.maprenderdetails) {
                         Polymer.dom(this.root).querySelector("#header").setAttribute("style", "background-color: " + this.item.lotdetails.maprenderdetails.type_bg_color + "; padding: 16px; padding-bottom: 5px;");
-                        if (this.item.type === 'Request') {
+
+                        if (this.item.type === 'Hold') {
+                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: #E65100; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
+                        }
+                        else if (this.item.type === 'Reserve') {
+                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: #FFD600; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px;");
+                        }
+                        else if (this.item.type === 'Buy') {
                             Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
-                            this.type="Draft";
                         }
-                        else if(this.item.type === 'For Approval'){
-                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: yellow; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px;");
-                            this.type="Pending";
-                        }
-                        else{
-                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: green; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
-                            this.type="Approve";
-                        }
-                        // if (this.item.type === 'Hold') {
-                        //     Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: #E65100; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
-                        // }
-                        // else if (this.item.type === 'Reserve') {
-                        //     Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: #FFD600; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px;");
-                        // }
-                        // else if (this.item.type === 'Buy') {
-                        //     Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
-                        // }
 
                         // Polymer.dom(this.root).querySelector("#iconStart").setAttribute("style", "color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";");
                         Polymer.dom(this.root).querySelector("#startValue").setAttribute("style", "display:inline-block; color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";font-size: 12px;");

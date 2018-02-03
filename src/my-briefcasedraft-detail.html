@@ -194,6 +194,14 @@
                                 <paper-button dialog-confirm on-tap="_sendBriefcase">Yes</paper-button>
                             </div>
                         </paper-dialog>
+
+                        <paper-dialog id="modal">
+                            <h2>Successfully sent.</h2>
+                            <div class="buttons">
+                                <paper-button dialog-confirm on-tap="_exit">Ok</paper-button>
+                            </div>
+                        </paper-dialog>
+
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
@@ -243,12 +251,12 @@
                                         <!-- style="padding-top: 8px;" -->
                                         <div style="padding-top: 5px;">
                                             <div style="font-size: 12px; color: gray;margin-bottom: -.3em">{{statusLabel}}</div>
-                                            <!-- <span id="type">
+                                            <span id="type">
                                                 [[newdata.type]]
-                                            </span> -->
-                                            <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
-                                                REQUEST TO HOLD
                                             </span>
+                                            <!-- <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+                                                REQUEST TO HOLD
+                                            </span> -->
                                         </div>
 
                                     </div>
@@ -324,8 +332,6 @@
         </app-drawer-layout>
 
 
-
-
     </template>
 
     <script>
@@ -336,6 +342,7 @@
                     type: Boolean,
                     notify: true
                 },
+                accountKey: String,
                 selectedPage: Number,
                 entryanimation: {
                     type: String,
@@ -444,7 +451,7 @@
                 // this.applicationKey = this.guid();
                 // this.path = 'applications/' + this.applicationKey;
                 if (this.transactionKey) {
-                    this.path = 'briefcasedraft/'+this.accountKey+"/" + this.transactionKey;
+                    this.path = 'briefcasedraft/' + this.accountKey + "/" + this.transactionKey;
                     // console.log(this.path);
                 }
 
@@ -595,7 +602,7 @@
                     var agent = this.newdata.agent,
                         agentdetails = this.newdata.agentdetails,
                         buyer = this.newdata.buyer;
-                    buyerdetails = this.newdata.buyerdetails,
+                        buyerdetails = this.newdata.buyerdetails,
                         expiry = this.newdata.expiry,
                         isdraft = false,
                         isserved = this.newdata.isserved,
@@ -607,38 +614,54 @@
                         served = this.newdata.served,
                         start = this.startDateTimeValue,
                         status = this.newdata.status,
+                        type = this.newdata.type,
                         timestamp = timestamp
+                        
                 }
-                var personRef = firebase.database().ref().child("briefcasedraft").child(agent).child(this.transactionKey);
-                personRef.once('value', function (snapshot) {
-                    if (snapshot.val() === null) {
-                        alert('does not exist');
-                    }
-                    else {
-                        var ref = firebase.database().ref("briefcase/"+agent).push({
-                            agent: agent,
-                            agentdetails: agentdetails,
-                            buyer: buyer,
-                            buyerdetails: buyerdetails,
-                            expiry: expiry,
-                            isdraft: isdraft,
-                            isserved: isserved,
-                            lot: lot,
-                            lotdetails: lotdetails,
-                            processed: processed,
-                            processordetails: processordetails,
-                            reference: reference,
-                            served: served,
-                            start: datetime,
-                            status: status,
-                            timestamp: timestamp,
-                            type: 'For Approval',
-                        });
+                var personRef = firebase.database().ref().child("briefcasedraft").child(agent).child(this.transactionKey).remove();
+                // personRef.once('value', function (snapshot) {
+                //     if (snapshot.val() === null) {
+                //         alert('does not exist');
+                //     }
+                //     else {
+                var postData = {
+                    agent: agent,
+                    agentdetails: agentdetails,
+                    buyer: buyer,
+                    buyerdetails: buyerdetails,
+                    expiry: expiry,
+                    isdraft: isdraft,
+                    isserved: isserved,
+                    lot: lot,
+                    lotdetails: lotdetails,
+                    processed: processed,
+                    processordetails: processordetails,
+                    reference: reference,
+                    served: served,
+                    start: datetime,
+                    status: status,
+                    timestamp: timestamp,
+                    type: type,
+                   approved: true
+                };
+                var newPostKey = firebase.database().ref().child('briefcase').push().key;
 
-                        personRef.remove();
-                        window.location = "/briefcase";
-                    }
-                });
+                var updates = {};
+                updates['/applicationsNew/' + newPostKey] = postData;
+                updates['/briefcase/' + agent + '/' + newPostKey] = postData;
+
+                this.$.modal.open();
+
+                return firebase.database().ref().update(updates);
+
+
+                // personRef.remove();
+                // window.location = "/briefcase";
+                //     }
+                // });
+            },
+            _exit() {
+                window.location = "/briefcase";
             }
 
 
