@@ -195,7 +195,7 @@
                         <div main-title>{{referenceLabel}} {{applicationKey}}</div>
                         <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteApplicationOpen"></paper-icon-button>
                         <paper-dialog id="deleteApplicationPD">
-                            <h2>Delete Application?</h2>
+                            <h2>Delete Briefcase?</h2>
                             <!-- <p>Continue delete the current application?</p> -->
                             <div class="buttons">
                                 <paper-button dialog-dismiss autofocus>No</paper-button>
@@ -289,29 +289,29 @@
                                             <paper-radio-button name="Hold" on-click="selectHold">Hold</paper-radio-button>
                                             <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button>
                                             <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button>
-                                        </paper-radio-group> -->
+                                        </paper-radio-group>
+                                    </div> -->
+                                    </br>
+                                    <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
+                                        <div id="start">
+                                            <span style="color: blue;">Date:</span>
+                                            <!-- <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker> -->
 
-                                        </br>
-                                        <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
-                                            <div id="start">
-                                                <span style="color: blue;">Date:</span>
-                                                <!-- <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker> -->
-
-                                                <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
-                                                <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
+                                            <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
+                                            <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
                                                 <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
-                                                <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}" type="datetime-local"
-                                                    no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
+                                            <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}" type="datetime-local"
+                                                no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
 
-                                            </div>
-                                            <!-- <div id="expiry" style="position: relative; padding-top: 16px;"> -->
-                                                <!-- <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon> -->
-                                                <!-- <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span> -->
-                                                <!-- <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input> -->
-                                                <!-- <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span> -->
-                                                <!-- <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span> -->
-                                                <!-- <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker> -->
-                                            <!-- </div> -->
+                                        </div>
+                                        <!-- <div id="expiry" style="position: relative; padding-top: 16px;"> -->
+                                        <!-- <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon> -->
+                                        <!-- <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span> -->
+                                        <!-- <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input> -->
+                                        <!-- <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span> -->
+                                        <!-- <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span> -->
+                                        <!-- <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker> -->
+                                        <!-- </div> -->
                                         <!-- </div> -->
 
 
@@ -553,120 +553,8 @@
             },
 
             deleteApplication() {
-                var db = firebase.database().ref('briefcasedraft').child(this.transactionKey).remove();
-                window.location='briefcase';
-                // var ref = db.ref();
-                // var survey = db.ref(path + '/' + path);              
-                // survey
-
-
-                // if (this.transactionKey.length > 0) {
-                //   var ref = firebase.database().ref('/briefcasedraft');
-                // //   for (var i = 0; i < this.selectedItems.length; ++i) {
-                //     ref.child(transactionKey).remove();
-                //   }
-                //   window.location.reload();
-                //   Polymer.dom(this.root).querySelector("#toast").open();
-                //   this.txt = "Account deleted!";
-                //   this.$.datatable.deselectAll();
-                // }
-
-                //delete application
-
-                //delete in lot/reservation & details
-                //delete in application/{{key}}
-                //delete in reservation/{{key}}
-                //if current application is current in lot/reservation, then get next application, update lot/reservation & details
-
-                //get lot/reservationkey
-                //if(current) get next reservation
-                //do delete
-                // if (this.origFullLot && this.draftdata_agentdetails_uid) {
-                //     var getLotReservationDetails = firebase.database().ref('/lots/' + this.origFullLot + '/reservation').once('value').then(
-                //         lotReservation => {
-                //             var dataToUpdate = {};
-                //             var isCurrent = false;
-
-                //             if (lotReservation.val().toString() == this.draftdata_agentdetails_uid) {
-                //                 isCurrent = true;
-                //             }
-
-                //             var getNextReservation = firebase.database().ref('/reservations/' + this.origFullLot).orderByKey().startAt(this.transactionKey).limitToFirst(3).once('value').then(nextReservation => {
-                //                     var getStatusColors = firebase.database().ref('/statuscolor').once('value').then(statusColor => {
-
-                //                         var selectedKey = '';
-                //                         var selectedKeyDetails;
-                //                         if (isCurrent === true) {
-                //                             if (nextReservation.exists()) {
-                //                                 //get key
-                //                                 nextReservation.forEach(
-                //                                     reservation => {
-                //                                         if (reservation.key != this.transactionKey) {
-                //                                             if (reservation.val().isexpired === false) {
-                //                                                 selectedKey = reservation.key;
-                //                                                 selectedKeyDetails = reservation.val();
-                //                                             }
-
-                //                                         }
-                //                                     }
-                //                                 );
-                //                             }
-                //                         }
-
-                //                         if (selectedKey) {
-                //                             dataToUpdate["/reservations/" + this.origFullLot + "/" + selectedKey + "/iscurrent"] = true;
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = selectedKey;
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = {
-                //                                 agent: selectedKeyDetails.agent,
-                //                                 agentdetails: selectedKeyDetails.agentdetails,
-                //                                 buyer: selectedKeyDetails.buyer,
-                //                                 buyerdetails: selectedKeyDetails.buyerdetails,
-                //                                 expiry: selectedKeyDetails.expiry,
-                //                                 iscurrent: true,
-                //                                 isexpired: selectedKeyDetails.isexpired,
-                //                                 reference: selectedKeyDetails.reference,
-                //                                 start: selectedKeyDetails.start,
-                //                                 timestamp: selectedKeyDetails.timestamp,
-                //                                 type: selectedKeyDetails.type
-                //                             };
-
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/status"] = selectedKeyDetails.type;
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/bg_color"] = statusColor.val()[selectedKeyDetails.type].bg_color;
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/fore_color"] = statusColor.val()[selectedKeyDetails.type].fore_color;
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/status_name"] = statusColor.val()[selectedKeyDetails.type].name;
-                //                         }
-                //                         else {
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = "";
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = "";
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/status"] = "available";
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/bg_color"] = "green";
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/fore_color"] = "white";
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/status_name"] = "Available";
-                //                         }
-
-                //                         dataToUpdate["/briefcasedraft/" + this.draftdata_agentdetails_uid] = null;
-                //                         dataToUpdate["/reservations/" + this.origFullLot + "/" + this.transactionKey] = null;
-
-                //                         // console.log(dataToUpdate);
-                //                         var origFullLot2 = this.origFullLot;
-
-                //                         var uPromise = firebase.database().ref().update(dataToUpdate, function (error) {
-                //                             if (error) {
-                //                                 alert("Error updating data:", error);
-                //                             }
-                //                             else {
-                //                                 window.location = "/briefcase";
-                //                                 alert(origFullLot2 + " delete successfully.");
-                //                             }
-                //                         });
-                //                     });
-                //                 });
-                //         });
-                // }
-                // else {
-                //     // Orig Lot is empty
-                //     alert("Original Lot is empty. Please wait & delete again!");
-                // }
+                var db = firebase.database().ref('briefcasedraft/' ).child(this.transactionKey).remove();
+                window.location = 'briefcase';
 
             },
 
@@ -683,22 +571,9 @@
                     this.$.otherApplicationFire.disabled = false;
                     this.$.reservationsFire.disabled = false;
                     this.$.lastReservationFire.disabled = false;
-
+                    this.draftdata_type === 'Hold'
                 }
             },
-
-            // attached() {
-            //     // console.log(this.localName + '#' + this.id + ' was attached');
-            //     // if(!this.applicationKey) {
-            //     this.getpath();
-            //     // console.log(this.applicationKey);
-            // },
-
-            // newdataChanged() {
-            //     if(Object.keys(this.newdata).length > 0){
-            //     console.log(this.newdata);
-            //     }
-            // },
 
             transactionDataChanged() {
                 if (Object.keys(this.transactionData).length > 0) {
@@ -1083,10 +958,10 @@
 
                             var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
                             if (this.fullLotData.status == 'available') { // || this.fullLotData.status == 'hold' || this.fullLotData.status == 'reserved'
-                                // cardActions.setAttribute("style", "display: block;");
+                                // cardActions.setAtribute("style", "display: block;");
 
                                 if (this.draftdata_type) {
-                                    this.favrighthide = true;
+                                    this.favrighthide = false;
                                 }
                                 else {
                                     this.favrighthide = false;
@@ -1314,6 +1189,8 @@
 
                 this.minStartDateTime = '';
                 this.saveErrorDetails = '...';
+                // this.favrighthide = false;
+                // this.favlefthide = true;
 
 
             },
@@ -1332,6 +1209,7 @@
 
                         if (this.selectedPage === 0) {
                             this.favlefthide = true;
+                            // this.favrighthide = false;
                         }
 
                         this.favrighthide = false;
@@ -1352,6 +1230,7 @@
                 this.exitanimation = "slide-left-animation";
                 if (parseInt(this.selectedPage) >= 0) {
                     if (parseInt(this.selectedPage) == 2) {
+                        this.draftdata_type = 'Hold';
                         //complete
                         if (this.isStartDateTimeInvalidGlobal == true) {
                             var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
@@ -1369,7 +1248,7 @@
                                 var firebaseUpdate = {};
 
                                 //get agent and buyer key, use 
-                                this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
+                                // this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
                                 this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
 
                                 var draftdata = {
@@ -1393,16 +1272,17 @@
                                     },
                                     expiry: '',
                                     isdraft: true,
-                                    // isserved: this.transactionData.isserved, //get value from current
+                                    approval: 'Request for approval',
+                                    isserved: '',
                                     lot: this.fullLot,
                                     lotdetails: this.fullLotData,
-                                    // processed: this.transactionData.processed, //get value from current
-                                    // processordetails: this.transactionData.processordetails, //get value from current
-                                    // served: this.transactionData.served, //get value from current
+                                    processed: '',
+                                    processordetails: '',
+                                    served: '',
                                     start: this.startDateTimeValue,
-                                    // status: this.transactionData.status, //get value from current
+                                    status: '',
                                     timestamp: { ".sv": "timestamp" },
-                                    type: '',
+                                    type: this.draftdata_type,
                                     reference: this.applicationKey
                                 };
                                 //save to /applications/{id}
@@ -1741,31 +1621,31 @@
 
                                     //                 console.log(firebaseUpdate);
 
-                                                    var uPromise = firebaseDbRef.update(firebaseUpdate, function (error) {
-                                                        if (error) {
-                                                            console.log("Error updating data:", error);
-                                                            this.saveErrorDetails = error;
-                                                            saveSuccess.setAttribute("style", "display: none; color: green;");
-                                                            saveFailed.setAttribute("style", "display: block; color: red;");
+                                    var uPromise = firebaseDbRef.update(firebaseUpdate, function (error) {
+                                        if (error) {
+                                            console.log("Error updating data:", error);
+                                            this.saveErrorDetails = error;
+                                            saveSuccess.setAttribute("style", "display: none; color: green;");
+                                            saveFailed.setAttribute("style", "display: block; color: red;");
 
-                                                            this.favlefthide = false;
-                                                            this.favrighthide = true;
+                                            this.favlefthide = false;
+                                            this.favrighthide = true;
 
-                                                            // console.log('1');
-                                                        }
-                                                        else {
-                                                            this.saveErrorDetails = "";
-                                                            saveSuccess.setAttribute("style", "display: block; color: green;");
-                                                            saveFailed.setAttribute("style", "display: none; color: red;");
+                                            // console.log('1');
+                                        }
+                                        else {
+                                            this.saveErrorDetails = "";
+                                            saveSuccess.setAttribute("style", "display: block; color: green;");
+                                            saveFailed.setAttribute("style", "display: none; color: red;");
 
-                                                            this.favlefthide = true;
-                                                            this.favrighthide = true;
+                                            this.favlefthide = true;
+                                            this.favrighthide = true;
 
-                                                            favRightVar.setAttribute("style", "display: none; background: #1976d2;");
+                                            favRightVar.setAttribute("style", "display: none; background: #1976d2;");
 
-                                                            // console.log('2');
-                                                        }
-                                                    });
+                                            // console.log('2');
+                                        }
+                                    });
                                     //                 console.log(uPromise);
 
                                     //             });

@@ -34,7 +34,6 @@
     "google-map": "GoogleWebComponents/google-map#^2.0.2",
     "polymerfire": "firebase/polymerfire#^2.2.1",
     "paper-radio-group": "PolymerElements/paper-radio-group#^2.0.0",
-    "bwt-datatable": "bluewatertracks/bwt-datatable#^2.0.4",
     "paper-search": "Collaborne/paper-search#^2.0.9",
     "paper-spinner": "PolymerElements/paper-spinner#^2.0.0",
     "datetime-picker": "fooloomanzoo/datetime-picker#^2.5.10",

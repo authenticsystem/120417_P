@@ -27,6 +27,7 @@
 <link rel="import" href="my-briefcase-card.html">
 <link rel="import" href="my-briefcasedraft-card.html">
 <link rel="import" href="my-application-detail.html">
+<link rel="import" href="my-briefcasedraft-detail.html">
 
 
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
@@ -170,7 +171,7 @@
     </style>
 
     <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
-    <!-- <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route> -->
+    <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
     <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
 
     <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
@@ -181,22 +182,26 @@
             <app-header fixed slot="header">
               <app-toolbar primary id="tool1">
                 <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-                <div main-title>Draft Briefcase</div>
+                <div main-title>Briefcase</div>
               </app-toolbar>
+              <paper-tabs selected="{{selectedPage}}" scrollable fit-container id="tool1">
+                <paper-tab>Draft</paper-tab>
+                <paper-tab>Applied</paper-tab>
+              </paper-tabs>
             </app-header>
-            <paper-tabs selected="{{selectedPage}}" scrollable fit-container id="tool1">
-              <paper-tab>Draft</paper-tab>
-              <paper-tab>Applied</paper-tab>
-            </paper-tabs>
+            <!-- <iron-scroll-threshold id="threshold"> -->
 
             <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
               <neon-animatable>
-                <firebase-query id="query" path="/briefcasedraft" data="{{briefcasedraft}}" order-by-child="agent" start-at="{{user.uid}}" end-at="{{user.uid}}"
-                limit-to-last="50">
+                  <firebase-query id="query" path="/briefcasedraft" data="{{briefcasedraft}}" order-by-child="agent" start-at="{{user.uid}}"
+                  end-at="{{user.uid}}" limit-to-last="50">
                 </firebase-query>
-                <iron-scroll-threshold id="threshold">
+                <!-- <firebase-document id="transactionFire" path="/applications/{{transactionKey}}" data="{{transactionData}}"></firebase-document> -->
+                <!-- <firebase-query id="query" path="/briefcasedraft/{{_getAccountKey(account)}}" data="{{briefcasedraft}}" limit-to-first="50">
+                </firebase-query> -->
+                <!-- <iron-scroll-threshold id="threshold"> -->
                   <template is="dom-if" if="{{access}}">
-                    <iron-list items="[[briefcasedraft]]" as="item" selection-enabled multi-selection scroll-target="threshold">
+                    <iron-list items="[[briefcasedraft]]" as="item" selection-enabled multi-selection scroll-target="document">
                       <div style="text-align:center">{{msg}}</div>
                       <paper-toast id="toast" text="" duration="0"></paper-toast>
                       <template>
@@ -204,46 +209,54 @@
                           <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
 
                             <my-briefcasedraft-card item="{{item}}"></my-briefcasedraft-card>
-
                             <div tabindex="0">
-                              <a href$="{{_getViewAppLink(item.$key)}}" tabindex="-1">
-                                <!-- <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
+                              <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
+                                <paper-icon-button id="openDetailButton" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:my-icons:open-in-new"
+                                  alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                                <paper-tooltip position="left">view details</paper-tooltip>
+                              </a>
+                              <div tabindex="0">
+                                <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
+                                  <!-- <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
                                   <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
                                   <paper-listbox slot="dropdown-content">
                                     <paper-item >Approve</paper-item>
                                     <paper-item on-tap="_viewThis" id="{{item.$key}}">View</paper-item>
                                   </paper-listbox>
-                                </paper-menu-button>-->
-                                <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
-                                  style="display:inline-block;position: absolute;  right: 10px; color: white; top:8px;"></paper-icon-button>
-                                <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
-                              </a>
+                                </paper-menu-button> -->
+                                  <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
+                                    style="display:inline-block;position: absolute;  right: 40px; color: white; top:8px;"></paper-icon-button>
+                                  <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
+                                </a>
+                              </div>
                             </div>
-                          </div>
 
-                        </div>
+                          </div>
 
                       </template>
                     </iron-list>
                   </template>
-                </iron-scroll-threshold>
+                <!-- </iron-scroll-threshold> -->
               </neon-animatable>
 
               <neon-animatable>
-                <firebase-query id="query" path="/briefcase" data="{{briefcase}}" order-by-child="agent" start-at="{{user.uid}}"
-                  end-at="{{user.uid}}" limit-to-last="50">
+                  <firebase-query id="query" path="/briefcase" data="{{briefcase}}" order-by-child="agent" start-at="{{user.uid}}" end-at="{{user.uid}}"
+                  limit-to-last="50">
                 </firebase-query>
-                <iron-scroll-threshold id="threshold">
-
+                <!-- <firebase-query id="query" path="/briefcase/{{_getAccountKey(account)}}" data="{{briefcase}}"
+                  limit-to-last="50">
+                </firebase-query> -->
+                <!-- <iron-scroll-threshold id="threshold"> -->
+                  <!-- 
                   <template is="dom-if" if="{{!access}}">
                     <div class="card">
                       <h3>Sorry!</h3>
                       <div>You're not allowed to access this content.</div>
                     </div>
-                  </template>
+                  </template> -->
 
                   <template is="dom-if" if="{{access}}">
-                    <iron-list items="[[briefcase]]" as="item" selection-enabled multi-selection scroll-target="threshold">
+                    <iron-list items="[[briefcase]]" as="item" selection-enabled multi-selection scroll-target="document">
                       <div style="text-align:center">{{msg}}</div>
                       <paper-toast id="toast" text="" duration="0"></paper-toast>
                       <template>
@@ -251,17 +264,17 @@
                           <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
 
                             <my-briefcase-card item="{{item}}"></my-briefcase-card>
-
+                            <!-- 
                             <div tabindex="0">
                               <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
                                 <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
                                   style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
                                 <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
                               </a>
-                            </div>
+                            </div> -->
 
                             <div tabindex="1">
-                              <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
+                              <a href$="{{_getViewAppliedLink(item.$key)}}" tabindex="-1">
                                 <paper-icon-button id="openDetailButton" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new"
                                   alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
                                 <paper-tooltip position="left">view details</paper-tooltip>
@@ -275,7 +288,7 @@
                       </template>
                     </iron-list>
                   </template>
-                </iron-scroll-threshold>
+                <!-- </iron-scroll-threshold> -->
               </neon-animatable>
 
 
@@ -285,46 +298,60 @@
 
           <template is="dom-if" if="{{access}}">
             <a href="/briefcase/new" style="text-decoration: none;">
-              <paper-fab  noink class="fab-menu" on-tap="_briefcasenew" icon="my-icons:add"></paper-fab>
+              <paper-fab noink class="fab-menu" on-tap="_briefcasenew" icon="my-icons:add"></paper-fab>
             </a>
           </template>
 
-        </div>
-
-        <template is="dom-if" if="{{access}}">
-          <div name="/new">
-            <div id="appnew"></div>
-            <my-briefcase-new id="d23" path="" prev-route="{{route.prefix}}" user-id="0"></my-briefcase-new>
           </div>
-        </template>
 
-        <div name="view404">Not found.</div>
+          <template is="dom-if" if="{{access}}">
+            <div name="/new">
+              <div id="appnew"></div>
+              <my-briefcase-new id="d23" path="" prev-route="{{route.prefix}}" user-id="0"></my-briefcase-new>
+            </div>
+          </template>
+
+          <div name="view404">Not found.</div>
       </iron-pages>
-    </div>
-
-    <template is="dom-if" if="{{access}}">
-
-      <div hidden$="{{!editActive}}">
-        <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
-        <div id="appedit"></div>
-        <my-briefcase-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-briefcase-edit>
-        <!-- </template> -->
       </div>
-    </template>
+
+      <template is="dom-if" if="{{access}}">
+        <div hidden$="{{!detailActive}}">
+          <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
+          <div id="briefcasedraftdetail"></div>
+          <my-briefcasedraft-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"></my-briefcasedraft-detail>
+          <!-- [[detailData.key]] -->
+          <!-- </template> -->
+        </div>
+      </template>
+
+      <template is="dom-if" if="{{access}}">
+
+        <div hidden$="{{!editActive}}">
+          <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
+          <div id="appedit"></div>
+          <my-briefcase-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-briefcase-edit>
+          <!-- </template> -->
+        </div>
+      </template>
 
   </template>
   <script>
     Polymer({
       is: 'my-briefcase',
       properties: {
-        user: Object,
+        user: Object, //user
         items: {
           type: Array,
           value: function () {
             return [];
           }
         },
-        selectedPage: Number,
+        selectedPage: {
+          type: Number,
+          value: 0,
+        },
+
         entryanimation: {
           type: String,
           value: "slide-from-right-animation"
@@ -370,12 +397,21 @@
         '_searchChanged(filterBy, search)',
         'selectedPageChanged(selectedPage)'
       ],
+      _getAccountKey(e) {
+        return e[0].accountkey;
+      },
+      // briefcasedraftChanged(e) {
+      //   console.log(e);
+      // },
+      // accountChanged(e) {
+      //   console.log(e[0]);
+      // },
       ready() {
         this.selectedPage = 0;
       },
       selectedPageChanged(e) {
         if (e == 0) {
-          
+
           // this.entryanimation = "slide-from-right-animation";
           this.exitanimation = "slide-from-left-animation";
         }
@@ -394,7 +430,7 @@
       //   console.log(this.user)
       // },
       _applicationChanged(e) {
-        // console.log(this.user)
+        console.log(this.user)
         if (this.search) {
           if (e.length == 0) {
             this.msg = 'No result found.';
@@ -405,12 +441,8 @@
         }
       },
       // ready() {
-      //   var ref = firebase.database().ref("accountlist");
-      //   var ref = new Firebase("hpmg-56df3");
-      //   var authData = ref.getAuth();
-      //   if (authData) {
-      //     console.log("Authenticated user with uid:", authData.uid);
-      //   }
+
+      //     console.log(this.user);
       // },
       toggleSearch() {
         this.openSearch = true;
@@ -494,7 +526,7 @@
           }
           var newDiv = document.createElement("my-briefcase-new");
           newDiv.setAttribute("id", "d23");
-          newDiv.setAttribute("user-id", this.user.uid);
+          newDiv.setAttribute("user-id", this.account[0].accountkey);
           newDiv.setAttribute("prev-route", this.route.prefix);
           // newDiv.setAttribute("block", "3")
           //if open existing
@@ -502,9 +534,30 @@
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       },
-      // _getViewDetailsLink(e) {
-      //   return '/applications/detail/' + e.toString();
-      // },
+      viewDetails(e) {
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var node = Polymer.dom(this.root).querySelector("#briefcasedraftdetail");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-briefcasedraft-detail");
+          newDiv.setAttribute("id", "d24")
+          newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          //if open existing
+          var currentDiv = document.getElementById("briefcasedraftdetail");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+
+        }
+      },
+      _getViewAppliedLink(e) {
+        //   return '/applications/detail/' + e.toString();
+      },
+      _getViewDetailsLink(e) {
+        return '/briefcase/detail/' + e.toString();
+      },
       _getEditAppLink(e) {
         return '/briefcase/edit/' + e.toString();
       },
