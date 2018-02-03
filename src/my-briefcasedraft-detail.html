@@ -386,8 +386,8 @@
                 }
             },
 
-            newdataChanged() {
-                // console.log(this.$key);
+            newdataChanged(e) {
+                // console.log(e);
 
                 if (Object.keys(this.newdata).length > 0) {
 
@@ -446,7 +446,7 @@
                 // this.applicationKey = this.guid();
                 // this.path = 'applications/' + this.applicationKey;
                 if (this.transactionKey) {
-                    this.path = 'briefcasedraft/' + this.transactionKey;
+                    this.path = 'briefcasedraft/'+this.accountKey+"/" + this.transactionKey;
                     // console.log(this.path);
                 }
 
@@ -611,13 +611,13 @@
                         status = this.newdata.status,
                         timestamp = timestamp
                 }
-                var personRef = firebase.database().ref().child("briefcasedraft").child(this.transactionKey);
+                var personRef = firebase.database().ref().child("briefcasedraft").child(agent).child(this.transactionKey);
                 personRef.once('value', function (snapshot) {
                     if (snapshot.val() === null) {
                         alert('does not exist');
                     }
                     else {
-                        var ref = firebase.database().ref("briefcase").push({
+                        var ref = firebase.database().ref("briefcase/"+agent).push({
                             agent: agent,
                             agentdetails: agentdetails,
                             approval:'For Approval',
@@ -637,6 +637,7 @@
                             timestamp: timestamp,
                             type: 'For Approval',
                         });
+
                         personRef.remove();
                         window.location = "/briefcase";
                     }
