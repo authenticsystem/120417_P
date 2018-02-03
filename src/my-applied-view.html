@@ -83,8 +83,6 @@
                 margin: 0;
             }
 
-
-
             @media (min-width: 800px) {
                 .footer {
                     position: absolute;
@@ -96,13 +94,11 @@
                     left: 48px;
                     bottom: 48px;
                 }
-
                 .paper-fab-1 {
                     position: absolute;
                     right: 48px;
                     bottom: 48px;
                 }
-
             }
 
             @media (max-width: 800px) {
@@ -111,25 +107,21 @@
                     left: 16px;
                     bottom: 48px;
                 }
-
                 .paper-fab-1 {
                     position: absolute;
                     right: 16px;
                     bottom: 48px;
                 }
-
                 .docu {
                     margin-left: 16px;
                     margin-right: 16px;
                 }
-
             }
 
             paper-button.green {
                 background-color: var(--paper-green-500);
                 color: white;
             }
-
 
             datetime-picker.begin {
                 --datetime-selected-background: #2362EC;
@@ -220,7 +212,7 @@
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
                         <!-- for current Transaction Keys data -->
-                        <firebase-document id="transactionFire" path="/briefcase/{{transactionKey}}" data="{{transactionData}}" disabled="true"></firebase-document>
+                        <firebase-document id="transactionFire" path="/applicationsNew/{{transactionKey}}" data="{{transactionData}}" disabled="true"></firebase-document>
 
                         <!-- for Lot Details when entering Block, Lot, Level -->
                         <firebase-document id="lotFire" path="/lots/{{fullLot}}" data="{{fullLotData}}" disabled="true"></firebase-document>
@@ -229,8 +221,8 @@
                         <firebase-document id="fdColor" disabled="true"></firebase-document>
 
                         <!-- to get the last Applications filed, will be use to compare MIN and MAX Start Date -->
-                        <firebase-query id="otherApplicationFire" path="/briefcase" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1 data="{{lastApplication}}"
-                            disabled="true"></firebase-query>
+                        <firebase-query id="otherApplicationFire" path="/applicationsNew" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1
+                            data="{{lastApplication}}" disabled="true"></firebase-query>
 
                         <!-- to check if there is current reservation not yet isexpired or not yet served -->
                         <firebase-query id="reservationsFire" path="/reservations/{{origFullLot}}" limit-to-last=3 data="{{lastTwoReservation}}"
@@ -313,21 +305,21 @@
                                                 no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
 
                                         </div>
-                                        <div id="expiry" style="position: relative; padding-top: 16px;"> 
-                                        <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon>
-                                        <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span>
-                                        <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input>
-                                        <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span>
-                                        <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span>
-                                        <!-- <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker> -->
+                                        <div id="expiry" style="position: relative; padding-top: 16px;">
+                                            <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon>
+                                            <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span>
+                                            <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input>
+                                            <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span>
+                                            <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span>
+                                            <!-- <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker> -->
                                         </div>
-                                        </div>
-
-
                                     </div>
-                                </paper-card>
+
 
                             </div>
+                            </paper-card>
+
+                        </div>
                         </div>
                     </neon-animatable>
 
@@ -389,7 +381,6 @@
     <script>
         Polymer({
             is: 'my-applied-view',
-
             properties: {
                 blocklot: String,
                 details: Object,
@@ -407,7 +398,6 @@
                     value: "slide-left-animation"
                 },
                 route: Object,
-
                 routeData: Object,
                 lotdetailsAPP: {
                     type: Object,
@@ -486,9 +476,7 @@
                     value: false
                 },
                 origFullLot: String
-
             },
-
             observers: [
                 'fulllotDataChanged(fullLotData.*)',
                 'draftdatatypeChanged(draftdata_type.*)',
@@ -497,16 +485,11 @@
                 'draftdata_agentdetails_cellphoneChanged(draftdata_agentdetails_cellphone,draftdata_agentdetails_firstname,draftdata_agentdetails_middlename,draftdata_agentdetails_lastname)',
                 'lastApplicationChanged(lastApplication.*)',
                 'isStartDateTimeInvalidChanged(isStartDateTimeInvalid.*)',
-
                 // 'transactionDataChanged(transactionData)'
-
             ],
-
             transactionKeyChanged() {
                 // console.log(this.transactionKey);
-
                 this.$.appheader.resetLayout();
-
                 if (this.transactionKey) {
                     console.log(this.transactionKey);
                     this.$.idd.disabled = false;
@@ -516,15 +499,12 @@
                     this.$.otherApplicationFire.disabled = false;
                     this.$.reservationsFire.disabled = false;
                     this.$.lastReservationFire.disabled = false;
-
                 }
             },
             transactionDataChanged() {
-
                 if (Object.keys(this.transactionData).length > 0) {
-                    // console.log(this.transactionData);
+                    console.log(this.transactionData);
                     this.origFullLot = 'block' + this.transactionData.lotdetails.block + 'lot' + this.transactionData.lotdetails.lot + (this.transactionData.lotdetails.level ? 'level' + this.transactionData.lotdetails.level : '');
-
                     this.applicationKey = this.transactionData.reference;
                     if (this.transactionData.lotdetails) {
                         this.block = this.transactionData.lotdetails.block;
@@ -540,42 +520,33 @@
                     }
                     this.startDateTimeValue = this.transactionData.start;
                     this.expiryDate = this.transactionData.expiry;
-
                     // this.minStartDateTime = this.transactionData.start; // still to determine
                     // this.maxStartDateTime = this.transactionData.expiry; // still to determine
-
                     var xdate = new Date(this.transactionData.expiry);
                     this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-
                     var sdate = new Date(this.transactionData.start);
                     var ddate = xdate.getTime() - sdate.getTime();
                     this.expiryHoursDaysValue = ddate / (this.transactionData.type === 'Hold' ? (1000 * 60 * 60) : this.transactionData.type === 'Reserve' ? (1000 * 60 * 60 * 24) : 0); //in hours & in days
                     this.expiryHoursDaysLabel = (this.transactionData.type === 'Hold' ? 'hours' : this.transactionData.type === 'Reserve' ? 'days' : '');
                     this.draftdata_type = this.transactionData.type;
-
                     var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
                     showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
-
                     // var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
                     // showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
-
-
                     this.buyerKey = this.transactionData.buyer;
                     this.draftdata_buyerdetails_cellphone = this.transactionData.buyerdetails.cellphone;
                     this.draftdata_buyerdetails_firstname = this.transactionData.buyerdetails.firstname;
                     this.draftdata_buyerdetails_middlename = this.transactionData.buyerdetails.middlename;
                     this.draftdata_buyerdetails_lastname = this.transactionData.buyerdetails.lastname;
                     this.draftdata_buyerdetails_suffix = this.transactionData.buyerdetails.suffix;
-                    // this.draftdata_buyerdetails_email = this.transactionData.buyerdetails.email;
-
+                    this.draftdata_buyerdetails_email = this.transactionData.buyerdetails.email;
                     this.agentKey = this.transactionData.agent;
                     this.draftdata_agentdetails_cellphone = this.transactionData.agentdetails.cellphone;
                     this.draftdata_agentdetails_firstname = this.transactionData.agentdetails.firstname;
                     this.draftdata_agentdetails_middlename = this.transactionData.agentdetails.middlename;
                     this.draftdata_agentdetails_lastname = this.transactionData.agentdetails.lastname;
                     this.draftdata_agentdetails_suffix = this.transactionData.agentdetails.suffix;
-                    // this.draftdata_agentdetails_email = this.transactionData.agentdetails.email;
-
+                    this.draftdata_agentdetails_email = this.transactionData.agentdetails.email;
                     if (typeof (this.transTypeCorrespondingColor) == 'undefined') {
                         var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + (this.transactionData.type == 'Reserve' ? 'reserved' : (this.transactionData.type == 'Hold' ? 'hold' : (this.transactionData.type == 'Buy' ? 'sold' : ''))));
                         corresStatusColorRef.on('value', statusColor => {
@@ -586,27 +557,21 @@
                         });
                     }
                 }
-
             },
-
             isStartDateTimeInvalidChanged() {
                 this.favrighthide = this.isStartDateTimeInvalid;
                 this.isStartDateTimeInvalidGlobal = this.isStartDateTimeInvalid;
                 // console.log(this.isStartDateTimeInvalid);
             },
-
             lastApplicationChanged() {
                 //loop thru the applications, get Previous and Next of the Current Transaction Key
                 if (this.lastApplication[0]) {
-
                     if (this.lastApplication[0].$key == this.transactionKey) {
                         // console.log(this.lastApplication[0].$key)
-
                         //min start = start
                         if (this.transactionData.start) {
                             this.minStartDateTime = this.transactionData.start;
                             this.maxStartDateTime = '';
-
                             if (this.startDateTimeValue) {
                                 var startDTV = new Date(this.startDateTimeValue);
                                 var minStartDT = new Date(this.minStartDateTime);
@@ -628,7 +593,6 @@
                         if (this.transactionData.start) {
                             this.minStartDateTime = this.transactionData.start;
                             this.maxStartDateTime = this.transactionData.expiry;
-
                             if (this.startDateTimeValue) {
                                 var startDTV = new Date(this.startDateTimeValue);
                                 var minStartDT = new Date(this.minStartDateTime);
@@ -646,21 +610,16 @@
                             this.maxStartDateTime = '';
                         }
                     }
-
                 }
                 else {
                     this.minStartDateTime = '';
                     this.maxStartDateTime = '';
                 }
-
                 // console.log(this.lastApplication[0]);
-
             },
-
             _getPrevRoute() {
-                return this.prevRoute || '/briefcase'
+                return this.prevRoute || '/applications'
             },
-
             draftdata_buyerdetails_cellphoneChanged() {
                 if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname) {
                     this.favrighthide = false;
@@ -669,7 +628,6 @@
                     this.favrighthide = true;
                 }
             },
-
             draftdata_agentdetails_cellphoneChanged() {
                 if (this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
                     this.favrighthide = false;
@@ -678,7 +636,6 @@
                     this.favrighthide = true;
                 }
             },
-
             startDateTimeValueChanged() {
                 if (this.draftdata_type === 'Reserve') {
                     var xdate = new Date(this.$.startDateTimeValueV.value);
@@ -686,7 +643,6 @@
                     this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
                     this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
                         + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-
                     if (this.maxStartDateTime) {
                         var maxSDate = new Date(this.maxStartDateTime);
                         if (xdate <= maxSDate) {
@@ -703,7 +659,6 @@
                     this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
                     this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
                         + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-
                     if (this.maxStartDateTime) {
                         var maxSDate = new Date(this.maxStartDateTime);
                         if (xdate <= maxSDate) {
@@ -716,11 +671,8 @@
                 }
                 else if (this.draftdata_type === 'Buy') {
                     this.expiryDate = '';
-
                     // this.isStartDateTimeInvalidGlobal = false;
-
                 }
-
                 if (this.$.startDateTimeValueV.value) {
                     if (this.isStartDateTimeInvalid === true) {
                         this.favrighthide = true;
@@ -732,9 +684,7 @@
                 else {
                     this.favrighthide = true;
                 }
-
             },
-
             draftdatatypeChanged(e) {
                 if (this.transTypeChange === true) {
                     if (e) {
@@ -750,7 +700,6 @@
                     }
                 }
             },
-
             buyersListChanged(e) {
                 if (e) {
                     if (e.length > 0) {
@@ -759,7 +708,7 @@
                         this.draftdata_buyerdetails_middlename = e[0].middlename;
                         this.draftdata_buyerdetails_lastname = e[0].lastname;
                         this.draftdata_buyerdetails_suffix = e[0].suffix;
-                        // this.draftdata_buyerdetails_email = e[0].email;
+                        this.draftdata_buyerdetails_email = e[0].email;
                     }
                     else {
                         this.buyerKey = '';
@@ -769,8 +718,6 @@
                     this.buyerKey = '';
                 }
             },
-
-
             agentsListChanged(e) {
                 if (e) {
                     if (e.length > 0) {
@@ -779,7 +726,7 @@
                         this.draftdata_agentdetails_middlename = e[0].middlename;
                         this.draftdata_agentdetails_lastname = e[0].lastname;
                         this.draftdata_agentdetails_suffix = e[0].suffix;
-                        // this.draftdata_agentdetails_email = e[0].email;
+                        this.draftdata_agentdetails_email = e[0].email;
                         // console.log(this.agentKey)
                     }
                     else {
@@ -790,14 +737,11 @@
                     this.agentKey = '';
                 }
             },
-
             selectReserve() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
                 showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
-
                 var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
                 showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
-
                 var ddate = new Date();
                 this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
                     + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
@@ -806,11 +750,8 @@
                 var xdate = new Date(this.$.startDateTimeValueV.value);
                 xdate.setDate(xdate.getDate() + this.expiryHoursDaysValue);
                 this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-
                 this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
                     + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-
-
                 //get color
                 var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/reserved');
                 transTypeCorrespondingColorRef.on('value', snapshot => {
@@ -818,17 +759,13 @@
                         this.transTypeCorrespondingColor = snapshot.val()
                     }
                 });
-
                 this.transTypeChange = true;
-
             },
             selectHold() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
                 showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
-
                 var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
                 showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
-
                 var ddate = new Date();
                 this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
                     + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
@@ -837,10 +774,8 @@
                 var xdate = new Date(this.$.startDateTimeValueV.value);
                 xdate.setHours(xdate.getHours() + this.expiryHoursDaysValue);
                 this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-
                 this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
                     + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-
                 //get color
                 var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/hold');
                 transTypeCorrespondingColorRef.on('value', snapshot => {
@@ -848,24 +783,18 @@
                         this.transTypeCorrespondingColor = snapshot.val()
                     }
                 });
-
                 this.transTypeChange = true;
             },
             selectBuy() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
                 showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
-
                 var hideExpiry = Polymer.dom(this.root).querySelector("#expiry");
                 hideExpiry.setAttribute("style", "display: none;");
-
                 this.set('draftdata.expiry', '');
-
                 var ddate = new Date();
                 this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
                     + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
-
                 this.expiryDate = '';
-
                 //get color
                 var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/sold');
                 transTypeCorrespondingColorRef.on('value', snapshot => {
@@ -873,55 +802,42 @@
                         this.transTypeCorrespondingColor = snapshot.val()
                     }
                 });
-
                 this.transTypeChange = true;
             },
-
             getpath() {
                 this.applicationKey = this.guid();
-                this.path = 'briefcasedraft/' + this.applicationKey;
+                this.path = 'applicationsNew/' + this.applicationKey;
                 return this.path;
             },
-
             fulllotDataChanged() {
                 if (this.fullLotData) {
                     if (this.fullLotData.inventoriable == "yes") {
-
                         if (this.fullLotData.lot) {
                             var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
                             spinnerDetails.active = false;
                             //ok we have value
                             var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                             errormsg.setAttribute("style", "display: none;");
-
                             var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
                             cardcontentlotDetails.setAttribute("style", "height: 48px; background-color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_bg_color : "rgb(122, 122, 122)") + "; color: " + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_fore_color : "white") + ";");
-
                             this.fullLotName = "Block " + this.fullLotData.block + " - Lot " + this.fullLotData.lot + (this.fullLotData.level ? " - Level " + this.fullLotData.level : "");
                             this.areaLabel = this.fullLotData.area ? "Area" : "";
                             this.designationLabel = this.fullLotData.designation ? "Designation" : "";
                             this.typeLabel = this.fullLotData.type ? "Type" : "";
                             this.statusLabel = this.fullLotData.status ? "Current Status" : "";
-
                             var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
                             statusValue.setAttribute("style", "font-weight: 400; color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.fore_color : "black") + "; background:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.bg_color : "gray") + "; border-radius: 2px; padding-left: 2px;padding-right: 2px;");
-
                             var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
                             stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: block;");
-
-
                             var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
                             if (this.fullLotData.status == 'available') { // || this.fullLotData.status == 'hold' || this.fullLotData.status == 'reserved'
                                 // cardActions.setAttribute("style", "display: block;");
-
                                 if (this.draftdata_type) {
                                     this.favrighthide = false;
                                 }
                                 else {
                                     this.favrighthide = false;
                                 }
-
-
                             }
                             else {
                                 if (this.fullLot != this.origFullLot) {
@@ -943,134 +859,95 @@
                                     }
                                 }
                             }
-
-
                             this.referenceLabel = 'Ref.';
-
-
                         }
                         else {
                             if (this.fullLot) {
                                 var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
                                 spinnerDetails.active = false;
-
                                 var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                                 errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
                                 this.validationMessage = 'Not found!';
-
                                 var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
                                 cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
-
                                 var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
                                 stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
-
                                 this.fullLotName = "";
                                 this.areaLabel = "";
                                 this.designationLabel = "";
                                 this.typeLabel = "";
                                 this.statusLabel = "";
-
                                 var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
                                 statusValue.setAttribute("style", "font-weight: 400;");
                                 this.favrighthide = true;
-
                                 this.referenceLabel = 'Not found!'
                             }
                         }
-
                     }
                     else {
                         if (this.fullLot) {
                             var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
                             spinnerDetails.active = false;
-
                             var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                             errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
                             this.validationMessage = 'Not found!';
-
                             var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
                             cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
-
                             var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
                             stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
-
                             this.fullLotName = "";
                             this.areaLabel = "";
                             this.designationLabel = "";
                             this.typeLabel = "";
                             this.statusLabel = "";
-
                             var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
                             statusValue.setAttribute("style", "font-weight: 400;");
-
                             this.favrighthide = true;
-
                             this.referenceLabel = 'Not found!'
                         }
                     }
-
                 }
                 else {
                     if (this.fullLot) {
-
                         var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
                         spinnerDetails.active = false;
-
                         var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                         errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
                         this.validationMessage = 'Not found!';
-
                         var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
                         cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
-
                         var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
                         stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
-
                         this.fullLotName = "";
                         this.areaLabel = "";
                         this.designationLabel = "";
                         this.typeLabel = "";
                         this.statusLabel = "";
-
                         var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
                         statusValue.setAttribute("style", "font-weight: 400;");
-
                         var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
                         cardActions.setAttribute("style", "display: none;");
-
                         this.favrighthide = true;
-
                         this.referenceLabel = 'Not found!'
                     }
-
-
                 }
             },
-
             blocklotplotChanged() {
                 if (this.block) { this.block = this.block.toString().toUpperCase(); }
                 if (this.lot) { this.lot = this.lot.toString().toUpperCase(); }
                 if (this.level) { this.level = this.level.toString().toLowerCase(); }
-
                 this.fullLot = "block" + this.block + "lot" + this.lot + (this.level ? "level" + this.level : "");
-
                 var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
                 spinnerDetails.active = true;
             },
-
             toggleDrawer() {
-
                 Polymer.dom(this.parentNode).removeChild(this);
-
             },
-
             _currentPage(e, s) {
                 return s === e;
             },
-
             ready() {
                 this.selectedPage = 0;
-
                 this.draftdata_buyerdetails_cellphone = '';
                 this.draftdata_buyerdetails_firstname = '';
                 this.draftdata_buyerdetails_middlename = '';
@@ -1078,33 +955,22 @@
                 this.draftdata_buyerdetails_suffix = '';
                 this.draftdata_buyerdetails_email = '';
                 this.draftdata_buyerdetails_cellphone = '';
-
                 this.minStartDateTime = '';
                 this.saveErrorDetails = '...';
-
-
             },
-
             _select1(e) {
                 this.entryanimation = "slide-from-left-animation";
                 this.exitanimation = "slide-right-animation";
-
                 if (parseInt(this.selectedPage) <= 2) {
                     if (parseInt(this.selectedPage) !== 0) {
                         this.selectedPage = (parseInt(this.selectedPage) - 1);
-
                         Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: #1976d2;");
                         Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:chevron-right");
-
-
                         if (this.selectedPage === 0) {
                             this.favlefthide = true;
                         }
-
                         this.favrighthide = false;
-
                     }
-
                     else {
                         this.favlefthide = true;
                         this.favrighthide = false;
@@ -1113,15 +979,12 @@
                 else {
                     this.selectedPage = 2;
                 }
-
             },
-
             _select2(e) {
                 this.entryanimation = "slide-from-right-animation";
                 this.exitanimation = "slide-left-animation";
                 if (parseInt(this.selectedPage) >= 0) {
                     if (parseInt(this.selectedPage) == 2) {
-
                         //complete
                         if (this.isStartDateTimeInvalidGlobal == true) {
                             var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
@@ -1132,16 +995,13 @@
                             var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
                             var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                             var favRightVar = Polymer.dom(this.root).querySelector("#favright");
-
                             if (this.transactionKey) {
                                 var firebaseDb = this.$.idd.db;
                                 var firebaseDbRef = firebaseDb.ref();
                                 var firebaseUpdate = {};
-
                                 //get agent and buyer key, use 
                                 this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
                                 this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
-
                                 var draftdata = {
                                     agent: this.agentKey,
                                     agentdetails: {
@@ -1149,7 +1009,7 @@
                                         middlename: this.draftdata_agentdetails_middlename,
                                         lastname: this.draftdata_agentdetails_lastname,
                                         suffix: this.draftdata_agentdetails_suffix,
-                                        // email: this.draftdata_agentdetails_email,
+                                        email: this.draftdata_agentdetails_email,
                                         cellphone: this.draftdata_agentdetails_cellphone
                                     },
                                     buyer: this.buyerKey,
@@ -1159,7 +1019,7 @@
                                         lastname: this.draftdata_buyerdetails_lastname,
                                         suffix: this.draftdata_buyerdetails_suffix,
                                         cellphone: this.draftdata_buyerdetails_cellphone,
-                                        // email: this.draftdata_buyerdetails_email
+                                        email: this.draftdata_buyerdetails_email
                                     },
                                     expiry: '',
                                     isdraft: true,
@@ -1172,14 +1032,13 @@
                                 };
                                 //save to /applications/{id}
                                 firebaseUpdate["/briefcasedraft/" + this.transactionKey] = draftdata;
-
                                 var draftBuyer = {
                                     firstname: this.draftdata_buyerdetails_firstname,
                                     middlename: this.draftdata_buyerdetails_middlename,
                                     lastname: this.draftdata_buyerdetails_lastname,
                                     suffix: this.draftdata_buyerdetails_suffix,
                                     cellphone: this.draftdata_buyerdetails_cellphone,
-                                    // email: this.draftdata_buyerdetails_email
+                                    email: this.draftdata_buyerdetails_email
                                 };
                                 if (this.buyerKey) {
                                     //save to /buyers/{new id}
@@ -1191,13 +1050,12 @@
                                     saveFailed.setAttribute("style", "display: block; color: red;");
                                     return;
                                 }
-
                                 var draftAgent = {
                                     firstname: this.draftdata_agentdetails_firstname,
                                     middlename: this.draftdata_agentdetails_middlename,
                                     lastname: this.draftdata_agentdetails_lastname,
                                     suffix: this.draftdata_agentdetails_suffix,
-                                    // email: this.draftdata_agentdetails_email,
+                                    email: this.draftdata_agentdetails_email,
                                     cellphone: this.draftdata_agentdetails_cellphone
                                 };
                                 if (this.agentKey) {
@@ -1209,15 +1067,12 @@
                                     saveSuccess.setAttribute("style", "display: none; color: green;");
                                     saveFailed.setAttribute("style", "display: block; color: red;");
                                 }
-
                                 var sdate;
                                 var serverdatetime = firebase.database().ref("info/serverdatetime");
                                 serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
                                 serverdatetime.once('value').then(snapshot => {
                                     var sdate = new Date(snapshot.val());
                                 });
-
-
                             }
                             else {
                                 //transactionKey is missing
@@ -1225,22 +1080,16 @@
                                 this.saveErrorDetails = "Transaction Key is missing.";
                                 saveFailed.setAttribute("style", "display: block; color: red;");
                             }
-
                             //verification first
                             //get colors
                             //get map_lot
                             //get reservations
                         }
-
-
-
                     }
                     else {
                         // console.log('xx ' + this.selectedPage);
-
                         this.favlefthide = false;
                         this.favrighthide = false;
-
                         if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname
                             && this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
                             this.favrighthide = false;
@@ -1249,10 +1098,8 @@
                             this.favrighthide = true;
                         }
                     }
-
                     if (parseInt(this.selectedPage) !== 3) {
                         this.selectedPage = (parseInt(this.selectedPage) + 1);
-
                         if (this.selectedPage === 2) {
                             this.favrighthide = true;
                             //change color and icon here
@@ -1260,26 +1107,19 @@
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:done");
                         }
                     }
-
-
                 }
                 else {
                     this.selectedPage = 0;
                     this.favlefthide = true;
                     this.favrighthide = false;
                 }
-
-
             },
             oPenApproved() {
                 this.$.ApprovedApplication.open();
             },
             approveApp() {
-
                 this.draftdata_type = 'Hold';
                 // var firebaseDbRef = firebase.database().ref()
-
-
                 var ddate = new Date();
                 this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
                     + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
@@ -1288,10 +1128,8 @@
                 var xdate = new Date(this.$.startDateTimeValueV.value);
                 xdate.setHours(xdate.getHours() + this.expiryHoursDaysValue);
                 this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-
                 this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
                     + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-
                 //get color
                 var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/hold');
                 transTypeCorrespondingColorRef.on('value', snapshot => {
@@ -1300,17 +1138,14 @@
                     }
                 });
                 if (this.transTypeCorrespondingColor) {
-
                     if (this.isStartDateTimeInvalidGlobal == true) {
                         var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                         this.saveErrorDetails = "Start date conflict, please change the start date accordingly.";
                         saveFailed.setAttribute("style", "display: block; color: red;");
                     }
                     else {
-
                         // this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
                         this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
-
                         var draftdata = {
                             agent: this.agentKey,
                             agentdetails: {
@@ -1318,7 +1153,7 @@
                                 middlename: this.draftdata_agentdetails_middlename,
                                 lastname: this.draftdata_agentdetails_lastname,
                                 suffix: this.draftdata_agentdetails_suffix,
-                                // email: this.draftdata_agentdetails_email,
+                                email: this.draftdata_agentdetails_email,
                                 cellphone: this.draftdata_agentdetails_cellphone
                             },
                             buyer: this.buyerKey,
@@ -1328,7 +1163,7 @@
                                 lastname: this.draftdata_buyerdetails_lastname,
                                 suffix: this.draftdata_buyerdetails_suffix,
                                 cellphone: this.draftdata_buyerdetails_cellphone,
-                                // email: this.draftdata_buyerdetails_email
+                                email: this.draftdata_buyerdetails_email
                             },
                             expiry: this.expiryDate,
                             isdraft: 'false',
@@ -1351,7 +1186,7 @@
                                 middlename: this.draftdata_agentdetails_middlename,
                                 lastname: this.draftdata_agentdetails_lastname,
                                 suffix: this.draftdata_agentdetails_suffix,
-                                // email: this.draftdata_agentdetails_email,
+                                email: this.draftdata_agentdetails_email,
                                 cellphone: this.draftdata_agentdetails_cellphone
                             },
                             buyer: this.buyerKey,
@@ -1361,9 +1196,9 @@
                                 lastname: this.draftdata_buyerdetails_lastname,
                                 suffix: this.draftdata_buyerdetails_suffix,
                                 cellphone: this.draftdata_buyerdetails_cellphone,
-                                // email: this.draftdata_buyerdetails_email
+                                email: this.draftdata_buyerdetails_email
                             },
-                            approval:'Approved',
+                            approval: 'Approved',
                             expiry: this.expiryDate,
                             isdraft: 'false',
                             isserved: 'false',
@@ -1377,43 +1212,34 @@
                             timestamp: { ".sv": "timestamp" },
                             type: this.draftdata_type,
                             reference: this.applicationKey
-
                         };
-
                         var draftBuyer = {
                             firstname: this.draftdata_buyerdetails_firstname,
                             middlename: this.draftdata_buyerdetails_middlename,
                             lastname: this.draftdata_buyerdetails_lastname,
                             suffix: this.draftdata_buyerdetails_suffix,
                             cellphone: this.draftdata_buyerdetails_cellphone,
-                            // email: this.draftdata_buyerdetails_email
+                            email: this.draftdata_buyerdetails_email
                         };
-
-
                         var draftAgent = {
                             firstname: this.draftdata_agentdetails_firstname,
                             middlename: this.draftdata_agentdetails_middlename,
                             lastname: this.draftdata_agentdetails_lastname,
                             suffix: this.draftdata_agentdetails_suffix,
-                            // email: this.draftdata_agentdetails_email,
+                            email: this.draftdata_agentdetails_email,
                             cellphone: this.draftdata_agentdetails_cellphone
                         };
-
                         var firebaseDb = this.$.idd.db;
                         var firebaseDbRef = firebaseDb.ref();
                         var firebaseUpdate = {};
-
                         var transactionPush = firebaseDbRef.child('applications').push();
-                        // this.transactionKey = transactionPush.key;
-
+                        this.transactionKey = transactionPush.key;
                         if (this.transactionKey) {
-
+                            // console.log(this.transactionKey);
                             //save to /applications/{id}
                             firebaseUpdate["/applications/" + this.transactionKey] = draftdata;
-
-                            firebaseUpdate["/briefcase/" + this.transactionKey] = draftBriefcase;
+                            firebaseUpdate["/applicationsNew/" + this.transactionKey] = draftBriefcase;
                             //this.path
-
                             if (this.buyerKey) {
                                 //save to /buyers/{new id}
                                 firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
@@ -1423,7 +1249,6 @@
                                 saveSuccess.setAttribute("style", "display: none; color: green;");
                                 saveFailed.setAttribute("style", "display: block; color: red;");
                             }
-
                             if (this.agentKey) {
                                 //save to /agents/{new id}
                                 firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
@@ -1433,23 +1258,15 @@
                                 saveSuccess.setAttribute("style", "display: none; color: green;");
                                 saveFailed.setAttribute("style", "display: block; color: red;");
                             }
-
-
-
                             //how to get last two reservation with iscurrent and not iscurrent
                             //what if there is no iscurrent but there is a reservation???
                             //--- no need to get the current iscurrent=true, we just need the last-reservation to check if we can set the current reservation as iscurrent
-
                             // applications filter
                             // edit
-
                             // save to application and conditionally to Reservations & Lot Details Reservation
                             // ---check for applications in-line and determine the start date and time
                             // ---save to reservation will be after checking of docs approval
-
                             // midnight update
-
-
                             //will be transferred later, when docs checking and approval are up
                             //save to /reservations/{new id}
                             var isCurrentReservation = false;
@@ -1465,10 +1282,7 @@
                             else {
                                 isCurrentReservation = true;
                             }
-
                             // console.log(this.lastReservation);
-
-
                             var dataForReservation = {
                                 agent: this.agentKey,
                                 agentdetails: {
@@ -1493,12 +1307,10 @@
                                 start: this.startDateTimeValue,
                                 timestamp: { ".sv": "timestamp" },
                                 iscurrent: isCurrentReservation,
-                                type:this.draftdata_type,
+                                type: this.draftdata_type,
                                 reference: this.applicationKey
                             };
-
                             firebaseUpdate["/reservations/" + this.fullLot + "/" + this.transactionKey] = dataForReservation;
-
                             if (isCurrentReservation == true) {
                                 // console.log(selectedTransType);
                                 var selectedTransType = (this.draftdata_type === 'Reserve' ? 'reserved' : this.draftdata_type === 'Hold' ? 'hold' : this.draftdata_type === 'Buy' ? 'sold' : '');
@@ -1508,7 +1320,6 @@
                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = this.transTypeCorrespondingColor.name;
                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = this.transTypeCorrespondingColor.bg_color;
                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = this.transTypeCorrespondingColor.fore_color;
-
                                 //shb 01/04
                                 //for lots with level/map_lot: check other lots by map_lot, compare and get winning map_lot status
                                 //get lots thru map_lot
@@ -1533,7 +1344,6 @@
                                                     winningValStat = valStat;
                                                 }
                                             });
-
                                             var winningColor;
                                             if (winningValStat == 5) winningColor = 'available';
                                             else if (winningValStat == 4) winningColor = 'hold';
@@ -1541,7 +1351,6 @@
                                             else if (winningValStat == 2) winningColor = 'soldlacking';
                                             else if (winningValStat == 1) winningColor = 'sold';
                                             else winningColor = 'notyetavailable';
-
                                             var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + winningColor);
                                             transTypeCorrespondingColorRef.on('value', statusColor => {
                                                 if (statusColor.exists()) {
@@ -1554,25 +1363,19 @@
                                             });
                                         }
                                     });
-
                                 }
-
                             }
                             //if ok, update bg_color, status_name
                             //check reservations if current is expired, then check if there is prior reservation, then iscurrent=false
-
-
                             var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
                             var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                             var favRightVar = Polymer.dom(this.root).querySelector("#favright");
-
                             if (this.fullLotData.status != 'available') {
                                 this.saveErrorDetails = 'Lot status has changed. Please check the status of the lot.';
                                 saveSuccess.setAttribute("style", "display: none; color: green;");
                                 saveFailed.setAttribute("style", "display: block; color: red;");
                             }
                             else {
-
                                 // console.log(firebaseUpdate);
                                 firebaseDbRef.update(firebaseUpdate, function (error) {
                                     if (error) {
@@ -1580,22 +1383,17 @@
                                         this.saveErrorDetails = error;
                                         saveSuccess.setAttribute("style", "display: none; color: green;");
                                         saveFailed.setAttribute("style", "display: block; color: red;");
-
                                         this.favlefthide = false;
                                         this.favrighthide = true;
-
                                         // console.log('1');
                                     }
                                     // else {
                                     //     this.saveErrorDetails = "";
                                     //     saveSuccess.setAttribute("style", "display: block; color: green;");
                                     //     saveFailed.setAttribute("style", "display: none; color: red;");
-
                                     //     this.favlefthide = true;
                                     //     this.favrighthide = true;
-
                                     //     favRightVar.setAttribute("style", "display: none; background: #1976d2;");
-
                                     //     // console.log('2');
                                     // }
                                 });
@@ -1608,13 +1406,11 @@
                         //     saveFailed.setAttribute("style", "display: block; color: red;");
                         // }
                     }
-
                 }
                 // window.location="/applications"
             },
             _rdChanged(newData, oldData) {
                 this.fromRD = true;
-
                 // this.isUserClicked = true;
                 // console.log('_rd');
                 // console.log(oldData);
@@ -1622,7 +1418,6 @@
             },
             _ldChanged(newData, oldData) {
                 this.fromLD = true;
-
                 // this.isUserClicked = true;
                 // console.log('_rd');
                 // console.log(oldData);
@@ -1636,23 +1431,11 @@
             guid: function () {
                 // return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
                 //     this.s4() + '-' + this.s4() + this.s4() + this.s4();
-
-
                 var uid = new ShortUniqueId();
-
                 // console.log(uid.randomUUID(8));
                 // var shortid = new shortid();
                 return uid.randomUUID(8);
-
-
-
             },
-
-
-
         })
-
-
-
     </script>
 </dom-module>

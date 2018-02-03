@@ -664,8 +664,8 @@
                         this.agentdetails_middlename = e[0].name.middlename;
                         this.agentdetails_lastname = e[0].name.lastname;
                         this.agentdetails_suffix = e[0].name.suffix;
-                        console.log(this.accountkey);
-                        this.agentdetails_email = email;
+                        // console.log(this.accountkey);
+                        // this.agentdetails_email = email;
                         // console.log(this.accountkey);
                     }
                     // else {
@@ -962,7 +962,7 @@
                                         middlename: this.agentdetails_middlename,
                                         lastname: this.agentdetails_lastname,
                                         suffix: this.agentdetails_suffix,
-                                        // email: this.draftdata_agentdetails_email,
+                                        email: email,
                                         cellphone: this.agentdetails_cellphone
                                     },
                                     buyer: this.buyerKey,
@@ -972,7 +972,7 @@
                                         lastname: this.draftdata_buyerdetails_lastname,
                                         suffix: this.draftdata_buyerdetails_suffix,
                                         cellphone: this.draftdata_buyerdetails_cellphone,
-                                        // email: this.draftdata_buyerdetails_email
+                                        email: this.draftdata_buyerdetails_email
                                     },
                                     expiry: '',
                                     isdraft: true,
@@ -993,7 +993,7 @@
                                     reference: this.applicationKey
                                 };
                                 var draftBuyer = {
-                                    firstname: this.draftdata_buyerdetails_firstname,
+                                    firstname: this.draftdata_buyerdetails_firstname,   
                                     middlename: this.draftdata_buyerdetails_middlename,
                                     lastname: this.draftdata_buyerdetails_lastname,
                                     suffix: this.draftdata_buyerdetails_suffix,
@@ -1005,7 +1005,7 @@
                                     middlename: this.agentdetails_middlename,
                                     lastname: this.agentdetails_lastname,
                                     suffix: this.agentdetails_suffix,
-                                    // email: this.draftdata_agentdetails_email,
+                                    email: email,
                                     cellphone: this.agentdetails_cellphone
                                 };
                                 var firebaseDb = this.$.idd.db;

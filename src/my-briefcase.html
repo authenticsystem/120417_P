@@ -194,7 +194,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
         <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
         <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
-
+        
         <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
         <div hidden$="{{!applicationActive}}">
           <!-- <template is="dom-if" if="{{_checkIfApplicationActive(applicationActive)}}"> -->
@@ -255,7 +255,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <!-- <firebase-query id="query" path="/briefcasedraft" data="{{briefcasedraft}}" equal-to="{{user.uid}}" limit-to-last="50">
                 </firebase-query> -->
 
-                <firebase-query id="query" path="/briefcasedraft/{{_getKey(myaccount)}}" data="{{briefcasedraft}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
+                <firebase-query id="query" path="/briefcasedraft/{{_getKey(account)}}" data="{{briefcasedraft}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
                 end-at="{{typeValue}}" limit-to-last="50">
                 </firebase-query>
 
@@ -271,14 +271,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                   <!-- threshold -->
                   <template is="dom-if" if="{{access}}">
-                    <iron-list items="[[briefcasedraft]]" as="item" selection-enabled multi-selection scroll-target="document">
+                    <iron-list items="[[briefcasedraft]]" as="item" selection-enabled multi-selection scroll-target="threshold">
                       <div style="text-align:center">{{msg}}</div>
                       <paper-toast id="toast" text="" duration="0"></paper-toast>
                       <template id=itemcount>
                         <div class="divSeparator">
                           <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
 
-                            <my-briefcasedraft-card item="{{item}}"></my-briefcasedraft-card>
+                            <my-briefcase-card item="{{item}}"></my-briefcase-card>
 
                             <div tabindex="0">
                               <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
@@ -303,7 +303,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                           </div>
 
-                          </div>
+                        </div>
 
                       </template>
                     </iron-list>
@@ -322,7 +322,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <template is="dom-if" if="{{access}}">
               <div name="/new">
                 <div id="briefcasenew"></div>
-                <my-briefcase-new id="d23" path="" prev-route="{{route.prefix}}" myaccount={{myaccount}}></my-briefcase-new>
+                <my-briefcase-new id="d23" path="" prev-route="{{route.prefix}}"></my-briefcase-new>
               </div>
             </template>
 
@@ -429,7 +429,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                   <!-- threshold -->
                   <template is="dom-if" if="{{access}}">
-                    <iron-list items="[[briefcase]]" as="item" selection-enabled multi-selection scroll-target="document">
+                    <iron-list items="[[briefcase]]" as="item" selection-enabled multi-selection scroll-target="threshold">
                       <div style="text-align:center">{{msg}}</div>
                       <paper-toast id="toast" text="" duration="0"></paper-toast>
                       <template id=itemcount>
@@ -444,7 +444,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                   style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
                                 <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
                               </a>
-                            </div> -->
+                            </div>
 
                             <div tabindex="1">
                               <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
@@ -452,7 +452,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                   alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
                                 <paper-tooltip position="left">view details</paper-tooltip>
                               </a>
-                            </div> 
+                            </div> -->
 
                           </div>
 
@@ -511,8 +511,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-briefcase',
 
       properties: {
-        myaccount: {
+        account: {
           type: Object,
+          observer: 'accountChanged'
         },
         items: {
           type: Array,
@@ -529,9 +530,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true
         },
         briefcasedraft: {
-          type: Object,
-        },
-        briefcasedraftSearch: {
           type: Object,
         },
         briefcase: {
@@ -571,19 +569,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       observers: [
         '_searchChanged(filterBy, search)',
-        '_briefcasedraftSearchChanged(briefcasedraftSearch)',
         'briefcasedraftChanged(briefcasedraft.*)',
-        'briefcaseChanged(briefcase)'
+        'briefcaseChanged(briefcase.*)'
       ],
+      accountChanged(e){
+        this.accountkey = e[0].accountkey;
+      },
       _getKey(e){
        return e[0].accountkey;
-        console.log(e);
+        // console.log(e);
       },
       briefcasedraftChanged(e) {
         // console.log(e);
         this.countdraft = e.base.length;
         if (this.search) {
-          if (e.length == 0) {
+          if (this.countdraft == 0) {
             this.msg = 'No result found.';
           }
           else {
@@ -592,10 +592,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
       briefcaseChanged(e) {
-        this.countapplied = e.length;
-      },
-
-      _briefcasedraftSearchChanged(e) {
+        this.countapplied = e.base.length;
         if (this.search) {
           if (this.countapplied == 0) {
             this.msg = 'No result found.';
@@ -605,6 +602,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
       },
+
       toggleSearch() {
         this.openSearch = true;
       },
@@ -731,6 +729,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var newDiv = document.createElement("my-briefcasedraft-detail");
           newDiv.setAttribute("id", "d24")
           newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("account-key", this.accountkey)
           newDiv.setAttribute("prev-route", this.route.prefix);
           //if open existing
           var currentDiv = document.getElementById("briefcasedraftdetail");
