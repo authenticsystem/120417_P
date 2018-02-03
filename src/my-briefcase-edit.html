@@ -230,6 +230,9 @@
                         <firebase-query id="lastReservationFire" path="/reservations/{{fullLot}}" order-by-child='iscurrent' equal-to='true' limit-to-last=1
                             data="{{lastReservation}}" disabled="true"></firebase-query>
 
+                        <firebase-query path="/agents" order-by-child='cellphone' equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1
+                            data="{{agentsList}}"></firebase-query>
+
                         <div class="docu">
 
                             <div class="docu-header">
@@ -291,27 +294,27 @@
                                             <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button>
                                         </paper-radio-group> -->
 
-                                        </br>
-                                        <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
-                                            <div id="start">
-                                                <span style="color: blue;">Date:</span>
-                                                <!-- <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker> -->
+                                    </br>
+                                    <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
+                                        <div id="start">
+                                            <span style="color: blue;">Date:</span>
+                                            <!-- <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker> -->
 
-                                                <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
-                                                <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
+                                            <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
+                                            <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
                                                 <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
-                                                <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}" type="datetime-local"
-                                                    no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
+                                            <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}" type="datetime-local"
+                                                no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
 
-                                            </div>
-                                            <!-- <div id="expiry" style="position: relative; padding-top: 16px;"> -->
-                                                <!-- <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon> -->
-                                                <!-- <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span> -->
-                                                <!-- <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input> -->
-                                                <!-- <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span> -->
-                                                <!-- <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span> -->
-                                                <!-- <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker> -->
-                                            <!-- </div> -->
+                                        </div>
+                                        <!-- <div id="expiry" style="position: relative; padding-top: 16px;"> -->
+                                        <!-- <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon> -->
+                                        <!-- <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span> -->
+                                        <!-- <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input> -->
+                                        <!-- <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span> -->
+                                        <!-- <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span> -->
+                                        <!-- <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker> -->
+                                        <!-- </div> -->
                                         <!-- </div> -->
 
 
@@ -554,7 +557,7 @@
 
             deleteApplication() {
                 var db = firebase.database().ref('briefcasedraft').child(this.transactionKey).remove();
-                window.location='briefcase';
+                window.location = 'briefcase';
                 // var ref = db.ref();
                 // var survey = db.ref(path + '/' + path);              
                 // survey
@@ -739,7 +742,7 @@
                     this.draftdata_buyerdetails_middlename = this.transactionData.buyerdetails.middlename;
                     this.draftdata_buyerdetails_lastname = this.transactionData.buyerdetails.lastname;
                     this.draftdata_buyerdetails_suffix = this.transactionData.buyerdetails.suffix;
-                    // this.draftdata_buyerdetails_email = this.transactionData.buyerdetails.email;
+                    this.draftdata_buyerdetails_email = this.transactionData.buyerdetails.email;
 
                     this.agentKey = this.transactionData.agent;
                     this.draftdata_agentdetails_cellphone = this.transactionData.agentdetails.cellphone;
@@ -747,7 +750,7 @@
                     this.draftdata_agentdetails_middlename = this.transactionData.agentdetails.middlename;
                     this.draftdata_agentdetails_lastname = this.transactionData.agentdetails.lastname;
                     this.draftdata_agentdetails_suffix = this.transactionData.agentdetails.suffix;
-                    // this.draftdata_agentdetails_email = this.transactionData.agentdetails.email;
+                    this.draftdata_agentdetails_email = this.transactionData.agentdetails.email;
 
                     if (typeof (this.transTypeCorrespondingColor) == 'undefined') {
                         var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + (this.transactionData.type == 'Reserve' ? 'reserved' : (this.transactionData.type == 'Hold' ? 'hold' : (this.transactionData.type == 'Buy' ? 'sold' : ''))));
@@ -932,7 +935,7 @@
                         this.draftdata_buyerdetails_middlename = e[0].middlename;
                         this.draftdata_buyerdetails_lastname = e[0].lastname;
                         this.draftdata_buyerdetails_suffix = e[0].suffix;
-                        // this.draftdata_buyerdetails_email = e[0].email;
+                        this.draftdata_buyerdetails_email = e[0].email;
                     }
                     else {
                         this.buyerKey = '';
@@ -946,12 +949,12 @@
             agentsListChanged(e) {
                 if (e) {
                     if (e.length > 0) {
-                        this.agentKey = e[0].$key;
+                        this.agentKey = e[0].agentid;
                         this.draftdata_agentdetails_firstname = e[0].firstname;
                         this.draftdata_agentdetails_middlename = e[0].middlename;
                         this.draftdata_agentdetails_lastname = e[0].lastname;
                         this.draftdata_agentdetails_suffix = e[0].suffix;
-                        // this.draftdata_agentdetails_email = e[0].email;
+                        this.draftdata_agentdetails_email = e[0].email;
                     }
                     else {
                         this.agentKey = '';
@@ -1086,7 +1089,7 @@
                                 // cardActions.setAttribute("style", "display: block;");
 
                                 if (this.draftdata_type) {
-                                    this.favrighthide = true;
+                                    this.favrighthide = false;
                                 }
                                 else {
                                     this.favrighthide = false;
@@ -1315,6 +1318,8 @@
                 this.minStartDateTime = '';
                 this.saveErrorDetails = '...';
 
+                // this.favrighthide=false;
+
 
             },
 
@@ -1379,7 +1384,7 @@
                                         middlename: this.draftdata_agentdetails_middlename,
                                         lastname: this.draftdata_agentdetails_lastname,
                                         suffix: this.draftdata_agentdetails_suffix,
-                                        // email: this.draftdata_agentdetails_email,
+                                        email: this.draftdata_agentdetails_email,
                                         cellphone: this.draftdata_agentdetails_cellphone
                                     },
                                     buyer: this.buyerKey,
@@ -1389,20 +1394,20 @@
                                         lastname: this.draftdata_buyerdetails_lastname,
                                         suffix: this.draftdata_buyerdetails_suffix,
                                         cellphone: this.draftdata_buyerdetails_cellphone,
-                                        // email: this.draftdata_buyerdetails_email
+                                        email: this.draftdata_buyerdetails_email
                                     },
                                     expiry: '',
                                     isdraft: true,
-                                    // isserved: this.transactionData.isserved, //get value from current
+                                    isserved: this.transactionData.isserved, //get value from current
                                     lot: this.fullLot,
                                     lotdetails: this.fullLotData,
-                                    // processed: this.transactionData.processed, //get value from current
-                                    // processordetails: this.transactionData.processordetails, //get value from current
-                                    // served: this.transactionData.served, //get value from current
+                                    processed: this.transactionData.processed, //get value from current
+                                    processordetails: this.transactionData.processordetails, //get value from current
+                                    served: this.transactionData.served, //get value from current
                                     start: this.startDateTimeValue,
-                                    // status: this.transactionData.status, //get value from current
+                                    status: this.transactionData.status, //get value from current
                                     timestamp: { ".sv": "timestamp" },
-                                    type: '',
+                                    type: 'Request',
                                     reference: this.applicationKey
                                 };
                                 //save to /applications/{id}
@@ -1414,7 +1419,7 @@
                                     lastname: this.draftdata_buyerdetails_lastname,
                                     suffix: this.draftdata_buyerdetails_suffix,
                                     cellphone: this.draftdata_buyerdetails_cellphone,
-                                    // email: this.draftdata_buyerdetails_email
+                                    email: this.draftdata_buyerdetails_email
                                 };
                                 if (this.buyerKey) {
                                     //save to /buyers/{new id}
@@ -1432,7 +1437,7 @@
                                     middlename: this.draftdata_agentdetails_middlename,
                                     lastname: this.draftdata_agentdetails_lastname,
                                     suffix: this.draftdata_agentdetails_suffix,
-                                    // email: this.draftdata_agentdetails_email,
+                                    email: this.draftdata_agentdetails_email,
                                     cellphone: this.draftdata_agentdetails_cellphone
                                 };
                                 if (this.agentKey) {
@@ -1741,31 +1746,31 @@
 
                                     //                 console.log(firebaseUpdate);
 
-                                                    var uPromise = firebaseDbRef.update(firebaseUpdate, function (error) {
-                                                        if (error) {
-                                                            console.log("Error updating data:", error);
-                                                            this.saveErrorDetails = error;
-                                                            saveSuccess.setAttribute("style", "display: none; color: green;");
-                                                            saveFailed.setAttribute("style", "display: block; color: red;");
+                                    var uPromise = firebaseDbRef.update(firebaseUpdate, function (error) {
+                                        if (error) {
+                                            console.log("Error updating data:", error);
+                                            this.saveErrorDetails = error;
+                                            saveSuccess.setAttribute("style", "display: none; color: green;");
+                                            saveFailed.setAttribute("style", "display: block; color: red;");
 
-                                                            this.favlefthide = false;
-                                                            this.favrighthide = true;
+                                            this.favlefthide = false;
+                                            this.favrighthide = true;
 
-                                                            // console.log('1');
-                                                        }
-                                                        else {
-                                                            this.saveErrorDetails = "";
-                                                            saveSuccess.setAttribute("style", "display: block; color: green;");
-                                                            saveFailed.setAttribute("style", "display: none; color: red;");
+                                            // console.log('1');
+                                        }
+                                        else {
+                                            this.saveErrorDetails = "";
+                                            saveSuccess.setAttribute("style", "display: block; color: green;");
+                                            saveFailed.setAttribute("style", "display: none; color: red;");
 
-                                                            this.favlefthide = true;
-                                                            this.favrighthide = true;
+                                            this.favlefthide = true;
+                                            this.favrighthide = true;
 
-                                                            favRightVar.setAttribute("style", "display: none; background: #1976d2;");
+                                            favRightVar.setAttribute("style", "display: none; background: #1976d2;");
 
-                                                            // console.log('2');
-                                                        }
-                                                    });
+                                            // console.log('2');
+                                        }
+                                    });
                                     //                 console.log(uPromise);
 
                                     //             });

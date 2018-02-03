@@ -184,9 +184,8 @@
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
                         <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
-                        <firebase-query id="query" path="/accountlist" data="{{agentsList}}" order-by-child="uid" equal-to="{{userId}}">
-                        </firebase-query>
-                        <!-- <firebase-query id="query" path="/accountlist" order-by-child="accountkey" start-at="user.uid" end-at="user.uid" data="{{agentsList}}" equal-to="user.uid"></firebase-query> -->
+                        
+                        <firebase-query id="query" path="/accountlist" order-by-child="uid" equal-to="{{userid}}" data="{{agentsList}}" equal-to="user.uid"></firebase-query>
                     
                         <!-- <firebase-query id="query" path="/users" data="{{user}}" order-by-child="{{uid}}" start-at="{{user.uid}}" end-at="{{user.uid}}"> -->
 
@@ -254,8 +253,8 @@
                                         <div class="card-actions" style="display: none;" id="cardActions">
                                             <paper-radio-group selected="{{draftdata_type}}">
                                                 <paper-radio-button name="Hold" on-click="selectHold">Hold</paper-radio-button>
-                                                <!-- <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button> -->
-                                                <!-- <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button> -->
+                                                <!-- <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button>
+                                                <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button> -->
                                             </paper-radio-group>
 
                                             </br>
@@ -268,7 +267,7 @@
                                                     <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
                                                 <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
                                                     <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" type="datetime-local" no-label-float="true"
-                                                        value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
+                                                        value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}" style="display:inline-block" readonly></paper-input>
 
                                                 </div>
                                                 <!-- <div id="expiry" style="position: relative; padding-top: 16px;"> -->
@@ -305,7 +304,7 @@
                             </div>
                         </div>
                     </neon-animatable>
-
+    
                     <!-- <neon-animatable>
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
@@ -348,7 +347,7 @@
                                 <div>Agent's Last Name: {{agentdetails_lastname}}</div>
                                 <div>Agent's Suffix: {{agentdetails_suffix}}</div>
                                 <div>Agent's Cellphone: {{agentdetails_cellphone}}</div>
-                                <div>Agent's Email: {{draftdata_agentdetails_email}}</div>
+                                <div>Agent's Email: {{agentdetails_email}}</div>
 
                             </div>
                         </div>
@@ -356,7 +355,7 @@
 
                     <neon-animatable>
                         <div class="docu">
-                            <div class="docu-header">5. Completed</div>
+                            <div class="docu-header">4. Completed</div>
 
                             <div class="details">
                                 <paper-item>
@@ -402,6 +401,9 @@
         Polymer({
             is: 'my-briefcase-new',
             properties: {
+                myaccount:{
+                    type: Object,
+                },
                 userId: String,
                 blocklot: String,
                 details: Object,
@@ -466,7 +468,6 @@
                 },
                 agentsList: {
                     type: Object,
-                    value: '',
                     observer: 'agentsListChanged'
                 },
                 buyerKey: {
@@ -483,7 +484,7 @@
                     type: String,
                     value: ''
                 },
-                transTypeCorrespondingColor: Object
+                transTypeCorrespondingColor: Object,
             },
             // accountlistUid:{
             //     type:Object,
@@ -621,7 +622,7 @@
                         this.draftdata_buyerdetails_middlename = e[0].middlename;
                         this.draftdata_buyerdetails_lastname = e[0].lastname;
                         this.draftdata_buyerdetails_suffix = e[0].suffix;
-                        // this.draftdata_buyerdetails_email = e[0].email;
+                        this.draftdata_buyerdetails_email = e[0].email;
                     }
                     else {
                         this.buyerKey = '';
@@ -634,19 +635,19 @@
             },
             agentsListChanged(e) {
                 var user = firebase.auth().currentUser;
-                var userid = user.uid;
+                this.userid = user.uid;
                 email = user.email;
-                // uuid = user.uid;
-                // console.log(user.email)
+                // console.log(e);
                 if (e) {
                     if (e.length > 0) {
-                        this.accountkey = e[0].uid;
+                        this.accountkey = e[0].accountkey;
                         this.agentdetails_cellphone = e[0].cellphone;
                         this.agentdetails_firstname = e[0].name.firstname;
                         this.agentdetails_middlename = e[0].name.middlename;
                         this.agentdetails_lastname = e[0].name.lastname;
                         this.agentdetails_suffix = e[0].name.suffix;
-                        // console.log(this.agentsList);
+                        this.agentdetails_email = email;
+                        // console.log(this.accountkey);
                     }
                     else {
                         this.accountkey = '';
@@ -942,7 +943,7 @@
                                         middlename: this.agentdetails_middlename,
                                         lastname: this.agentdetails_lastname,
                                         suffix: this.agentdetails_suffix,
-                                        // email: this.draftdata_agentdetails_email,
+                                        email: this.agentdetails_email,
                                         cellphone: this.agentdetails_cellphone
                                     },
                                     buyer: this.buyerKey,
@@ -952,7 +953,7 @@
                                         lastname: this.draftdata_buyerdetails_lastname,
                                         suffix: this.draftdata_buyerdetails_suffix,
                                         cellphone: this.draftdata_buyerdetails_cellphone,
-                                        // email: this.draftdata_buyerdetails_email
+                                        email: this.draftdata_buyerdetails_email
                                     },
                                     expiry: '',
                                     isdraft: true,
@@ -965,7 +966,7 @@
                                     start: this.startDateTimeValue,
                                     status: '',
                                     timestamp: { ".sv": "timestamp" },
-                                    type:'For approval',
+                                    type:'Request',
                                     reference: this.applicationKey
                                 };
                                 var draftBuyer = {
@@ -981,17 +982,19 @@
                                     middlename: this.agentdetails_middlename,
                                     lastname: this.agentdetails_lastname,
                                     suffix: this.agentdetails_suffix,
-                                    // email: this.draftdata_agentdetails_email,
-                                    cellphone: this.agentdetails_cellphone
+                                    email: this.agentdetails_email,
+                                    cellphone: this.agentdetails_cellphone,
                                 };
+                                
                                 var firebaseDb = this.$.idd.db;
                                 var firebaseDbRef = firebaseDb.ref();
                                 var firebaseUpdate = {};
-                                var transactionPush = firebaseDbRef.child('briefcasedraft').push();
+                                var transactionPush = firebaseDbRef.child("briefcasedraft").push();
                                 this.transactionKey = transactionPush.key;
+                                
                                 if (this.transactionKey) {
                                     //save to /applications/{id}
-                                    firebaseUpdate["/briefcasedraft/" + this.transactionKey] = draftdata;
+                                    firebaseUpdate["/briefcasedraft/" + this.accountkey + "/" + this.transactionKey] = draftdata;
                                     //this.path
                                     if (this.buyerKey) {
                                         //save to /buyers/{new id}
@@ -1011,6 +1014,8 @@
                                         saveSuccess.setAttribute("style", "display: none; color: green;");
                                         saveFailed.setAttribute("style", "display: block; color: red;");
                                     }
+
+                                    
                                     //how to get last two reservation with iscurrent and not iscurrent
                                     //what if there is no iscurrent but there is a reservation???
                                     //--- no need to get the current iscurrent=true, we just need the last-reservation to check if we can set the current reservation as iscurrent
@@ -1118,6 +1123,8 @@
                                     //     });
                                     // }
                                     // }
+
+
                                     //if ok, update bg_color, status_name
                                     //check reservations if current is expired, then check if there is prior reservation, then iscurrent=false
                                     var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
@@ -1152,14 +1159,18 @@
                                         });
                                     }
                                 }
+                                //end of transactionKey
                                 else {
                                     //transactionKey is missing
                                     var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                                     this.saveErrorDetails = "Transaction Key is missing.";
                                     saveFailed.setAttribute("style", "display: block; color: red;");
                                 }
+                            
                             }
+                            //end of else from complete
                         }
+                        //end of complete
                         else {
                             var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                             this.saveErrorDetails = "Status color is not yet loaded, please re-select transaction type.";
@@ -1185,6 +1196,9 @@
                             //change color and icon here
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: green;");
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:done");
+                        }
+                        else{
+                            this.favlefthide = true;
                         }
                     }
                 }

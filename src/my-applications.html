@@ -254,7 +254,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                     <paper-item on-tap="_viewThis" id="{{item.$key}}">View</paper-item>
                                   </paper-listbox>
                                 </paper-menu-button>-->
-                               <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}" 
+                               <paper-icon-button id="{{item.$key}}" noink on-tap="_viewThis" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}" 
                                   style="display:inline-block;position: absolute;  right: 10px; color: white; top:8px;"></paper-icon-button>
                                 <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip> 
                               </a> 
