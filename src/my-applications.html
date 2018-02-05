@@ -501,13 +501,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <!-- </template> -->
           </div>
 
-          <div hidden$="{{!viewActive}}">
-            <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
-            <div id="appview"></div>
-            <my-application-view id="d26" transaction-key='{{viewData.key}}' prev-route="{{route.prefix}}"></my-application-view>
-            <!-- [[detailData.key]] -->
-            <!-- </template> -->
-          </div>
+          
 
         </template>
       </div>
@@ -722,18 +716,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       },
-      // _getViewThisLink(e) {
-      //   return '/applications/detail/' + e.toString();
-      // },
+      _getViewThisLink(e) {
+        return '/applicationsNew/view/' + e.toString();
+      },
       _getViewDetailsLink(e) {
         return '/applications/detail/' + e.toString();
       },
       _getEditAppLink(e) {
         return '/applications/edit/' + e.toString();
       },
-      _getViewAppLink(e) {
-        return '/applications/view/' + e.toString();
-      },
+      // _getViewAppLink(e) {
+      //   return '/applications/view/' + e.toString();
+      // },
       viewDetails(e) {
         var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
         var node = Polymer.dom(this.root).querySelector("#appdetail");
