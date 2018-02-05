@@ -293,7 +293,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             </div>
 
                             <div tabindex="1">
-                              <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
+                              <a href$="{{_getViewThisLink(item.$key)}}" tabindex="-1">
                                 <paper-icon-button id="openDetailButton" noink on-tap="viewThis" data-args="{{item.$key}}" icon="my-icons:open-in-new"
                                   alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
                                 <paper-tooltip position="left">view details</paper-tooltip>
@@ -508,13 +508,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <!-- </template> -->
           </div>
 
-          <div hidden$="{{!viewActive}}">
-            <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
-            <div id="appview"></div>
-            <my-application-view id="d26" transaction-key='{{viewData.key}}' prev-route="{{route.prefix}}"></my-application-view>
-            <!-- [[detailData.key]] -->
-            <!-- </template> -->
-          </div>
+          
 
         </template>
       </div>
@@ -722,18 +716,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       },
-      // _getViewThisLink(e) {
-      //   return '/applications/detail/' + e.toString();
-      // },
+      _getViewThisLink(e) {
+        return '/applicationsNew/view/' + e.toString();
+      },
       _getViewDetailsLink(e) {
-        return '/applications/view/' + e.toString();
+        return '/applications/detail/' + e.toString();
       },
       _getEditAppLink(e) {
         return '/applications/edit/' + e.toString();
       },
-      _getViewAppLink(e) {
-        return '/applications/view/' + e.toString();
-      },
+      // _getViewAppLink(e) {
+      //   return '/applications/view/' + e.toString();
+      // },
       viewDetails(e) {
         var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
         var node = Polymer.dom(this.root).querySelector("#appdetail");
