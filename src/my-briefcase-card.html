@@ -1,0 +1,197 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+
+<dom-module id="my-briefcase-card">
+    <template>
+        <style>
+            :host {
+                display: block;
+                width: 100%;
+            }
+        </style>
+
+        <div class="card-content" style="width: 100%;">
+            <div id="header" class="header" style="background-color: gray; padding: 16px; padding-bottom: 5px;">
+
+                <!-- <span id="_isdraft" style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; margin-right:10px">
+                        {{isdraft}}
+                </span> -->
+                <span id="type" style="background: black; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
+                    [[item.type]]
+                </span>
+
+                <div style="display:inline-block; margin-left: 8px;">
+                    <!-- <iron-icon id="iconStart" icon="my-icons:access-time" style="color: white;"></iron-icon> -->
+                    <div id="startValue" style="display:inline-block; color: white; font-size: 12px;">
+                        <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
+                    </div>
+                </div>
+
+                <!-- <a href$="{{_getViewDetailsLink(item.$key)}}" target="_top"> -->
+                <!-- <paper-icon-button id="openDetailButton" on-tap="viewDetails" icon="my-icons:open-in-new" alt="View details" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                <paper-tooltip for="openDetailButton" position="left">view details</paper-tooltip> -->
+                <!-- </a> -->
+
+                <!-- <paper-menu-button style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
+                    <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
+                    <paper-listbox slot="dropdown-content">
+                        <paper-item>Lacking</paper-item>
+                        <paper-item>Complete</paper-item>
+                    </paper-listbox>
+                </paper-menu-button> -->
+
+                <div id="lotName" style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">
+                    <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
+                    <span id="level" style="display: none;">&nbsp;- Level {{item.lotdetails.level}}</span>
+                </div>
+
+                <div id="lotdetails" style="margin-top: -.3em; font-size: 12px; color: white;">{{lotsubdetail}}</div>
+
+            </div>
+
+            <div style="padding: 16px;">
+
+                <div id="refKey" style="font-size: 12px; color: black;padding-bottom: 8px;">
+                    Ref. [[item.reference]]
+                </div>
+
+                <div>
+                    <iron-icon id="iconStart" icon="my-icons:event" style="color: gray;font-size: 12px;"></iron-icon>
+                    <span style="font-size: 12px;">
+                        [[_getLocalDatetimeFormat(item.start)]]
+                    </span>
+                </div>
+
+                <div style="padding-bottom: 10px;">
+                    <iron-icon id="expiryPart" icon="my-icons:alarm" style="display: none; color: gray;font-size: 12px;"></iron-icon>
+                    <span id="expiryPartSpan" style="font-size: 12px;">
+                        [[_getLocalDatetimeFormat(item.expiry)]] &nbsp;
+                        <time-until style="color: rgba(255, 5, 5, 0.774);" datetime$="{{item.expiry}}">{{item.expiry}}</time-until>
+                    </span>
+                </div>
+
+                <div style="padding-bottom: 8px;">
+                    <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Buyer</div>
+                    <span style="font-weight: 400;">
+                        [[item.buyerdetails.firstname]] [[item.buyerdetails.middlename]] [[item.buyerdetails.lastname]]
+                    </span>
+                </div>
+                <!-- <div>
+                        <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Agent</div>
+                        <span style="font-weight: 400;">[[item.agentdetails.firstname]] [[item.agentdetails.middlename]] [[item.agentdetails.lastname]]</span>
+                    </div> -->
+            </div>
+
+
+            <!-- <div style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle; ">
+                <div style="margin-left: 16px; margin-top: 8px;">
+                    <iron-icon id="expiryPart" icon="my-icons:alarm" style="display: none; color: rgba(255, 5, 5, 0.774);"></iron-icon>
+                    <span id="expiryPartSpan" style="display: none;  color:rgba(255, 5, 5, 0.774); font-size: 12px;">
+                    </span>
+                </div>
+            </div> -->
+
+        </div>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-briefcase-card',
+            properties: {
+                item: {
+                    type: Object,
+                    notify: true,
+                    observer: '_itemChanged'
+                },
+                lotsubdetail: {
+                    type: String,
+                    value: ''
+                }
+            },
+            _itemChanged() {
+                if (this.item) {
+                    // if (this.item.isdraft == false) {
+                    //     this.isdraft = "PENDING";
+                    //     Polymer.dom(this.root).querySelector("#_isdraft").setAttribute("style", "background: yellow; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px; margin-right:10px");
+                    // } 
+                    // else if(this.item.approval == "Approved"){
+                    //     this.isdraft = "APPROVED";
+                    //     Polymer.dom(this.root).querySelector("#_isdraft").setAttribute("style", "background: green; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; margin-right:10px");
+                    // }
+                    // else {
+                    //     this.isdraft = "DRAFT";
+                    //     Polymer.dom(this.root).querySelector("#_isdraft").setAttribute("style", "background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; margin-right:10px");
+                    // }
+                    this.lotsubdetail = '';
+                    if (this.item.lotdetails.maprenderdetails.type_name) this.lotsubdetail = this.item.lotdetails.maprenderdetails.type_name;
+                    if (this.item.lotdetails.area) {
+                        if (String(this.item.lotdetails.maprenderdetails.type_name).indexOf('Area') == -1) {
+                            this.lotsubdetail = this.lotsubdetail + ' --- ' + this.item.lotdetails.area;
+                        }
+                    }
+                    if (this.item.lotdetails.maprenderdetails.designation_name) this.lotsubdetail = this.lotsubdetail + ' --- ' + this.item.lotdetails.maprenderdetails.designation_name;
+
+
+                    if (this.item.lotdetails.maprenderdetails) {
+                        Polymer.dom(this.root).querySelector("#header").setAttribute("style", "background-color: " + this.item.lotdetails.maprenderdetails.type_bg_color + "; padding: 16px; padding-bottom: 5px;");
+
+                        if (this.item.type === 'Hold') {
+                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: #E65100; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
+                        }
+                        else if (this.item.type === 'Reserve') {
+                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: #FFD600; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px;");
+                        }
+                        else if (this.item.type === 'Buy') {
+                            Polymer.dom(this.root).querySelector("#type").setAttribute("style", "background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;");
+                        }
+
+                        // Polymer.dom(this.root).querySelector("#iconStart").setAttribute("style", "color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";");
+                        Polymer.dom(this.root).querySelector("#startValue").setAttribute("style", "display:inline-block; color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";font-size: 12px;");
+                        Polymer.dom(this.root).querySelector("#lotName").setAttribute("style", "margin-top: 24px; color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";font-weight: 400; font-size: 22px; text-transform:capitalize;");
+                        // Polymer.dom(this.root).querySelector("#refKey").setAttribute("style", "font-size: 10px; color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";");
+                        Polymer.dom(this.root).querySelector("#lotdetails").setAttribute("style", "margin-top: -.3em; font-weight: 100; font-size: 12px; color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";");
+                        if (this.item.expiry) {
+                            Polymer.dom(this.root).querySelector("#expiryPart").setAttribute("style", "display: inline-block; color: gray; font-size: 12px;");
+                            Polymer.dom(this.root).querySelector("#expiryPartSpan").setAttribute("style", "display: inline-block; color: black; font-size: 12px;");
+
+                        }
+                        else {
+                            Polymer.dom(this.root).querySelector("#expiryPart").setAttribute("style", "display: none; color: gray; font-size: 12px;");
+                            Polymer.dom(this.root).querySelector("#expiryPartSpan").setAttribute("style", "display: none; color: black; font-size: 12px;");
+                        }
+
+                        if (this.item.level) {
+                            Polymer.dom(this.root).querySelector("#level").setAttribute("style", "display: block;");
+                        }
+                        else {
+                            Polymer.dom(this.root).querySelector("#level").setAttribute("style", "display: none;");
+                        }
+
+                        // Polymer.dom(this.root).querySelector("#openDetailButton").setAttribute("style", "display:inline-block;position: absolute;  right: 8px; top:8px; color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";");
+
+
+                    }
+                }
+            },
+
+            _timeStampToDateTime(ts) {
+                return new Date(ts);
+            },
+
+            _getLocalDatetimeFormat(e) {
+                var xdate = new Date(e);
+                return xdate.toDateString() + ' ' + xdate.toLocaleTimeString().replace(/:\d{2}\s/, ' ');;
+            },
+
+            _getViewDetailsLink(e) {
+                return '/applications/detail/' + e.toString();
+            },
+
+
+
+
+        })
+
+    </script>
+</dom-module>
