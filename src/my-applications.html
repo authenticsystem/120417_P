@@ -264,7 +264,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
               <neon-animatable>
                 <firebase-query id="query" path="/applicationsNew" data="{{briefcase}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
-                  end-at="{{typeValue}}" limit-to-last="50">
+                  end-at="{{typeValue}}" limit-to-last="50"> 
                 </firebase-query>
                 <iron-scroll-document id="document">
                   <template is="dom-if" if="{{access}}">
@@ -288,7 +288,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 </paper-menu-button>-->
                                <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons::open-in-new" alt="{{item.$key}}" 
                                   style="display:inline-block;position: absolute;  right: 10px; color: white; top:8px;"></paper-icon-button>
-                                <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip> 
+                                <paper-tooltip for="{{item.$key}}" position="bottom">View</paper-tooltip> 
                               </a> 
                              </div>
                           </div>
@@ -416,7 +416,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-header>
 
                 <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
-                  end-at="{{typeValue}}" limit-to-last="50">
+                  end-at="{{typeValue}}" limit-to-last="1">
                 </firebase-query>
                 <iron-scroll-document id="document">
 
@@ -530,7 +530,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           notify: true
         },
-        applications:Object,
+        // applications:Object,
         briefcase:Object,
         // account:{type:Object, observer:'_accountChanged'},
         applications: Object,
@@ -726,7 +726,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       //   return '/applications/detail/' + e.toString();
       // },
       _getViewDetailsLink(e) {
-        return '/applications/view/' + e.toString();
+        return '/applications/detail/' + e.toString();
       },
       _getEditAppLink(e) {
         return '/applications/edit/' + e.toString();

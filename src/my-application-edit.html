@@ -553,6 +553,7 @@
             },
 
             deleteApplication() {
+                var applicationsNew = firebase.database().ref().child("applicationsNew").child(this.transactionKey).remove();
                 //delete application
 
                 //delete in lot/reservation & details
