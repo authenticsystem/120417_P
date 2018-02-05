@@ -200,7 +200,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- New Applications -->
       <div>
         <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
-        <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
+        <!-- <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route> -->
         <app-route route="{{route}}" pattern="/view/:key" tail="{{viewRoute}}" data="{{viewData}}" active="{{viewActive}}"></app-route>
         <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
 
@@ -363,7 +363,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div>
         <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
         <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
-        <app-route route="{{route}}" pattern="/view/:key" tail="{{viewRoute}}" data="{{viewData}}" active="{{viewActive}}"></app-route>
+        <!-- <app-route route="{{route}}" pattern="/view/:key" tail="{{viewRoute}}" data="{{viewData}}" active="{{viewActive}}"></app-route> -->
         <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
 
         <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
@@ -717,7 +717,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
       _getViewThisLink(e) {
-        return '/applicationsNew/view/' + e.toString();
+        return '/applications/view/' + e.toString();
       },
       _getViewDetailsLink(e) {
         return '/applications/detail/' + e.toString();
