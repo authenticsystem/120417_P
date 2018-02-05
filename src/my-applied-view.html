@@ -194,18 +194,19 @@
                                 <paper-button dialog-confirm autofocus on-tap="approveApp">Yes</paper-button>
                             </div>
                         </paper-dialog>
-                        <paper-dialog id="modal">
-                            <!-- <div class="buttons"> -->
+                        <!-- <paper-dialog id="modal" class="docu">
+                            <!-- <h2>Status.</h2> -->
                             <!-- <paper-button dialog-dismiss autofocus>No</paper-button>
                                 <paper-button dialog-confirm on-tap="_sendBriefcase">Yes</paper-button> -->
                             <!-- <h2>Status.</h2> -->
                             <!-- <div class="buttons"></div> -->
-                            <br>
+                            <!-- <br>
+                            <div >
                             <span id="saveSuccess" style="display: none; color: green;">Application Approved. Ref. {{applicationKey}}</span>
-                            <span id="saveFailed" style="display: none; color: red;">Error Approving Application. {{saveErrorDetails}}</span>
-                            <br>
-                            <!-- </div> -->
-                        </paper-dialog>
+                            <span id="saveFailed" style="display: none; color: red;">Error Approving Application. {{saveErrorDetails}}</span>    
+                            <paper-button dialog-dismiss autofocus>ok</paper-button>
+                            </div>
+                        </paper-dialog> -->
 
                         <!-- <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteApplicationOpen"></paper-icon-button>
                         <paper-dialog id="deleteApplicationPD">
@@ -1211,7 +1212,41 @@
                                 cellphone: this.draftdata_buyerdetails_cellphone,
                                 email: this.draftdata_buyerdetails_email
                             },
-                            approval: 'Approved',
+                            // approved: true,
+                            expiry: this.expiryDate,
+                            isdraft: 'false',
+                            isserved: 'false',
+                            lot: this.fullLot,
+                            lotdetails: this.fullLotData,
+                            processed: '',
+                            processordetails: '',
+                            served: '',
+                            start: this.startDateTimeValue,
+                            status: '',
+                            timestamp: { ".sv": "timestamp" },
+                            type: this.draftdata_type,
+                            reference: this.applicationKey
+                        };
+                        var draftAgentBriefcase = {
+                            agent: this.agentKey,
+                            agentdetails: {
+                                firstname: this.draftdata_agentdetails_firstname,
+                                middlename: this.draftdata_agentdetails_middlename,
+                                lastname: this.draftdata_agentdetails_lastname,
+                                suffix: this.draftdata_agentdetails_suffix,
+                                email: this.draftdata_agentdetails_email,
+                                cellphone: this.draftdata_agentdetails_cellphone
+                            },
+                            buyer: this.buyerKey,
+                            buyerdetails: {
+                                firstname: this.draftdata_buyerdetails_firstname,
+                                middlename: this.draftdata_buyerdetails_middlename,
+                                lastname: this.draftdata_buyerdetails_lastname,
+                                suffix: this.draftdata_buyerdetails_suffix,
+                                cellphone: this.draftdata_buyerdetails_cellphone,
+                                email: this.draftdata_buyerdetails_email
+                            },
+                            approved: true,
                             expiry: this.expiryDate,
                             isdraft: 'false',
                             isserved: 'false',
@@ -1252,6 +1287,7 @@
                             //save to /applications/{id}
                             firebaseUpdate["/applications/" + this.transactionKey] = draftdata;
                             firebaseUpdate["/applicationsNew/" + this.transactionKey] = draftBriefcase;
+                            firebaseUpdate["/briefcase/" + this.agentKey + "/" + this.transactionKey] = draftAgentBriefcase;
                             //this.path
                             if (this.buyerKey) {
                                 //save to /buyers/{new id}
@@ -1418,7 +1454,7 @@
                         //     this.saveErrorDetails = "Transaction Key is missing.";
                         //     saveFailed.setAttribute("style", "display: block; color: red;");
                         // }
-                        this.$.modal.open();
+                        // this.$.modal.open();
 
                     }
                     var applicationsNew = firebase.database().ref().child("applicationsNew").child(this.transactionKey).remove();

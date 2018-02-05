@@ -35,7 +35,7 @@
 <link rel="import" href="short-unique-id.html">
 
 
-<dom-module id="my-application-detail">
+<dom-module id="my-briefcaseapplied-detail">
     <template>
         <style include="shared-styles">
             :host {
@@ -164,15 +164,15 @@
 
                     <!-- on-tap="_selectPage" data-args="1" -->
                     <paper-item id="buyersinformation">
-                        <div class="circle-mini">2</div>
+                        <div class="circle-mini-last">2</div>
                         <span>Buyer's Information</span>
                     </paper-item>
 
                     <!-- on-tap="_selectPage" data-args="2" -->
-                    <paper-item id="samplecomputation">
+                    <!-- <paper-item id="samplecomputation">
                         <div class="circle-mini-last">3</div>
                         <span>Agent's Information</span>
-                    </paper-item>
+                    </paper-item> -->
 
                     <!-- </iron-selector> -->
                 </div>
@@ -181,10 +181,27 @@
             <app-header-layout id="appheader" has-scrolling-region>
                 <app-header fixed slot="header">
                     <app-toolbar>
-                        <a href="/applications" tabindex="-1">
+                        <a href="/briefcase" tabindex="-1">
                             <paper-icon-button class="menu" noink style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{newdata.reference}}</div>
+                        <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteBriefcaseOpen" title="send request"></paper-icon-button>
+                        <paper-dialog id="deleteBriefcasePD">
+                            <h2>Delete Briefcase?</h2>
+                            <!-- <p>Continue delete the current application?</p> -->
+                            <div class="buttons">
+                                <paper-button dialog-dismiss autofocus>No</paper-button>
+                                <paper-button dialog-confirm on-tap="_deleteBriefcase">Yes</paper-button>
+                            </div>
+                        </paper-dialog>
+
+                        <paper-dialog id="modal">
+                            <h2>Successfully sent.</h2>
+                            <div class="buttons">
+                                <paper-button dialog-confirm on-tap="_exit">Ok</paper-button>
+                            </div>
+                        </paper-dialog>
+
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
@@ -237,6 +254,9 @@
                                             <span id="type">
                                                 [[newdata.type]]
                                             </span>
+                                            <!-- <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+                                                REQUEST TO HOLD
+                                            </span> -->
                                         </div>
 
                                     </div>
@@ -246,6 +266,8 @@
                                             <span style="font-size: 12px; color: black;">
                                                 [[_getLocalDatetimeFormat(newdata.start)]]
                                             </span>
+                                            <!-- <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" type="datetime-local" no-label-float="true"
+                                            value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input> -->
                                         </div>
 
                                         <div style="padding-bottom: 10px;">
@@ -277,7 +299,7 @@
                         </div>
                     </neon-animatable>
 
-                    <neon-animatable>
+                    <!-- <neon-animatable>
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
                             <div class="detais">
@@ -289,7 +311,7 @@
                                 <paper-input always-float-label="true" readonly="true" type="email" label="Email" value="{{newdata.agentdetails.email}}"></paper-input>
                             </div>
                         </div>
-                    </neon-animatable>
+                    </neon-animatable> -->
 
                 </neon-animated-pages>
 
@@ -310,19 +332,17 @@
         </app-drawer-layout>
 
 
-
-
     </template>
 
     <script>
         Polymer({
-            is: 'my-application-detail',
-
+            is: 'my-briefcaseapplied-detail',
             properties: {
                 narrow: {
                     type: Boolean,
                     notify: true
                 },
+                accountKey: String,
                 selectedPage: Number,
                 entryanimation: {
                     type: String,
@@ -343,6 +363,7 @@
                     value: false
                 },
                 newdata: Object,
+                accountKey:String,
                 transactionKey: {
                     type: String,
                     value: '',
@@ -354,9 +375,11 @@
             observers: [
                 'newdataChanged(newdata)'
             ],
-
+            // _accountKeyChanged(){
+            //     console.log(this.accountKey);
+            // },
             _getPrevRoute() {
-                return this.prevRoute || '/applications'
+                return this.prevRoute || '/briefcase'
             },
 
             transactionKeyChanged() {
@@ -367,14 +390,15 @@
 
                     this.$.idd.disabled = false;
 
-                    // console.log(this.transactionKey);
+                    console.log(this.transactionKey);
                 }
             },
 
-            newdataChanged() {
-                // console.log(this.newdata);
+            newdataChanged(e) {
+                // console.log(e);
 
                 if (Object.keys(this.newdata).length > 0) {
+
                     if (this.newdata.lotdetails) {
                         this.fullLotName = 'Block ' + this.newdata.lotdetails.block + ' - Lot ' + this.newdata.lotdetails.lot;
                         if (this.newdata.lotdetails.level) {
@@ -430,9 +454,8 @@
                 // this.applicationKey = this.guid();
                 // this.path = 'applications/' + this.applicationKey;
                 if (this.transactionKey) {
-                    this.path = 'applications/' + this.transactionKey;
+                    this.path = 'briefcase/' + this.accountKey + "/" + this.transactionKey;
                     // console.log(this.path);
-                    
                 }
 
 
@@ -465,7 +488,7 @@
                 this.entryanimation = "slide-from-left-animation";
                 this.exitanimation = "slide-right-animation";
 
-                if (parseInt(this.selectedPage) <= 3) {
+                if (parseInt(this.selectedPage) <= 2) {
                     if (parseInt(this.selectedPage) !== 0) {
                         this.selectedPage = (parseInt(this.selectedPage) - 1);
 
@@ -485,7 +508,7 @@
                     }
                 }
                 else {
-                    this.selectedPage = 3;
+                    this.selectedPage = 2;
                 }
 
             },
@@ -500,7 +523,7 @@
                     }
                     else {
                         this.favlefthide = false;
-                        this.favrighthide = false;
+                        this.favrighthide = true;
                     }
 
                     if (parseInt(this.selectedPage) !== 2) {
@@ -558,7 +581,93 @@
             _getLocalDatetimeFormat(e) {
                 var xdate = new Date(e);
                 return xdate.toDateString() + ' ' + xdate.toLocaleTimeString().replace(/:\d{2}\s/, ' ');;
-            }
+            },
+
+        deleteBriefcaseOpen() {
+                this.$.deleteBriefcasePD.open();
+            },
+
+            _deleteBriefcase() {
+                // var options = {
+                //     weekday: "long", year: "numeric", month: "short",
+                //     day: "numeric", hour: "2-digit", minute: "2-digit"
+                // };
+
+                // var ddate = new Date();
+                // this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                //     + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
+                // var timestamp = firebase.database.ServerValue.TIMESTAMP;
+                // var datetime = this.startDateTimeValue;
+                // // var datetime = ddate.toLocaleTimeString("en-us", options);
+
+                // if (Object.keys(this.newdata).length > 0) {
+                //     var agent = this.newdata.agent,
+                //         agentdetails = this.newdata.agentdetails,
+                //         buyer = this.newdata.buyer;
+                //         buyerdetails = this.newdata.buyerdetails,
+                //         expiry = this.newdata.expiry,
+                //         isdraft = false,
+                //         isserved = this.newdata.isserved,
+                //         lot = this.newdata.lot,
+                //         lotdetails = this.newdata.lotdetails,
+                //         processed = this.newdata.processed,
+                //         processordetails = this.newdata.processordetails,
+                //         reference = this.newdata.reference,
+                //         served = this.newdata.served,
+                //         start = this.startDateTimeValue,
+                //         status = this.newdata.status,
+                //         type = this.newdata.type,
+                //         timestamp = timestamp
+                        
+                // }
+                // var personRef = firebase.database().ref().child("briefcasedraft").child(agent).child(this.transactionKey).remove();
+                // // personRef.once('value', function (snapshot) {
+                // //     if (snapshot.val() === null) {
+                // //         alert('does not exist');
+                // //     }
+                // //     else {
+                // var postData = {
+                //     agent: agent,
+                //     agentdetails: agentdetails,
+                //     buyer: buyer,
+                //     buyerdetails: buyerdetails,
+                //     expiry: expiry,
+                //     isdraft: isdraft,
+                //     isserved: isserved,
+                //     lot: lot,
+                //     lotdetails: lotdetails,
+                //     processed: processed,
+                //     processordetails: processordetails,
+                //     reference: reference,
+                //     served: served,
+                //     start: datetime,
+                //     status: status,
+                //     timestamp: timestamp,
+                //     type: type,
+                //    approved: false
+                // };
+                // var newPostKey = firebase.database().ref().child('briefcase').push().key;
+
+                // var updates = {};
+                // updates['/applicationsNew/' + newPostKey] = postData;
+                // updates['/briefcase/' + agent + '/' + newPostKey] = postData;
+
+                // this.$.modal.open();
+                var briefcase = firebase.database().ref().child("briefcase").child(this.accountKey).child(this.transactionKey).remove();
+                var applicationsNew = firebase.database().ref().child("applicationsNew").child(this.transactionKey).remove();
+                window.location = "/briefcase";
+                // return firebase.database().ref().update(updates);
+
+
+                // personRef.remove();
+               
+                //     }
+                // });
+            },
+            // _exit() {
+            //     window.location = "/briefcase";
+            // }
 
 
         })

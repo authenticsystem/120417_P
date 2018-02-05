@@ -263,12 +263,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
               <neon-animatable>
-                <firebase-query id="query" path="/applicationsNew" data="{{briefcase}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
+
+                <firebase-query id="query" path="/applicationsNew" data="{{applicationsNew}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
                   end-at="{{typeValue}}" limit-to-last="50"> 
                 </firebase-query>
+
                 <iron-scroll-document id="document">
                   <template is="dom-if" if="{{access}}">
-                    <iron-list items="[[briefcase]]" as="item" selection-enabled multi-selection scroll-target="document">
+                    <iron-list items="[[applicationsNew]]" as="item" selection-enabled multi-selection scroll-target="document">
                       <div style="text-align:center">{{msg}}</div>
                       <paper-toast id="toast" text="" duration="0"></paper-toast>
                       <template>
