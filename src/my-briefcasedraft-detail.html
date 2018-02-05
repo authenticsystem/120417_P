@@ -1,0 +1,673 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animatable.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/datetime-picker/datetime-picker.html">
+
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="my-icons.html">
+
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+
+<link rel="import" href="../bower_components/titanium-date-input/titanium-date-input.html">
+<link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
+
+<link rel="import" href="short-unique-id.html">
+
+
+<dom-module id="my-briefcasedraft-detail">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+
+            app-header {
+                color: rgb(255, 255, 255);
+                background-color: #388E3C;
+            }
+
+            app-header paper-icon-button {
+                --paper-icon-button-ink-color: #000000;
+            }
+
+            app-drawer-layout:not([narrow]) [drawer-toggle] {
+                display: none;
+            }
+
+            app-drawer {
+                --app-drawer-content-container: {
+                    background-color: #F4F5F6;
+                }
+            }
+
+            paper-icon-button.menu {
+                margin-right: 16px;
+            }
+
+            paper-item {
+                height: 64px;
+            }
+
+            .mnu {
+                padding: 16px;
+            }
+
+            paper-fab {
+                background: #1976d2;
+            }
+
+            .labelitem {
+                padding: 0px;
+                margin: 0;
+            }
+
+
+
+            @media (min-width: 800px) {
+                .footer {
+                    position: absolute;
+                    bottom: 16px;
+                    width: 100%;
+                }
+                .paper-fab-0 {
+                    position: absolute;
+                    left: 48px;
+                    bottom: 48px;
+                }
+
+                .paper-fab-1 {
+                    position: absolute;
+                    right: 48px;
+                    bottom: 48px;
+                }
+
+            }
+
+            @media (max-width: 800px) {
+                .paper-fab-0 {
+                    position: absolute;
+                    left: 16px;
+                    bottom: 48px;
+                }
+
+                .paper-fab-1 {
+                    position: absolute;
+                    right: 16px;
+                    bottom: 48px;
+                }
+
+                .docu {
+                    margin-left: 16px;
+                    margin-right: 16px;
+                }
+
+            }
+
+
+            paper-button.green {
+                background-color: var(--paper-green-500);
+                color: white;
+            }
+
+
+            datetime-picker.begin {
+                --datetime-selected-background: #2362EC;
+                --datetime-background: #071533;
+                --datetime-color: #eeeeee;
+            }
+
+            datetime-picker.end {
+                --datetime-selected-background: #CC1C1C;
+                --datetime-background: #071533;
+                --datetime-color: #eeeeee;
+            }
+        </style>
+
+        <!-- <app-route route="{{route}}" pattern="/:key" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
+
+        <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
+        </firebase-document> -->
+
+        <firebase-document id="idd" path="{{path}}" data="{{newdata}}" disabled="true"></firebase-document>
+
+        <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
+            <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
+                <div class="mnu" role="listbox">
+                    <!-- <iron-selector attr-for-selected="value" class="drawer-list"> -->
+
+                    <!-- on-tap="_selectPage" data-args="0" -->
+                    <paper-item id="lotdetails">
+                        <div class="circle-mini-first">1</div>
+                        <span>Lot Details</span>
+                    </paper-item>
+
+                    <!-- on-tap="_selectPage" data-args="1" -->
+                    <paper-item id="buyersinformation">
+                        <div class="circle-mini-last">2</div>
+                        <span>Buyer's Information</span>
+                    </paper-item>
+
+                    <!-- on-tap="_selectPage" data-args="2" -->
+                    <!-- <paper-item id="samplecomputation">
+                        <div class="circle-mini-last">3</div>
+                        <span>Agent's Information</span>
+                    </paper-item> -->
+
+                    <!-- </iron-selector> -->
+                </div>
+            </app-drawer>
+
+            <app-header-layout id="appheader" has-scrolling-region>
+                <app-header fixed slot="header">
+                    <app-toolbar>
+                        <a href="/briefcase" tabindex="-1">
+                            <paper-icon-button class="menu" noink style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
+                        </a>
+                        <div main-title>{{referenceLabel}} {{newdata.reference}}</div>
+                        <paper-icon-button icon="my-icons:send" on-tap="sendBriefcaseOpen" title="send request"></paper-icon-button>
+                        <paper-dialog id="sendBriefcasePD">
+                            <h2>Send Request?</h2>
+                            <!-- <p>Continue delete the current application?</p> -->
+                            <div class="buttons">
+                                <paper-button dialog-dismiss autofocus>No</paper-button>
+                                <paper-button dialog-confirm on-tap="_sendBriefcase">Yes</paper-button>
+                            </div>
+                        </paper-dialog>
+
+                        <paper-dialog id="modal">
+                            <h2>Successfully sent.</h2>
+                            <div class="buttons">
+                                <paper-button dialog-confirm on-tap="_exit">Ok</paper-button>
+                            </div>
+                        </paper-dialog>
+
+                        <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
+                        <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
+                    </app-toolbar>
+
+                </app-header>
+
+                <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
+                    <neon-animatable>
+                        <div class="docu">
+
+                            <div class="docu-header">
+                                <span>1. Lot Details</span>
+                            </div>
+                            <div class="details">
+                                <paper-card id="stepOneCard" heading="" style="width:100%; margin-top: 16px; display: block;">
+
+                                    <paper-spinner id="spinnerDetails" active alt="Getting details...." style="position: absolute; left: 50%; top: 50%; height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
+
+                                    <div id="cardcontentlotDetails" class="card-content" style$="height: 48px; background-color: {{newdata.lotdetails.maprenderdetails.type_bg_color}}; color: {{newdata.lotdetails.maprenderdetails.type_fore_color}};">
+                                        <div style="position: absolute; padding-left: 16px; bottom: 5px; left: 0px; font-weight: 400; font-size: 20px;">
+                                            [[fullLotName]]
+                                        </div>
+                                    </div>
+                                    <div class="card-content" style="top: -4px;">
+                                        <div style="display: inline-block; padding-right: 24px;">
+                                            <div style="font-size: 12px; color: gray;margin-bottom: -.3em">{{areaLabel}}</div>
+                                            <span style="font-weight: 400; color: black;">
+                                                [[newdata.lotdetails.area]]
+                                            </span>
+                                        </div>
+
+                                        <div style="display: inline-block; padding-left: 24px; padding-right: 24px;">
+                                            <div style="font-size: 12px; color: gray;margin-bottom: -.3em">{{designationLabel}}</div>
+                                            <span style="font-weight: 400; color: black;">
+                                                [[newdata.lotdetails.maprenderdetails.designation_name]]
+                                            </span>
+                                        </div>
+
+                                        <!-- style="padding-top: 8px;" -->
+                                        <div style="padding-top: 5px;">
+                                            <div style="font-size: 12px; color: gray;margin-bottom: -.3em">{{typeLabel}}</div>
+                                            <span style="font-weight: 400; color: black;">
+                                                [[newdata.lotdetails.maprenderdetails.type_name]]
+                                            </span>
+                                        </div>
+
+                                        <!-- style="padding-top: 8px;" -->
+                                        <div style="padding-top: 5px;">
+                                            <div style="font-size: 12px; color: gray;margin-bottom: -.3em">{{statusLabel}}</div>
+                                            <span id="type">
+                                                [[newdata.type]]
+                                            </span>
+                                            <!-- <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+                                                REQUEST TO HOLD
+                                            </span> -->
+                                        </div>
+
+                                    </div>
+                                    <div class="card-actions" id="cardActions" style="display: none;">
+                                        <div>
+                                            <iron-icon id="iconStart" icon="my-icons:event" style="color: gray;font-size: 12px;"></iron-icon>
+                                            <span style="font-size: 12px; color: black;">
+                                                [[_getLocalDatetimeFormat(newdata.start)]]
+                                            </span>
+                                            <!-- <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" type="datetime-local" no-label-float="true"
+                                            value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input> -->
+                                        </div>
+
+                                        <div style="padding-bottom: 10px;">
+                                            <iron-icon id="expiryPart" icon="my-icons:alarm" style="display: none; color: gray;font-size: 12px;"></iron-icon>
+                                            <span id="expiryPartSpan" style="font-size: 12px;">
+                                                [[_getLocalDatetimeFormat(newdata.expiry)]] &nbsp;
+                                                <time-until style="color: rgba(255, 5, 5, 0.774);" datetime$="{{newdata.expiry}}">{{newdata.expiry}}</time-until>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </paper-card>
+
+                            </div>
+                        </div>
+                    </neon-animatable>
+
+                    <neon-animatable>
+                        <div class="docu">
+                            <div class="docu-header">2. Buyer's Information</div>
+                            <div class="details">
+                                <paper-input always-float-label="true" readonly="true" type="number" label="Cellphone No." value="{{newdata.buyerdetails.cellphone}}"></paper-input>
+                                <paper-input always-float-label="true" readonly="true" label="First Name" value="{{newdata.buyerdetails.firstname}}"></paper-input>
+                                <paper-input always-float-label="true" readonly="true" label="Middle Name" value="{{newdata.buyerdetails.middlename}}"></paper-input>
+                                <paper-input always-float-label="true" readonly="true" label="Last Name" value="{{newdata.buyerdetails.lastname}}"></paper-input>
+                                <paper-input always-float-label="true" readonly="true" label="Suffix" value="{{newdata.buyerdetails.suffix}}"></paper-input>
+                                <paper-input always-float-label="true" readonly="true" type="email" label="Email" value="{{newdata.buyerdetails.email}}"></paper-input>
+                            </div>
+                        </div>
+                    </neon-animatable>
+
+                    <!-- <neon-animatable>
+                        <div class="docu">
+                            <div class="docu-header">3. Agent's Information</div>
+                            <div class="detais">
+                                <paper-input always-float-label="true" readonly="true" type="number" label="Cellphone No." value="{{newdata.agentdetails.cellphone}}"></paper-input>
+                                <paper-input always-float-label="true" readonly="true" label="First Name" value="{{newdata.agentdetails.firstname}}"></paper-input>
+                                <paper-input always-float-label="true" readonly="true" label="Middle Name" value="{{newdata.agentdetails.middlename}}"></paper-input>
+                                <paper-input always-float-label="true" readonly="true" label="Last Name" value="{{newdata.agentdetails.lastname}}"></paper-input>
+                                <paper-input always-float-label="true" readonly="true" label="Suffix" value="{{newdata.agentdetails.suffix}}"></paper-input>
+                                <paper-input always-float-label="true" readonly="true" type="email" label="Email" value="{{newdata.agentdetails.email}}"></paper-input>
+                            </div>
+                        </div>
+                    </neon-animatable> -->
+
+                </neon-animated-pages>
+
+
+            </app-header-layout>
+
+            <div class="footer">
+                <div hidden$="[[favlefthide]]">
+                    <paper-fab id="favleft" class="paper-fab-0" icon="my-icons:chevron-left" on-tap="_select1"></paper-fab>
+                </div>
+                <div hidden$="[[favrighthide]]">
+                    <paper-fab style="background: #1976d2;" id="favright" class="paper-fab-1" icon="my-icons:chevron-right" on-tap="_select2"></paper-fab>
+                </div>
+            </div>
+
+
+
+        </app-drawer-layout>
+
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-briefcasedraft-detail',
+            properties: {
+                narrow: {
+                    type: Boolean,
+                    notify: true
+                },
+                accountKey: String,
+                selectedPage: Number,
+                entryanimation: {
+                    type: String,
+                    value: "slide-from-right-animation"
+                },
+                exitanimation: {
+                    type: String,
+                    value: "slide-left-animation"
+                },
+                route: Object,
+                routeData: Object,
+                favlefthide: {
+                    type: Boolean,
+                    value: true
+                },
+                favrighthide: {
+                    type: Boolean,
+                    value: false
+                },
+                newdata: Object,
+                transactionKey: {
+                    type: String,
+                    value: '',
+                    observer: 'transactionKeyChanged'
+                },
+
+            },
+
+            observers: [
+                'newdataChanged(newdata)'
+            ],
+
+            _getPrevRoute() {
+                return this.prevRoute || '/briefcasedraft'
+            },
+
+            transactionKeyChanged() {
+                if (this.transactionKey) {
+                    this.$.appheader.resetLayout();
+                    this.selectedPage = 0;
+                    this.getpath();
+
+                    this.$.idd.disabled = false;
+
+                    // console.log(this.transactionKey);
+                }
+            },
+
+            newdataChanged(e) {
+                // console.log(e);
+
+                if (Object.keys(this.newdata).length > 0) {
+
+                    if (this.newdata.lotdetails) {
+                        this.fullLotName = 'Block ' + this.newdata.lotdetails.block + ' - Lot ' + this.newdata.lotdetails.lot;
+                        if (this.newdata.lotdetails.level) {
+                            this.fullLotName = this.fullLotName + ' - Level ' + String(this.newdata.lotdetails.level).toUpperCase();
+                        }
+                    }
+
+                    this.areaLabel = "Area";
+                    this.designationLabel = "Designation";
+                    this.typeLabel = "Type";
+                    this.statusLabel = "Transaction";
+
+                    if (this.newdata.type === 'Hold') {
+                        Polymer.dom(this.root).querySelector("#type").setAttribute("style", "font-weight: 400; background: #E65100; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; ");
+                    }
+                    else if (this.newdata.type === 'Reserve') {
+                        Polymer.dom(this.root).querySelector("#type").setAttribute("style", "font-weight: 400; background: #FFD600; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px; ");
+                    }
+                    else if (this.newdata.type === 'Buy') {
+                        Polymer.dom(this.root).querySelector("#type").setAttribute("style", "font-weight: 400; background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; ");
+                    }
+
+                    if (this.newdata.expiry) {
+                        Polymer.dom(this.root).querySelector("#expiryPart").setAttribute("style", "display: inline-block; color: gray; font-size: 12px;");
+                        Polymer.dom(this.root).querySelector("#expiryPartSpan").setAttribute("style", "display: inline-block; color: black; font-size: 12px;");
+
+                    }
+                    else {
+                        Polymer.dom(this.root).querySelector("#expiryPart").setAttribute("style", "display: none; color: gray; font-size: 12px;");
+                        Polymer.dom(this.root).querySelector("#expiryPartSpan").setAttribute("style", "display: none; color: black; font-size: 12px;");
+                    }
+
+
+                    Polymer.dom(this.root).querySelector("#cardActions").setAttribute("style", "display: block;");
+
+                    var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
+                    spinnerDetails.active = false;
+
+                    this.referenceLabel = 'Ref.';
+
+                }
+                else {
+                    if (this.transactionKey) {
+                        var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
+                        spinnerDetails.active = false;
+                        this.referenceLabel = 'Not found!'
+                        // alert('Not found!');
+                    }
+                }
+            },
+
+            getpath() {
+                // this.applicationKey = this.guid();
+                // this.path = 'applications/' + this.applicationKey;
+                if (this.transactionKey) {
+                    this.path = 'briefcasedraft/' + this.accountKey + "/" + this.transactionKey;
+                    // console.log(this.path);
+                }
+
+
+
+                return this.path;
+            },
+
+            toggleDrawer() {
+                // this.dispatchEvent(new CustomEvent('toggleDrawer', {
+                //     bubbles: true, composed: true, detail: {
+                //         narrow: this.$.narrow
+                //     }
+                // }));
+                // this.$.narrow = !this.$.narrow;
+
+                Polymer.dom(this.parentNode).removeChild(this);
+
+            },
+
+            _currentPage(e, s) {
+                return s === e;
+            },
+
+
+            ready() {
+                this.selectedPage = 0;
+            },
+
+            _select1(e) {
+                this.entryanimation = "slide-from-left-animation";
+                this.exitanimation = "slide-right-animation";
+
+                if (parseInt(this.selectedPage) <= 2) {
+                    if (parseInt(this.selectedPage) !== 0) {
+                        this.selectedPage = (parseInt(this.selectedPage) - 1);
+
+                        Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: #1976d2;");
+                        Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:chevron-right");
+
+
+                        if (this.selectedPage === 0) {
+                            this.favlefthide = true;
+                        }
+
+                        this.favrighthide = false;
+                    }
+                    else {
+                        this.favlefthide = true;
+                        this.favrighthide = false;
+                    }
+                }
+                else {
+                    this.selectedPage = 2;
+                }
+
+            },
+
+            _select2(e) {
+                this.entryanimation = "slide-from-right-animation";
+                this.exitanimation = "slide-left-animation";
+                if (parseInt(this.selectedPage) >= 0) {
+                    if (parseInt(this.selectedPage) == 1) {
+                        this.favlefthide = false;
+                        this.favrighthide = true;
+                    }
+                    else {
+                        this.favlefthide = false;
+                        this.favrighthide = true;
+                    }
+
+                    if (parseInt(this.selectedPage) !== 2) {
+                        this.selectedPage = (parseInt(this.selectedPage) + 1);
+                    }
+
+
+                }
+                else {
+                    this.selectedPage = 0;
+                    this.favlefthide = true;
+                    this.favrighthide = false;
+                }
+
+                //create or update /lot & /isdraft values
+                // if (this.fullLot) {
+                //     this.$.idd.setStoredValue(this.path + '/lot', this.fullLot);
+                //     this.$.idd.setStoredValue(this.path + '/isdraft', true);
+                // }
+
+            },
+            _rdChanged(newData, oldData) {
+                this.fromRD = true;
+
+                // this.isUserClicked = true;
+                // console.log('_rd');
+                // console.log(oldData);
+                // console.log(newData);
+            },
+            _ldChanged(newData, oldData) {
+                this.fromLD = true;
+
+                // this.isUserClicked = true;
+                // console.log('_rd');
+                // console.log(oldData);
+                // console.log(newData);
+            },
+            s4: function () {
+                return Math.floor((1 + Math.random()) * 0x10000)
+                    .toString(16)
+                    .substring(1);
+            },
+            guid: function () {
+                // return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
+                //     this.s4() + '-' + this.s4() + this.s4() + this.s4();
+
+
+                var uid = new ShortUniqueId();
+
+                // console.log(uid.randomUUID(8));
+                // var shortid = new shortid();
+                return uid.randomUUID(8);
+
+            },
+            _getLocalDatetimeFormat(e) {
+                var xdate = new Date(e);
+                return xdate.toDateString() + ' ' + xdate.toLocaleTimeString().replace(/:\d{2}\s/, ' ');;
+            },
+
+            sendBriefcaseOpen() {
+                this.$.sendBriefcasePD.open();
+            },
+
+            _sendBriefcase() {
+                var options = {
+                    weekday: "long", year: "numeric", month: "short",
+                    day: "numeric", hour: "2-digit", minute: "2-digit"
+                };
+
+                var ddate = new Date();
+                this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
+                var timestamp = firebase.database.ServerValue.TIMESTAMP;
+                var datetime = this.startDateTimeValue;
+                // var datetime = ddate.toLocaleTimeString("en-us", options);
+
+                if (Object.keys(this.newdata).length > 0) {
+                    var agent = this.newdata.agent,
+                        agentdetails = this.newdata.agentdetails,
+                        buyer = this.newdata.buyer;
+                        buyerdetails = this.newdata.buyerdetails,
+                        expiry = this.newdata.expiry,
+                        isdraft = false,
+                        isserved = this.newdata.isserved,
+                        lot = this.newdata.lot,
+                        lotdetails = this.newdata.lotdetails,
+                        processed = this.newdata.processed,
+                        processordetails = this.newdata.processordetails,
+                        reference = this.newdata.reference,
+                        served = this.newdata.served,
+                        start = this.startDateTimeValue,
+                        status = this.newdata.status,
+                        type = this.newdata.type,
+                        timestamp = timestamp
+                        
+                }
+                var personRef = firebase.database().ref().child("briefcasedraft").child(agent).child(this.transactionKey).remove();
+                // personRef.once('value', function (snapshot) {
+                //     if (snapshot.val() === null) {
+                //         alert('does not exist');
+                //     }
+                //     else {
+                var postData = {
+                    agent: agent,
+                    agentdetails: agentdetails,
+                    buyer: buyer,
+                    buyerdetails: buyerdetails,
+                    expiry: expiry,
+                    isdraft: isdraft,
+                    isserved: isserved,
+                    lot: lot,
+                    lotdetails: lotdetails,
+                    processed: processed,
+                    processordetails: processordetails,
+                    reference: reference,
+                    served: served,
+                    start: datetime,
+                    status: status,
+                    timestamp: timestamp,
+                    type: type,
+                   approved: true
+                };
+                var newPostKey = firebase.database().ref().child('briefcase').push().key;
+
+                var updates = {};
+                updates['/applicationsNew/' + newPostKey] = postData;
+                updates['/briefcase/' + agent + '/' + newPostKey] = postData;
+
+                this.$.modal.open();
+
+                return firebase.database().ref().update(updates);
+
+
+                // personRef.remove();
+                // window.location = "/briefcase";
+                //     }
+                // });
+            },
+            _exit() {
+                window.location = "/briefcase";
+            }
+
+
+        })
+
+
+
+    </script>
+</dom-module>

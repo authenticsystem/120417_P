@@ -310,18 +310,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         </paper-icon-item>
                       </a>
                     </paper-collapse-item> -->
-                    <a style$="{{access(appAccess)}}" name="view3" href="[[rootPath]]view3">
-                      <paper-icon-item toggles="true" class="menuSelected">
-                        <iron-icon icon="my-icons:work" slot="item-icon"></iron-icon>
-                        <span>Briefcase</span>
-                      </paper-icon-item>
-                    </a>
-                    <!-- <a style$="{{access(appAccess)}}" name="briefcase" href="[[rootPath]]briefcase">
+                    <!-- <a style$="{{access(appAccess)}}" name="view3" href="[[rootPath]]view3">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:work" slot="item-icon"></iron-icon>
                         <span>Briefcase</span>
                       </paper-icon-item>
                     </a> -->
+                    <a style$="{{access(appAccess)}}" name="briefcase" href="[[rootPath]]briefcase">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:work" slot="item-icon"></iron-icon>
+                        <span>Briefcase</span>
+                      </paper-icon-item>
+                    </a>
                     <hr>
                     <a style$="{{access(accountAccess)}}" name="accountlist" href="[[rootPath]]accountlist">
                       <paper-icon-item toggles="true" class="menuSelected">
@@ -358,11 +358,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-dashboard name="dashboard" access="{{dashAccess}}"></my-dashboard>
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
                 <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]"></my-applications>
-                <my-briefcase name="briefcase" access="{{appAccess}}" route="[[subroute]]"></my-briefcase>
+                <my-briefcase name="briefcase" access="{{appAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-briefcase>
                 <my-briefcase-draft name="briefcase-draft" access="{{appAccess}}" route="[[subroute]]"></my-briefcase-draft>
                 <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
                 <my-accountlist name="accountlist" access="{{accountAccess}}" route="[[subroute]]"></my-accountlist>
-                <my-view3 name="view3"></my-view3>
+                <!-- <my-view3 name="view3"></my-view3> -->
                 <my-view404 name="view404"></my-view404>
               </iron-pages>
             </app-drawer-layout>
