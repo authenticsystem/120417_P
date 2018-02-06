@@ -488,8 +488,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           isActive: {
             type: Boolean,
-            value: false,
-            notify: true
+            // value: false,
+            // notify: true
           },
           // hasAccount: {
           //   type: Boolean,
@@ -502,7 +502,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       static get observers() {
         return [
           '_routePageChanged(routeData.page, user, isActive)',
-          
+
         ];
       }
 
@@ -535,7 +535,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               }
             }
           }
-          
+          else {
+            this.isActive = false;
+          }
+
 
         }
       }
@@ -602,9 +605,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   }
                 }
               }
-              // else {
-              //   this.page = page || 'account-deactivated';
-              // }
+              else {
+                this.page = page || 'account-deactivated';
+              }
             }
             else {
               this.page = page || 'account-link';
