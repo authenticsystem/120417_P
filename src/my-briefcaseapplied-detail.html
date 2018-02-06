@@ -35,7 +35,7 @@
 <link rel="import" href="short-unique-id.html">
 
 
-<dom-module id="my-briefcasedraft-detail">
+<dom-module id="my-briefcaseapplied-detail">
     <template>
         <style include="shared-styles">
             :host {
@@ -185,26 +185,10 @@
                             <paper-icon-button class="menu" noink style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{newdata.reference}}</div>
-                        <paper-icon-button icon="my-icons:send" on-tap="sendBriefcaseOpen" title="Send request"></paper-icon-button>
                         <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteBriefcaseOpen" title="Delete briefcase draft"></paper-icon-button>
-                        <paper-dialog id="sendBriefcasePD">
-                            <h2>Send Request?</h2>
-                            <!-- <p>Continue delete the current application?</p> -->
-                            <div class="buttons">
-                                <paper-button dialog-dismiss autofocus>No</paper-button>
-                                <paper-button dialog-confirm on-tap="_sendBriefcase">Yes</paper-button>
-                            </div>
-                        </paper-dialog>
-
-                        <paper-dialog id="modal">
-                            <h2>Successfully sent.</h2>
-                            <div class="buttons">
-                                <a href="/briefcase" style="text-decoration:none"><paper-button dialog-confirm>Ok</paper-button></a>
-                            </div>
-                        </paper-dialog>
 
                         <paper-dialog id="deleteBriefcasePD">
-                            <h2>Delete briefcase draft?</h2>
+                            <h2>Delete applied briefcase?</h2>
                             <!-- <p>Continue delete the current application?</p> -->
                             <div class="buttons">
                                 <paper-button dialog-dismiss autofocus>No</paper-button>
@@ -346,7 +330,7 @@
 
     <script>
         Polymer({
-            is: 'my-briefcasedraft-detail',
+            is: 'my-briefcaseapplied-detail',
             properties: {
                 narrow: {
                     type: Boolean,
@@ -386,7 +370,7 @@
             ],
 
             _getPrevRoute() {
-                return this.prevRoute || '/briefcasedraft'
+                return this.prevRoute || '/briefcase'
             },
 
             transactionKeyChanged() {
@@ -402,7 +386,7 @@
             },
 
             newdataChanged(e) {
-                // console.log(e);
+                // console.log(this.accountKey);
 
                 if (Object.keys(this.newdata).length > 0) {
 
@@ -461,7 +445,7 @@
                 // this.applicationKey = this.guid();
                 // this.path = 'applications/' + this.applicationKey;
                 if (this.transactionKey) {
-                    this.path = 'briefcasedraft/' + this.accountKey + "/" + this.transactionKey;
+                    this.path = 'briefcase/' + this.accountKey + "/" + this.transactionKey;
                     // console.log(this.path);
                 }
 
@@ -597,7 +581,8 @@
                 this.$.deleteBriefcasePD.open();
             },
             deleteBriefcasePD() {
-                var db = firebase.database().ref('briefcasedraft').child(this.accountKey).child(this.transactionKey).remove();
+                var db = firebase.database().ref('briefcase').child(this.accountKey).child(this.transactionKey).remove();
+                var db = firebase.database().ref('applicationsNew').child(this.transactionKey).remove();
                 window.location = 'briefcase';
             },
 

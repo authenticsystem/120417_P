@@ -37,6 +37,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="search-bar.html">
 <link rel="import" href="my-briefcase-new.html">
 <link rel="import" href="my-briefcasedraft-detail.html">
+<link rel="import" href="my-briefcaseapplied-detail.html">
+<link rel="import" href="my-briefcaseapplied-edit.html">
 <link rel="import" href="my-briefcase-edit.html">
 
 <link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
@@ -360,8 +362,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- //applied -->
       <div>
         <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
-        <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
-        <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
+        <app-route route="{{route}}" pattern="/applied/detail/:key" tail="{{appliedDetailRoute}}" data="{{appliedDetailData}}" active="{{appliedDetailActive}}"></app-route>
+        <app-route route="{{route}}" pattern="/applied/edit/:key" tail="{{appliedEditRoute}}" data="{{appliedEditData}}" active="{{appliedEditActive}}"></app-route>
 
         <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
         <div hidden$="{{!applicationActive}}">
@@ -426,8 +428,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </template>
                 </app-header>
 
-                <firebase-query id="query" path="/briefcase/{{_getKey(account)}}" data="{{briefcase}}" order-by-child="approved"
-                  equal-to='false' limit-to-last="50">
+                <firebase-query id="query" path="/briefcase/{{_getKey(account)}}" data="{{briefcase}}" order-by-child="approved" equal-to='false'
+                  limit-to-last="50">
                 </firebase-query>
 
 
@@ -452,21 +454,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                             <my-briefcase-card item="{{item}}"></my-briefcase-card>
 
-                            <!-- <div tabindex="0">
-                              <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
-                                <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
+                            <div tabindex="0">
+                              <a href$="{{_getAppliedEditLink(item.$key)}}" tabindex="-1">
+                                <paper-icon-button id="{{item.$key}}" noink on-tap="editApplied" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
                                   style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
                                 <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
                               </a>
                             </div>
 
                             <div tabindex="1">
-                              <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
-                                <paper-icon-button id="openDetailButton" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:my-icons:open-in-new"
+                              <a href$="{{_getAppliedDetailsLink(item.$key)}}" tabindex="-1">
+                                <paper-icon-button id="openDetailButton" noink on-tap="appliedDetails" data-args="{{item.$key}}" icon="my-icons:my-icons:open-in-new"
                                   alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
                                 <paper-tooltip position="left">view details</paper-tooltip>
                               </a>
-                            </div> -->
+                            </div>
 
                           </div>
 
@@ -489,7 +491,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <template is="dom-if" if="{{access}}">
               <div name="/new">
                 <div id="briefcasenew"></div>
-                <my-briefcase-new id="d23" path="" prev-route="{{route.prefix}}" user-id="0"></my-briefcase-new>
+                <my-briefcase-new id="d23" path="" prev-route="{{route.prefix}}"></my-briefcase-new>
               </div>
             </template>
 
@@ -500,18 +502,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
 
         <template is="dom-if" if="{{access}}">
-          <div hidden$="{{!detailActive}}">
+          <div hidden$="{{!appliedDetailActive}}">
             <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
-            <div id="briefcasedraftdetail"></div>
-            <my-briefcasedraft-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"></my-briefcasedraft-detail>
+            <div id="applieddetail"></div>
+            <my-briefcaseapplied-detail id="d26" transaction-key='{{appliedDetailData.key}}' prev-route="{{route.prefix}}" account-key='{{accountkey}}'></my-briefcaseapplied-detail>
             <!-- [[detailData.key]] -->
             <!-- </template> -->
           </div>
 
-          <div hidden$="{{!editActive}}">
+          <div hidden$="{{!appliedEditActive}}">
             <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
-            <div id="appedit"></div>
-            <my-application-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-application-edit>
+            <div id="appliededit"></div>
+            <my-briefcaseapplied-edit id="d27" transaction-key='{{appliedEditData.key}}' prev-route="{{route.prefix}}"></my-briefcaseapplied-edit>
             <!-- </template> -->
           </div>
         </template>
@@ -587,8 +589,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-header>
 
                 <firebase-query id="query" path="/briefcase/{{_getKey(account)}}" data="{{briefcaseApproved}}" order-by-child="approved"
-                equal-to='true' limit-to-last="50">
-              </firebase-query>
+                  equal-to='true' limit-to-last="50">
+                </firebase-query>
 
                 <!-- on-lower-threshold="loadMoreData" -->
                 <iron-scroll-threshold id="threshold">
@@ -831,12 +833,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             // this.selectedLabel = 'by buyer lastname';
             if (e) {
               this.selectedType = 'buyerdetails/lastname';
+              e = e.charAt(0).toUpperCase() + e.slice(1);
             }
           }
           else {
             // this.selectedLabel = 'by agent lastname';
             if (e) {
               this.selectedType = 'agentdetails/lastname';
+              e = e.charAt(0).toUpperCase() + e.slice(1);
             }
           }
         }
@@ -899,12 +903,59 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
+      _getAppliedEditLink(e){
+        return '/briefcase/applied/edit/' + e.toString();
+      },
+
+      _getAppliedDetailsLink(e) {
+        return '/briefcase/applied/detail/' + e.toString();
+      },
+
       _getViewDetailsLink(e) {
         return '/briefcase/detail/' + e.toString();
       },
 
       _getEditAppLink(e) {
         return '/briefcase/edit/' + e.toString();
+      },
+
+      editApplied(e){
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var node = Polymer.dom(this.root).querySelector("#appliededit");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d27");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-briefcaseapplied-edit");
+          newDiv.setAttribute("id", "d27")
+          newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("account-key", this.accountkey)
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          //if open existing
+          var currentDiv = document.getElementById("appliededit");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+        }
+      },
+
+      appliedDetails(e) {
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var node = Polymer.dom(this.root).querySelector("#applieddetail");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d26");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-briefcaseapplied-detail");
+          newDiv.setAttribute("id", "d26")
+          newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("account-key", this.accountkey)
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          //if open existing
+          var currentDiv = document.getElementById("applieddetail");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+
+        }
       },
 
       viewDetails(e) {

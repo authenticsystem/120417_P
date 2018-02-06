@@ -284,13 +284,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                             <my-applied-card item="{{item}}"></my-applied-card>
 
-                            <div tabindex="0">
+                            <!-- <div tabindex="0">
                               <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
                                 <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
                                   style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
                                 <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
                               </a>
-                            </div>
+                            </div> -->
 
                             <div tabindex="1">
                               <a href$="{{_getViewThisLink(item.$key)}}" tabindex="-1">
@@ -656,12 +656,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             // this.selectedLabel = 'by buyer lastname';
             if (e) {
               this.selectedType = 'buyerdetails/lastname';
+              e = e.charAt(0).toUpperCase() + e.slice(1);
             }
           }
           else {
             // this.selectedLabel = 'by agent lastname';
             if (e) {
               this.selectedType = 'agentdetails/lastname';
+              e = e.charAt(0).toUpperCase() + e.slice(1);
             }
           }
         }

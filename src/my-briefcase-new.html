@@ -42,37 +42,47 @@
             :host {
                 display: block;
             }
+
             app-header {
                 color: rgb(255, 255, 255);
                 background-color: #388E3C;
             }
+
             app-header paper-icon-button {
                 --paper-icon-button-ink-color: #000000;
             }
+
             app-drawer-layout:not([narrow]) [drawer-toggle] {
                 display: none;
             }
+
             app-drawer {
                 --app-drawer-content-container: {
                     background-color: #F4F5F6;
                 }
             }
+
             paper-icon-button.menu {
                 margin-right: 16px;
             }
+
             paper-item {
                 height: 64px;
             }
+
             .mnu {
                 padding: 16px;
             }
+
             paper-fab {
                 background: #1976d2;
             }
+
             .labelitem {
                 padding: 0px;
                 margin: 0;
             }
+
             @media (min-width: 800px) {
                 .footer {
                     position: absolute;
@@ -90,6 +100,7 @@
                     bottom: 48px;
                 }
             }
+
             @media (max-width: 800px) {
                 .paper-fab-0 {
                     position: absolute;
@@ -106,15 +117,18 @@
                     margin-right: 16px;
                 }
             }
+
             paper-button.green {
                 background-color: var(--paper-green-500);
                 color: white;
             }
+
             datetime-picker.begin {
                 --datetime-selected-background: #2362EC;
                 --datetime-background: #071533;
                 --datetime-color: #eeeeee;
             }
+
             datetime-picker.end {
                 --datetime-selected-background: #CC1C1C;
                 --datetime-background: #071533;
@@ -184,108 +198,109 @@
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
                         <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
-                        
+
                         <firebase-query id="query" path="/accountlist" order-by-child="uid" equal-to="{{userid}}" data="{{agentsList}}"></firebase-query>
-                    
+
                         <!-- <firebase-document id="query" path="/accountlist" data="{{agentsList}}" order-by-child="{{uid}}" equal-to="{userid}"></firebase-document> -->
 
-                            <firebase-document id="fdColor"></firebase-document>
+                        <firebase-document id="fdColor"></firebase-document>
 
-                            <firebase-query id="query" path="/briefcasedraft" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1 data="{{lastApplication}}"></firebase-query>
+                        <firebase-query id="query" path="/briefcasedraft" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1 data="{{lastApplication}}"></firebase-query>
 
-                            <firebase-query path="/reservations/{{fullLot}}" order-by-child='isexpired' equal-to='false' limit-to-last=1 data="{{lastReservation}}"></firebase-query>
-                            <!-- <firebase-query path="/reservations/{{fullLot}}" order-by-key limit-to-last=1 data="{{lastReservation}}"></firebase-query> -->
+                        <firebase-query path="/reservations/{{fullLot}}" order-by-child='isexpired' equal-to='false' limit-to-last=1 data="{{lastReservation}}"></firebase-query>
+                        <!-- <firebase-query path="/reservations/{{fullLot}}" order-by-key limit-to-last=1 data="{{lastReservation}}"></firebase-query> -->
 
-                            <div class="docu">
+                        <div class="docu">
 
-                                <div class="docu-header">
-                                    <span>1. Lot Details</span>
-                                </div>
-                                <div class="details">
-                                    <paper-input label="Block" required="true" auto-validate="true" always-float-label value="{{block}}" style="display: inline-block; width: 20%;"></paper-input>
-                                    <paper-input label="Lot" required="true" auto-validate="true" always-float-label value="{{lot}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
-                                    <paper-input label="Level" always-float-label value="{{level}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
-
-                                    <paper-spinner id="spinnerDetails" alt="Getting details...." style="height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
-
-                                    <div id="errorMsgDiv" style="display: none; color:red; ">
-                                        <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}
-                                    </div>
-
-                                    <paper-card id="stepOneCard" heading="" style="width:100%; margin-top: 16px; display: none;">
-                                        <div id="cardcontentlotDetails" class="card-content" style="height: 48px; background-color: rgb(122, 122, 122); color: white;">
-                                            <div style="position: absolute; padding-left: 16px; bottom: 5px; left: 0px; font-weight: 400; font-size: 20px;">
-                                                [[fullLotName]]
-                                            </div>
-                                        </div>
-                                        <div class="card-content" style="top: -4px;">
-                                            <div style="display: inline-block; padding-right: 24px;">
-                                                <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{areaLabel}}</div>
-                                                <span style="font-weight: 400;">
-                                                    [[fullLotData.area]]
-                                                </span>
-                                            </div>
-
-                                            <div style="display: inline-block; padding-left: 24px; padding-right: 24px;">
-                                                <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{designationLabel}}</div>
-                                                <span style="font-weight: 400;">
-                                                    [[fullLotData.maprenderdetails.designation_name]]
-                                                </span>
-                                            </div>
-
-                                            <!-- style="padding-top: 8px;" -->
-                                            <div style="padding-top: 5px;">
-                                                <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{typeLabel}}</div>
-                                                <span style="font-weight: 400;">
-                                                    [[fullLotData.maprenderdetails.type_name]]
-                                                </span>
-                                            </div>
-
-                                            <!-- style="padding-top: 8px;" -->
-                                            <div style="padding-top: 5px;">
-                                                <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{statusLabel}}</div>
-                                                <span style="font-weight: 400;" id="statusValue">
-                                                    [[fullLotData.maprenderdetails.status_name]]
-                                                </span>
-                                            </div>
-
-                                        </div>
-                                        <div class="card-actions" style="display: none;" id="cardActions">
-                                            <paper-radio-group selected="{{draftdata_type}}">
-                                                <paper-radio-button name="Hold" on-click="selectHold">Hold</paper-radio-button>
-                                                <!-- <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button>
-                                                <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button> -->
-                                            </paper-radio-group>
-
-                                            </br>
-                                            <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
-                                                <div id="start">
-                                                    <!-- <span style="color: blue;">Date:</span> -->
-                                                    <!-- <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker> -->
-
-                                                    <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
-                                                    <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
-                                                <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
-                                                    <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" type="datetime-local" no-label-float="true"
-                                                        value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}" style="display:inline-block" readonly></paper-input>
-
-                                                </div>
-                                                <!-- <div id="expiry" style="position: relative; padding-top: 16px;"> -->
-                                                    <!-- <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon> -->
-                                                    <!-- <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span> -->
-                                                    <!-- <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input> -->
-                                                    <!-- <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span> -->
-                                                    <!-- <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span> -->
-                                                    <!-- <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker> -->
-                                                <!-- </div> -->
-                                            </div>
-
-
-                                        </div>
-                                    </paper-card>
-
-                                </div>
+                            <div class="docu-header">
+                                <span>1. Lot Details</span>
                             </div>
+                            <div class="details">
+                                <paper-input label="Block" required="true" auto-validate="true" always-float-label value="{{block}}" style="display: inline-block; width: 20%;"></paper-input>
+                                <paper-input label="Lot" required="true" auto-validate="true" always-float-label value="{{lot}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
+                                <paper-input label="Level" always-float-label value="{{level}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
+
+                                <paper-spinner id="spinnerDetails" alt="Getting details...." style="height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
+
+                                <div id="errorMsgDiv" style="display: none; color:red; ">
+                                    <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}
+                                </div>
+
+                                <paper-card id="stepOneCard" heading="" style="width:100%; margin-top: 16px; display: none;">
+                                    <div id="cardcontentlotDetails" class="card-content" style="height: 48px; background-color: rgb(122, 122, 122); color: white;">
+                                        <div style="position: absolute; padding-left: 16px; bottom: 5px; left: 0px; font-weight: 400; font-size: 20px;">
+                                            [[fullLotName]]
+                                        </div>
+                                    </div>
+                                    <div class="card-content" style="top: -4px;">
+                                        <div style="display: inline-block; padding-right: 24px;">
+                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{areaLabel}}</div>
+                                            <span style="font-weight: 400;">
+                                                [[fullLotData.area]]
+                                            </span>
+                                        </div>
+
+                                        <div style="display: inline-block; padding-left: 24px; padding-right: 24px;">
+                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{designationLabel}}</div>
+                                            <span style="font-weight: 400;">
+                                                [[fullLotData.maprenderdetails.designation_name]]
+                                            </span>
+                                        </div>
+
+                                        <!-- style="padding-top: 8px;" -->
+                                        <div style="padding-top: 5px;">
+                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{typeLabel}}</div>
+                                            <span style="font-weight: 400;">
+                                                [[fullLotData.maprenderdetails.type_name]]
+                                            </span>
+                                        </div>
+
+                                        <!-- style="padding-top: 8px;" -->
+                                        <div style="padding-top: 5px;">
+                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{statusLabel}}</div>
+                                            <span style="font-weight: 400;" id="statusValue">
+                                                [[fullLotData.maprenderdetails.status_name]]
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                    <div class="card-actions" style="display: none;" id="cardActions">
+                                        <paper-radio-group selected="{{draftdata_type}}">
+                                            <paper-radio-button name="Hold" on-click="selectHold">Hold</paper-radio-button>
+                                            <!-- <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button>
+                                                <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button> -->
+                                        </paper-radio-group>
+
+                                        </br>
+                                        <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
+                                            <div id="start">
+                                                <!-- <span style="color: blue;">Date:</span> -->
+                                                <!-- <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker> -->
+
+                                                <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
+                                                <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
+                                                <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
+                                                <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" type="datetime-local" no-label-float="true"
+                                                    value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}" style="display:inline-block"
+                                                    readonly></paper-input>
+
+                                            </div>
+                                            <!-- <div id="expiry" style="position: relative; padding-top: 16px;"> -->
+                                            <!-- <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon> -->
+                                            <!-- <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span> -->
+                                            <!-- <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input> -->
+                                            <!-- <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span> -->
+                                            <!-- <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span> -->
+                                            <!-- <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker> -->
+                                            <!-- </div> -->
+                                        </div>
+
+
+                                    </div>
+                                </paper-card>
+
+                            </div>
+                        </div>
                     </neon-animatable>
 
                     <neon-animatable>
@@ -304,7 +319,7 @@
                             </div>
                         </div>
                     </neon-animatable>
-    
+
                     <!-- <neon-animatable>
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
@@ -324,30 +339,51 @@
 
                         <div class="docu">
                             <div class="docu-header">3. Finalize</div>
-
+                            <div>Please review the following details:</div>
+                            <br>
                             <div class="details">
-                                <div>Please review the following details:</div>
-                                <div>Block: {{block}}</div>
-                                <div>Lot: {{lot}}</div>
-                                <div>Level: {{level}}</div>
-                                <div>Area: {{fullLotData.area}}</div>
-                                <div>Designation: {{fullLotData.maprenderdetails.designation_name}}</div>
-                                <div>Type: {{fullLotData.maprenderdetails.type_name}}</div>
-                                <div>Transaction: {{draftdata_type}}</div>
-                                <div>Start: {{startDateTimeValue}}</div>
-                                <div>Expires: </div>
-                                <div>Buyer's First Name: {{draftdata_buyerdetails_firstname}}</div>
-                                <div>Buyer's Middle Name: {{draftdata_buyerdetails_middlename}}</div>
-                                <div>Buyer's Last Name: {{draftdata_buyerdetails_lastname}}</div>
-                                <div>Buyer's Suffix: {{draftdata_buyerdetails_suffix}}</div>
-                                <div>Buyer's Cellphone: {{draftdata_buyerdetails_cellphone}}</div>
-                                <div>Buyer's Email: {{draftdata_buyerdetails_email}}</div>
-                                <div>Agent's First Name: {{agentdetails_firstname}}</div>
-                                <div>Agent's Middle Name: {{agentdetails_middlename}}</div>
-                                <div>Agent's Last Name: {{agentdetails_lastname}}</div>
-                                <div>Agent's Suffix: {{agentdetails_suffix}}</div>
-                                <div>Agent's Cellphone: {{agentdetails_cellphone}}</div>
-                                <div>Agent's Email: {{agentdetails_email}}</div>
+                                <paper-card style="width:100%">
+                                    <div class="card-content">
+                                        <div>Block:
+                                            <b>{{block}}</b> - Lot:
+                                            <b>{{lot}}</b> - Level:
+                                            <b>{{level}}</b>
+                                        </div>
+                                        <div>Type:
+                                            <b>{{fullLotData.maprenderdetails.type_name}}</b> -- Area:
+                                            <b>{{fullLotData.area}}</b> -- Designation:
+                                            <b>{{fullLotData.maprenderdetails.designation_name}}</b>
+                                        </div>
+                                        <br>
+                                        <div>Transaction:
+                                            <b>{{draftdata_type}}</b>
+                                        </div>
+                                        <div>Start:
+                                            <b>{{startDateTimeValue}}</b>
+                                        </div>
+                                        <div>Expires:</div>
+                                        <hr style="margin-top:10px; margin-bottom:10px">
+                                        <div>Buyer's Fullname:
+                                            <b>{{draftdata_buyerdetails_firstname}}&nbsp;{{draftdata_buyerdetails_middlename}}&nbsp;{{draftdata_buyerdetails_lastname}}&nbsp;{{draftdata_buyerdetails_suffix}}</b>
+                                        </div>
+                                        <div>Buyer's Cellphone:
+                                            <b>{{draftdata_buyerdetails_cellphone}}</b>
+                                        </div>
+                                        <div>Buyer's Email:
+                                            <b>{{draftdata_buyerdetails_email}}</b>
+                                        </div>
+                                        <hr style="margin-top:10px; margin-bottom:10px">
+                                        <div>Agent's Fullname:
+                                            <b>{{agentdetails_firstname}}&nbsp;{{agentdetails_middlename}}&nbsp;{{agentdetails_lastname}}&nbsp;{{agentdetails_suffix}}</b>
+                                        </div>
+                                        <div>Agent's Cellphone:
+                                            <b>{{agentdetails_cellphone}}</b>
+                                        </div>
+                                        <div>Agent's Email:
+                                            <b>{{agentdetails_email}}</b>
+                                        </div>
+                                    </div>
+                                </paper-card>
 
                             </div>
                         </div>
@@ -575,7 +611,7 @@
                 //     this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
                 //         + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
                 // }
-                 if (this.draftdata_type === 'Hold') {
+                if (this.draftdata_type === 'Hold') {
                     var xdate = new Date(this.$.startDateTimeValueV.value);
                     xdate.setHours(xdate.getHours() + Number(this.expiryHoursDaysValue));
                     this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
@@ -627,7 +663,7 @@
                 else {
                     this.buyerKey = '';
                 }
-                
+
             },
             agentsListChanged(e) {
                 var user = firebase.auth().currentUser;
@@ -635,16 +671,16 @@
                 this.email = user.email;
                 // console.log(e);
                 // if (e) {
-                    // console.log(e);
-                    if (e.length > 0) {
-                        this.accountkey = e[0].accountkey;
-                        this.agentdetails_cellphone = e[0].cellphone;
-                        this.agentdetails_firstname = e[0].name.firstname;
-                        this.agentdetails_middlename = e[0].name.middlename;
-                        this.agentdetails_lastname = e[0].name.lastname;
-                        this.agentdetails_suffix = e[0].name.suffix;
-                        this.agentdetails_email = this.email;
-                        // console.log(this.accountkey);
+                // console.log(e);
+                if (e.length > 0) {
+                    this.accountkey = e[0].accountkey;
+                    this.agentdetails_cellphone = e[0].cellphone;
+                    this.agentdetails_firstname = e[0].name.firstname;
+                    this.agentdetails_middlename = e[0].name.middlename;
+                    this.agentdetails_lastname = e[0].name.lastname;
+                    this.agentdetails_suffix = e[0].name.suffix;
+                    this.agentdetails_email = this.email;
+                    // console.log(this.accountkey);
                     // }
                     // else {
                     //     this.accountkey = '';
@@ -653,7 +689,7 @@
                 // else {
                 //     this.accountkey = '';
                 // }
-        },
+            },
             // selectReserve() {
             //     var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
             //     showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
@@ -684,14 +720,14 @@
                 // showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
                 var ddate = new Date();
                 this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
-                + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
                 this.expiryHoursDaysLabel = "hours";
                 this.expiryHoursDaysValue = 24;
                 var xdate = new Date(this.$.startDateTimeValueV.value);
                 xdate.setHours(xdate.getHours() + this.expiryHoursDaysValue);
                 this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
                 this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
-                + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+                    + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
                 //get color
                 var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/hold');
                 transTypeCorrespondingColorRef.on('value', snapshot => {
@@ -921,7 +957,7 @@
             _select2(e) {
                 this.entryanimation = "slide-from-right-animation";
                 this.exitanimation = "slide-left-animation";
-                if (parseInt(this.selectedPage) >=0) {
+                if (parseInt(this.selectedPage) >= 0) {
                     if (parseInt(this.selectedPage) == 2) {
                         //complete
                         if (this.transTypeCorrespondingColor) {
@@ -963,7 +999,7 @@
                                     start: this.startDateTimeValue,
                                     status: '',
                                     timestamp: { ".sv": "timestamp" },
-                                    type:'Hold',
+                                    type: 'Hold',
                                     reference: this.applicationKey
                                 };
                                 var draftBuyer = {
@@ -982,13 +1018,13 @@
                                     email: this.agentdetails_email,
                                     cellphone: this.agentdetails_cellphone,
                                 };
-                                
+
                                 var firebaseDb = this.$.idd.db;
                                 var firebaseDbRef = firebaseDb.ref();
                                 var firebaseUpdate = {};
                                 var transactionPush = firebaseDbRef.child("briefcasedraft").push();
                                 this.transactionKey = transactionPush.key;
-                                
+
                                 if (this.transactionKey) {
                                     //save to /applications/{id}
                                     firebaseUpdate["/briefcasedraft/" + this.accountkey + "/" + this.transactionKey] = draftdata;
@@ -1013,7 +1049,7 @@
                                         saveFailed.setAttribute("style", "display: block; color: red;");
                                     }
 
-                                    
+
                                     //how to get last two reservation with iscurrent and not iscurrent
                                     //what if there is no iscurrent but there is a reservation???
                                     //--- no need to get the current iscurrent=true, we just need the last-reservation to check if we can set the current reservation as iscurrent
@@ -1164,7 +1200,7 @@
                                     this.saveErrorDetails = "Transaction Key is missing.";
                                     saveFailed.setAttribute("style", "display: block; color: red;");
                                 }
-                            
+
                             }
                             //end of else from complete
                         }
@@ -1195,7 +1231,7 @@
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: green;");
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:done");
                         }
-                        else{
+                        else {
                             this.favlefthide = true;
                         }
                     }
