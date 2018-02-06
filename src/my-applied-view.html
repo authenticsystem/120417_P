@@ -134,6 +134,11 @@
                 --datetime-background: #071533;
                 --datetime-color: #eeeeee;
             }
+
+            /* paper-dialog#modal {
+                margin: 0 auto;
+                float: left;
+            } */
         </style>
 
         <!-- to get the record of Transaction Key -->
@@ -186,27 +191,30 @@
                         </a>
                         <div main-title>{{referenceLabel}} {{applicationKey}}</div>
                         <paper-icon-button id="approval" icon="my-icons:check-circle" on-tap="oPenApproved"></paper-icon-button>
+                        <!-- <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip> -->
                         <paper-dialog id="ApprovedApplication">
                             <h2>Approved Application?</h2>
                             <!-- <p>Continue delete the current application?</p> -->
                             <div class="buttons">
-                                <paper-button dialog-dismiss autofocus>No</paper-button>
+                                <paper-button dialog-dismiss>No</paper-button>
                                 <paper-button dialog-confirm autofocus on-tap="approveApp">Yes</paper-button>
                             </div>
                         </paper-dialog>
-                        <!-- <paper-dialog id="modal" class="docu">
-                            <!-- <h2>Status.</h2> -->
-                            <!-- <paper-button dialog-dismiss autofocus>No</paper-button>
-                                <paper-button dialog-confirm on-tap="_sendBriefcase">Yes</paper-button> -->
-                            <!-- <h2>Status.</h2> -->
-                            <!-- <div class="buttons"></div> -->
-                            <!-- <br>
-                            <div >
-                            <span id="saveSuccess" style="display: none; color: green;">Application Approved. Ref. {{applicationKey}}</span>
-                            <span id="saveFailed" style="display: none; color: red;">Error Approving Application. {{saveErrorDetails}}</span>    
-                            <paper-button dialog-dismiss autofocus>ok</paper-button>
-                            </div>
-                        </paper-dialog> -->
+                        <paper-dialog id="modal">
+                            <!-- <h2>Status.</h2> 
+                            <paper-button dialog-dismiss autofocus>No</paper-button>
+                                <paper-button dialog-confirm on-tap="_sendBriefcase">Yes</paper-button>-->
+                            <h2>Status.</h2>
+                            <!-- <div class="buttons"></div>  -->
+                            <!-- <br> -->
+                            <!-- <div > -->
+                            <span id="saveSuccess" style="display: none; color: green;">Successfully Approved. Ref. {{applicationKey}}</span>
+                            <span id="saveFailed" style="display: none; color: red;">Error Approving Application. {{saveErrorDetails}}</span>
+                            <a href="/applications" style="text-decoration:none">
+                                <paper-button dialog-dismiss style="float:right;">ok</paper-button>
+                            </a>
+                            <!-- </div> -->
+                        </paper-dialog>
 
                         <!-- <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteApplicationOpen"></paper-icon-button>
                         <paper-dialog id="deleteApplicationPD">
@@ -819,7 +827,7 @@
                 this.transTypeChange = true;
             },
             getpath() {
-                this.applicationKey = this.guid();
+                // this.applicationKey = this.guid();
                 this.path = 'applicationsNew/' + this.applicationKey;
                 return this.path;
             },
@@ -1008,7 +1016,7 @@
                         else {
                             var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
                             var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                            var favRightVar = Polymer.dom(this.root).querySelector("#favright");
+                            // var favRightVar = Polymer.dom(this.root).querySelector("#favright");
                             if (this.transactionKey) {
                                 var firebaseDb = this.$.idd.db;
                                 var firebaseDbRef = firebaseDb.ref();
@@ -1418,7 +1426,7 @@
                             //check reservations if current is expired, then check if there is prior reservation, then iscurrent=false
                             var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
                             var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                            var favRightVar = Polymer.dom(this.root).querySelector("#favright");
+                            // var favRightVar = Polymer.dom(this.root).querySelector("#favright");
                             if (this.fullLotData.status != 'available') {
                                 this.saveErrorDetails = 'Lot status has changed. Please check the status of the lot.';
                                 saveSuccess.setAttribute("style", "display: none; color: green;");
@@ -1428,35 +1436,38 @@
                                 // console.log(firebaseUpdate);
                                 firebaseDbRef.update(firebaseUpdate, function (error) {
                                     if (error) {
-                                        console.log("Error updating data:", error);
+                                        console.log("Error approving application:", error);
                                         this.saveErrorDetails = error;
                                         saveSuccess.setAttribute("style", "display: none; color: green;");
                                         saveFailed.setAttribute("style", "display: block; color: red;");
-                                        this.favlefthide = false;
-                                        this.favrighthide = true;
+                                        // this.favlefthide = false;
+                                        // this.favrighthide = true;
                                         // console.log('1');
                                     }
                                     else {
                                         this.saveErrorDetails = "";
                                         saveSuccess.setAttribute("style", "display: block; color: green;");
                                         saveFailed.setAttribute("style", "display: none; color: red;");
-                                        this.favlefthide = true;
-                                        this.favrighthide = true;
-                                        favRightVar.setAttribute("style", "display: none; background: #1976d2;");
+                                        // this.favlefthide = true;
+                                        // this.favrighthide = true;
+                                        // favRightVar.setAttribute("style", "display: none; background: #1976d2;");
                                         // console.log('2');
                                     }
                                 });
                             }
                         }
-                        // else {
-                        //     //transactionKey is missing
-                        //     var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                        //     this.saveErrorDetails = "Transaction Key is missing.";
-                        //     saveFailed.setAttribute("style", "display: block; color: red;");
-                        // }
-                        // this.$.modal.open();
+                        else {
+                            //transactionKey is missing
+                            var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+                            this.saveErrorDetails = "Transaction Key is missing.";
+                            saveFailed.setAttribute("style", "display: block; color: red;");
+                        }
+                        this.$.modal.open();
 
                     }
+                    Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "display:none");
+                    // this.favlefthide = true;
+                    // this.favrighthide = true;
                     var applicationsNew = firebase.database().ref().child("applicationsNew").child(this.transactionKey).remove();
                 }
                 // window.location="/applications"
