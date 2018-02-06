@@ -172,8 +172,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <div no-results>
                     Loading or no more items...
                   </div>
-                  <paper-datatable-column header="Account No" type="String" property="accountkey"></paper-datatable-column>
-                  <paper-datatable-column header="Name" type="Object" property="name" >
+                  <paper-datatable-column header="Account No" type="String" property="accountkey" sortable></paper-datatable-column>
+                  <paper-datatable-column header="Name" type="Object" property="name" sortable>
                     <template>
                       <span>[[value.firstname]]</span>
                       <span>[[value.middlename]]</span>
@@ -181,9 +181,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <span>[[value.suffix]]</span>
                     </template>
                   </paper-datatable-column>
-                  <paper-datatable-column header="Cellphone" type="String" property="cellphone"></paper-datatable-column>
-                  <paper-datatable-column header="Role" type="String" property="role"></paper-datatable-column>
-                  <paper-datatable-column header="Active" type="Boolean" property="active"></paper-datatable-column>
+                  <paper-datatable-column header="Cellphone" type="String" property="cellphone" sortable></paper-datatable-column>
+                  <paper-datatable-column header="Role" type="String" property="role" sortable></paper-datatable-column>
+                  <paper-datatable-column header="Active" type="Boolean" property="active" sortable></paper-datatable-column>
                 </paper-datatable>
               </paper-datatable-card>
 

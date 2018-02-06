@@ -185,7 +185,8 @@
                             <paper-icon-button class="menu" noink style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{newdata.reference}}</div>
-                        <paper-icon-button icon="my-icons:send" on-tap="sendBriefcaseOpen" title="send request"></paper-icon-button>
+                        <paper-icon-button icon="my-icons:send" on-tap="sendBriefcaseOpen" title="Send request"></paper-icon-button>
+                        <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteBriefcaseOpen" title="Delete briefcase draft"></paper-icon-button>
                         <paper-dialog id="sendBriefcasePD">
                             <h2>Send Request?</h2>
                             <!-- <p>Continue delete the current application?</p> -->
@@ -198,9 +199,16 @@
                         <paper-dialog id="modal">
                             <h2>Successfully sent.</h2>
                             <div class="buttons">
-                                    <a href="/briefcase" style="text-decoration:none">
-                                <paper-button dialog-confirm on-tap="_exit">Ok</paper-button>
-                                </a>
+                                <a href="/briefcase" style="text-decoration:none"><paper-button dialog-confirm>Ok</paper-button></a>
+                            </div>
+                        </paper-dialog>
+
+                        <paper-dialog id="deleteBriefcasePD">
+                            <h2>Delete briefcase draft?</h2>
+                            <!-- <p>Continue delete the current application?</p> -->
+                            <div class="buttons">
+                                <paper-button dialog-dismiss autofocus>No</paper-button>
+                                <paper-button dialog-confirm on-tap="deleteBriefcasePD">Yes</paper-button>
                             </div>
                         </paper-dialog>
 
@@ -365,7 +373,6 @@
                     value: false
                 },
                 newdata: Object,
-                accountKey:String,
                 transactionKey: {
                     type: String,
                     value: '',
@@ -377,9 +384,7 @@
             observers: [
                 'newdataChanged(newdata)'
             ],
-            // _accountKeyChanged(){
-            //     console.log(this.accountKey);
-            // },
+
             _getPrevRoute() {
                 return this.prevRoute || '/briefcasedraft'
             },
@@ -392,7 +397,7 @@
 
                     this.$.idd.disabled = false;
 
-                    console.log(this.transactionKey);
+                    // console.log(this.transactionKey);
                 }
             },
 
@@ -588,6 +593,13 @@
             sendBriefcaseOpen() {
                 this.$.sendBriefcasePD.open();
             },
+            deleteBriefcaseOpen() {
+                this.$.deleteBriefcasePD.open();
+            },
+            deleteBriefcasePD() {
+                var db = firebase.database().ref('briefcasedraft').child(this.accountKey).child(this.transactionKey).remove();
+                window.location = 'briefcase';
+            },
 
             _sendBriefcase() {
                 var options = {
@@ -607,7 +619,7 @@
                     var agent = this.newdata.agent,
                         agentdetails = this.newdata.agentdetails,
                         buyer = this.newdata.buyer;
-                        buyerdetails = this.newdata.buyerdetails,
+                    buyerdetails = this.newdata.buyerdetails,
                         expiry = this.newdata.expiry,
                         isdraft = false,
                         isserved = this.newdata.isserved,
@@ -621,7 +633,7 @@
                         status = this.newdata.status,
                         type = this.newdata.type,
                         timestamp = timestamp
-                        
+
                 }
                 var personRef = firebase.database().ref().child("briefcasedraft").child(agent).child(this.transactionKey).remove();
                 // personRef.once('value', function (snapshot) {
@@ -647,7 +659,7 @@
                     status: status,
                     timestamp: timestamp,
                     type: type,
-                   approved: false
+                    approved: false
                 };
                 var newPostKey = firebase.database().ref().child('briefcase').push().key;
 

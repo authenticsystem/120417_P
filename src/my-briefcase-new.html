@@ -199,11 +199,9 @@
                     <neon-animatable>
                         <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
 
-                        <firebase-query id="query" path="/accountlist" order-by-child="uid" equal-to="{{userid}}" data="{{agentsList}}" equal-to="user.uid"></firebase-query>
+                        <firebase-query id="query" path="/accountlist" order-by-child="uid" equal-to="{{userid}}" data="{{agentsList}}"></firebase-query>
 
-                        <!-- <firebase-query id="query" path="/users" data="{{user}}" order-by-child="{{uid}}" start-at="{{user.uid}}" end-at="{{user.uid}}"> -->
-
-                        <!-- <firebase-query id="query" path="/users" data="{{user}}" equal="{{user.uid}}"> -->
+                        <!-- <firebase-document id="query" path="/accountlist" data="{{agentsList}}" order-by-child="{{uid}}" equal-to="{userid}"></firebase-document> -->
 
                         <firebase-document id="fdColor"></firebase-document>
 
@@ -269,8 +267,8 @@
                                     <div class="card-actions" style="display: none;" id="cardActions">
                                         <paper-radio-group selected="{{draftdata_type}}">
                                             <paper-radio-button name="Hold" on-click="selectHold">Hold</paper-radio-button>
-                                            <!-- <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button> -->
-                                            <!-- <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button> -->
+                                            <!-- <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button>
+                                                <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button> -->
                                         </paper-radio-group>
 
                                         </br>
@@ -283,7 +281,8 @@
                                                 <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
                                                 <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
                                                 <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" type="datetime-local" no-label-float="true"
-                                                    value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
+                                                    value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}" style="display:inline-block"
+                                                    readonly></paper-input>
 
                                             </div>
                                             <!-- <div id="expiry" style="position: relative; padding-top: 16px;"> -->
@@ -340,30 +339,50 @@
 
                         <div class="docu">
                             <div class="docu-header">3. Finalize</div>
-
                             <div class="details">
-                                <div>Please review the following details:</div>
-                                <div>Block: {{block}}</div>
-                                <div>Lot: {{lot}}</div>
-                                <div>Level: {{level}}</div>
-                                <div>Area: {{fullLotData.area}}</div>
-                                <div>Designation: {{fullLotData.maprenderdetails.designation_name}}</div>
-                                <div>Type: {{fullLotData.maprenderdetails.type_name}}</div>
-                                <div>Transaction: {{draftdata_type}}</div>
-                                <div>Start: {{startDateTimeValue}}</div>
-                                <div>Expires: </div>
-                                <div>Buyer's First Name: {{draftdata_buyerdetails_firstname}}</div>
-                                <div>Buyer's Middle Name: {{draftdata_buyerdetails_middlename}}</div>
-                                <div>Buyer's Last Name: {{draftdata_buyerdetails_lastname}}</div>
-                                <div>Buyer's Suffix: {{draftdata_buyerdetails_suffix}}</div>
-                                <div>Buyer's Cellphone: {{draftdata_buyerdetails_cellphone}}</div>
-                                <div>Buyer's Email: {{draftdata_buyerdetails_email}}</div>
-                                <div>Agent's First Name: {{agentdetails_firstname}}</div>
-                                <div>Agent's Middle Name: {{agentdetails_middlename}}</div>
-                                <div>Agent's Last Name: {{agentdetails_lastname}}</div>
-                                <div>Agent's Suffix: {{agentdetails_suffix}}</div>
-                                <div>Agent's Cellphone: {{agentdetails_cellphone}}</div>
-                                <div>Agent's Email: {{agentdetails_email}}</div>
+                                    <div>Please review the following details:</div>
+                                <paper-card style="width:100%">
+                                    <div class="card-content">
+                                        <div>Block:
+                                            <b>{{block}}</b> - Lot:
+                                            <b>{{lot}}</b> - Level:
+                                            <b>{{level}}</b>
+                                        </div>
+                                        <div>Type:
+                                            <b>{{fullLotData.maprenderdetails.type_name}}</b> -- Area:
+                                            <b>{{fullLotData.area}}</b> -- Designation:
+                                            <b>{{fullLotData.maprenderdetails.designation_name}}</b>
+                                        </div>
+                                        <br>
+                                        <div>Transaction:
+                                            <b>{{draftdata_type}}</b>
+                                        </div>
+                                        <div>Start:
+                                            <b>{{startDateTimeValue}}</b>
+                                        </div>
+                                        <div>Expires:</div>
+                                        <hr style="margin-top:10px; margin-bottom:10px">
+                                        <div>Buyer's Fullname:
+                                            <b>{{draftdata_buyerdetails_firstname}}&nbsp;{{draftdata_buyerdetails_middlename}}&nbsp;{{draftdata_buyerdetails_lastname}}&nbsp;{{draftdata_buyerdetails_suffix}}</b>
+                                        </div>
+                                        <div>Buyer's Cellphone:
+                                            <b>{{draftdata_buyerdetails_cellphone}}</b>
+                                        </div>
+                                        <div>Buyer's Email:
+                                            <b>{{draftdata_buyerdetails_email}}</b>
+                                        </div>
+                                        <hr style="margin-top:10px; margin-bottom:10px">
+                                        <div>Agent's Fullname:
+                                            <b>{{agentdetails_firstname}}&nbsp;{{agentdetails_middlename}}&nbsp;{{agentdetails_lastname}}&nbsp;{{agentdetails_suffix}}</b>
+                                        </div>
+                                        <div>Agent's Cellphone:
+                                            <b>{{agentdetails_cellphone}}</b>
+                                        </div>
+                                        <div>Agent's Email:
+                                            <b>{{agentdetails_email}}</b>
+                                        </div>
+                                    </div>
+                                </paper-card>
 
                             </div>
                         </div>
@@ -371,7 +390,7 @@
 
                     <neon-animatable>
                         <div class="docu">
-                            <div class="docu-header">5. Completed</div>
+                            <div class="docu-header">4. Completed</div>
 
                             <div class="details">
                                 <paper-item>
@@ -417,11 +436,6 @@
         Polymer({
             is: 'my-briefcase-new',
             properties: {
-                account: String,
-                myaccount: {
-                    type: Object,
-                },
-                userId: String,
                 blocklot: String,
                 details: Object,
                 narrow: {
@@ -528,9 +542,8 @@
             //     console.log(this.newdata);
             //     }
             // },
-            // _UserChanged(){
-            //     console.log(this.user);
-            //     // this.draftdata_agentdetails_email = [0].user.email;
+            // _userchanged(){
+            //     this.draftdata_agentdetails_email = [0].user.email;
             // },
             // draftEmailChanged(e) {
             //     console.log(e)
@@ -547,7 +560,7 @@
                 this.favrighthide = this.isStartDateTimeInvalid;
                 this.isStartDateTimeInvalidGlobal = this.isStartDateTimeInvalid;
                 // console.log(this.isStartDateTimeInvalid);
-                // console.log(this.agentsList)
+                // console.log(this.user)
             },
             lastApplicationChanged() {
                 if (this.lastApplication[0]) {
@@ -654,24 +667,24 @@
             agentsListChanged(e) {
                 var user = firebase.auth().currentUser;
                 this.userid = user.uid;
-                email = user.email;
+                this.email = user.email;
                 // console.log(e);
                 // if (e) {
-                    if (e.length > 0) {
-                        this.accountkey = e[0].accountkey;
-                        this.agentdetails_cellphone = e[0].cellphone;
-                        this.agentdetails_firstname = e[0].name.firstname;
-                        this.agentdetails_middlename = e[0].name.middlename;
-                        this.agentdetails_lastname = e[0].name.lastname;
-                        this.agentdetails_suffix = e[0].name.suffix;
-                        // console.log(this.accountkey);
-                        this.agentdetails_email = email;
-                        // console.log(this.accountkey);
-                    }
+                // console.log(e);
+                if (e.length > 0) {
+                    this.accountkey = e[0].accountkey;
+                    this.agentdetails_cellphone = e[0].cellphone;
+                    this.agentdetails_firstname = e[0].name.firstname;
+                    this.agentdetails_middlename = e[0].name.middlename;
+                    this.agentdetails_lastname = e[0].name.lastname;
+                    this.agentdetails_suffix = e[0].name.suffix;
+                    this.agentdetails_email = this.email;
+                    // console.log(this.accountkey);
+                    // }
                     // else {
                     //     this.accountkey = '';
                     // }
-                // }
+                }
                 // else {
                 //     this.accountkey = '';
                 // }
@@ -962,7 +975,7 @@
                                         middlename: this.agentdetails_middlename,
                                         lastname: this.agentdetails_lastname,
                                         suffix: this.agentdetails_suffix,
-                                        email: email,
+                                        email: this.agentdetails_email,
                                         cellphone: this.agentdetails_cellphone
                                     },
                                     buyer: this.buyerKey,
@@ -976,22 +989,20 @@
                                     },
                                     expiry: '',
                                     isdraft: true,
-                                    approval: 'Request for Hold',
                                     isserved: 'false',
                                     lot: this.fullLot,
                                     lotdetails: this.fullLotData,
                                     processed: '',
                                     processordetails: '',
                                     served: '',
-                                    iscurrent: '',
                                     start: this.startDateTimeValue,
                                     status: '',
                                     timestamp: { ".sv": "timestamp" },
-                                    type:'Hold',
+                                    type: 'Hold',
                                     reference: this.applicationKey
                                 };
                                 var draftBuyer = {
-                                    firstname: this.draftdata_buyerdetails_firstname,   
+                                    firstname: this.draftdata_buyerdetails_firstname,
                                     middlename: this.draftdata_buyerdetails_middlename,
                                     lastname: this.draftdata_buyerdetails_lastname,
                                     suffix: this.draftdata_buyerdetails_suffix,
@@ -1003,14 +1014,16 @@
                                     middlename: this.agentdetails_middlename,
                                     lastname: this.agentdetails_lastname,
                                     suffix: this.agentdetails_suffix,
-                                    email: email,
-                                    cellphone: this.agentdetails_cellphone
+                                    email: this.agentdetails_email,
+                                    cellphone: this.agentdetails_cellphone,
                                 };
+
                                 var firebaseDb = this.$.idd.db;
                                 var firebaseDbRef = firebaseDb.ref();
                                 var firebaseUpdate = {};
-                                var transactionPush = firebaseDbRef.child('briefcasedraft').push();
+                                var transactionPush = firebaseDbRef.child("briefcasedraft").push();
                                 this.transactionKey = transactionPush.key;
+
                                 if (this.transactionKey) {
                                     //save to /applications/{id}
                                     firebaseUpdate["/briefcasedraft/" + this.accountkey + "/" + this.transactionKey] = draftdata;
@@ -1027,12 +1040,80 @@
                                     if (this.accountkey) {
                                         //save to /agents/{new id}
                                         firebaseUpdate["/agents/" + this.accountkey] = draftAgent;
+                                        // console.log(this.accountkey);
                                     }
                                     else {
                                         this.saveErrorDetails = "Agent Key is empty.";
                                         saveSuccess.setAttribute("style", "display: none; color: green;");
                                         saveFailed.setAttribute("style", "display: block; color: red;");
                                     }
+
+
+                                    //how to get last two reservation with iscurrent and not iscurrent
+                                    //what if there is no iscurrent but there is a reservation???
+                                    //--- no need to get the current iscurrent=true, we just need the last-reservation to check if we can set the current reservation as iscurrent
+                                    // applications filter
+                                    // edit
+                                    // save to application and conditionally to Reservations & Lot Details Reservation
+                                    // ---check for applications in-line and determine the start date and time
+                                    // ---save to reservation will be after checking of docs approval
+                                    // midnight update
+                                    //will be transferred later, when docs checking and approval are up
+                                    //save to /reservations/{new id}
+                                    // var isCurrentReservation = false;
+                                    // if (this.lastReservation) {
+                                    //     if (this.lastReservation.length > 0) {
+                                    //         //check if this.lastReservation is expired, check for previous reservation --done thru query
+                                    //         isCurrentReservation = false;
+                                    //     }
+                                    //     else {
+                                    //         isCurrentReservation = true;
+                                    //     }
+                                    // }
+                                    // else {
+                                    //     isCurrentReservation = true;
+                                    // }
+                                    // // console.log(this.lastReservation);
+                                    // var dataForReservation = {
+                                    //     agent: this.agentKey,
+                                    //     agentdetails: {
+                                    //         firstname: this.draftdata_agentdetails_firstname,
+                                    //         middlename: this.draftdata_agentdetails_middlename,
+                                    //         lastname: this.draftdata_agentdetails_lastname,
+                                    //         suffix: this.draftdata_agentdetails_suffix,
+                                    //         email: this.draftdata_agentdetails_email,
+                                    //         cellphone: this.draftdata_agentdetails_cellphone
+                                    //     },
+                                    //     buyer: this.buyerKey,
+                                    //     buyerdetails: {
+                                    //         firstname: this.draftdata_buyerdetails_firstname,
+                                    //         middlename: this.draftdata_buyerdetails_middlename,
+                                    //         lastname: this.draftdata_buyerdetails_lastname,
+                                    //         suffix: this.draftdata_buyerdetails_suffix,
+                                    //         cellphone: this.draftdata_buyerdetails_cellphone,
+                                    //         email: this.draftdata_buyerdetails_email
+                                    //     },
+                                    //     expiry: this.expiryDate,
+                                    //     isexpired: false,
+                                    //     start: this.startDateTimeValue,
+                                    //     timestamp: { ".sv": "timestamp" },
+                                    //     iscurrent: isCurrentReservation,
+                                    //     type: (this.draftdata_type === 'Reserve' ? 'reserved' :
+                                    //         this.draftdata_type === 'Hold' ? 'hold' :
+                                    //             this.draftdata_type === 'Buy' ? 'sold' : ''),
+                                    //     reference: this.applicationKey
+                                    // };
+                                    // firebaseUpdate["/reservations/" + this.fullLot + "/" + this.transactionKey] = dataForReservation;
+                                    // if (isCurrentReservation == true) {
+                                    //     firebaseUpdate["/lots/" + this.fullLot + "/reservation"] = this.transactionKey;
+                                    //     firebaseUpdate["/lots/" + this.fullLot + "/reservationdetails"] = dataForReservation;
+                                    //     firebaseUpdate["/lots/" + this.fullLot + "/status"] = (this.draftdata_type === 'Reserve' ? 'reserved' : this.draftdata_type === 'Hold' ? 'hold' : this.draftdata_type === 'Buy' ? 'sold' : '');
+                                    //     firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = this.transTypeCorrespondingColor.name;
+                                    //     firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = this.transTypeCorrespondingColor.bg_color;
+                                    //     firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = this.transTypeCorrespondingColor.fore_color;
+                                    //shb 01/04
+                                    //for lots with level/map_lot: check other lots by map_lot, compare and get winning map_lot status
+                                    //get lots thru map_lot
                                     // if (this.fullLotData.level) {
                                     //     var otherLotsRef = this.$.fdColor.db.ref('lots');
                                     //     var otherLotMapLot = 'block' + this.fullLotData.block + 'lot' + this.fullLotData.lot;
@@ -1074,6 +1155,11 @@
                                     //         }
                                     //     });
                                     // }
+                                    // }
+
+
+                                    //if ok, update bg_color, status_name
+                                    //check reservations if current is expired, then check if there is prior reservation, then iscurrent=false
                                     var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
                                     var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                                     var favRightVar = Polymer.dom(this.root).querySelector("#favright");
@@ -1106,14 +1192,18 @@
                                         });
                                     }
                                 }
+                                //end of transactionKey
                                 else {
                                     //transactionKey is missing
                                     var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                                     this.saveErrorDetails = "Transaction Key is missing.";
                                     saveFailed.setAttribute("style", "display: block; color: red;");
                                 }
+
                             }
+                            //end of else from complete
                         }
+                        //end of complete
                         else {
                             var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
                             this.saveErrorDetails = "Status color is not yet loaded, please re-select transaction type.";
@@ -1140,6 +1230,9 @@
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: green;");
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:done");
                         }
+                        else {
+                            this.favlefthide = true;
+                        }
                     }
                 }
                 else {
@@ -1147,6 +1240,11 @@
                     this.favlefthide = true;
                     this.favrighthide = false;
                 }
+                //create or update /lot & /isdraft values
+                // if (this.fullLot) {
+                //     this.$.idd.setStoredValue(this.path + '/lot', this.fullLot);
+                //     this.$.idd.setStoredValue(this.path + '/isdraft', true);
+                // }
             },
             _rdChanged(newData, oldData) {
                 this.fromRD = true;
@@ -1175,6 +1273,6 @@
                 // var shortid = new shortid();
                 return uid.randomUUID(8);
             }
-        })  
+        })
     </script>
 </dom-module>

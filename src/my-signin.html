@@ -12,6 +12,7 @@
 <link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/neon-animation/web-animations.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 
@@ -86,9 +87,9 @@
                 color: white;
             }
 
-            paper-button.green[active] {
+            /* paper-button.green[active] {
                 background-color: var(--paper-red-500);
-            }
+            } */
         </style>
         <firebase-auth id="auth" user="{{user}}" provider="password" on-error="handleError"></firebase-auth>
         <div class="main-container">
@@ -122,8 +123,9 @@
                     </paper-menu-button>
                 </div>
                 <div class="action">
-                    <paper-button on-tap="_signIn" toggles raised class="custom green">Next</paper-button>
+                    <paper-button on-tap="_signIn" id="next" toggles raised class="green">Next</paper-button>
                 </div>
+                <paper-spinner id="spinnerNext" active style="float:right; margin-right:10px; display:none"></paper-spinner>
             </div>
             <!-- <paper-button on-tap="_signIn" toggles raised class="custom green">Sign In</paper-button>
             <div style="margin-top:5px">
@@ -149,6 +151,25 @@
     <script>
         Polymer({
             is: 'my-signin',
+            properties:{
+                email:{
+                    type: String,
+                    observer: 'emailChanged'
+                },
+                password:{
+                    type: String,
+                    observer: 'passwordChanged'
+                }
+            },
+            emailChanged(){
+                Polymer.dom(this.root).querySelector("#spinnerNext").style.display="none";
+                Polymer.dom(this.root).querySelector("#next").disabled=false;
+            },
+
+            passwordChanged(){
+                Polymer.dom(this.root).querySelector("#spinnerNext").style.display="none";
+                Polymer.dom(this.root).querySelector("#next").disabled=false;
+            },
 
             handleError() {
                 var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
@@ -172,6 +193,8 @@
 
             _signIn() {
                 // this.$.auth.createUserWithEmailAndPassword('hbsantillan@yahoo.com', '1'); 
+                Polymer.dom(this.root).querySelector("#spinnerNext").style.display="block";
+                Polymer.dom(this.root).querySelector("#next").disabled=true;
                 if (!this.email || !this.password) {
                     var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
                     errormsg.setAttribute("style", "font-size:12px; display: block; background-color:red; color:white; text-align:center; border-radius: 5px; opacity:0.5; padding:5px");

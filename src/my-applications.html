@@ -234,6 +234,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <div main-title hidden$="{{access}}">Opps!</div>
                   <paper-icon-button class="menu" icon="my-icons:search" drawer-toggle on-tap="toggleSearch"></paper-icon-button>
                 </app-toolbar>
+
                 <paper-tabs selected="{{selectedPage}}" scrollable fit-container id="tool1">
                   <paper-tab>New
                     <paper-badge label="{{countAppNew}}"></paper-badge>
@@ -244,8 +245,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </paper-tabs>
               </template>
             </app-header>
-
-
 
             <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
               <neon-animatable>

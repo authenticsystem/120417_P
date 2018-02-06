@@ -36,7 +36,7 @@
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 
 
-<dom-module id="my-briefcase-edit">
+<dom-module id="my-briefcaseapplied-edit">
     <template>
         <style include="shared-styles">
             :host {
@@ -210,7 +210,7 @@
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
                         <!-- for current Transaction Keys data -->
-                        <firebase-document id="transactionFire" path="/briefcasedraft/{{accountKey}}/{{transactionKey}}" data="{{transactionData}}"
+                        <firebase-document id="transactionFire" path="/briefcase/{{accountKey}}/{{transactionKey}}" data="{{transactionData}}"
                             disabled="true"></firebase-document>
 
                         <!-- for Lot Details when entering Block, Lot, Level -->
@@ -433,7 +433,7 @@
 
     <script>
         Polymer({
-            is: 'my-briefcase-edit',
+            is: 'my-briefcaseapplied-edit',
 
             properties: {
                 blocklot: String,
@@ -1051,7 +1051,7 @@
 
             getpath() {
                 this.applicationKey = this.guid();
-                this.path = 'briefcasedraft/' + this.applicationKey;
+                this.path = 'briefcase/' + this.applicationKey;
                 return this.path;
             },
 
@@ -1406,10 +1406,12 @@
                                     status: this.transactionData.status, //get value from current
                                     timestamp: { ".sv": "timestamp" },
                                     type: this.transactionData.type,
-                                    reference: this.applicationKey
+                                    reference: this.applicationKey,
+                                    approved: false
                                 };
                                 //save to /applications/{id}
-                                firebaseUpdate["/briefcasedraft/" + this.accountKey + "/" + this.transactionKey] = draftdata;
+                                firebaseUpdate["/briefcase/" + this.accountKey + "/" + this.transactionKey] = draftdata;
+                                firebaseUpdate["/applicationsNew/" + this.transactionKey] = draftdata;
 
                                 var draftBuyer = {
                                     firstname: this.draftdata_buyerdetails_firstname,
