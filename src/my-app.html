@@ -218,7 +218,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <!-- NOTICE!!! -->
 
-    <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth>
+    <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="password" on-error="showError"></firebase-auth>
 
     <template is="dom-if" if="{{_needToSignIn(user,statusKnown)}}">
       <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
@@ -359,15 +359,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
                 <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]"></my-applications>
                 <my-briefcase name="briefcase" access="{{appAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-briefcase>
-                <my-briefcase-draft name="briefcase-draft" access="{{appAccess}}" route="[[subroute]]"></my-briefcase-draft>
                 <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
                 <my-accountlist name="accountlist" access="{{accountAccess}}" route="[[subroute]]"></my-accountlist>
-                <!-- <my-view3 name="view3"></my-view3> -->
                 <my-view404 name="view404"></my-view404>
               </iron-pages>
             </app-drawer-layout>
           </template>
+
         </template>
+        
       </template>
 
       <!-- alert dialog photoUrl-->
@@ -484,8 +484,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           },
           isActive: {
             type: Boolean,
-            value: false,
-            notify: true
           },
           // hasAccount: {
           //   type: Boolean,
@@ -526,6 +524,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.accountAccess = true;
               }
             }
+          }
+          else{
+            this.isActive = false;
           }
         }
       }

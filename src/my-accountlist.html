@@ -149,25 +149,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <paper-button dialog-confirm on-tap="delete">Yes</paper-button>
                 </div>
               </paper-dialog> -->
-
-                <paper-dialog id="deactivateAccount">
-                  <br>
-                  <h3>Deactivate account?</h3>
-                  <div class="buttons">
-                    <paper-button dialog-dismiss autofocus>No</paper-button>
-                    <paper-button dialog-confirm on-tap="deactivate">Yes</paper-button>
-                  </div>
-                </paper-dialog>
-
-                <paper-dialog id="activateAccount">
-                  <br>
-                  <h3>Activate account?</h3>
-                  <div class="buttons">
-                    <paper-button dialog-dismiss autofocus>No</paper-button>
-                    <paper-button dialog-confirm on-tap="activate">Yes</paper-button>
-                  </div>
-                </paper-dialog>
-
                 <paper-datatable data="{{account}}" id="datatable" header-fixed multi-selection selectable selected-items="{{selectedItem}}">
                   <div no-results>
                     Loading or no more items...
@@ -211,6 +192,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <paper-toast id="toast" text="{{txt}}"></paper-toast>
     </template>
+
+    <paper-dialog id="deactivateAccount">
+        <br>
+        <h3>Deactivate account?</h3>
+        <div class="buttons">
+          <paper-button dialog-dismiss autofocus>No</paper-button>
+          <paper-button dialog-confirm on-tap="deactivate">Yes</paper-button>
+        </div>
+      </paper-dialog>
+
+      <paper-dialog id="activateAccount">
+        <br>
+        <h3>Activate account?</h3>
+        <div class="buttons">
+          <paper-button dialog-dismiss autofocus>No</paper-button>
+          <paper-button dialog-confirm on-tap="activate">Yes</paper-button>
+        </div>
+      </paper-dialog>
   </template>
 
   <script> 
