@@ -316,7 +316,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>Briefcase</span>
                       </paper-icon-item>
                     </a> -->
-                    <a style$="{{access(appAccess)}}" name="briefcase" href="[[rootPath]]briefcase">
+                    <a style$="{{access(briefcaseAccess)}}" name="briefcase" href="[[rootPath]]briefcase">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:work" slot="item-icon"></iron-icon>
                         <span>Briefcase</span>
@@ -358,8 +358,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-dashboard name="dashboard" access="{{dashAccess}}"></my-dashboard>
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
                 <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]"></my-applications>
-                <my-briefcase name="briefcase" access="{{appAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-briefcase>
-                <my-briefcase-draft name="briefcase-draft" access="{{appAccess}}" route="[[subroute]]"></my-briefcase-draft>
+                <my-briefcase name="briefcase" access="{{briefcaseAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-briefcase>
+                <!-- <my-briefcase-draft name="briefcase-draft" access="{{appAccess}}" route="[[subroute]]"></my-briefcase-draft> -->
                 <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
                 <my-accountlist name="accountlist" access="{{accountAccess}}" route="[[subroute]]"></my-accountlist>
                 <!-- <my-view3 name="view3"></my-view3> -->
@@ -478,6 +478,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean,
             value: false
           },
+          briefcaseAccess: {
+            type: Boolean,
+            value: false
+          },
           appAccess: {
             type: Boolean,
             value: false
@@ -497,7 +501,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get observers() {
         return [
-          '_routePageChanged(routeData.page, user, isActive)'
+          '_routePageChanged(routeData.page, user, isActive)',
+          
         ];
       }
 
@@ -525,8 +530,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               if (this.myaccount[0].access.accountlist == true) {
                 this.accountAccess = true;
               }
+              if (this.myaccount[0].access.briefcase == true) {
+                this.briefcaseAccess = true;
+              }
             }
           }
+          
+
         }
       }
 
@@ -592,9 +602,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   }
                 }
               }
-              else {
-                this.page = page || 'account-deactivated';
-              }
+              // else {
+              //   this.page = page || 'account-deactivated';
+              // }
             }
             else {
               this.page = page || 'account-link';
@@ -606,6 +616,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         else {
           this.page = page || 'landing-page';
+          // this.page = page || 'account-deactivated';
         }
 
         // Close a non-persistent drawer when the page & route are changed.
