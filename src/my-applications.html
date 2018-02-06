@@ -201,8 +201,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div>
         <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
         <!-- <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route> -->
-        <app-route route="{{route}}" pattern="/view/:key" tail="{{viewRoute}}" data="{{viewData}}" active="{{viewActive}}"></app-route>
-        <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
+        <app-route route="{{route}}" pattern="/new/:key" tail="{{viewThisRoute}}" data="{{viewThisData}}" active="{{viewThisActive}}"></app-route>
+        <!-- <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route> -->
 
         <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
         <div hidden$="{{!applicationActive}}">
@@ -333,10 +333,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
 
         <template is="dom-if" if="{{access}}">
-          <div hidden$="{{!detailActive}}">
+          <div hidden$="{{!viewThisActive}}">
             <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
-            <div id="appdetail"></div>
-            <my-applied-view id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"></my-applied-view>
+            <div id="viewThis"></div>
+            <my-applied-view id="d26" transaction-key='{{viewThisData.key}}' prev-route="{{route.prefix}}"></my-applied-view>
             <!-- [[detailData.key]] -->
             <!-- </template> -->
           </div>
@@ -348,13 +348,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <!-- </template> -->
           </div>
 
-          <div hidden$="{{!viewActive}}">
-            <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
-            <div id="appview"></div>
-            <my-applied-view id="d26" transaction-key='{{viewData.key}}' prev-route="{{route.prefix}}"></my-applied-view>
-            <!-- [[detailData.key]] -->
-            <!-- </template> -->
-          </div>
+          
 
         </template>
       </div>
@@ -719,7 +713,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
       _getViewThisLink(e) {
-        return '/applications/view/' + e.toString();
+        return '/applications/new/' + e.toString();
       },
       _getViewDetailsLink(e) {
         return '/applications/detail/' + e.toString();
@@ -765,9 +759,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      _viewThis(e) {
+      viewThis(e) {
         var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-        var node = Polymer.dom(this.root).querySelector("#appview");
+        var node = Polymer.dom(this.root).querySelector("#viewThis");
         if (node) {
           var oldDiv = Polymer.dom(node.parentNode).querySelector("#d26");
           if (oldDiv) {
@@ -778,7 +772,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           newDiv.setAttribute("transaction-key", data_args)
           newDiv.setAttribute("prev-route", this.route.prefix);
           //if open existing
-          var currentDiv = document.getElementById("appview");
+          var currentDiv = document.getElementById("viewThis");
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       }
