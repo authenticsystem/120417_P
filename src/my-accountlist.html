@@ -292,6 +292,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       //     this.$.datatable.deselectAll();
       //   }
       // },
+      _deactivateSelected() {
+        this.$.deactivateAccount.open();
+      },
+
+      _activateSelected() {
+        this.$.activateAccount.open();
+      },
 
       deactivate() {
         if (this.selectedItems.length > 0) {
@@ -317,13 +324,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       //   this.$.deleteAccount.open();
       // },
 
-      _deactivateSelected() {
-        this.$.deactivateAccount.open();
-      },
-
-      _activateSelected() {
-        this.$.activateAccount.open();
-      },
 
       _selectedItemChanged() {
         if (this.selectedItem.length > 0) {
