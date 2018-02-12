@@ -185,7 +185,7 @@
                             <paper-icon-button class="menu" noink style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{newdata.reference}}</div>
-                        <paper-icon-button icon="my-icons:send" on-tap="sendBriefcaseOpen" title="Send request"></paper-icon-button>
+                        <!-- <paper-icon-button icon="my-icons:send" on-tap="sendBriefcaseOpen" title="Send request"></paper-icon-button> -->
                         <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteBriefcaseOpen" title="Delete briefcase draft"></paper-icon-button>
                         <paper-dialog id="sendBriefcasePD">
                             <h2>Send Request?</h2>
@@ -260,7 +260,7 @@
 
                                         <!-- style="padding-top: 8px;" -->
                                         <div style="padding-top: 5px;">
-                                            <div style="font-size: 12px; color: gray;margin-bottom: -.3em">{{statusLabel}}</div>
+                                            <div style="font-size: 12px; color: gray;margin-bottom: -.3em">{{transactionLabel}}</div>
                                             <span id="type">
                                                 [[newdata.type]]
                                             </span>
@@ -416,7 +416,8 @@
                     this.areaLabel = "Area";
                     this.designationLabel = "Designation";
                     this.typeLabel = "Type";
-                    this.statusLabel = "Transaction";
+                    this.transactionLabel = "Transaction";
+                    this.statusLabel = "Current status";
 
                     if (this.newdata.type === 'Hold') {
                         Polymer.dom(this.root).querySelector("#type").setAttribute("style", "font-weight: 400; background: #E65100; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; ");
@@ -622,6 +623,7 @@
                     buyerdetails = this.newdata.buyerdetails,
                         expiry = this.newdata.expiry,
                         isdraft = false,
+                        isapproved = false,
                         isserved = this.newdata.isserved,
                         lot = this.newdata.lot,
                         lotdetails = this.newdata.lotdetails,
@@ -632,7 +634,7 @@
                         start = this.startDateTimeValue,
                         status = this.newdata.status,
                         type = this.newdata.type,
-                        timestamp = timestamp
+                        timestamp = { ".sv": "timestamp" }
 
                 }
                 var personRef = firebase.database().ref().child("briefcasedraft").child(agent).child(this.transactionKey).remove();
@@ -647,7 +649,6 @@
                     buyer: buyer,
                     buyerdetails: buyerdetails,
                     expiry: expiry,
-                    isdraft: isdraft,
                     isserved: isserved,
                     lot: lot,
                     lotdetails: lotdetails,
@@ -659,7 +660,8 @@
                     status: status,
                     timestamp: timestamp,
                     type: type,
-                    approved: false
+                    isapproved: isapproved,
+                    isdraft: isdraft
                 };
                 var newPostKey = firebase.database().ref().child('briefcase').push().key;
 

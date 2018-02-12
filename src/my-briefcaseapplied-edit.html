@@ -297,14 +297,14 @@
                                     </br>
                                     <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
                                         <div id="start">
-                                            <span style="color: blue;">Date:</span>
+                                            <!-- <span style="color: blue;">Date:</span> -->
                                             <!-- <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker> -->
 
                                             <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
                                             <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
                                                 <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
                                             <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}" type="datetime-local"
-                                                no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
+                                                no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}" readonly></paper-input>
 
                                         </div>
                                         <!-- <div id="expiry" style="position: relative; padding-top: 16px;"> -->
@@ -710,8 +710,20 @@
                         this.lot = this.transactionData.lotdetails.lot;
                         this.level = this.transactionData.lotdetails.level;
                     }
-                    this.startDateTimeValue = this.transactionData.start;
-                    this.expiryDate = this.transactionData.expiry;
+
+                    var serverdatetime = firebase.database().ref("info/serverdatetime");
+                    serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
+                    serverdatetime.once('value').then(snapshot => {
+                        var ddate = new Date(snapshot.val());
+
+                        this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                            + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
+                        this.expiryDate = this.transactionData.expiry;
+                    });
+
+                    // this.startDateTimeValue = this.transactionData.start;
+                    // this.expiryDate = this.transactionData.expiry;
 
                     // this.minStartDateTime = this.transactionData.start; // still to determine
                     // this.maxStartDateTime = this.transactionData.expiry; // still to determine
@@ -952,7 +964,7 @@
                     this.draftdata_agentdetails_lastname = e[0].lastname;
                     this.draftdata_agentdetails_suffix = e[0].suffix;
                     this.draftdata_agentdetails_email = e[0].email;
-                    // console.log(this.agentKey);
+                    // console.log(e[0].$key);
                 }
                 // else {
                 //     this.agentKey = '';
@@ -1395,7 +1407,6 @@
                                         email: this.draftdata_buyerdetails_email
                                     },
                                     expiry: '',
-                                    isdraft: true,
                                     isserved: this.transactionData.isserved, //get value from current
                                     lot: this.fullLot,
                                     lotdetails: this.fullLotData,

@@ -28,6 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
@@ -236,7 +237,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </app-toolbar>
 
                 <paper-tabs selected="{{selectedPage}}" scrollable id="tool1">
-                  <paper-tab>New
+                  <paper-tab>
+                    <div style="display:inline-block">
+                      <span style="margin-right:30px">New</span>
+                      <paper-badge label="{{countAppNew}}"></paper-badge>
+                    </div>
                     <!-- <paper-badge label="{{countAppNew}}"></paper-badge> -->
                   </paper-tab>
                   <paper-tab>Approved
@@ -251,9 +256,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               <neon-animatable>
                 <firebase-query id="query" path="/applicationsNew" data="{{applicationsNew}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
-                  end-at="{{typeValue}}" limit-to-first="50">
+                  end-at="{{typeValue}}" limit-to-last="50">
                 </firebase-query>
-                <iron-scroll-document id="document">
+                <iron-scroll-document id="threshold">
 
                   <template is="dom-if" if="{{!access}}">
                     <div class="card">
@@ -263,7 +268,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </template>
 
                   <template is="dom-if" if="{{access}}">
-                    <iron-list items="[[applicationsNew]]" as="item" selection-enabled multi-selection scroll-target="document">
+                    <iron-list items="[[applicationsNew]]" as="item" selection-enabled multi-selection scroll-target="threshold">
                       <div style="text-align:center">{{msg}}</div>
                       <paper-toast id="toast" text="" duration="0"></paper-toast>
                       <template>
@@ -281,10 +286,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                     <paper-item on-tap="_viewThis" id="{{item.$key}}">View</paper-item>
                                   </paper-listbox>
                                 </paper-menu-button>-->
+
                                 <paper-icon-button id="{{item.$key}}" noink on-tap="_viewThis" data-args="{{item.$key}}" icon="my-icons::open-in-new" alt="{{item.$key}}"
                                   style="display:inline-block;position: absolute;  right: 10px; color: white; top:8px;"></paper-icon-button>
                                 <paper-tooltip for="{{item.$key}}" position="bottom">View</paper-tooltip>
                               </a>
+                              <!-- <a style="text-decoration:none">
+                                <paper-icon-button id="{{item}}" on-tap="_openApproveApp" data-args="{{item.$key}}" icon="my-icons::assignment-turned-in"
+                                  alt="{{item}}" style="display:inline-block;position: absolute;  right: 10px; color: white; top:8px;"
+                                  title="Approve"></paper-icon-button>
+                              </a> -->
                             </div>
                           </div>
 
@@ -294,13 +305,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </iron-list>
                   </template>
                 </iron-scroll-document>
+
+                <paper-dialog id="approvedApp">
+
+                  <div hidden id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
+                    <div id="start">
+                      <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
+                      <paper-input readonly id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}"
+                        type="datetime-local" no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
+                    </div>
+                  </div>
+
+                  <div id="expiry" style="position: relative; padding-top: 16px;">
+                    <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon>
+                    <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span>
+                    <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input>
+                    <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span>
+                    <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span>
+                  </div>
+                  <div class="buttons">
+                    <paper-button dialog-dismiss>Cancel</paper-button>
+                    <paper-button hidden$="{{!expiryHoursDaysValue}}"autofocus on-tap="_approveApp">Approve</paper-button>
+                  </div>
+                </paper-dialog>
+
               </neon-animatable>
 
               <neon-animatable>
                 <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
                   end-at="{{typeValue}}" limit-to-last="50">
                 </firebase-query>
-                <iron-scroll-document id="document">
+                <iron-scroll-document id="threshold">
 
                   <template is="dom-if" if="{{!access}}">
                     <div class="card">
@@ -310,7 +345,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </template>
 
                   <template is="dom-if" if="{{access}}">
-                    <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="document">
+                    <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
                       <div style="text-align:center">{{msg}}</div>
                       <paper-toast id="toast" text="" duration="0"></paper-toast>
                       <template>
@@ -448,6 +483,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: false,
           notify: true
         },
+        isStartDateTimeInvalidGlobal: Boolean,
         // selectedLabel: {
         //   type: String,
         //   value: 'By Lot'
@@ -463,6 +499,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '_searchChanged(filterBy, search)',
         '_applicationChanged(applications.*)',
         '_applicationsNewChanged(applicationsNew.*)',
+        'startDateTimeValueChanged(startDateTimeValue,expiryHoursDaysValue)',
         'selectedPageChanged(selectedPage)'
       ],
       ready() {
@@ -665,6 +702,282 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //if open existing
           var currentDiv = document.getElementById("appview");
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+        }
+      },
+
+      _openApproveApp(e) {
+        this.$.approvedApp.open();
+        var transkey = Polymer.dom(e).rootTarget.getAttribute("alt");
+        data = JSON.parse(transkey);
+
+        this.startDateTimeValue = new Date();
+        this.expiryDate = data.expiry;
+      },
+      startDateTimeValueChanged() {
+        var xdate = new Date(this.$.startDateTimeValueV.value);
+        xdate.setHours(xdate.getHours() + Number(this.expiryHoursDaysValue));
+        this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+        this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
+          + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+        if (this.maxStartDateTime) {
+          var maxSDate = new Date(this.maxStartDateTime);
+          if (xdate <= maxSDate) {
+            this.isStartDateTimeInvalid = false;
+          }
+          else {
+            this.isStartDateTimeInvalid = true;
+          }
+        }
+      },
+      _approveApp() {
+        var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/hold');
+        transTypeCorrespondingColorRef.on('value', snapshot => {
+          if (snapshot.exists()) {
+            this.transTypeCorrespondingColor = snapshot.val()
+          }
+        });
+        if (this.transTypeCorrespondingColor) {
+          if (this.isStartDateTimeInvalidGlobal == true) {
+            var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+            this.saveErrorDetails = "Start date conflict, please change the start date accordingly.";
+            saveFailed.setAttribute("style", "display: block; color: red;");
+          }
+          else {
+            // this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
+            this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
+            var draftdata = {
+              agent: this.agentKey,
+              agentdetails: {
+                firstname: this.draftdata_agentdetails_firstname,
+                middlename: this.draftdata_agentdetails_middlename,
+                lastname: this.draftdata_agentdetails_lastname,
+                suffix: this.draftdata_agentdetails_suffix,
+                email: this.draftdata_agentdetails_email,
+                cellphone: this.draftdata_agentdetails_cellphone
+              },
+              buyer: this.buyerKey,
+              buyerdetails: {
+                firstname: this.draftdata_buyerdetails_firstname,
+                middlename: this.draftdata_buyerdetails_middlename,
+                lastname: this.draftdata_buyerdetails_lastname,
+                suffix: this.draftdata_buyerdetails_suffix,
+                cellphone: this.draftdata_buyerdetails_cellphone,
+                email: this.draftdata_buyerdetails_email
+              },
+              expiry: this.expiryDate,
+              isdraft: false,
+              isapproved: true,
+              isserved: 'false',
+              lot: this.fullLot,
+              lotdetails: this.fullLotData,
+              processed: '',
+              processordetails: '',
+              served: '',
+              start: this.startDateTimeValue,
+              status: 'Approved',
+              timestamp: { ".sv": "timestamp" },
+              type: this.draftdata_type,
+              reference: this.applicationKey
+            };
+            var draftBuyer = {
+              firstname: this.draftdata_buyerdetails_firstname,
+              middlename: this.draftdata_buyerdetails_middlename,
+              lastname: this.draftdata_buyerdetails_lastname,
+              suffix: this.draftdata_buyerdetails_suffix,
+              cellphone: this.draftdata_buyerdetails_cellphone,
+              email: this.draftdata_buyerdetails_email
+            };
+            var draftAgent = {
+              firstname: this.draftdata_agentdetails_firstname,
+              middlename: this.draftdata_agentdetails_middlename,
+              lastname: this.draftdata_agentdetails_lastname,
+              suffix: this.draftdata_agentdetails_suffix,
+              email: this.draftdata_agentdetails_email,
+              cellphone: this.draftdata_agentdetails_cellphone
+            };
+            var firebaseDb = this.$.idd.db;
+            var firebaseDbRef = firebaseDb.ref();
+            var firebaseUpdate = {};
+            var transactionPush = firebaseDbRef.child('applications').push();
+            // this.transactionKey = transactionPush.key;
+            if (this.transactionKey) {
+              // console.log(this.transactionKey);
+              //save to /applications/{id}
+              firebaseUpdate["/applications/" + this.transactionKey] = draftdata;
+              firebaseUpdate["/briefcase/" + this.agentKey + "/" + this.transactionKey] = draftdata;
+              //this.path
+              if (this.buyerKey) {
+                //save to /buyers/{new id}
+                firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
+              }
+              else {
+                this.saveErrorDetails = "Buyer Key is empty.";
+                saveSuccess.setAttribute("style", "display: none; color: green;");
+                saveFailed.setAttribute("style", "display: block; color: red;");
+              }
+              if (this.agentKey) {
+                //save to /agents/{new id}
+                firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
+              }
+              else {
+                this.saveErrorDetails = "Agent Key is empty.";
+                saveSuccess.setAttribute("style", "display: none; color: green;");
+                saveFailed.setAttribute("style", "display: block; color: red;");
+              }
+              //how to get last two reservation with iscurrent and not iscurrent
+              //what if there is no iscurrent but there is a reservation???
+              //--- no need to get the current iscurrent=true, we just need the last-reservation to check if we can set the current reservation as iscurrent
+              // applications filter
+              // edit
+              // save to application and conditionally to Reservations & Lot Details Reservation
+              // ---check for applications in-line and determine the start date and time
+              // ---save to reservation will be after checking of docs approval
+              // midnight update
+              //will be transferred later, when docs checking and approval are up
+              //save to /reservations/{new id}
+              var isCurrentReservation = false;
+              if (this.lastReservation) {
+                if (this.lastReservation.length > 0) {
+                  //check if this.lastReservation is expired, check for previous reservation --done thru query
+                  isCurrentReservation = false;
+                }
+                else {
+                  isCurrentReservation = true;
+                }
+              }
+              else {
+                isCurrentReservation = true;
+              }
+              // console.log(this.lastReservation);
+              var dataForReservation = {
+                agent: this.agentKey,
+                agentdetails: {
+                  firstname: this.draftdata_agentdetails_firstname,
+                  middlename: this.draftdata_agentdetails_middlename,
+                  lastname: this.draftdata_agentdetails_lastname,
+                  suffix: this.draftdata_agentdetails_suffix,
+                  email: this.draftdata_agentdetails_email,
+                  cellphone: this.draftdata_agentdetails_cellphone
+                },
+                buyer: this.buyerKey,
+                buyerdetails: {
+                  firstname: this.draftdata_buyerdetails_firstname,
+                  middlename: this.draftdata_buyerdetails_middlename,
+                  lastname: this.draftdata_buyerdetails_lastname,
+                  suffix: this.draftdata_buyerdetails_suffix,
+                  cellphone: this.draftdata_buyerdetails_cellphone,
+                  email: this.draftdata_buyerdetails_email
+                },
+                expiry: this.expiryDate,
+                isexpired: false,
+                start: this.startDateTimeValue,
+                timestamp: { ".sv": "timestamp" },
+                iscurrent: isCurrentReservation,
+                type: this.draftdata_type,
+                reference: this.applicationKey
+              };
+              firebaseUpdate["/reservations/" + this.fullLot + "/" + this.transactionKey] = dataForReservation;
+              if (isCurrentReservation == true) {
+                // console.log(selectedTransType);
+                var selectedTransType = (this.draftdata_type === 'Reserve' ? 'reserved' : this.draftdata_type === 'Hold' ? 'hold' : this.draftdata_type === 'Buy' ? 'sold' : '');
+                firebaseUpdate["/lots/" + this.fullLot + "/reservation"] = this.transactionKey;
+                firebaseUpdate["/lots/" + this.fullLot + "/reservationdetails"] = dataForReservation;
+                firebaseUpdate["/lots/" + this.fullLot + "/status"] = selectedTransType
+                firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = this.transTypeCorrespondingColor.name;
+                firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = this.transTypeCorrespondingColor.bg_color;
+                firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = this.transTypeCorrespondingColor.fore_color;
+                //shb 01/04
+                //for lots with level/map_lot: check other lots by map_lot, compare and get winning map_lot status
+                //get lots thru map_lot
+                if (this.fullLotData.level) {
+                  var otherLotsRef = this.$.fdColor.db.ref('lots');
+                  var otherLotMapLot = 'block' + this.fullLotData.block + 'lot' + this.fullLotData.lot;
+                  otherLotsRef.orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
+                    if (snap.exists()) {
+                      var winningValStat = 0;
+                      snap.forEach(element => {
+                        var valStat = 0;
+                        var stat = element.val().status;
+                        if (stat) {
+                          if (stat === 'available') valStat = 5;
+                          else if (stat === 'hold') valStat = 4;
+                          else if (stat === 'reserved') valStat = 3;
+                          else if (stat === 'soldlacking') valStat = 2;
+                          else if (stat === 'sold') valStat = 1;
+                          else valStat = 0; //notyetavailable
+                        }
+                        if (valStat > winningValStat) {
+                          winningValStat = valStat;
+                        }
+                      });
+                      var winningColor;
+                      if (winningValStat == 5) winningColor = 'available';
+                      else if (winningValStat == 4) winningColor = 'hold';
+                      else if (winningValStat == 3) winningColor = 'reserved';
+                      else if (winningValStat == 2) winningColor = 'soldlacking';
+                      else if (winningValStat == 1) winningColor = 'sold';
+                      else winningColor = 'notyetavailable';
+                      var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + winningColor);
+                      transTypeCorrespondingColorRef.on('value', statusColor => {
+                        if (statusColor.exists()) {
+                          corresStatusColor = statusColor.val()
+                          firebaseUpdate["/lots/" + otherLotMapLot + "/status"] = winningColor;
+                          firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
+                          firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
+                          firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
+                        }
+                      });
+                    }
+                  });
+                }
+              }
+              //if ok, update bg_color, status_name
+              //check reservations if current is expired, then check if there is prior reservation, then iscurrent=false
+              var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
+              var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+              // var favRightVar = Polymer.dom(this.root).querySelector("#favright");
+              if (this.fullLotData.status != 'available') {
+                this.saveErrorDetails = 'Lot status has changed. Please check the status of the lot.';
+                saveSuccess.setAttribute("style", "display: none; color: green;");
+                saveFailed.setAttribute("style", "display: block; color: red;");
+              }
+              else {
+                // console.log(firebaseUpdate);
+                firebaseDbRef.update(firebaseUpdate, function (error) {
+                  if (error) {
+                    console.log("Error approving application:", error);
+                    this.saveErrorDetails = error;
+                    saveSuccess.setAttribute("style", "display: none; color: green;");
+                    saveFailed.setAttribute("style", "display: block; color: red;");
+                    // this.favlefthide = false;
+                    // this.favrighthide = true;
+                    // console.log('1');
+                  }
+                  else {
+                    this.saveErrorDetails = "";
+                    saveSuccess.setAttribute("style", "display: block; color: green;");
+                    saveFailed.setAttribute("style", "display: none; color: red;");
+                    // this.favlefthide = true;
+                    // this.favrighthide = true;
+                    // favRightVar.setAttribute("style", "display: none; background: #1976d2;");
+                    // console.log('2');
+                  }
+                });
+              }
+            }
+            else {
+              //transactionKey is missing
+              var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+              this.saveErrorDetails = "Transaction Key is missing.";
+              saveFailed.setAttribute("style", "display: block; color: red;");
+            }
+
+          }
+          Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "display:none");
+          // this.favlefthide = true;
+          // this.favrighthide = true;
+          var applicationsNew = firebase.database().ref().child("applicationsNew").child(this.transactionKey).remove();
+          window.location = "/applications";
         }
       }
     })

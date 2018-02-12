@@ -626,6 +626,7 @@
                                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/status_name"] = "Available";
                                         }
 
+                                        dataToUpdate["/briefcase/" + this.transactionData.agent + "/" + this.transactionKey] = null;
                                         dataToUpdate["/applications/" + this.transactionKey] = null;
                                         dataToUpdate["/reservations/" + this.origFullLot + "/" + this.transactionKey] = null;
 

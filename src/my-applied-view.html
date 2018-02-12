@@ -190,30 +190,22 @@
                             <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{applicationKey}}</div>
-                        <paper-icon-button id="approval" title="Approve new application" icon="my-icons:check-circle" on-tap="oPenApproved"></paper-icon-button>
+                        <paper-icon-button id="approval" title="Approve new application" icon="my-icons:assignment-turned-in" on-tap="oPenApproved"></paper-icon-button>
                         <!-- <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip> -->
+                        
                         <paper-dialog id="ApprovedApplication">
-                            <h2>Approved Application?</h2>
-                            <!-- <p>Continue delete the current application?</p> -->
-                            <div class="buttons">
-                                <paper-button dialog-dismiss>No</paper-button>
-                                <paper-button dialog-confirm autofocus on-tap="approveApp">Yes</paper-button>
+                            <!-- <h2>Approved Application?</h2> -->
+                            <div id="expiry" style="position: relative; padding-top: 16px;">
+                                <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon>
+                                <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span>
+                                <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input>
+                                <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span>
+                                <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span>
                             </div>
-                        </paper-dialog>
-                        <paper-dialog id="modal">
-                            <!-- <h2>Status.</h2> 
-                            <paper-button dialog-dismiss autofocus>No</paper-button>
-                                <paper-button dialog-confirm on-tap="_sendBriefcase">Yes</paper-button>-->
-                            <h2>Successfully approved.</h2>
-                            <!-- <div class="buttons"></div>  -->
-                            <!-- <br> -->
-                            <!-- <div > -->
-                            <span id="saveSuccess" style="display: none; color: green;">Successfully Approved. Ref. {{applicationKey}}</span>
-                            <span id="saveFailed" style="display: none; color: red;">Error Approving Application. {{saveErrorDetails}}</span>
-                            <a href="/applications" style="text-decoration:none">
-                                <paper-button dialog-dismiss style="float:right;">ok</paper-button>
-                            </a>
-                            <!-- </div> -->
+                            <div class="buttons">
+                                <paper-button dialog-dismiss>Cancel</paper-button>
+                                <paper-button hidden$="{{!expiryHoursDaysValue}}" autofocus on-tap="approveApp">Approve</paper-button>
+                            </div>
                         </paper-dialog>
 
                         <!-- <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteApplicationOpen"></paper-icon-button>
@@ -304,8 +296,12 @@
                                             <span style="font-weight: 400;" id="statusValue">
                                                 [[fullLotData.maprenderdetails.status_name]]
                                             </span>
+                                            <!-- <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">Transaction</div>
+                                            <span style="font-weight: 400; background:rgb(170, 30, 30); color:white; padding-right:5px; padding-left:5px; border-radius:2px"
+                                                id="statusValue">
+                                                Request to Hold
+                                            </span> -->
                                         </div>
-
                                     </div>
                                     <!-- <div class="card-actions" style="display: none;" id="cardActions">
                                         <paper-radio-group selected="{{draftdata_type}}">
@@ -314,17 +310,19 @@
                                             <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button>
                                         </paper-radio-group> -->
 
-                                    </br>
                                     <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
+                                        <!-- <span style="padding:5px; font-size: 15px; color:white; background:rgb(241, 54, 54); border-radius:2px;">
+                                            <iron-icon icon="my-icons:cancel" style="margin-right:5px"></iron-icon>Request to Hold
+                                        </span> -->
                                         <div id="start">
-                                            <span style="color: blue;">Date:</span>
+                                            <!-- <span style="color: blue;">Date:</span> -->
                                             <!-- <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker> -->
 
                                             <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
                                             <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
                                                 <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
-                                            <paper-input readonly id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}" type="datetime-local"
-                                                no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
+                                            <paper-input readonly id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}"
+                                                type="datetime-local" no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
 
                                         </div>
                                         <!-- <div id="expiry" style="position: relative; padding-top: 16px;">
@@ -497,7 +495,11 @@
                     type: Boolean,
                     value: false
                 },
-                origFullLot: String
+                origFullLot: String,
+                expiryHoursDaysValue:{
+                    type:Number,
+                    value:24
+                }
             },
             observers: [
                 'fulllotDataChanged(fullLotData.*)',
@@ -540,16 +542,31 @@
                         var Approved = Polymer.dom(this.root).querySelector("#approval");
                         Approved.setAttribute("style", "display:block");
                     }
-                    this.startDateTimeValue = this.transactionData.start;
-                    this.expiryDate = this.transactionData.expiry;
+                   
+                    var serverdatetime = firebase.database().ref("info/serverdatetime");
+                    serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
+                    serverdatetime.once('value').then(snapshot => {
+                        var ddate = new Date(snapshot.val());
+
+                        this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                            + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
+                        //this.expiryDate = this.transactionData.expiry;
+                    });
+
+                    // this.startDateTimeValue = new Date();
+                    // this.expiryDate = this.transactionData.expiry;
                     // this.minStartDateTime = this.transactionData.start; // still to determine
                     // this.maxStartDateTime = this.transactionData.expiry; // still to determine
-                    var xdate = new Date(this.transactionData.expiry);
-                    this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-                    var sdate = new Date(this.transactionData.start);
-                    var ddate = xdate.getTime() - sdate.getTime();
-                    this.expiryHoursDaysValue = ddate / (this.transactionData.type === 'Hold' ? (1000 * 60 * 60) : this.transactionData.type === 'Reserve' ? (1000 * 60 * 60 * 24) : 0); //in hours & in days
-                    this.expiryHoursDaysLabel = (this.transactionData.type === 'Hold' ? 'hours' : this.transactionData.type === 'Reserve' ? 'days' : '');
+                    if(this.transactionData.expiry) {
+                        var xdate = new Date(this.transactionData.expiry);
+                        this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+                        var sdate = new Date(this.transactionData.start);
+                        var ddate = xdate.getTime() - sdate.getTime();
+                        this.expiryHoursDaysValue = ddate / (this.transactionData.type === 'Hold' ? (1000 * 60 * 60) : this.transactionData.type === 'Reserve' ? (1000 * 60 * 60 * 24) : 0); //in hours & in days
+                        this.expiryHoursDaysLabel = (this.transactionData.type === 'Hold' ? 'hours' : this.transactionData.type === 'Reserve' ? 'days' : '');
+                    }
+
                     this.draftdata_type = this.transactionData.type;
                     var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
                     showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
@@ -659,6 +676,8 @@
                 }
             },
             startDateTimeValueChanged() {
+                // console.log(this.expiryHoursDaysValue);
+                // this.expiryHoursDaysValue = 24;
                 if (this.draftdata_type === 'Reserve') {
                     var xdate = new Date(this.$.startDateTimeValueV.value);
                     xdate.setDate(xdate.getDate() + Number(this.expiryHoursDaysValue));
@@ -677,6 +696,19 @@
                 }
                 else if (this.draftdata_type === 'Hold') {
                     var xdate = new Date(this.$.startDateTimeValueV.value);
+                    xdate.setHours(xdate.getHours() + Number(this.expiryHoursDaysValue));
+                    this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+                    this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
+                        + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+                    if (this.maxStartDateTime) {
+                        var maxSDate = new Date(this.maxStartDateTime);
+                        if (xdate <= maxSDate) {
+                            this.isStartDateTimeInvalid = false;
+                        }
+                        else {
+                            this.isStartDateTimeInvalid = true;
+                        }
+                    } var xdate = new Date(this.$.startDateTimeValueV.value);
                     xdate.setHours(xdate.getHours() + Number(this.expiryHoursDaysValue));
                     this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
                     this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
@@ -731,6 +763,7 @@
                         this.draftdata_buyerdetails_lastname = e[0].lastname;
                         this.draftdata_buyerdetails_suffix = e[0].suffix;
                         this.draftdata_buyerdetails_email = e[0].email;
+
                     }
                     else {
                         this.buyerKey = '';
@@ -792,7 +825,7 @@
                 this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
                     + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
                 this.expiryHoursDaysLabel = "hours";
-                this.expiryHoursDaysValue = 24;
+                // this.expiryHoursDaysValue = 24;
                 var xdate = new Date(this.$.startDateTimeValueV.value);
                 xdate.setHours(xdate.getHours() + this.expiryHoursDaysValue);
                 this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
@@ -1140,18 +1173,22 @@
                 this.$.ApprovedApplication.open();
             },
             approveApp() {
-                this.draftdata_type = 'Hold';
+                // console.log(this.agentKey);
+                // this.draftdata_type = 'Hold';
                 // var firebaseDbRef = firebase.database().ref()
-                var ddate = new Date();
-                this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
-                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
-                this.expiryHoursDaysLabel = "hours";
-                this.expiryHoursDaysValue = 24;
-                var xdate = new Date(this.$.startDateTimeValueV.value);
-                xdate.setHours(xdate.getHours() + this.expiryHoursDaysValue);
-                this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-                this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
-                    + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+                // var ddate = new Date();
+                // this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                //     + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+                // this.expiryHoursDaysLabel = "hours";
+                // // this.expiryHoursDaysValue =  this.expiryHoursDaysValue;
+                // // this.expiryHoursDaysValue = 24;
+                // var xdate = new Date(this.$.startDateTimeValueV.value);
+                // xdate.setHours(xdate.getHours() + this.expiryHoursDaysValue);
+                // this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+
+                // this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
+                //     + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+
                 //get color
                 var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/hold');
                 transTypeCorrespondingColorRef.on('value', snapshot => {
@@ -1188,7 +1225,8 @@
                                 email: this.draftdata_buyerdetails_email
                             },
                             expiry: this.expiryDate,
-                            isdraft: 'false',
+                            isdraft: false,
+                            isapproved: true,
                             isserved: 'false',
                             lot: this.fullLot,
                             lotdetails: this.fullLotData,
@@ -1196,75 +1234,7 @@
                             processordetails: '',
                             served: '',
                             start: this.startDateTimeValue,
-                            status: '',
-                            timestamp: { ".sv": "timestamp" },
-                            type: this.draftdata_type,
-                            reference: this.applicationKey
-                        };
-                        var draftBriefcase = {
-                            agent: this.agentKey,
-                            agentdetails: {
-                                firstname: this.draftdata_agentdetails_firstname,
-                                middlename: this.draftdata_agentdetails_middlename,
-                                lastname: this.draftdata_agentdetails_lastname,
-                                suffix: this.draftdata_agentdetails_suffix,
-                                email: this.draftdata_agentdetails_email,
-                                cellphone: this.draftdata_agentdetails_cellphone
-                            },
-                            buyer: this.buyerKey,
-                            buyerdetails: {
-                                firstname: this.draftdata_buyerdetails_firstname,
-                                middlename: this.draftdata_buyerdetails_middlename,
-                                lastname: this.draftdata_buyerdetails_lastname,
-                                suffix: this.draftdata_buyerdetails_suffix,
-                                cellphone: this.draftdata_buyerdetails_cellphone,
-                                email: this.draftdata_buyerdetails_email
-                            },
-                            // approved: true,
-                            expiry: this.expiryDate,
-                            isdraft: 'false',
-                            isserved: 'false',
-                            lot: this.fullLot,
-                            lotdetails: this.fullLotData,
-                            processed: '',
-                            processordetails: '',
-                            served: '',
-                            start: this.startDateTimeValue,
-                            status: '',
-                            timestamp: { ".sv": "timestamp" },
-                            type: this.draftdata_type,
-                            reference: this.applicationKey
-                        };
-                        var draftAgentBriefcase = {
-                            agent: this.agentKey,
-                            agentdetails: {
-                                firstname: this.draftdata_agentdetails_firstname,
-                                middlename: this.draftdata_agentdetails_middlename,
-                                lastname: this.draftdata_agentdetails_lastname,
-                                suffix: this.draftdata_agentdetails_suffix,
-                                email: this.draftdata_agentdetails_email,
-                                cellphone: this.draftdata_agentdetails_cellphone
-                            },
-                            buyer: this.buyerKey,
-                            buyerdetails: {
-                                firstname: this.draftdata_buyerdetails_firstname,
-                                middlename: this.draftdata_buyerdetails_middlename,
-                                lastname: this.draftdata_buyerdetails_lastname,
-                                suffix: this.draftdata_buyerdetails_suffix,
-                                cellphone: this.draftdata_buyerdetails_cellphone,
-                                email: this.draftdata_buyerdetails_email
-                            },
-                            approved: true,
-                            expiry: this.expiryDate,
-                            isdraft: 'false',
-                            isserved: 'false',
-                            lot: this.fullLot,
-                            lotdetails: this.fullLotData,
-                            processed: '',
-                            processordetails: '',
-                            served: '',
-                            start: this.startDateTimeValue,
-                            status: '',
+                            status: 'Approved',
                             timestamp: { ".sv": "timestamp" },
                             type: this.draftdata_type,
                             reference: this.applicationKey
@@ -1294,8 +1264,7 @@
                             // console.log(this.transactionKey);
                             //save to /applications/{id}
                             firebaseUpdate["/applications/" + this.transactionKey] = draftdata;
-                            firebaseUpdate["/applicationsNew/" + this.transactionKey] = draftBriefcase;
-                            firebaseUpdate["/briefcase/" + this.agentKey + "/" + this.transactionKey] = draftAgentBriefcase;
+                            firebaseUpdate["/briefcase/" + this.agentKey + "/" + this.transactionKey] = draftdata;
                             //this.path
                             if (this.buyerKey) {
                                 //save to /buyers/{new id}
@@ -1462,13 +1431,13 @@
                             this.saveErrorDetails = "Transaction Key is missing.";
                             saveFailed.setAttribute("style", "display: block; color: red;");
                         }
-                        this.$.modal.open();
 
                     }
                     Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "display:none");
                     // this.favlefthide = true;
                     // this.favrighthide = true;
                     var applicationsNew = firebase.database().ref().child("applicationsNew").child(this.transactionKey).remove();
+                    window.location = "/applications";
                 }
                 // window.location="/applications"
             },

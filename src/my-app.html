@@ -31,6 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 
@@ -197,6 +198,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-weight: 400;
         width: 80px;
       }
+
+      .overlay {
+        position: absolute;
+        right: 0;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      /* .overlay paper-spinner {
+        height: 200px;
+        width: 200px;
+      } */
     </style>
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
@@ -209,7 +227,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <!-- dev server -->
     <firebase-app auth-domain="hpmg-56df3.firebaseapp.com" database-url="https://hpmg-56df3.firebaseio.com/" api-key="AIzaSyCKxkkMfRQlhG5vTWh8Y_1yNWtMCTa-YPM"
-      storage-bucket="hpmg-56df3.appspot.com">
+      storage-bucket="hpmg-56df3.appspot.com" messaging-sender-id="416973601823">
     </firebase-app>
 
     <!-- LIVE Server -->
@@ -220,6 +238,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="password" on-error="showError"></firebase-auth>
 
+    <!-- <div class="overlay" hidden$="[[!isLoading]]">
+        <paper-spinner active="[[isLoading]]"></paper-spinner>
+      </div> -->
+    
     <template is="dom-if" if="{{_needToSignIn(user,statusKnown)}}">
       <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
         <my-landing-page name="landing-page" user="{{user}}"></my-landing-page>
@@ -265,6 +287,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <template is="dom-if" if="{{isActive}}">
             <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
               <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
+
                 <div style="height: 100%; overflow: auto;">
                   <app-header fixed>
                     <app-toolbar>
@@ -367,7 +390,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </template>
 
         </template>
-        
+
       </template>
 
       <!-- alert dialog photoUrl-->
@@ -440,6 +463,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
       </paper-dialog>
     </template>
+   
   </template>
 
   <script>
@@ -489,6 +513,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           isActive: {
             type: Boolean,
           },
+          isLoading: {
+            type: Boolean,
+            value: true
+          }
           // hasAccount: {
           //   type: Boolean,
           //   value: false,
@@ -533,7 +561,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               }
             }
           }
-          else{
+          else {
             this.isActive = false;
           }
         }
@@ -590,6 +618,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'view1' in that case.
         if (user) {
+          this.isLoading = true;
           if (user.emailVerified) {
             if (user.phoneNumber) {
               if (active == true) {
@@ -615,6 +644,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         else {
           this.page = page || 'landing-page';
+          this.isLoading = false;
           // this.page = page || 'account-deactivated';
         }
 
@@ -641,6 +671,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _needToSignIn(e, f) {
         if (f === true) {
           return e === null;
+          
         }
         else {
           return false;
@@ -650,6 +681,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _alreadySignedIn(e, f) {
         if (f === true) {
           return e !== null;
+         
         }
         else {
           return false;
