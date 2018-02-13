@@ -9,3 +9,7 @@ curl -H "Content-Type: application/json" \
            "to": "fvjQoWsVXUI:APA91bH7ygkVPs_gxobUmrt95P2NCf-lYEZjXnpjjoTNTK_nyyZT03dE7s_8rUuHcV7XTZmOJ3T0gcG50qffdid4PF7KcgZc7h-QCsRPwYsPzPpl3CTtOLzwB35bAkvbzpKHpXxEL6dT"
          }' \
      https://fcm.googleapis.com/fcm/send
+
+https://iid.googleapis.com/iid/v1/dfEEUcPZzbo:APA91bHm-7wxeuBmoAvje4GL2tw0Za9B9qvFxsMahtuwwSwOde5jQp-XoQiZZYlv_4Rb2hbfDXTcY8-EJNRt1C-EdgZpTRJUO-ijns8wEgj8ib8tZ7uuzUBQjg2Gy9AAucvo2cl4rtAQ/rel/topics/newApplication
+Content-Type:application/json
+Authorization:key=AAAAYRWQPB8:APA91bHX03IsFX7JFre5nsMNjZ_4BFKsJZl3NCpEpFi8eJQkug5c3aJmIWdZWMiH_eoARBgSoXswyM2djDIqMkpRjpJxWOizUQZKtkfJoUbd0N0F2NXUIHPNpvrC_O4W61wh16FJaaMg

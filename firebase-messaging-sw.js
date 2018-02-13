@@ -15,11 +15,13 @@ firebase.initializeApp({
 const messaging = firebase.messaging();
 
 messaging.setBackgroundMessageHandler(function(payload) {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+  // console.log('[firebase-messaging-sw.js] Received background message ', payload);
   // Customize notification here
-  const notificationTitle = 'Background Message Title';
+  const notificationTitle = 'Approved application';
   const notificationOptions = {
-    body: 'Background Message body.',
+    body: 'New application request successfully approved.',
+    icon: '../images/favicon.ico',
+    click_action: 'http://hpmg.baseph.com/briefcase'
   };
 
   return self.registration.showNotification(notificationTitle,

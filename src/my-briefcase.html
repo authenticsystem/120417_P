@@ -44,6 +44,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-messaging.html">
 
 <link rel="import" href="search-bar.html">
 <link rel="import" href="my-briefcase-new.html">
@@ -188,7 +189,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin-bottom: 10px;
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
       }
-
     </style>
 
     <custom-style>
@@ -208,7 +208,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <app-route route="{{route}}" pattern="/applied/detail/:key" tail="{{appliedDetailRoute}}" data="{{appliedDetailData}}" active="{{appliedDetailActive}}"></app-route>
     <app-route route="{{route}}" pattern="/applied/edit/:key" tail="{{appliedEditRoute}}" data="{{appliedEditData}}" active="{{appliedEditActive}}"></app-route>
-    
+
     <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
     <div hidden$="{{!applicationActive}}">
       <!-- <template is="dom-if" if="{{_checkIfApplicationActive(applicationActive)}}"> -->
@@ -275,6 +275,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <firebase-query id="query" path="/briefcasedraft/{{_getKey(account)}}" data="{{briefcasedraft}}" order-by-child="{{selectedType}}"
                   start-at="{{typeValue}}" end-at="{{typeValue}}" limit-to-last="50">
                 </firebase-query>
+
+                <firebase-messaging id="messaging" token="{{token}}" on-message="handleMessage"></firebase-messaging>
 
                 <iron-scroll-document id="threshold">
 
@@ -557,7 +559,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // console.log(e);
       },
       briefcasedraftChanged(e) {
-       
+
         this.countdraft = e.base.length;
         if (this.search) {
           if (this.countdraft == 0) {

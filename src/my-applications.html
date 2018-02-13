@@ -258,6 +258,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <firebase-query id="query" path="/applicationsNew" data="{{applicationsNew}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
                   end-at="{{typeValue}}" limit-to-last="50">
                 </firebase-query>
+                
                 <iron-scroll-document id="threshold">
 
                   <template is="dom-if" if="{{!access}}">

@@ -680,6 +680,7 @@
                     this.agentdetails_lastname = e[0].name.lastname;
                     this.agentdetails_suffix = e[0].name.suffix;
                     this.agentdetails_email = this.email;
+                    this.agentdetails_uid = e[0].uid;
                     // console.log(this.accountkey);
                     // }
                     // else {
@@ -984,7 +985,8 @@
                                                 lastname: this.agentdetails_lastname,
                                                 suffix: this.agentdetails_suffix,
                                                 email: this.agentdetails_email,
-                                                cellphone: this.agentdetails_cellphone
+                                                cellphone: this.agentdetails_cellphone,
+                                                uid:this.agentdetails_uid
                                             },
                                             buyer: this.buyerKey,
                                             buyerdetails: {

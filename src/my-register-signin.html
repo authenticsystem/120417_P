@@ -6,6 +6,7 @@
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 
 
 <link rel="import" href="shared-styles.html">
@@ -101,6 +102,8 @@
       <!-- <paper-input label="Name" id="name" value="{{name}}"></paper-input> -->
       <paper-input label="Email" id="email" value="{{email}}" required auto-validate error-message=""></paper-input>
       <paper-input label="Password" type="password" id="password" value="{{password}}" required auto-validate error-message=""></paper-input>
+      <paper-checkbox on-tap="showPassword" style="font-size:13px">Show password</paper-checkbox>
+      </br>
       </br>
       <div class="footer">
         <div class="action">
@@ -185,6 +188,14 @@
                 });
             }
           }
+        }
+      },
+      showPassword() {
+        var showPw = Polymer.dom(this.root).querySelector("#password");
+        if (showPw.type === "password") {
+          showPw.type = "text";
+        } else {
+          showPw.type = "password";
         }
       }
     })

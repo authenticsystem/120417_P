@@ -134,6 +134,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
     </firebase-query>
 
+    <firebase-document path="/users/{{user.uid}}" data="{{usersToken}}"></firebase-document>
+
     <firebase-messaging id="messaging" token="{{token}}" on-message="handleMessage"></firebase-messaging>
     <firebase-document path="/users/[[user.uid]]/token" data="[[token]]"></firebase-document>
 
@@ -148,9 +150,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </app-header>
 
       <div class="card">
-        <paper-toggle-button id="subscribe" on-tap="toggleSubscription" checked="[[token]]">Subscribe to Notifications</paper-toggle-button>
-        <p>{{token}}</p>
-        <paper-button on-tap="_sendNotification">Send</paper-button>
+        <div class="toggleNotification">
+          <paper-toggle-button id="subscribe" style="display:inline-block" on-tap="toggleSubscription" checked="[[token]]">Subscribe to Notifications</paper-toggle-button>
+          <paper-button on-tap="_sendNotification" style="display:inline-block">Send</paper-button>
+        </div>
+        <!-- <p style="font-size:12px">{{userToken}}</p>
+        <br>
+        <p style="font-size:12px">{{token}}</p> -->
         <paper-menu-button style="float:right">
           <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" title="Change email/password" horizontal-align="left"></paper-icon-button>
           <paper-listbox slot="dropdown-content">
@@ -242,9 +248,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: false
         },
+        usersToken: {
+          type: Object,
+          observer: 'usersTokenChanged'
+        }
 
       },
+      usersTokenChanged() {
+        if (Object.keys(this.usersToken).length > 0) {
+          this.userToken = this.usersToken.token;
+          // console.log(this.userToken);
+        }
+      },
       accountChanged() {
+
         if (this.account.length > 0) {
           this.account[0].name.firstname;
           this.account[0].name.middlename;
@@ -385,36 +402,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         window.location = "/account"
       },
       toggleSubscription() {
-        //   this.$.messaging.requestPermission().then(function () {
-        //     // permission was granted
-        //   }, function (err) {
-        //     // permission was denied
-        //   });
-        //   this.$.messaging.onMessage(function (payload) {
-        //     console.log('onMessage:', payload);
-        //   });
-        // },
-
         this.$.messaging.requestPermission()
           .then(function () {
             console.log('Notification permission granted.');
-            // TODO(developer): Retrieve an Instance ID token for use with FCM.
-            // ...
+            return this.$.messaging.getToken();
+          })
+          .then(function(token){
+            console.log(token);
           })
           .catch(function (err) {
             console.log('Unable to get permission to notify.', err);
           });
 
-        this.$.messaging.onMessage(function (payload) {
-          console.log("Message received. ", payload);
-        });
+      },
+      handleMessage(payload) {
+        console.log('message recieved', payload);
       },
       _sendNotification() {
         var key = 'AAAAYRWQPB8:APA91bHX03IsFX7JFre5nsMNjZ_4BFKsJZl3NCpEpFi8eJQkug5c3aJmIWdZWMiH_eoARBgSoXswyM2djDIqMkpRjpJxWOizUQZKtkfJoUbd0N0F2NXUIHPNpvrC_O4W61wh16FJaaMg';
-        var to = 'fvjQoWsVXUI:APA91bH7ygkVPs_gxobUmrt95P2NCf-lYEZjXnpjjoTNTK_nyyZT03dE7s_8rUuHcV7XTZmOJ3T0gcG50qffdid4PF7KcgZc7h-QCsRPwYsPzPpl3CTtOLzwB35bAkvbzpKHpXxEL6dT';
+        var to = this.userToken;
         var notification = {
           'title': 'Portugal vs. Denmark',
-          'body': '5 to 1',
+          'body': 'Salamat nigawas na gayud',
           'click_action': 'http://localhost:8081'
         };
 
@@ -434,22 +443,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           console.error(error);
         })
       },
-      // handleMessage(message) {
-      //     console.log('message recieved', arguments);
-      // }
-
-      // _update() {
-      //   var user = firebase.auth().currentUser;
-      //   var name = Polymer.dom(this.root).querySelector("#name");
-      //   user.updateProfile({
-      //     displayName: name.value
-      //   }).then(function () {
-      //     // Update successful.
-      //     window.location.reload()
-      //   }).catch(function (error) {
-      //     // An error happened.
-      //   });
-      // },
     })
 
 
