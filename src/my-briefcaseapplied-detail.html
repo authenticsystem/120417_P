@@ -185,20 +185,14 @@
                             <paper-icon-button class="menu" noink style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{newdata.reference}}</div>
-                        <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteBriefcaseOpen" title="send request"></paper-icon-button>
+                        <paper-icon-button hidden="{{newdata.isapproved}}" icon="my-icons:delete-forever" on-tap="deleteBriefcaseOpen" title="Delete briefcase draft"></paper-icon-button>
+
                         <paper-dialog id="deleteBriefcasePD">
-                            <h2>Delete Briefcase?</h2>
+                            <h2>Delete applied briefcase?</h2>
                             <!-- <p>Continue delete the current application?</p> -->
                             <div class="buttons">
                                 <paper-button dialog-dismiss autofocus>No</paper-button>
-                                <paper-button dialog-confirm on-tap="_deleteBriefcase">Yes</paper-button>
-                            </div>
-                        </paper-dialog>
-
-                        <paper-dialog id="modal">
-                            <h2>Successfully sent.</h2>
-                            <div class="buttons">
-                                <paper-button dialog-confirm on-tap="_exit">Ok</paper-button>
+                                <paper-button dialog-confirm on-tap="deleteBriefcasePD">Yes</paper-button>
                             </div>
                         </paper-dialog>
 
@@ -250,7 +244,7 @@
 
                                         <!-- style="padding-top: 8px;" -->
                                         <div style="padding-top: 5px;">
-                                            <div style="font-size: 12px; color: gray;margin-bottom: -.3em">{{statusLabel}}</div>
+                                            <div style="font-size: 12px; color: gray;margin-bottom: -.3em">{{transactionLabel}}</div>
                                             <span id="type">
                                                 [[newdata.type]]
                                             </span>
@@ -363,7 +357,6 @@
                     value: false
                 },
                 newdata: Object,
-                accountKey:String,
                 transactionKey: {
                     type: String,
                     value: '',
@@ -375,9 +368,7 @@
             observers: [
                 'newdataChanged(newdata)'
             ],
-            // _accountKeyChanged(){
-            //     console.log(this.accountKey);
-            // },
+
             _getPrevRoute() {
                 return this.prevRoute || '/briefcase'
             },
@@ -390,12 +381,12 @@
 
                     this.$.idd.disabled = false;
 
-                    console.log(this.transactionKey);
+                    // console.log(this.transactionKey);
                 }
             },
 
             newdataChanged(e) {
-                // console.log(e);
+                // console.log(this.accountKey);
 
                 if (Object.keys(this.newdata).length > 0) {
 
@@ -409,7 +400,8 @@
                     this.areaLabel = "Area";
                     this.designationLabel = "Designation";
                     this.typeLabel = "Type";
-                    this.statusLabel = "Transaction";
+                    this.transactionLabel = "Transaction";
+                    this.statusLabel = "Current status";
 
                     if (this.newdata.type === 'Hold') {
                         Polymer.dom(this.root).querySelector("#type").setAttribute("style", "font-weight: 400; background: #E65100; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; ");
@@ -583,91 +575,97 @@
                 return xdate.toDateString() + ' ' + xdate.toLocaleTimeString().replace(/:\d{2}\s/, ' ');;
             },
 
-        deleteBriefcaseOpen() {
+            sendBriefcaseOpen() {
+                this.$.sendBriefcasePD.open();
+            },
+            deleteBriefcaseOpen() {
                 this.$.deleteBriefcasePD.open();
             },
+            deleteBriefcasePD() {
+                var db = firebase.database().ref('briefcase').child(this.accountKey).child(this.transactionKey).remove();
+                var db = firebase.database().ref('applicationsNew').child(this.transactionKey).remove();
+                window.location = 'briefcase';
+            },
 
-            _deleteBriefcase() {
-                // var options = {
-                //     weekday: "long", year: "numeric", month: "short",
-                //     day: "numeric", hour: "2-digit", minute: "2-digit"
-                // };
+            _sendBriefcase() {
+                var options = {
+                    weekday: "long", year: "numeric", month: "short",
+                    day: "numeric", hour: "2-digit", minute: "2-digit"
+                };
 
-                // var ddate = new Date();
-                // this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
-                //     + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+                var ddate = new Date();
+                this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
 
-                // var timestamp = firebase.database.ServerValue.TIMESTAMP;
-                // var datetime = this.startDateTimeValue;
-                // // var datetime = ddate.toLocaleTimeString("en-us", options);
+                var timestamp = firebase.database.ServerValue.TIMESTAMP;
+                var datetime = this.startDateTimeValue;
+                // var datetime = ddate.toLocaleTimeString("en-us", options);
 
-                // if (Object.keys(this.newdata).length > 0) {
-                //     var agent = this.newdata.agent,
-                //         agentdetails = this.newdata.agentdetails,
-                //         buyer = this.newdata.buyer;
-                //         buyerdetails = this.newdata.buyerdetails,
-                //         expiry = this.newdata.expiry,
-                //         isdraft = false,
-                //         isserved = this.newdata.isserved,
-                //         lot = this.newdata.lot,
-                //         lotdetails = this.newdata.lotdetails,
-                //         processed = this.newdata.processed,
-                //         processordetails = this.newdata.processordetails,
-                //         reference = this.newdata.reference,
-                //         served = this.newdata.served,
-                //         start = this.startDateTimeValue,
-                //         status = this.newdata.status,
-                //         type = this.newdata.type,
-                //         timestamp = timestamp
-                        
-                // }
-                // var personRef = firebase.database().ref().child("briefcasedraft").child(agent).child(this.transactionKey).remove();
-                // // personRef.once('value', function (snapshot) {
-                // //     if (snapshot.val() === null) {
-                // //         alert('does not exist');
-                // //     }
-                // //     else {
-                // var postData = {
-                //     agent: agent,
-                //     agentdetails: agentdetails,
-                //     buyer: buyer,
-                //     buyerdetails: buyerdetails,
-                //     expiry: expiry,
-                //     isdraft: isdraft,
-                //     isserved: isserved,
-                //     lot: lot,
-                //     lotdetails: lotdetails,
-                //     processed: processed,
-                //     processordetails: processordetails,
-                //     reference: reference,
-                //     served: served,
-                //     start: datetime,
-                //     status: status,
-                //     timestamp: timestamp,
-                //     type: type,
-                //    approved: false
-                // };
-                // var newPostKey = firebase.database().ref().child('briefcase').push().key;
+                if (Object.keys(this.newdata).length > 0) {
+                    var agent = this.newdata.agent,
+                        agentdetails = this.newdata.agentdetails,
+                        buyer = this.newdata.buyer;
+                    buyerdetails = this.newdata.buyerdetails,
+                        expiry = this.newdata.expiry,
+                        isdraft = false,
+                        isserved = this.newdata.isserved,
+                        lot = this.newdata.lot,
+                        lotdetails = this.newdata.lotdetails,
+                        processed = this.newdata.processed,
+                        processordetails = this.newdata.processordetails,
+                        reference = this.newdata.reference,
+                        served = this.newdata.served,
+                        start = this.startDateTimeValue,
+                        status = this.newdata.status,
+                        type = this.newdata.type,
+                        timestamp = timestamp
 
-                // var updates = {};
-                // updates['/applicationsNew/' + newPostKey] = postData;
-                // updates['/briefcase/' + agent + '/' + newPostKey] = postData;
+                }
+                var personRef = firebase.database().ref().child("briefcasedraft").child(agent).child(this.transactionKey).remove();
+                // personRef.once('value', function (snapshot) {
+                //     if (snapshot.val() === null) {
+                //         alert('does not exist');
+                //     }
+                //     else {
+                var postData = {
+                    agent: agent,
+                    agentdetails: agentdetails,
+                    buyer: buyer,
+                    buyerdetails: buyerdetails,
+                    expiry: expiry,
+                    isdraft: isdraft,
+                    isserved: isserved,
+                    lot: lot,
+                    lotdetails: lotdetails,
+                    processed: processed,
+                    processordetails: processordetails,
+                    reference: reference,
+                    served: served,
+                    start: datetime,
+                    status: status,
+                    timestamp: timestamp,
+                    type: type,
+                    approved: false
+                };
+                var newPostKey = firebase.database().ref().child('briefcase').push().key;
 
-                // this.$.modal.open();
-                var briefcase = firebase.database().ref().child("briefcase").child(this.accountKey).child(this.transactionKey).remove();
-                var applicationsNew = firebase.database().ref().child("applicationsNew").child(this.transactionKey).remove();
-                window.location = "/briefcase";
-                // return firebase.database().ref().update(updates);
+                var updates = {};
+                updates['/applicationsNew/' + newPostKey] = postData;
+                updates['/briefcase/' + agent + '/' + newPostKey] = postData;
+
+                this.$.modal.open();
+
+                return firebase.database().ref().update(updates);
 
 
                 // personRef.remove();
-               
+                // window.location = "/briefcase";
                 //     }
                 // });
             },
-            // _exit() {
-            //     window.location = "/briefcase";
-            // }
+            _exit() {
+                window.location = "/briefcase";
+            }
 
 
         })

@@ -553,7 +553,6 @@
             },
 
             deleteApplication() {
-                // var applicationsNew = firebase.database().ref().child("applicationsNew").child(this.transactionKey).remove();
                 //delete application
 
                 //delete in lot/reservation & details
@@ -627,6 +626,7 @@
                                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/status_name"] = "Available";
                                         }
 
+                                        dataToUpdate["/briefcase/" + this.transactionData.agent + "/" + this.transactionKey] = null;
                                         dataToUpdate["/applications/" + this.transactionKey] = null;
                                         dataToUpdate["/reservations/" + this.origFullLot + "/" + this.transactionKey] = null;
 

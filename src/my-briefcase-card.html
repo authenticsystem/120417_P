@@ -1,6 +1,12 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 
+<!-- <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-fab-speed-dial/paper-fab-speed-dial.html">
+<link rel="import" href="../bower_components/paper-fab-speed-dial/paper-fab-speed-dial-action.html">
+<link rel="import" href="../bower_components/paper-fab-speed-dial/paper-fab-speed-dial-overlay.html"> -->
+
 <dom-module id="my-briefcase-card">
     <template>
         <style>
@@ -13,9 +19,6 @@
         <div class="card-content" style="width: 100%;">
             <div id="header" class="header" style="background-color: gray; padding: 16px; padding-bottom: 5px;">
 
-                <!-- <span id="_isdraft" style="background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; margin-right:10px">
-                        {{isdraft}}
-                </span> -->
                 <span id="type" style="background: black; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px;">
                     [[item.type]]
                 </span>
@@ -70,17 +73,25 @@
                     </span>
                 </div>
 
-                <div style="padding-bottom: 8px;">
+                <div>
                     <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Buyer</div>
                     <span style="font-weight: 400;">
-                        [[item.buyerdetails.firstname]] [[item.buyerdetails.middlename]] [[item.buyerdetails.lastname]]
+                        [[item.buyerdetails.firstname]] [[item.buyerdetails.middlename]] [[item.buyerdetails.lastname]] [[item.buyerdetails.suffix]]
                     </span>
                 </div>
-                <!-- <div>
-                        <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Agent</div>
-                        <span style="font-weight: 400;">[[item.agentdetails.firstname]] [[item.agentdetails.middlename]] [[item.agentdetails.lastname]]</span>
-                    </div> -->
             </div>
+            <div style="padding:10px; padding-left:16px; border-top:1px solid #e8e8e8;">
+                <span id="spanStatus" style="font-size: 13px; color:rgb(75, 189, 75);">
+                    <iron-icon id="iconStatus" icon="my-icons:check-circle" style="margin-right:5px;"></iron-icon>{{status}}
+                </span>
+                <!-- <span hidden$="[[item.isapproved]]" style="font-size: 13px; color:gray">
+                    <iron-icon icon="my-icons:cancel" style="margin-right:5px"></iron-icon>Pending
+                </span> -->
+            </div>
+            <!-- <br>
+            <div style="border-top:.5px solid">
+                <paper-button>Send</paper-button>
+            </div> -->
 
 
             <!-- <div style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle; ">
@@ -91,13 +102,12 @@
                 </div>
             </div> -->
             <!-- <div>
-                <hr>
-                <div style="padding:10px; float:left">
-                asdfdsf
-                </div>
-                <div style="float:right">
-                    <paper-icon-button icon="my-icons:expand-less"></paper-icon-button>
-                </div>
+                <span hidden$="[[!item.isapproved]]" style="padding:5px; font-size: 15px; color:white; background:rgb(75, 189, 75); border-radius:2px;">
+                    <iron-icon icon="my-icons:check-circle" style="margin-right:5px"></iron-icon>Approved
+                </span>
+                <span hidden$="[[item.isapproved]]" style="padding:5px; font-size: 15px; color:white; background:rgb(241, 54, 54); border-radius:2px;">
+                    <iron-icon icon="my-icons:cancel" style="margin-right:5px"></iron-icon>Not yet approved
+                </span>
             </div> -->
 
         </div>
@@ -120,18 +130,21 @@
             },
             _itemChanged() {
                 if (this.item) {
-                    // if (this.item.isdraft == false) {
-                    //     this.isdraft = "PENDING";
-                    //     Polymer.dom(this.root).querySelector("#_isdraft").setAttribute("style", "background: yellow; border-radius: 2px; color: black; padding-left: 2px;padding-right: 2px; margin-right:10px");
-                    // } 
-                    // else if(this.item.approval == "Approved"){
-                    //     this.isdraft = "APPROVED";
-                    //     Polymer.dom(this.root).querySelector("#_isdraft").setAttribute("style", "background: green; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; margin-right:10px");
-                    // }
-                    // else {
-                    //     this.isdraft = "DRAFT";
-                    //     Polymer.dom(this.root).querySelector("#_isdraft").setAttribute("style", "background: red; border-radius: 2px; color: white; padding-left: 2px;padding-right: 2px; margin-right:10px");
-                    // }
+                    if (this.item.isdraft) {
+                        this.status = "DRAFT";
+                        Polymer.dom(this.root).querySelector("#spanStatus").setAttribute("style", "font-size: 13px; color: gray;");
+                        Polymer.dom(this.root).querySelector("#iconStatus").setAttribute("icon", "my-icons:drafts");
+                    }
+                    else if (this.item.isapproved) {
+                        this.status = "APPROVED";
+                        Polymer.dom(this.root).querySelector("#spanStatus").setAttribute("style", "font-size: 13px; color: rgb(75, 189, 75);");
+                        Polymer.dom(this.root).querySelector("#iconStatus").setAttribute("icon", "my-icons:check-box");
+                    }
+                    else {
+                        this.status = "PENDING";
+                        Polymer.dom(this.root).querySelector("#spanStatus").setAttribute("style", "font-size: 13px; color: red;");
+                        Polymer.dom(this.root).querySelector("#iconStatus").setAttribute("icon", "my-icons:check-box-outline-blank");
+                    }
                     this.lotsubdetail = '';
                     if (this.item.lotdetails.maprenderdetails.type_name) this.lotsubdetail = this.item.lotdetails.maprenderdetails.type_name;
                     if (this.item.lotdetails.area) {

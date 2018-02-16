@@ -56,8 +56,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         position: fixed;
         bottom: 32px;
         right: 32px;
-<<<<<<< HEAD
-=======
 
       }
 
@@ -71,7 +69,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       h2 {
         margin-top: 2px;
->>>>>>> master
       }
 
       paper-toast {
@@ -84,53 +81,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       paper-icon-button.delete {
         color: rgb(233, 79, 164);
-<<<<<<< HEAD
-=======
-      }
-
-      paper-icon-button.edit {
-        color: rgb(233, 79, 164);
->>>>>>> master
       }
 
       paper-icon-button.edit {
         color: rgb(233, 79, 164);
       }
 
-<<<<<<< HEAD
-      paper-icon-button.menu {
-        margin-right: 16px;
+      paper-icon-button.edit {
+        color: rgb(233, 79, 164);
       }
 
-      paper-search-bar#searching {
-        color: #388E3C
-      }
-
-      paper-button#done {
-        background: white;
-        height: 32px;
-        font-size: 12px;
-        font-weight: 400;
-        background: green;
-        color: white;
-        width: 80px;
-      }
-    </style>
-    <app-route route="{{route}}" pattern="" active="{{accountActive}}"></app-route>
-    <app-route route="{{route}}" pattern="/edit/:key" data="{{editData}}" active="{{editActive}}"></app-route>
-
-    <template is="dom-if" if="{{!access}}">
-      <app-header-layout fullbleed has-scrolling-region>
-        <app-header fixed slot="header">
-          <app-toolbar primary>
-            <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-            <div main-title>Opps!</div>
-          </app-toolbar>
-        </app-header>
-        <div class="card">
-          <h3>Sorry!</h3>
-          <div>You're not allowed to access this content.</div>
-=======
       paper-button#done {
         background: white;
         height: 32px;
@@ -206,7 +166,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <div name="/new">
           <div id="appnew"></div>
           <my-accountlist-new id="d23" path="" prev-route="{{route.prefix}}"></my-accountlist-new>
->>>>>>> master
         </div>
       </app-header-layout>
     </template>
@@ -294,7 +253,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <paper-toast id="toast" text="{{txt}}"></paper-toast>
     </template>
+
     <paper-dialog id="deactivateAccount">
+<<<<<<< HEAD
       <br>
       <h3>Deactivate account?</h3>
       <div class="buttons">
@@ -324,6 +285,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </div>
       <paper-toast id="toast" text="{{txt}}"></paper-toast>
 >>>>>>> master
+=======
+        <br>
+        <h3>Deactivate account?</h3>
+        <div class="buttons">
+          <paper-button dialog-dismiss autofocus>No</paper-button>
+          <paper-button dialog-confirm on-tap="deactivate">Yes</paper-button>
+        </div>
+      </paper-dialog>
+
+      <paper-dialog id="activateAccount">
+        <br>
+        <h3>Activate account?</h3>
+        <div class="buttons">
+          <paper-button dialog-dismiss autofocus>No</paper-button>
+          <paper-button dialog-confirm on-tap="activate">Yes</paper-button>
+        </div>
+      </paper-dialog>
+>>>>>>> ardie
   </template>
 
   <script> 
@@ -331,9 +310,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-accountlist',
       properties: {
         route: Object,
-<<<<<<< HEAD
+
         account: Object,
-=======
+
         account: {
           type: Object,
         },
@@ -345,7 +324,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: ''
         },
->>>>>>> master
+
         selectedItem: {
           type: String,
           observer: '_selectedItemChanged'
@@ -357,7 +336,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: ''
         },
-<<<<<<< HEAD
+
         block: {
           type: Boolean,
           value: true
@@ -365,11 +344,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         access: {
           type: Boolean,
           value: false
-=======
+        },
+
         roleAdd: {
           type: Number,
           value: 1
->>>>>>> master
+
         }
       },
 
@@ -385,7 +365,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
           if (oldDiv) {
             Polymer.dom(node.parentNode).removeChild(oldDiv);
-<<<<<<< HEAD
+
           }
           var newDiv = document.createElement("my-accountlist-new");
           newDiv.setAttribute("id", "d23");
@@ -436,8 +416,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       deactivate() {
-=======
-          }
           var newDiv = document.createElement("my-accountlist-new");
           newDiv.setAttribute("id", "d23");
           newDiv.setAttribute("prev-route", this.route.prefix);
@@ -445,7 +423,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           //if open existing
           var currentDiv = document.getElementById("appnew");
           Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-        }
+  
       },
       editDetails(e) {
         var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
@@ -466,7 +444,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
       deleteUser() {
->>>>>>> master
         if (this.selectedItems.length > 0) {
           var ref = firebase.database().ref('/accountlist');
           for (var i = 0; i < this.selectedItems.length; ++i) {
@@ -508,7 +485,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.roleUpdate = this.selectedItem[0].role;
             this.keyS = this.selectedItem[0].$key;
             this.selectedItems = this.selectedItem;
-<<<<<<< HEAD
+
             if (this.selectedItem[0].active == false) {
               this.block = false;
             }
@@ -519,11 +496,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-=======
-          }
-        }
-      },
->>>>>>> master
       toggleDrawer() {
         this.dispatchEvent(new CustomEvent('toggleDrawer', {
           bubbles: true, composed: true, detail: {
@@ -531,11 +503,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }));
         this.$.narrow = !this.$.narrow;
-<<<<<<< HEAD
-      }
-=======
       },
->>>>>>> master
 
     })
   </script>

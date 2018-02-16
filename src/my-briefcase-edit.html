@@ -297,14 +297,15 @@
                                     </br>
                                     <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
                                         <div id="start">
-                                            <span style="color: blue;">Date:</span>
+                                            <!-- <span style="color: blue;">Date:</span> -->
                                             <!-- <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker> -->
 
                                             <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
                                             <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
                                                 <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
                                             <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}" type="datetime-local"
-                                                no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
+                                                no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"
+                                                readonly></paper-input>
 
                                         </div>
                                         <!-- <div id="expiry" style="position: relative; padding-top: 16px;"> -->
@@ -367,20 +368,46 @@
                                 <br>
                                 <paper-card style="width:100%">
                                     <div class="card-content">
-                                        <div>Block: <b>{{block}}</b> - Lot: <b>{{lot}}</b> - Level: <b>{{level}}</b></div>
-                                        <div>Type: <b>{{fullLotData.maprenderdetails.type_name}}</b> -- Area: <b>{{fullLotData.area}}</b> -- Designation: <b>{{fullLotData.maprenderdetails.designation_name}}</b></div>
+                                        <div>Block:
+                                            <b>{{block}}</b> - Lot:
+                                            <b>{{lot}}</b> - Level:
+                                            <b>{{level}}</b>
+                                        </div>
+                                        <div>Type:
+                                            <b>{{fullLotData.maprenderdetails.type_name}}</b> -- Area:
+                                            <b>{{fullLotData.area}}</b> -- Designation:
+                                            <b>{{fullLotData.maprenderdetails.designation_name}}</b>
+                                        </div>
                                         <br>
-                                        <div>Transaction: <b>{{draftdata_type}}</b></div>
-                                        <div>Start: <b>{{startDateTimeValue}}</b></div>
-                                        <div>Expires: <b>{{expiryDate}}</b></div>
+                                        <div>Transaction:
+                                            <b>{{draftdata_type}}</b>
+                                        </div>
+                                        <div>Start:
+                                            <b>{{startDateTimeValue}}</b>
+                                        </div>
+                                        <div>Expires:
+                                            <b>{{expiryDate}}</b>
+                                        </div>
                                         <hr style="margin-top:10px; margin-bottom:10px">
-                                        <div>Buyer's Fullname: <b>{{draftdata_buyerdetails_firstname}}&nbsp;{{draftdata_buyerdetails_middlename}}&nbsp;{{draftdata_buyerdetails_lastname}}&nbsp;{{draftdata_buyerdetails_suffix}}</b></div>
-                                        <div>Buyer's Cellphone: <b>{{draftdata_buyerdetails_cellphone}}</b></div>
-                                        <div>Buyer's Email: <b>{{draftdata_buyerdetails_email}}</b></div>
+                                        <div>Buyer's Fullname:
+                                            <b>{{draftdata_buyerdetails_firstname}}&nbsp;{{draftdata_buyerdetails_middlename}}&nbsp;{{draftdata_buyerdetails_lastname}}&nbsp;{{draftdata_buyerdetails_suffix}}</b>
+                                        </div>
+                                        <div>Buyer's Cellphone:
+                                            <b>{{draftdata_buyerdetails_cellphone}}</b>
+                                        </div>
+                                        <div>Buyer's Email:
+                                            <b>{{draftdata_buyerdetails_email}}</b>
+                                        </div>
                                         <hr style="margin-top:10px; margin-bottom:10px">
-                                        <div>Agent's Fullname: <b>{{draftdata_agentdetails_firstname}}&nbsp;{{draftdata_agentdetails_middlename}}&nbsp;{{draftdata_agentdetails_lastname}}&nbsp;{{draftdata_agentdetails_suffix}}</b></div>
-                                        <div>Agent's Cellphone: <b>{{draftdata_agentdetails_cellphone}}</b></div>
-                                        <div>Agent's Email: <b>{{draftdata_agentdetails_email}}</b></div>
+                                        <div>Agent's Fullname:
+                                            <b>{{draftdata_agentdetails_firstname}}&nbsp;{{draftdata_agentdetails_middlename}}&nbsp;{{draftdata_agentdetails_lastname}}&nbsp;{{draftdata_agentdetails_suffix}}</b>
+                                        </div>
+                                        <div>Agent's Cellphone:
+                                            <b>{{draftdata_agentdetails_cellphone}}</b>
+                                        </div>
+                                        <div>Agent's Email:
+                                            <b>{{draftdata_agentdetails_email}}</b>
+                                        </div>
                                     </div>
                                 </paper-card>
                             </div>
@@ -710,9 +737,17 @@
                         this.lot = this.transactionData.lotdetails.lot;
                         this.level = this.transactionData.lotdetails.level;
                     }
-                    this.startDateTimeValue = this.transactionData.start;
-                    this.expiryDate = this.transactionData.expiry;
 
+                    var serverdatetime = firebase.database().ref("info/serverdatetime");
+                    serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
+                    serverdatetime.once('value').then(snapshot => {
+                        var ddate = new Date(snapshot.val());
+
+                        this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                            + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
+                        this.expiryDate = this.transactionData.expiry;
+                    });
                     // this.minStartDateTime = this.transactionData.start; // still to determine
                     // this.maxStartDateTime = this.transactionData.expiry; // still to determine
 
@@ -1383,7 +1418,8 @@
                                         lastname: this.draftdata_agentdetails_lastname,
                                         suffix: this.draftdata_agentdetails_suffix,
                                         email: this.draftdata_agentdetails_email,
-                                        cellphone: this.draftdata_agentdetails_cellphone
+                                        cellphone: this.draftdata_agentdetails_cellphone,
+                                        uid: this.transactionData.agentdetails.uid,
                                     },
                                     buyer: this.buyerKey,
                                     buyerdetails: {
@@ -1395,7 +1431,8 @@
                                         email: this.draftdata_buyerdetails_email
                                     },
                                     expiry: '',
-                                    isdraft: true,
+                                    isdraft: this.transactionData.isdraft,
+                                    isapproved: this.transactionData.isapproved,
                                     isserved: this.transactionData.isserved, //get value from current
                                     lot: this.fullLot,
                                     lotdetails: this.fullLotData,
