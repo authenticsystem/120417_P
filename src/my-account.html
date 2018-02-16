@@ -134,10 +134,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
     </firebase-query>
 
-    <firebase-document path="/users/{{user.uid}}" data="{{usersToken}}"></firebase-document>
-
-    <firebase-messaging id="messaging" token="{{token}}" on-message="handleMessage"></firebase-messaging>
-    <firebase-document path="/users/[[user.uid]]/token" data="[[token]]"></firebase-document>
+    <!-- <firebase-document path="/users/{{user.uid}}" data="{{usersToken}}"></firebase-document>
+    <firebase-messaging id="messaging" token="{{token}}" on-message="handleMessage"></firebase-messaging> -->
+    <!-- <firebase-document path="/users/[[user.uid]]/token" data="[[token]]"></firebase-document> -->
 
 
     <app-header-layout fullbleed has-scrolling-region>
@@ -150,10 +149,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </app-header>
 
       <div class="card">
-        <div class="toggleNotification">
+        <!-- <div class="toggleNotification">
           <paper-toggle-button id="subscribe" style="display:inline-block" on-tap="toggleSubscription" checked="[[token]]">Subscribe to Notifications</paper-toggle-button>
           <paper-button on-tap="_sendNotification" style="display:inline-block">Send</paper-button>
-        </div>
+        </div> -->
         <!-- <p style="font-size:12px">{{userToken}}</p>
         <br>
         <p style="font-size:12px">{{token}}</p> -->
@@ -261,7 +260,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
       accountChanged() {
-
         if (this.account.length > 0) {
           this.account[0].name.firstname;
           this.account[0].name.middlename;
@@ -273,7 +271,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.lastname = this.account[0].name.lastname;
           this.suffix = this.account[0].name.suffix;
           this.key = this.account[0].$key;
-          this.accountkey = this.account[0].accountkey
+          this.accountkey = this.account[0].accountkey;
+          this.userId = this.account[0].uid;
         }
       },
 
@@ -401,50 +400,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         window.location = "/account"
       },
-      toggleSubscription() {
-        this.$.messaging.requestPermission()
-          .then(function () {
-            console.log('Notification permission granted.');
-            return this.$.messaging.getToken();
-          })
-          .then(function(token){
-            console.log(token);
-          })
-          .catch(function (err) {
-            console.log('Unable to get permission to notify.', err);
-          });
+      // toggleSubscription() {
+      //   this.$.messaging.requestPermission()
+      //     .then(function () {
+      //       console.log('Notification permission granted.');
+      //       this.saveToken();
+      //     })
+      //     .catch(function (err) {
+      //       console.log('Unable to get permission to notify.', err);
+      //     });
+      // },
+      // saveToken() {
+      //   this.$.messaging.getToken()
+      //     .then(function (token) {
+      //       if (token) {
+      //         firebase.database().ref('users/' + this.userId + '/token/' + token).set(true);
+      //       } else {
+      //         this.toggleSubscription();
+      //       }
+      //     })
+      //     .catch(function (err) {
+      //       console.log('An error occurred while retrieving token. ', err);
+      //       showToken('Error retrieving Instance ID token. ', err);
+      //       setTokenSentToServer(false);
+      //     });
+      // },
+      // handleMessage(payload) {
+      //   console.log('message recieved', payload);
+      // },
 
-      },
-      handleMessage(payload) {
-        console.log('message recieved', payload);
-      },
-      _sendNotification() {
-        var key = 'AAAAYRWQPB8:APA91bHX03IsFX7JFre5nsMNjZ_4BFKsJZl3NCpEpFi8eJQkug5c3aJmIWdZWMiH_eoARBgSoXswyM2djDIqMkpRjpJxWOizUQZKtkfJoUbd0N0F2NXUIHPNpvrC_O4W61wh16FJaaMg';
-        var to = this.userToken;
-        var notification = {
-          'title': 'Portugal vs. Denmark',
-          'body': 'Salamat nigawas na gayud',
-          'click_action': 'http://localhost:8081'
-        };
+      // _sendNotification() {
+      //   var key = 'AAAAYRWQPB8:APA91bHX03IsFX7JFre5nsMNjZ_4BFKsJZl3NCpEpFi8eJQkug5c3aJmIWdZWMiH_eoARBgSoXswyM2djDIqMkpRjpJxWOizUQZKtkfJoUbd0N0F2NXUIHPNpvrC_O4W61wh16FJaaMg';
+      //   var to = this.userToken;
+      //   var notification = {
+      //     'title': 'Portugal vs. Denmark',
+      //     'body': 'Salamat nigawas na gayud',
+      //     'click_action': 'http://localhost:8081'
+      //   };
 
-        fetch('https://fcm.googleapis.com/fcm/send', {
-          'method': 'POST',
-          'headers': {
-            'Authorization': 'key=' + key,
-            'Content-Type': 'application/json'
-          },
-          'body': JSON.stringify({
-            'notification': notification,
-            'to': to
-          })
-        }).then(function (response) {
-          console.log(response);
-        }).catch(function (error) {
-          console.error(error);
-        })
-      },
+      //   fetch('https://fcm.googleapis.com/fcm/send', {
+      //     'method': 'POST',
+      //     'headers': {
+      //       'Authorization': 'key=' + key,
+      //       'Content-Type': 'application/json'
+      //     },
+      //     'body': JSON.stringify({
+      //       'notification': notification,
+      //       'to': to
+      //     })
+      //   }).then(function (response) {
+      //     console.log(response);
+      //   }).catch(function (error) {
+      //     console.error(error);
+      //   })
+      // },
     })
-
-
   </script>
 </dom-module>

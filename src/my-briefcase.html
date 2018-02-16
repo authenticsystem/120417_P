@@ -362,7 +362,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   start-at="{{typeValue}}" end-at="{{typeValue}}" limit-to-last="50">
                 </firebase-query>
 
-
                 <iron-scroll-document id="threshold">
 
                   <template is="dom-if" if="{{!access}}">
@@ -532,7 +531,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         key: {
           type: String
         },
-
         // selectedLabel: {
         //   type: String,
         //   value: 'By Lot'
@@ -549,7 +547,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'briefcasedraftChanged(briefcasedraft.*)',
         'briefcaseChanged(briefcase.*)',
         'briefcaseApprovedChanged(briefcaseApproved.*)',
-        'selectedPageChanged(selectedPage)'
+        'selectedPageChanged(selectedPage)',
       ],
       accountChanged(e) {
         this.accountkey = e[0].accountkey;

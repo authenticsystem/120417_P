@@ -241,7 +241,7 @@
 
                         <!-- to get token for specific uid -->
                         <firebase-document path="/users/{{transactionData.agentdetails.uid}}" data="{{usersToken}}"></firebase-document>
-                        <firebase-messaging id="messaging" token="{{token}}" on-message="handleMessage"></firebase-messaging>
+                        <!-- <firebase-messaging id="messaging" token="{{token}}" on-message="handleMessage"></firebase-messaging> -->
 
                         <!-- for Lot Details when entering Block, Lot, Level -->
                         <firebase-document id="lotFire" path="/lots/{{fullLot}}" data="{{fullLotData}}" disabled="true"></firebase-document>
@@ -1198,14 +1198,14 @@
             oPenApproved(message) {
                 this.$.ApprovedApplication.open();
             },
-            handleMessage(payload) {
-                console.log('message recieved', payload);
-            },
+            // handleMessage(payload) {
+            //     console.log('message recieved', payload);
+            // },
             approveApp() {
                 var key = 'AAAAYRWQPB8:APA91bHX03IsFX7JFre5nsMNjZ_4BFKsJZl3NCpEpFi8eJQkug5c3aJmIWdZWMiH_eoARBgSoXswyM2djDIqMkpRjpJxWOizUQZKtkfJoUbd0N0F2NXUIHPNpvrC_O4W61wh16FJaaMg';
                 var to = this.userToken;
                 var notification = {
-                    'title': 'Approved application',
+                    'title': 'Haven of Peace Memorial Garden',
                     'body': 'New application request successfully approved.',
                     'icon': '../images/favicon.ico',
                     'click_action': 'http://hpmg.baseph.com/briefcase/applied/detail/'+this.transactionKey

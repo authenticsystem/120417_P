@@ -3,6 +3,7 @@
 // are not available in the service worker.
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/4.8.1/firebase-messaging.js');
+// importScripts('/__/firebase/init.js');
 
 // Initialize the Firebase app in the service worker by passing in the
 // messagingSenderId.
@@ -17,7 +18,7 @@ const messaging = firebase.messaging();
 messaging.setBackgroundMessageHandler(function(payload) {
   // console.log('[firebase-messaging-sw.js] Received background message ', payload);
   // Customize notification here
-  const notificationTitle = 'Approved application';
+  const notificationTitle = 'Haven of Peace Memorial Garden';
   const notificationOptions = {
     body: 'New application request successfully approved.',
     icon: '../images/favicon.ico',
