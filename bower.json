@@ -55,7 +55,8 @@
     "paper-collapse-item": "Collaborne/paper-collapse-item#^2.2.0",
     "paper-tabs": "PolymerElements/paper-tabs#^2.0.0",
     "paper-badge": "PolymerElements/paper-badge#^2.0.0",
-    "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0"
+    "paper-toggle-button": "PolymerElements/paper-toggle-button#^2.0.0",
+    "chart.js": "^2.7.1"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"

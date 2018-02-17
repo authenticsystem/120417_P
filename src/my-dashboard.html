@@ -14,12 +14,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-messaging.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
-
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
-<script src="../app.js"></script>
+<script src="../bower_components/Chart.js"></script>
 
 <dom-module id="my-dashboard">
   <template>
@@ -75,6 +77,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       /* background-size: cover; */
 
       /* } */
+    </style>
+    <style is="custom-style">
+      .inputDate {
+        --paper-input-container-underline: {
+          display: none;
+        }
+        ;
+        --paper-input-container-underline-focus: {
+          display: none;
+        }
+        ;
+        --paper-input-container-underline-disabled: {
+          display: none;
+        }
+        ;
+      }
     </style>
 
 
@@ -151,8 +169,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <!-- <div class="bg"> -->
       <template is="dom-if" if="{{access}}">
         <div class="card">
-          <p style="font-size:12px;">TOKEN:{{token}}</p>
+          <!-- <p style="font-size:12px;">TOKEN:{{token}}</p> -->
           <!-- <iron-icon on-tap="gettotal" icon="my-icons:map" slot="item-icon"></iron-icon> -->
+          <!-- <div class="totalDailyType" style="text-align:center">
+            <div class="dailyTotalHold" style="display:inline-block; width:30%; border-right: solid">
+              <span style="font-size:15px">Total Hold</span>
+              <h1>10</h1>
+            </div>
+            <div class="dailyTotalReserved" style="display:inline-block; width:30%; border-right: solid">
+              <span style="font-size:15px">Total Reserved</span>
+              <h1>10</h1>
+            </div>
+            <div class="dailyTotalSold" style="display:inline-block; width:30%;">
+              <span tyle="font-size:15px">Total Sold</span>
+              <h1>10</h1>
+            </div>
+          </div>
+          <div style='margin-top:10px'>
+            <paper-card style="width:100%">
+              <div class="card-content">
+                Activity Report
+                <iron-icon icon="my-icons:date-range" style="display:inline-block"></iron-icon>
+                <paper-input class="inputDate" type="date" style="display:inline-block; margin-bottom:0"></paper-input>
+                <hr>
+              </div>
+            </paper-card>
+          </div> -->
           <h3 style="display: inline-block;">
             Activity Report: Today
             <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
@@ -244,63 +286,49 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       tokenChanged() {
-        this.$.messaging.requestPermission().then(function () {
-          console.log('permission was granted');
-        }, function (err) {
-          console.log('permission was denied');
-        });
-        // // [START refresh_token]
-        // // Callback fired if Instance ID token is updated.
-        // this.$.messaging.onTokenRefresh(function () {
-        //   this.$.messaging.getToken()
-        //     .then(function (refreshedToken) {
-        //       console.log('Token refreshed.');
-        //       // Indicate that the new Instance ID token has not yet been sent to the
-        //       // app server.
-        //       setTokenSentToServer(false);
-        //       // Send Instance ID token to app server.
-        //       sendTokenToServer(refreshedToken);
-        //       // [START_EXCLUDE]
-        //       // Display new Instance ID token and clear UI of all previous messages.
-        //       resetUI();
-        //       // [END_EXCLUDE]
-        //     })
-        //     .catch(function (err) {
-        //       console.log('Unable to retrieve refreshed token ', err);
-        //       showToken('Unable to retrieve refreshed token ', err);
-        //     });
-        // });
-        // // [END refresh_token]
-        // // [START get_token]
-        // // Get Instance ID token. Initially this makes a network call, once retrieved
-        // // subsequent calls to getToken will return from cache.
-        // this.$.messaging.getToken()
-        //   .then(function (currentToken) {
-        //     if (currentToken) {
-        //       sendTokenToServer(currentToken);
-        //       updateUIForPushEnabled(currentToken);
-        //     } else {
-        //       // Show permission request.
-        //       console.log('No Instance ID token available. Request permission to generate one.');
-        //       // Show permission UI.
-        //       updateUIForPushPermissionRequired();
-        //       setTokenSentToServer(false);
-        //     }
-        //   })
-        //   .catch(function (err) {
-        //     console.log('An error occurred while retrieving token. ', err);
-        //     showToken('Error retrieving Instance ID token. ', err);
-        //     setTokenSentToServer(false);
-        //   });
-        // // [END get_token]
-      }
-      handleMessage() {
-        this.$.messaging.onMessage(function (payload) {
-          console.log('onMessage:', payload);
+        firebase.messaging().onTokenRefresh(function () {
+          firebase.messaging().getToken()
+            .then(function (refreshedToken) {
+              console.log('Token refreshed.');
+              resetUI();
+            })
+            .catch(function (err) {
+              console.log('Unable to retrieve refreshed token ', err);
+              showToken('Unable to retrieve refreshed token ', err);
+            });
         });
       }
 
+      resetUI() {
+        firebase.messaging().getToken().then(function (currentToken) {
+          if (currentToken) {
+            console.log('Got FCM device token:', currentToken);
+            // Saving the Device Token to the datastore.
+            firebase.database().ref('/users' + this.user.uid + '/token').child(currentToken);
+          } else {
+            // Need to request permissions to show notifications.
+            this.requestNotificationsPermissions();
+          }
+        }.bind(this)).catch(function (error) {
+          console.error('Unable to get messaging token.', error);
+        });
+      }
 
+      requestNotificationsPermissions() {
+        this.$.messaging.requestPermission()
+          .then(function () {
+            console.log('Notification permission granted.');
+            // TODO(developer): Retrieve an Instance ID token for use with FCM.
+            // ...
+          })
+          .catch(function (err) {
+            console.log('Unable to get permission to notify.', err);
+          });
+      }
+
+      handleMessage(payload) {
+        console.log('message received', payload);
+      }
 
       // gettotal() {
 
@@ -358,11 +386,133 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // }
 
     }
-
-
-
-
-
     window.customElements.define(MyDashboard.is, MyDashboard);
   </script>
+
+  <!-- <script>
+    const messaging = firebase.messaging();
+    // [START refresh_token]
+    // Callback fired if Instance ID token is updated.
+    messaging.onTokenRefresh(function () {
+      messaging.getToken()
+        .then(function (refreshedToken) {
+          console.log('Token refreshed.');
+          // Indicate that the new Instance ID token has not yet been sent to the
+          // app server.
+          setTokenSentToServer(false);
+          // Send Instance ID token to app server.
+          sendTokenToServer(refreshedToken);
+          // [START_EXCLUDE]
+          // Display new Instance ID token and clear UI of all previous messages.
+          resetUI();
+          // [END_EXCLUDE]
+        })
+        .catch(function (err) {
+          console.log('Unable to retrieve refreshed token ', err);
+          showToken('Unable to retrieve refreshed token ', err);
+        });
+    });
+    // [END refresh_token]
+
+    // [START receive_message]
+    // Handle incoming messages. Called when:
+    // - a message is received while the app has focus
+    // - the user clicks on an app notification created by a sevice worker
+    //   `messaging.setBackgroundMessageHandler` handler.
+    messaging.onMessage(function (payload) {
+      console.log("Message received. ", payload);
+      // [START_EXCLUDE]
+      // Update the UI to include the received message.
+      appendMessage(payload);
+      // [END_EXCLUDE]
+    });
+    // [END receive_message]
+
+    function resetUI() {
+      messaging.getToken()
+        .then(function (currentToken) {
+          if (currentToken) {
+            sendTokenToServer(currentToken);
+          } else {
+            // Show permission request.
+            console.log('No Instance ID token available. Request permission to generate one.');
+            // Show permission UI.
+            updateUIForPushPermissionRequired();
+            setTokenSentToServer(false);
+          }
+        })
+        .catch(function (err) {
+          console.log('An error occurred while retrieving token. ', err);
+          setTokenSentToServer(false);
+        });
+    }
+    // [END get_token]
+
+    // Send the Instance ID token your application server, so that it can:
+    // - send messages back to this app
+    // - subscribe/unsubscribe the token from topics
+    function sendTokenToServer(currentToken) {
+      if (!isTokenSentToServer()) {
+        console.log('Sending token to server...');
+        // TODO(developer): Send the current token to your server.
+        setTokenSentToServer(true);
+      } else {
+        console.log('Token already sent to server so won\'t send it again ' +
+          'unless it changes');
+      }
+    }
+
+    function isTokenSentToServer() {
+      return window.localStorage.getItem('sentToServer') == 1;
+    }
+
+    function setTokenSentToServer(sent) {
+      window.localStorage.setItem('sentToServer', sent ? 1 : 0);
+    }
+
+    function requestPermission() {
+      console.log('Requesting permission...');
+      // [START request_permission]
+      messaging.requestPermission()
+        .then(function () {
+          console.log('Notification permission granted.');
+          // TODO(developer): Retrieve an Instance ID token for use with FCM.
+          // [START_EXCLUDE]
+          // In many cases once an app has been granted notification permission, it
+          // should update its UI reflecting this.
+          resetUI();
+          // [END_EXCLUDE]
+        })
+        .catch(function (err) {
+          console.log('Unable to get permission to notify.', err);
+        });
+      // [END request_permission]
+    }
+
+    function deleteToken() {
+      // Delete Instance ID token.
+      // [START delete_token]
+      messaging.getToken()
+        .then(function (currentToken) {
+          messaging.deleteToken(currentToken)
+            .then(function () {
+              console.log('Token deleted.');
+              setTokenSentToServer(false);
+              // [START_EXCLUDE]
+              // Once token is deleted update UI.
+              resetUI();
+              // [END_EXCLUDE]
+            })
+            .catch(function (err) {
+              console.log('Unable to delete token. ', err);
+            });
+          // [END delete_token]
+        })
+        .catch(function (err) {
+          console.log('Error retrieving Instance ID token. ', err);
+          showToken('Error retrieving Instance ID token. ', err);
+        });
+    }
+    resetUI();
+  </script> -->
 </dom-module>
