@@ -16,6 +16,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+
 
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
@@ -109,6 +112,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div main-title hidden$="{{!access}}">Dashboard</div>
           <div main-title hidden$="{{access}}">Opps!</div>
         </app-toolbar>
+        <paper-tabs selected="{{selected}}" scrollable>
+          <paper-tab>Announcements</paper-tab>
+          <paper-tab>Reports</paper-tab>
+        </paper-tabs>
       </app-header>
 
       <!-- <skeleton-carousel dots nav loop>
@@ -195,6 +202,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </div>
             </paper-card>
           </div> -->
+          <iron-pages selected="{{selected}}">
+            
+            <!-- Announcements -->
+            <div>
           <h3 style="display: inline-block;">
             Activity Report: Today
             <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
@@ -219,6 +230,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </template>
             </table>
           </div>
+          </div>
+          <!-- End of Announcements -->
+
+          <!-- Reports -->
+          <div>
+          </div>
+           <!-- End of Reports -->
+          </iron-pages>
+
         </div>
       </template>
 
@@ -249,6 +269,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           token: {
             type: Object,
             observer: 'tokenChanged'
+          },
+          selected:{
+            type: Number,
+            value: 0
           }
         };
       }
