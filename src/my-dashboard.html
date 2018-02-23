@@ -390,16 +390,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <!-- comparative report -->
             <div id="comparative" class="card" hidden$="{{hideComparative}}">
               <div style="float:right;">
-                <div id="flex">
-                  <div style="margin-top:30px;position:absolute;top:50px;right:16px;">
-                    <paper-button-group id="daily" selected="{{selectedDaily}}">
-                      <paper-button style="display:none">Daily</paper-button>
-                      <paper-button>Daily</paper-button>
-                      <paper-button>Monthly</paper-button>
-                      <paper-button>Yearly</paper-button>
-                    </paper-button-group>
-                  </div>
-                </div>
+                <!-- <span style="margin-top:30px;position:absolute;top:50px;right:16px;"> -->
+                <paper-button-group id="daily" selected="{{selectedDaily}}">
+                  <paper-button style="display:none">Daily</paper-button>
+                  <paper-button class="smallButton">Daily</paper-button>
+                  <paper-button class="smallButton">Monthly</paper-button>
+                  <paper-button class="smallButton">Yearly</paper-button>
+                </paper-button-group>
+                <!-- </span> -->
               </div>
 
               <div id="flexMain" style="margin-top:40px;">
@@ -525,7 +523,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               </div>
 
-              <div class="card" id="card1" style="display:none;margin-top:250px;">
+              <div class="card">
                 <canvas id="myChart"></canvas>
               </div>
             </div>
@@ -675,11 +673,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Number,
           value: 1
         },
-        selectedButtons: {
-          type: Number,
-          value: 0,
-          observer: '_buttonsChanged'
-        },
+        // selectedButtons: {
+        //   type: Number,
+        //   value: 0,
+        //   observer: '_buttonsChanged'
+        // },
         DailyfilterBy: {
           type: Number,
           value: 1
@@ -719,7 +717,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         startYears: String,
         endYears: String,
-        endRange: Number
+        endRange: Number,
+        comparativeChart: Object
       },
 
       observers: [
@@ -738,16 +737,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ],
 
 
-      ready() {
-        super.ready();
-        var date = new Date();
-        this.endRange = date.getMonth();
-        this.endDate = this._format(date, 'day');
+      // ready() {
+      //   var date = new Date();
+      //   this.endRange = date.getMonth();
+      //   this.endDate = this._format(date, 'day');
 
-        date.setDate(date.getDate() - 14);
-        this.startDate = this._format(date, 'day');
+      //   date.setDate(date.getDate() - 14);
+      //   this.startDate = this._format(date, 'day');
 
-      },
+      // },
 
       _format(date, type) {
 
@@ -986,87 +984,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
       },
-      _buttonsChanged(e) {
-        if (e == 0) {
+      // _buttonsChanged(e) {
+      //   if (e == 0) {
 
-        }
-        else if (e == 1) {
-          this.open = true;
-          var compare = Polymer.dom(this.root).querySelector("#comparative");
-          compare.setAttribute("style", "display:block");
-          var card = Polymer.dom(this.root).querySelector("#card1");
-          card.setAttribute("style", "display:block");
+      //   }
+      //   else if (e == 1) {
 
-          // var text = 'Daily';
-          var ctx = Polymer.dom(this.root).querySelector("#myChart");
-          var myChart = new Chart(ctx, {
-            type: 'line',
-            options: {
-              plugins: {
-                datalabels: {
-                  anchor: 'end',
-                  align: 'right'
-                }
-              },
-              responsive: true,
-              // title: {
-              //   display: true,
-              //   fontSize: 18,
-              //   text: 'Comparative Report'
-              // }
-            }
-          });
-          var current = new Date();
-          this.currentTime = current.getFullYear() + "-" + ("0" + (current.getMonth() + 1)).slice(-2);
-          // console.log(this.currentTime);
-          var DailyRunning = firebase.database().ref("reports/activity/daily");
-          DailyRunning.orderByKey().startAt(this.currentTime).limitToFirst(15).on("value", function (snapshot) {
-            var typeHold = [];
-            var typeSold = [];
-            var typeReserved = [];
-            var labels = [];
-            snapshot.forEach(element => {
-              // console.log(element.val());
-              labels.push(element.key);
-              // console.log(labels);
-              typeSold.push(element.val().totalSold);
-              typeHold.push(element.val().totalHold);
-              typeReserved.push(element.val().totalReserved);
-            });
+      //   } 
+      //   else {
 
-            var data = {
-              labels: labels,
-              datasets: [{
-                label: 'Sold',
-                data: typeSold,
-                backgroundColor: 'transparent',
-                borderColor: 'red',
-                borderWidth: 1
-              },
-              {
-                label: 'Hold',
-                data: typeHold,
-                backgroundColor: 'transparent',
-                borderColor: 'orange',
-                borderWidth: 1
-              },
-              {
-                label: 'Reserved',
-                data: typeReserved,
-                backgroundColor: 'transparent',
-                borderColor: 'yellow',
-                borderWidth: 1
-              }],
+      //   }
 
-            };
-            myChart.data = data;
-            myChart.update();
-          });
-        } else {
-
-        }
-
-      },
+      // },
       toggleDrawer() {
         this.dispatchEvent(new CustomEvent('toggleDrawer', {
           bubbles: true, composed: true, detail: {
@@ -1165,6 +1094,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         }
         else {
+          var date = new Date();
+          this.endRange = date.getMonth();
+          this.endDate = this._format(date, 'day');
+
+          date.setDate(date.getDate() - 14);
+          this.startDate = this._format(date, 'day');
+
           //set default value 
           this.selectedReport = 0;
           //create chart
@@ -1216,6 +1152,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.year = d.getFullYear();
           this.month = "01";
           this.yearly = d.getFullYear();
+
         }
       },
 
@@ -1230,6 +1167,82 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.hideActivity = true;
           this.hideComparative = false;
           this.hideOverAll = true;
+
+          this.open = true;
+          // var compare = Polymer.dom(this.root).querySelector("#comparative");
+          // compare.setAttribute("style", "display:block");
+          // var card = Polymer.dom(this.root).querySelector("#card1");
+          // card.setAttribute("style", "display:block");
+
+          // var text = 'Daily';
+          if(!this.comparativeChart){
+          var ctx = Polymer.dom(this.root).querySelector("#myChart");
+          var myChart = new Chart(ctx, {
+            type: 'line',
+            options: {
+              plugins: {
+                datalabels: {
+                  anchor: 'end',
+                  align: 'right'
+                }
+              },
+              responsive: true,
+              // title: {
+              //   display: true,
+              //   fontSize: 18,
+              //   text: 'Comparative Report'
+              // }
+            }
+          });
+          this.comparativeChart = myChart;
+          }
+          // var myChart =  this.comparativeChart;
+          var current = new Date();
+          this.currentTime = current.getFullYear() + "-" + ("0" + (current.getMonth() + 1)).slice(-2);
+          // console.log(this.currentTime);
+          var DailyRunning = firebase.database().ref("reports/activity/daily");
+          DailyRunning.orderByKey().startAt(this.currentTime).limitToFirst(15).on("value", function (snapshot) {
+            var typeHold = [];
+            var typeSold = [];
+            var typeReserved = [];
+            var labels = [];
+            snapshot.forEach(element => {
+              // console.log(element.val());
+              labels.push(element.key);
+              // console.log(labels);
+              typeSold.push(element.val().totalSold);
+              typeHold.push(element.val().totalHold);
+              typeReserved.push(element.val().totalReserved);
+            });
+
+            var data = {
+              labels: labels,
+              datasets: [{
+                label: 'Sold',
+                data: typeSold,
+                backgroundColor: 'transparent',
+                borderColor: 'red',
+                borderWidth: 1
+              },
+              {
+                label: 'Hold',
+                data: typeHold,
+                backgroundColor: 'transparent',
+                borderColor: 'orange',
+                borderWidth: 1
+              },
+              {
+                label: 'Reserved',
+                data: typeReserved,
+                backgroundColor: 'transparent',
+                borderColor: 'yellow',
+                borderWidth: 1
+              }],
+
+            };
+            myChart.data = data;
+            myChart.update();
+          });
         }
         else {
           this.hideActivity = true;
