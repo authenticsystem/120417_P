@@ -215,7 +215,9 @@
                                 Successfully approved.
                             </div>
                             <div class="buttons">
-                                <a href="/applications"><paper-button>Ok</paper-button></a>
+                                <a href="/applications">
+                                    <paper-button>Ok</paper-button>
+                                </a>
                             </div>
                         </paper-dialog>
 
@@ -1208,8 +1210,8 @@
                     'title': 'Haven of Peace Memorial Garden',
                     'body': 'New application request successfully approved.',
                     'icon': '../images/favicon.ico',
-                    'click_action': 'http://hpmg.baseph.com/briefcase/applied/detail/'+this.transactionKey
-                  
+                    'click_action': 'http://hpmg.baseph.com/briefcase/applied/detail/' + this.transactionKey
+
                 };
 
                 fetch('https://fcm.googleapis.com/fcm/send', {
@@ -1277,6 +1279,7 @@
                             status: 'Approved',
                             timestamp: { ".sv": "timestamp" },
                             type: this.draftdata_type,
+                            // type_status_inventoriable:this.draftdata_type+,
                             reference: this.applicationKey
                         };
                         var draftBuyer = {
@@ -1383,10 +1386,11 @@
                                 var selectedTransType = (this.draftdata_type === 'Reserve' ? 'reserved' : this.draftdata_type === 'Hold' ? 'hold' : this.draftdata_type === 'Buy' ? 'sold' : '');
                                 firebaseUpdate["/lots/" + this.fullLot + "/reservation"] = this.transactionKey;
                                 firebaseUpdate["/lots/" + this.fullLot + "/reservationdetails"] = dataForReservation;
-                                firebaseUpdate["/lots/" + this.fullLot + "/status"] = selectedTransType
+                                firebaseUpdate["/lots/" + this.fullLot + "/status"] = selectedTransType;
                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = this.transTypeCorrespondingColor.name;
                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = this.transTypeCorrespondingColor.bg_color;
                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = this.transTypeCorrespondingColor.fore_color;
+                                firebaseUpdate["/lots/" + this.fullLot + "/type_status_inventoriable"] = this.fullLotData.type + '_' + this.draftdata_type + '_' + this.fullLotData.inventoriable;
                                 //shb 01/04
                                 //for lots with level/map_lot: check other lots by map_lot, compare and get winning map_lot status
                                 //get lots thru map_lot

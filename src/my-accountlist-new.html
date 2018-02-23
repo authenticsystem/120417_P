@@ -49,9 +49,16 @@
             }
 
             @media (min-width: 800px) {
+<<<<<<< HEAD
                 .docu {
                     /* margin-left: 16px;
                      margin-right: 16px; */
+=======
+
+                .docu {
+                    /* margin-left: 16px;
+                    margin-right: 16px; */
+>>>>>>> master
                     padding: 16px;
                 }
             }
@@ -64,6 +71,11 @@
                 background: green;
                 color: white;
                 width: 80px;
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> master
             }
 
             paper-button.cancel {
@@ -73,6 +85,10 @@
                 font-weight: 400;
                 width: 80px;
                 text-decoration: none;
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
             }
 
             paper-button.ok {
@@ -83,6 +99,10 @@
                 width: 80px;
                 text-decoration: none;
                 float: right;
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
             }
 
             paper-toast {
@@ -93,6 +113,7 @@
                 margin-left: 20%;
             }
 
+<<<<<<< HEAD
             paper-checkbox {
                 font-size: 14px;
                 margin-right: 5px;
@@ -107,6 +128,18 @@
                     
                  }  
              } */
+=======
+
+            /* @media print {
+                .ok {
+                    visibility: hidden;
+                }
+                /* .details#ok {
+                    visibility: hidden;
+                   
+                }  
+            } */
+>>>>>>> master
         </style>
         <!-- <firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}"></firebase-document> -->
         <firebase-query id="query" path="{{getpath()}}" data="{{account}}"></firebase-query>
@@ -115,12 +148,18 @@
                 <app-header fixed slot="header">
                     <app-toolbar>
                         <a href="/accountlist">
+<<<<<<< HEAD
                             <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
+=======
+                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="toggleDrawer"></paper-icon-button>
+>>>>>>> master
                         </a>
                         <div main-title>New Account</div>
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
+<<<<<<< HEAD
+                    
                     <!-- <paper-dialog id="modal">
                             <h3>Successfully Added.</h3>
                             <div class="buttons">
@@ -129,20 +168,30 @@
                                 </a>
                             </div>
                         </paper-dialog> -->
+=======
+>>>>>>> master
                 </app-header>
 
                 <div class="docu" hidden$="[[firstStep]]">
                     <!-- <div class="docu-header">Add New Account</div> -->
                     <div class="details">
                         <paper-input readonly="true" value="{{accountkey}}" always-float-label label="Account No."></paper-input>
+<<<<<<< HEAD
                         <paper-input value="{{firstname}}" always-float-label label="First Name"></paper-input>
                         <paper-input value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
                         <paper-input value="{{lastname}}" always-float-label label="Last Name"></paper-input>
                         <paper-input value="{{suffix}}" always-float-label label="Suffix"></paper-input>
+=======
+                        <paper-input required auto-validate pattern="[a-zA-Z-.]*" value="{{firstname}}" always-float-label label="First Name"></paper-input>
+                        <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
+                        <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{lastname}}" always-float-label label="Last Name"></paper-input>
+                        <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{suffix}}" always-float-label label="Suffix"></paper-input>
+>>>>>>> master
                         <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label
                             label="Cellphone">
                             <div slot="prefix">+63</div>
                         </paper-input>
+<<<<<<< HEAD
                         <paper-dropdown-menu style="cursor:pointer" label="Role">
                             <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{roleAdd}}">
                                 <paper-item>Owner</paper-item>
@@ -158,14 +207,29 @@
                         <paper-checkbox id="acc">Accounts</paper-checkbox>
                         <paper-checkbox id="case">Briefcase</paper-checkbox>
                         <!-- <paper-checkbox noink value="{{checked}}" >Allow Access</paper-checkbox> -->
+=======
+                        <paper-dropdown-menu label="Role">
+                            <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{roleAdd}}">
+                                <paper-item>Manager</paper-item>
+                                <paper-item>Sales Agent</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu>
+                        <!-- <paper-checkbox noink value="{{checked}}" disabled >Allow Access</paper-checkbox> -->
+>>>>>>> master
                     </div>
                     <br>
                     <br>
                     <span style="color:red; font-size:13px; float:right">{{msg}}</span>
                     <!-- <paper-button class="indigo" on-click="_submit" raised>Add</paper-button>
+<<<<<<< HEAD
                              <a href="/accountlist" style="text-decoration:none">
                                  <paper-button class="cancel" on-tap="_cancel">Cancel</paper-button>
                              </a> -->
+=======
+                            <a href="/accountlist" style="text-decoration:none">
+                                <paper-button class="cancel" on-tap="_cancel">Cancel</paper-button>
+                            </a> -->
+>>>>>>> master
                     <paper-button id="favleft" class="indigo" on-click="_submit" raised>Add</paper-button>
                     <a href="/accountlist" style="text-decoration:none">
                         <paper-button id="favright" class="cancel" on-tap="_cancel">Cancel</paper-button>
@@ -180,6 +244,7 @@
                         </span>
                     </div>
                     <div class="details" id="printMe">
+<<<<<<< HEAD
                         <div>Account No.
                             <span style="font-family: Courier New; font-size: 20px">{{accountkey}}</span>
                         </div>
@@ -195,6 +260,12 @@
                         <div>Step 3. Enter the account number above to link your Haven of Peace account.</div>
                         <div>Step 4. Enter the account code that was sent to your phone number provided above to complete the
                             login procedure.</div>
+=======
+                        <div>Account No. {{accountkey}}</div>
+                        <div>Name: {{firstname}} {{middlename}} {{lastname}}</div>
+                        <div>Contact No. +63{{cellphone}}</div>
+                        <div>Position: {{role}}</div>
+>>>>>>> master
                     </div>
                 </div>
                 <!-- <paper-toast id="toast" text="{{txt}}"></paper-toast> -->
@@ -206,6 +277,10 @@
     <script>
         Polymer({
             is: 'my-accountlist-new',
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
             properties: {
                 firstStep: {
                     type: Boolean,
@@ -238,8 +313,12 @@
                 },
                 roleAdd: {
                     type: Number,
+<<<<<<< HEAD
                     value: 0,
                     observer: 'roleAddChanged'
+=======
+                    value: 1
+>>>>>>> master
                 },
                 access: {
                     type: Boolean,
@@ -248,6 +327,7 @@
                 role: {
                     type: String,
                     value: ''
+<<<<<<< HEAD
                 }
             },
             roleAddChanged() {
@@ -263,6 +343,9 @@
                 else {
                     this.role = 'Staff';
                 }
+=======
+                },
+>>>>>>> master
             },
             _print() {
                 var content = Polymer.dom(this.root).querySelector("#printMe").innerHTML;
@@ -273,6 +356,7 @@
             getpath() {
                 this.accountkey = this.guid();
                 this.path = 'accountlist/' + this.accountkey;
+<<<<<<< HEAD
                 return this.path;
             },
             guid: function () {
@@ -290,10 +374,23 @@
                 var accounts = false;
                 var briefcase = false;
 
+=======
+
+                return this.path;
+            },
+
+            guid: function () {
+                var uid = new ShortUniqueId();
+                return uid.randomUUID(7);
+            },
+
+            _submit() {
+>>>>>>> master
                 if (!this.firstname || !this.middlename || !this.lastname) {
                     this.msg = 'Please fill-up the required field.';
                 }
                 else {
+<<<<<<< HEAD
                     if (box1.checked == true) {
                         dashboard = true;
                     }
@@ -306,6 +403,8 @@
                     if (box4.checked == true) {
                         briefcase = true;
                     }
+=======
+>>>>>>> master
                     if (this.cellphone.length != 10) {
                         this.msg = 'Error! Invalid cellphone number.';
                     }
@@ -315,14 +414,31 @@
                             this.suffix = '';
                         }
 
+<<<<<<< HEAD
+=======
+                        if (this.roleAdd == 0) {
+                            this.role = 'Manager';
+                            this.access = true;
+                        }
+                        else {
+                            this.role = 'Sales Agent';
+                            this.access = false;
+                        }
+>>>>>>> master
                         var ref = firebase.database().ref("accountlist");
                         var push = ref.push({
                             accountkey: this.accountkey,
                             access: {
+<<<<<<< HEAD
                                 accountlist: accounts,
                                 applications: applications,
                                 dashboard: dashboard,
                                 briefcase: briefcase
+=======
+                                accountlist: this.access,
+                                applications: this.access,
+                                dashboard: this.access
+>>>>>>> master
                             },
                             active: true,
                             name: {
@@ -333,19 +449,31 @@
                             },
                             cellphone: this.cellphone,
                             role: this.role,
+<<<<<<< HEAD
                             uid: ''
+=======
+                            uid: 'none'
+
+>>>>>>> master
                         });
                         // Polymer.dom(this.root).querySelector("#toast").open();
                         // this.txt = "Account successfully added.";
                         this.finalstepHide = false;
                         this.firstStep = true;
                         // window.location = "/accountlist"
+<<<<<<< HEAD
                         // this.$.modal.open();
+=======
+>>>>>>> master
                     }
                 }
             },
             toggleDrawer() { },
             _cancel() { }
         })
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
     </script>
 </dom-module>

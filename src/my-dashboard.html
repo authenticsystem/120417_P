@@ -12,7 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-messaging.html">
+<!-- <link rel="import" href="../bower_components/polymerfire/firebase-messaging.html"> -->
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
@@ -25,7 +25,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/neon-animation/web-animations.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
-
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
@@ -55,6 +55,66 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       iron-image {
         margin: 0 auto;
+      }
+
+      @media (max-width: 768px) {
+        paper-button-group {
+          height: 30px;
+          width: 300px;
+        }
+        .card {
+          margin-left: 10px;
+          margin-right: 10px;
+        }
+        #flex {
+          display: flex;
+        }
+        #flexMain {
+          display: block;
+        }
+        #date {
+          display: none;
+        }
+        #icons {
+          display: block;
+        }
+        #tabs {
+          display: none;
+        }
+      }
+
+
+
+      @media (min-width: 768px) {
+        paper-button-group {
+          height: 30px;
+          width: 300px;
+          size: 10px;
+        }
+        .card {
+          margin-left: 10px;
+          margin-right: 10px;
+        }
+        #flexMain {
+          display: flex;
+        }
+
+        #flex {
+          display: flex;
+        }
+        #date {
+          float: left;
+          margin-top: 50px;
+        }
+        #card1 {
+          margin-top: 10px;
+        }
+        #icons {
+          display: none;
+        }
+        #tabs {
+          display: block;
+        }
       }
 
       table,
@@ -170,8 +230,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           display: block;
         }
       }
-    </style>
 
+      paper-button.blue {
+        --paper-button-checked-color: var(--paper-light-blue-500);
+        --paper-button-checked-ink-color: var(--paper-light-blue-500);
+        --paper-button-unchecked-color: var(--paper-light-blue-900);
+        --paper-button-unchecked-ink-color: var(--paper-light-blue-900);
+      }
+    </style>
 
     <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" on-error="showError"></firebase-auth>
     <firebase-messaging id="messaging" on-message="handleMessage" token="{{token}}"></firebase-messaging>
@@ -525,15 +591,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </iron-pages>
 
       </template>
-
-
-      <!-- </div> -->
-
-
-
     </app-header-layout>
-
-
   </template>
 
   <script>
@@ -613,6 +671,55 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: true
         },
         overallchart: Boolean,
+        selectedDaily: {
+          type: Number,
+          value: 1
+        },
+        selectedButtons: {
+          type: Number,
+          value: 0,
+          observer: '_buttonsChanged'
+        },
+        DailyfilterBy: {
+          type: Number,
+          value: 1
+        },
+        open: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+        startDate: {
+          type: String,
+          value: '',
+        },
+        endDate: {
+          type: String,
+          value: '',
+        },
+        startRange: {
+          type: Number,
+          value: 0
+        },
+        startYear: {
+          type: Number,
+          value: 0
+        },
+        startMonthYear: {
+          type: String,
+          value: '2018'
+        },
+        endMonthYear: {
+          type: String,
+          value: '2018'
+        },
+        endYear: {
+          type: Number,
+          value: 3
+        },
+        startYears: String,
+        endYears: String,
+        endRange: Number
       },
 
       observers: [
@@ -622,12 +729,344 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'yearlyTotalChanged(yearlyTotal)',
         'selectedTabChanged(selectedTab)',
         'selectedReportChanged(selectedReport)',
-        'overAllChanged(lotType,overAllDate)'
+        'overAllChanged(lotType,overAllDate)',
+        '_onYearChanged(startYear,endYear)',
+        '_onChanged(selectedDaily,DailyfilterBy,startDate,endDate,startRange,endRange,startYears,endYears,startMonthYear,endMonthYear)'
         // 'selectedDMYChanged(selectedDMY)',
         // 'dailyActChanged(dailyAct)',
         // 'monthlyChanged(month, year)'
       ],
 
+
+      ready() {
+        super.ready();
+        var date = new Date();
+        this.endRange = date.getMonth();
+        this.endDate = this._format(date, 'day');
+
+        date.setDate(date.getDate() - 14);
+        this.startDate = this._format(date, 'day');
+
+      },
+
+      _format(date, type) {
+
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+        if (month < 10) { month = '0' + month };
+        if (day < 10) { day = '0' + day };
+
+        if (type == 'day') {
+          return year + '-' + month + '-' + day;
+        }
+        if (type == 'month') {
+          return year + '-' + month;
+        }
+        if (type == 'year') {
+          return year;
+        }
+      },
+
+      _onYearChanged(startYear, endYear) {
+        if (startYear == 0) {
+          this.startYears = '2015'
+        } if (startYear == 1) {
+          this.startYears = '2016'
+        } if (startYear == 2) {
+          this.startYears = '2017'
+        } if (startYear == 3) {
+          this.startYears = '2018'
+        }
+        if (endYear == 0) {
+          this.endYears = '2015'
+        } if (endYear == 1) {
+          this.endYears = '2016'
+        } if (endYear == 2) {
+          this.endYears = '2017'
+        } if (endYear == 3) {
+          this.endYears = '2018'
+        }
+      },
+
+      _onChanged(selectedDaily, DailyfilterBy, startDate, endDate, startRange, endRange, startYears, endYears, startMonthYear, endMonthYear) {
+
+        if (this.open == true) {
+          var selectedType, lotType, text, start, end;
+
+          if (selectedDaily != 0) {
+            if (selectedDaily == 1) {
+              start = startDate;
+              end = endDate;
+              selectedType = "/daily";
+              // text = 'Daily';
+              var Month = Polymer.dom(this.root).querySelector("#Monthly");
+              Month.setAttribute("style", "display:none");
+              var Day = Polymer.dom(this.root).querySelector("#Daily");
+              Day.setAttribute("style", "display:block");
+              var Year = Polymer.dom(this.root).querySelector("#Yearly");
+              Year.setAttribute("style", "display:none");
+            }
+            else if (selectedDaily == 2) {
+              // text = 'Monthly';
+              var startM = parseInt(startRange) + 1;
+              start = startMonthYear;
+              if (startM < 10) {
+                start = startMonthYear + '-0' + startM.toString();
+              }
+
+              var endM = parseInt(endRange) + 1;
+              end = endMonthYear + '-' + endM.toString();
+              if (endM < 10) {
+                end = endMonthYear + '-0' + endM.toString();
+              }
+
+              var Month = new Date();
+              var month = this._format(Month, 'month');
+
+              selectedType = "/monthly";
+              text = 'Bone Chamber';
+
+              var Month = Polymer.dom(this.root).querySelector("#Monthly");
+              Month.setAttribute("style", "display:block");
+              var Day = Polymer.dom(this.root).querySelector("#Daily");
+              Day.setAttribute("style", "display:none");
+              var Year = Polymer.dom(this.root).querySelector("#Yearly");
+              Year.setAttribute("style", "display:none");
+            }
+            else {
+              start = startYears;
+              end = endYears;
+              selectedType = "/yearly";
+              text = 'Lawn Lot ';
+
+              var Month = Polymer.dom(this.root).querySelector("#Monthly");
+              Month.setAttribute("style", "display:none");
+              var Day = Polymer.dom(this.root).querySelector("#Daily");
+              Day.setAttribute("style", "display:none");
+              var Year = Polymer.dom(this.root).querySelector("#Yearly");
+              Year.setAttribute("style", "display:block");
+
+
+            }
+          }
+
+          if (DailyfilterBy != 0) {
+            if (this.DailyfilterBy == 1) {
+              lotType = 'activity';
+              text = 'All Lot';
+            } else if (this.DailyfilterBy == 2) {
+              lotType = 'comparative/bonechamber';
+              text = 'Bone Chamber ';
+            } else if (this.DailyfilterBy == 3) {
+              lotType = 'comparative/lawnlots';
+              text = 'Lawn Lots';
+            }
+            else if (this.DailyfilterBy == 4) {
+              lotType = 'comparative/cinerarium';
+              text = 'Cinerarium';
+            }
+            else if (this.DailyfilterBy == 5) {
+              lotType = 'comparative/wallniche';
+              text = 'Wall Niche';
+            }
+          }
+
+          this.query(lotType, selectedType, text, start, end)
+        }
+      },
+
+      query(lotType, selectedType, text, start, end) {
+
+        var ctx = Polymer.dom(this.root).querySelector("#myChart");
+        var myChart = new Chart(ctx, {
+          type: 'line',
+          options: {
+            plugins: {
+              datalabels: {
+                anchor: 'end',
+                align: 'right'
+              }
+            },
+            responsive: true,
+            // title: {
+            //   display: true,
+            //   fontSize: 18,
+            //   text: text + ' ' + 'Comparative Report'
+            // }
+          }
+        });
+
+        if (lotType == 'activity') {
+          firebase.database().ref("reports/" + lotType + selectedType)
+            .orderByKey().startAt(start).endAt(end).limitToFirst(15).on("value", function (snapshot) {
+              var typeHold = [];
+              var typeSold = [];
+              var typeReserved = [];
+              var labels = [];
+              snapshot.forEach(element => {
+                labels.push(element.key);
+                typeSold.push(element.val().totalSold);
+                typeHold.push(element.val().totalHold);
+                typeReserved.push(element.val().totalReserved);
+              });
+
+              var data = {
+                labels: labels,
+                datasets: [{
+                  label: 'Sold',
+                  data: typeSold,
+                  backgroundColor: 'transparent',
+                  borderColor: 'red',
+                  borderWidth: 1
+                },
+                {
+                  label: 'Hold',
+                  data: typeHold,
+                  backgroundColor: 'transparent',
+                  borderColor: 'orange',
+                  borderWidth: 1
+                },
+                {
+                  label: 'Reserved',
+                  data: typeReserved,
+                  backgroundColor: 'transparent',
+                  borderColor: 'yellow',
+                  borderWidth: 1
+                }],
+
+              };
+              myChart.data = data;
+              myChart.update();
+            });
+
+        }
+        else {
+          firebase.database().ref("reports/" + lotType + selectedType)
+            .orderByKey().startAt(start).endAt(end).limitToFirst(15).on("value", function (snapshot) {
+              var typeHold = [];
+              var typeSold = [];
+              var typeReserved = [];
+              var labels = [];
+              snapshot.forEach(element => {
+                labels.push(element.key);
+                typeSold.push(element.val().totalSold);
+                typeHold.push(element.val().totalHold);
+                typeReserved.push(element.val().totalReserved);
+              });
+
+              var data = {
+                labels: labels,
+                datasets: [{
+                  label: 'Sold',
+                  data: typeSold,
+                  backgroundColor: 'transparent',
+                  borderColor: 'red',
+                  borderWidth: 1
+                },
+                {
+                  label: 'Hold',
+                  data: typeHold,
+                  backgroundColor: 'transparent',
+                  borderColor: 'orange',
+                  borderWidth: 1
+                },
+                {
+                  label: 'Reserved',
+                  data: typeReserved,
+                  backgroundColor: 'transparent',
+                  borderColor: 'yellow',
+                  borderWidth: 1
+                }],
+
+              };
+              myChart.data = data;
+              myChart.update();
+            });
+        }
+
+      },
+      _buttonsChanged(e) {
+        if (e == 0) {
+
+        }
+        else if (e == 1) {
+          this.open = true;
+          var compare = Polymer.dom(this.root).querySelector("#comparative");
+          compare.setAttribute("style", "display:block");
+          var card = Polymer.dom(this.root).querySelector("#card1");
+          card.setAttribute("style", "display:block");
+
+          // var text = 'Daily';
+          var ctx = Polymer.dom(this.root).querySelector("#myChart");
+          var myChart = new Chart(ctx, {
+            type: 'line',
+            options: {
+              plugins: {
+                datalabels: {
+                  anchor: 'end',
+                  align: 'right'
+                }
+              },
+              responsive: true,
+              // title: {
+              //   display: true,
+              //   fontSize: 18,
+              //   text: 'Comparative Report'
+              // }
+            }
+          });
+          var current = new Date();
+          this.currentTime = current.getFullYear() + "-" + ("0" + (current.getMonth() + 1)).slice(-2);
+          // console.log(this.currentTime);
+          var DailyRunning = firebase.database().ref("reports/activity/daily");
+          DailyRunning.orderByKey().startAt(this.currentTime).limitToFirst(15).on("value", function (snapshot) {
+            var typeHold = [];
+            var typeSold = [];
+            var typeReserved = [];
+            var labels = [];
+            snapshot.forEach(element => {
+              // console.log(element.val());
+              labels.push(element.key);
+              // console.log(labels);
+              typeSold.push(element.val().totalSold);
+              typeHold.push(element.val().totalHold);
+              typeReserved.push(element.val().totalReserved);
+            });
+
+            var data = {
+              labels: labels,
+              datasets: [{
+                label: 'Sold',
+                data: typeSold,
+                backgroundColor: 'transparent',
+                borderColor: 'red',
+                borderWidth: 1
+              },
+              {
+                label: 'Hold',
+                data: typeHold,
+                backgroundColor: 'transparent',
+                borderColor: 'orange',
+                borderWidth: 1
+              },
+              {
+                label: 'Reserved',
+                data: typeReserved,
+                backgroundColor: 'transparent',
+                borderColor: 'yellow',
+                borderWidth: 1
+              }],
+
+            };
+            myChart.data = data;
+            myChart.update();
+          });
+        } else {
+
+        }
+
+      },
       toggleDrawer() {
         this.dispatchEvent(new CustomEvent('toggleDrawer', {
           bubbles: true, composed: true, detail: {

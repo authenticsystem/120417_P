@@ -574,76 +574,77 @@
                             }
 
                             var getNextReservation = firebase.database().ref('/reservations/' + this.origFullLot).orderByKey().startAt(this.transactionKey).limitToFirst(3).once('value').then(nextReservation => {
-                                    var getStatusColors = firebase.database().ref('/statuscolor').once('value').then(statusColor => {
+                                var getStatusColors = firebase.database().ref('/statuscolor').once('value').then(statusColor => {
 
-                                        var selectedKey = '';
-                                        var selectedKeyDetails;
-                                        if (isCurrent === true) {
-                                            if (nextReservation.exists()) {
-                                                //get key
-                                                nextReservation.forEach(
-                                                    reservation => {
-                                                        if (reservation.key != this.transactionKey) {
-                                                            if (reservation.val().isexpired === false) {
-                                                                selectedKey = reservation.key;
-                                                                selectedKeyDetails = reservation.val();
-                                                            }
-
+                                    var selectedKey = '';
+                                    var selectedKeyDetails;
+                                    if (isCurrent === true) {
+                                        if (nextReservation.exists()) {
+                                            //get key
+                                            nextReservation.forEach(
+                                                reservation => {
+                                                    if (reservation.key != this.transactionKey) {
+                                                        if (reservation.val().isexpired === false) {
+                                                            selectedKey = reservation.key;
+                                                            selectedKeyDetails = reservation.val();
                                                         }
-                                                    }
-                                                );
-                                            }
-                                        }
 
-                                        if (selectedKey) {
-                                            dataToUpdate["/reservations/" + this.origFullLot + "/" + selectedKey + "/iscurrent"] = true;
-                                            dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = selectedKey;
-                                            dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = {
-                                                agent: selectedKeyDetails.agent,
-                                                agentdetails: selectedKeyDetails.agentdetails,
-                                                buyer: selectedKeyDetails.buyer,
-                                                buyerdetails: selectedKeyDetails.buyerdetails,
-                                                expiry: selectedKeyDetails.expiry,
-                                                iscurrent: true,
-                                                isexpired: selectedKeyDetails.isexpired,
-                                                reference: selectedKeyDetails.reference,
-                                                start: selectedKeyDetails.start,
-                                                timestamp: selectedKeyDetails.timestamp,
-                                                type: selectedKeyDetails.type
-                                            };
-                                            
-                                            dataToUpdate["/lots/" + this.origFullLot + "/status"] = selectedKeyDetails.type;
-                                            dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/bg_color"] = statusColor.val()[selectedKeyDetails.type].bg_color;
-                                            dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/fore_color"] = statusColor.val()[selectedKeyDetails.type].fore_color;
-                                            dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/status_name"] = statusColor.val()[selectedKeyDetails.type].name;
+                                                    }
+                                                }
+                                            );
+                                        }
+                                    }
+
+                                    if (selectedKey) {
+                                        dataToUpdate["/reservations/" + this.origFullLot + "/" + selectedKey + "/iscurrent"] = true;
+                                        dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = selectedKey;
+                                        dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = {
+                                            agent: selectedKeyDetails.agent,
+                                            agentdetails: selectedKeyDetails.agentdetails,
+                                            buyer: selectedKeyDetails.buyer,
+                                            buyerdetails: selectedKeyDetails.buyerdetails,
+                                            expiry: selectedKeyDetails.expiry,
+                                            iscurrent: true,
+                                            isexpired: selectedKeyDetails.isexpired,
+                                            reference: selectedKeyDetails.reference,
+                                            start: selectedKeyDetails.start,
+                                            timestamp: selectedKeyDetails.timestamp,
+                                            type: selectedKeyDetails.type
+                                        };
+
+                                        dataToUpdate["/lots/" + this.origFullLot + "/status"] = selectedKeyDetails.type;
+                                        dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/bg_color"] = statusColor.val()[selectedKeyDetails.type].bg_color;
+                                        dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/fore_color"] = statusColor.val()[selectedKeyDetails.type].fore_color;
+                                        dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/status_name"] = statusColor.val()[selectedKeyDetails.type].name;
+                                    }
+                                    else {
+                                        dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = "";
+                                        dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = "";
+                                        dataToUpdate["/lots/" + this.origFullLot + "/status"] = "available";
+                                        dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/bg_color"] = "green";
+                                        dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/fore_color"] = "white";
+                                        dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/status_name"] = "Available";
+                                        dataToUpdate["/lots/" + this.origFullLot + "/type_status_inventoriable"] = this.fullLotData.type + '_' + "available" + '_' + this.fullLotData.inventoriable;
+                                    }
+
+                                    dataToUpdate["/briefcase/" + this.transactionData.agent + "/" + this.transactionKey] = null;
+                                    dataToUpdate["/applications/" + this.transactionKey] = null;
+                                    dataToUpdate["/reservations/" + this.origFullLot + "/" + this.transactionKey] = null;
+
+                                    // console.log(dataToUpdate);
+                                    var origFullLot2 = this.origFullLot;
+
+                                    var uPromise = firebase.database().ref().update(dataToUpdate, function (error) {
+                                        if (error) {
+                                            alert("Error updating data:", error);
                                         }
                                         else {
-                                            dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = "";
-                                            dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = "";
-                                            dataToUpdate["/lots/" + this.origFullLot + "/status"] = "available";
-                                            dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/bg_color"] = "green";
-                                            dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/fore_color"] = "white";
-                                            dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/status_name"] = "Available";
+                                            window.location = "/applications";
+                                            alert(origFullLot2 + " delete successfully.");
                                         }
-
-                                        dataToUpdate["/briefcase/" + this.transactionData.agent + "/" + this.transactionKey] = null;
-                                        dataToUpdate["/applications/" + this.transactionKey] = null;
-                                        dataToUpdate["/reservations/" + this.origFullLot + "/" + this.transactionKey] = null;
-
-                                        // console.log(dataToUpdate);
-                                        var origFullLot2 = this.origFullLot;
-
-                                        var uPromise = firebase.database().ref().update(dataToUpdate, function (error) {
-                                            if (error) {
-                                                alert("Error updating data:", error);
-                                            }
-                                            else {
-                                                window.location = "/applications";
-                                                alert(origFullLot2 + " delete successfully.");
-                                            }
-                                        });
                                     });
                                 });
+                            });
                         });
                 }
                 else {
@@ -1546,6 +1547,7 @@
                                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = statusColors.val()[selectedTransType].name;
                                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = statusColors.val()[selectedTransType].bg_color;
                                                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = statusColors.val()[selectedTransType].fore_color;
+                                                firebaseUpdate["/lots/" + this.fullLot + "/type_status_inventoriable"] = this.fullLotData.type + '_' + this.draftdata_type + '_' + this.fullLotData.inventoriable;
 
                                                 if (this.lastReservation.length > 0) {
                                                     if (this.lastReservation[0].$key != this.transactionKey) {
