@@ -12,20 +12,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-messaging.html">
+<!-- <link rel="import" href="../bower_components/polymerfire/firebase-messaging.html"> -->
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
-
+<link rel="import" href="../bower_components/paper-button-group/paper-button-group.html">
+<link rel="import" href="../bower_components/titanium-date-input/titanium-date-input.html">
+<link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
+<link rel="import" href="../bower_components/datetime-picker/datetime-picker.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/paper-dropdown/paper-dropdown.html">
+<link rel="import" href="../bower_components/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.js">
 
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
-
-<script src="../bower_components/Chart.js"></script>
-
+<script src="../bower_components/chart.js/dist/Chart.js"></script>
+<script src="../bower_components/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.js"></script>
 <dom-module id="my-dashboard">
   <template>
     <style include="shared-styles">
@@ -48,6 +57,66 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin: 0 auto;
       }
 
+      @media (max-width: 768px) {
+        paper-button-group {
+          height: 30px;
+          width: 300px;
+        }
+        .card {
+          margin-left: 10px;
+          margin-right: 10px;
+        }
+        #flex {
+          display: flex;
+        }
+        #flexMain {
+          display: block;
+        }
+        #date {
+          display: none;
+        }
+        #icons {
+          display: block;
+        }
+        #tabs {
+          display: none;
+        }
+      }
+
+
+
+      @media (min-width: 768px) {
+        paper-button-group {
+          height: 30px;
+          width: 300px;
+          size: 10px;
+        }
+        .card {
+          margin-left: 10px;
+          margin-right: 10px;
+        }
+        #flexMain {
+          display: flex;
+        }
+
+        #flex {
+          display: flex;
+        }
+        #date {
+          float: left;
+          margin-top: 50px;
+        }
+        #card1 {
+          margin-top: 10px;
+        }
+        #icons {
+          display: none;
+        }
+        #tabs {
+          display: block;
+        }
+      }
+
       table,
       th,
       td {
@@ -60,6 +129,51 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 5px;
         text-align: right;
       }
+
+      hr {
+        border-color: gray;
+        border-radius: 1px solid;
+      }
+
+      canvas {
+        width: 100% !important;
+        max-width: 100%;
+        height: auto !important;
+      }
+
+      paper-button-group {
+        margin: 16px;
+        font-size: 13px;
+        width: 100% !important;
+        height: auto !important;
+      }
+
+      /* paper-button:focus {
+        background: green;
+        color: ghostwhite;
+      } */
+
+      paper-button[toggles] {
+        transition: background-color 0.3s;
+      }
+
+      paper-button[active] {
+        color: white;
+        background-color: green;
+        --paper-button-flat-focus-color: green;
+      }
+
+      paper-button[toggles][active] {
+        color: white;
+        background-color: green;
+        --paper-button-flat-focus-color: green;
+      }
+
+      paper-button:hover {
+        background: #eee;
+      }
+
+      /* } */
 
       /* .bg { */
 
@@ -96,14 +210,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         ;
       }
-    </style>
 
+      paper-button.blue {
+        --paper-button-checked-color: var(--paper-light-blue-500);
+        --paper-button-checked-ink-color: var(--paper-light-blue-500);
+        --paper-button-unchecked-color: var(--paper-light-blue-900);
+        --paper-button-unchecked-ink-color: var(--paper-light-blue-900);
+      }
+    </style>
 
     <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" on-error="showError"></firebase-auth>
     <firebase-messaging id="messaging" on-message="handleMessage" token="{{token}}"></firebase-messaging>
     <firebase-document path="/users/[[user.uid]]/token" data="[[token]]"></firebase-document>
 
     <firebase-query path="/reports/lotstatus/Today" limit-to-first=50 data="{{todayLotStatus}}"></firebase-query>
+
+    <firebase-query path="/reports/dailyRunningTotal" start-at="2018-02-17" limit-to-last=15 data="{{TypeStatus}}"></firebase-query>
 
     <app-header-layout fullbleed has-scrolling-region>
       <app-header fixed slot="header">
@@ -113,8 +235,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div main-title hidden$="{{access}}">Opps!</div>
         </app-toolbar>
         <paper-tabs selected="{{selected}}" scrollable>
-          <paper-tab>Announcements</paper-tab>
-          <paper-tab>Reports</paper-tab>
+          <paper-tab>
+            <iron-icon id="icons" icon="icons:add"></iron-icon>
+            <span id="tabs">Announcements</span>
+          </paper-tab>
+          <paper-tab>
+            <iron-icon id="icons" icon="icons:add"></iron-icon>
+            <span id="tabs">Reports</span>
+          </paper-tab>
         </paper-tabs>
       </app-header>
 
@@ -203,53 +331,195 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </paper-card>
           </div> -->
           <iron-pages selected="{{selected}}">
-            
+
             <!-- Announcements -->
             <div>
-          <h3 style="display: inline-block;">
-            Activity Report: Today
-            <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
-              DRY RUN
-            </span>
-          </h3>
-          <div style="padding-top: 3px; font-size: 14px;">
-            <table>
-              <tr>
-                <th style="text-align: left;">Type</th>
-                <th style="color: orange;">Hold</th>
-                <th style="color: rgb(145, 145, 0);">Reserved</th>
-                <th style="color: red;">Sold</th>
-              </tr>
-              <template is="dom-repeat" items="{{todayLotStatus}}">
-                <tr>
-                  <td style="text-align: left;">{{_formatType(item.$key)}}</td>
-                  <td style="color: black;">{{_formatNumber(item.hold)}}</td>
-                  <td style="color: black;">{{_formatNumber(item.reserved)}}</td>
-                  <td style="color: black;">{{_formatNumber(item.sold)}}</td>
-                </tr>
-              </template>
-            </table>
-          </div>
-          </div>
-          <!-- End of Announcements -->
+              <h3 style="display: inline-block;">
+                Activity Report: Today
+                <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+                  DRY RUN
+                </span>
+              </h3>
+              <div style="padding-top: 3px; font-size: 14px;">
+                <table>
+                  <tr>
+                    <th style="text-align: left;">Type</th>
+                    <th style="color: orange;">Hold</th>
+                    <th style="color: rgb(145, 145, 0);">Reserved</th>
+                    <th style="color: red;">Sold</th>
+                  </tr>
+                  <template is="dom-repeat" items="{{todayLotStatus}}">
+                    <tr>
+                      <td style="text-align: left;">{{_formatType(item.$key)}}</td>
+                      <td style="color: black;">{{_formatNumber(item.hold)}}</td>
+                      <td style="color: black;">{{_formatNumber(item.reserved)}}</td>
+                      <td style="color: black;">{{_formatNumber(item.sold)}}</td>
+                    </tr>
+                  </template>
+                </table>
+              </div>
+            </div>
+            <div>
+              <paper-button-group id="reports" selected="{{selectedButtons}}">
+                <paper-button class="dd">Activity</paper-button>
+                <paper-button class="dd">Comparative</paper-button>
+                <paper-button class="dd">Overall</paper-button>
+              </paper-button-group>
+              <div id="comparative" style="display:none">
+                <div style="float:right;">
+                  <div id="flex">
+                    <div style="margin-top:30px;position:absolute;top:50px;right:16px;">
+                      <paper-button-group id="daily" selected="{{selectedDaily}}">
+                        <paper-button style="display:none">Daily</paper-button>
+                        <paper-button>Daily</paper-button>
+                        <paper-button>Monthly</paper-button>
+                        <paper-button>Yearly</paper-button>
+                      </paper-button-group>
+                    </div>
+                  </div>
+                </div>
 
-          <!-- Reports -->
-          <div>
-          </div>
-           <!-- End of Reports -->
+                <div id="flexMain" style="margin-top:40px;">
+                  <paper-dropdown-menu style="cursor:pointer;" id="all" label="Filter">
+                    <paper-listbox slot="dropdown-content" selected="{{DailyfilterBy}}">
+                      <paper-item style="display:none">All</paper-item>
+                      <paper-item>All</paper-item>
+                      <paper-item>Bone Chamber</paper-item>
+                      <paper-item>Lawn Lot</paper-item>
+                      <paper-item>Cinerarium</paper-item>
+                      <paper-item>Wall Niche</paper-item>
+                      <!-- <paper-item></paper-item>
+                        <paper-item></paper-item>
+                        <paper-item></paper-item>
+                        <paper-item></paper-item>
+                        <paper-item></paper-item>
+                        <paper-item></paper-item>
+                        <paper-item></paper-item>
+                        <paper-item></paper-item> -->
+                    </paper-listbox>
+                  </paper-dropdown-menu>
+
+
+                  <div id="Daily">
+                    <div id="flex">
+                      <div id="flex">
+                        <iron-icon style="margin-top:30px; margin-right:10px;color:dodgerblue;" icon="my-icons:event" id="date"></iron-icon>
+                        <paper-input label="Start Date" type="date" value="{{startDate}}" id="day"></paper-input>
+                      </div>
+                      <div id="flex">
+                        <iron-icon style="margin-top:30px; margin-right:10px;color:dimgray;" icon="my-icons:event" id="date"></iron-icon>
+                        <paper-input label="End Date" type="date" value="{{endDate}}" id="day"></paper-input>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div style="display:none" id="Monthly">
+                    <div id="flex">
+                      <div id="flex">
+                        <iron-icon style="margin-top:30px; margin-right:10px;color:dodgerblue" icon="my-icons:event" id="date"></iron-icon>
+                        <paper-dropdown-menu style="cursor:pointer" label="Start Month">
+                          <paper-listbox slot="dropdown-content" selected="{{startRange}}">
+                            <paper-item>January</paper-item>
+                            <paper-item>February</paper-item>
+                            <paper-item>March</paper-item>
+                            <paper-item>April</paper-item>
+                            <paper-item>May</paper-item>
+                            <paper-item>June</paper-item>
+                            <paper-item>July</paper-item>
+                            <paper-item>August</paper-item>
+                            <paper-item>September</paper-item>
+                            <paper-item>October</paper-item>
+                            <paper-item>November</paper-item>
+                            <paper-item>December</paper-item>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
+                      </div>
+                      <div id="flex">
+                        <div id="firstyear">
+                          <paper-dropdown-menu style="cursor:pointer" label="Start Year">
+                            <paper-listbox slot="dropdown-content" selected="{{startMonthYear}}" attr-for-selected="value">
+                              <paper-item value="2015">2015</paper-item>
+                              <paper-item value="2016">2016</paper-item>
+                              <paper-item value="2017">2017</paper-item>
+                              <paper-item value="2018">2018</paper-item>
+                            </paper-listbox>
+                          </paper-dropdown-menu>
+                        </div>
+                      </div>
+                      <div id="flex">
+                        <iron-icon style="margin-top:30px; margin-right:20px;color:dimgray;" icon="my-icons:event" id="date"></iron-icon>
+                        <paper-dropdown-menu style="cursor:pointer" label="Start Month">
+                          <paper-listbox slot="dropdown-content" selected="{{endRange}}">
+                            <paper-item>January</paper-item>
+                            <paper-item>February</paper-item>
+                            <paper-item>March</paper-item>
+                            <paper-item>April</paper-item>
+                            <paper-item>May</paper-item>
+                            <paper-item>June</paper-item>
+                            <paper-item>July</paper-item>
+                            <paper-item>August</paper-item>
+                            <paper-item>September</paper-item>
+                            <paper-item>October</paper-item>
+                            <paper-item>November</paper-item>
+                            <paper-item>December</paper-item>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
+                      </div>
+                      <div id="flex">
+                        <div id="lastyear">
+                          <paper-dropdown-menu style="cursor:pointer" label="End Year">
+                            <paper-listbox slot="dropdown-content" selected="{{endMonthYear}}" attr-for-selected="value">
+                              <paper-item value="2015">2015</paper-item>
+                              <paper-item value="2016">2016</paper-item>
+                              <paper-item value="2017">2017</paper-item>
+                              <paper-item value="2018">2018</paper-item>
+                            </paper-listbox>
+                          </paper-dropdown-menu>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="display:none" id="Yearly">
+                    <div id="flex">
+                      <div id="flex">
+                        <iron-icon style="margin-top:30px; margin-right:10px;color:dodgerblue" icon="my-icons:event" id="date"></iron-icon>
+                        <paper-dropdown-menu style="cursor:pointer" label="Start Year">
+                          <paper-listbox slot="dropdown-content" selected="{{startYear}}">
+                            <paper-item>2015</paper-item>
+                            <paper-item>2016</paper-item>
+                            <paper-item>2017</paper-item>
+                            <paper-item>2018</paper-item>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
+                      </div>
+                      <div id="flex">
+                        <iron-icon style="margin-top:30px; margin-right:20px;color:dimgray;" icon="my-icons:event" id="date"></iron-icon>
+                        <paper-dropdown-menu style="cursor:pointer" label="End Year">
+                          <paper-listbox slot="dropdown-content" selected="{{endYear}}">
+                            <paper-item>2015</paper-item>
+                            <paper-item>2016</paper-item>
+                            <paper-item>2017</paper-item>
+                            <paper-item>2018</paper-item>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+
+                <div class="card" id="card1" style="display:none;margin-top:250px;">
+                  <canvas id="myChart"></canvas>
+                </div>
+              </div>
+
+            </div>
           </iron-pages>
-
         </div>
       </template>
-
-
-      <!-- </div> -->
-
-
-
     </app-header-layout>
-
-
   </template>
 
   <script>
@@ -270,13 +540,397 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Object,
             observer: 'tokenChanged'
           },
-          selected:{
+          selected: {
+            type: Number,
+            value: 0,
+          },
+          selectedDaily: {
+            type: Number,
+            value: 1
+          },
+          selectedButtons: {
+            type: Number,
+            value: 0,
+            observer: '_buttonsChanged'
+          },
+          DailyfilterBy: {
+            type: Number,
+            value: 1
+          },
+          open: {
+            type: Boolean,
+            value: false,
+            notify: true
+          },
+          startDate: {
+            type: String,
+            value: '',
+          },
+          endDate: {
+            type: String,
+            value: '',
+          },
+          startRange: {
             type: Number,
             value: 0
-          }
+          },
+          startYear: {
+            type: Number,
+            value: 0
+          },
+          startMonthYear: {
+            type: String,
+            value: '2018'
+          },
+          endMonthYear: {
+            type: String,
+            value: '2018'
+          },
+          endYear: {
+            type: Number,
+            value: 3
+          },
+          startYears: String,
+          endYears: String,
+          endRange: Number
         };
       }
 
+      static get observers() {
+        return [
+          '_onYearChanged(startYear,endYear)',
+          '_onChanged(selectedDaily,DailyfilterBy,startDate,endDate,startRange,endRange,startYears,endYears,startMonthYear,endMonthYear)'
+        ];
+      }
+
+
+      ready() {
+        super.ready();
+        var date = new Date();
+        this.endRange = date.getMonth();
+        this.endDate = this._format(date, 'day');
+
+        date.setDate(date.getDate() - 14);
+        this.startDate = this._format(date, 'day');
+
+      }
+
+      _format(date, type) {
+
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+        if (month < 10) { month = '0' + month };
+        if (day < 10) { day = '0' + day };
+
+        if (type == 'day') {
+          return year + '-' + month + '-' + day;
+        }
+        if (type == 'month') {
+          return year + '-' + month;
+        }
+        if (type == 'year') {
+          return year;
+        }
+      }
+      _onYearChanged(startYear, endYear) {
+        if (startYear == 0) {
+          this.startYears = '2015'
+        } if (startYear == 1) {
+          this.startYears = '2016'
+        } if (startYear == 2) {
+          this.startYears = '2017'
+        } if (startYear == 3) {
+          this.startYears = '2018'
+        }
+        if (endYear == 0) {
+          this.endYears = '2015'
+        } if (endYear == 1) {
+          this.endYears = '2016'
+        } if (endYear == 2) {
+          this.endYears = '2017'
+        } if (endYear == 3) {
+          this.endYears = '2018'
+        }
+      }
+      _onChanged(selectedDaily, DailyfilterBy, startDate, endDate, startRange, endRange, startYears, endYears, startMonthYear, endMonthYear) {
+
+        if (this.open == true) {
+          var selectedType, lotType, text, start, end;
+
+          if (selectedDaily != 0) {
+            if (selectedDaily == 1) {
+              start = startDate;
+              end = endDate;
+              selectedType = "/daily";
+              // text = 'Daily';
+              var Month = Polymer.dom(this.root).querySelector("#Monthly");
+              Month.setAttribute("style", "display:none");
+              var Day = Polymer.dom(this.root).querySelector("#Daily");
+              Day.setAttribute("style", "display:block");
+              var Year = Polymer.dom(this.root).querySelector("#Yearly");
+              Year.setAttribute("style", "display:none");
+            }
+            else if (selectedDaily == 2) {
+              // text = 'Monthly';
+              var startM = parseInt(startRange) + 1;
+              start = startMonthYear;
+              if (startM < 10) {
+                start = startMonthYear + '-0' + startM.toString();
+              }
+
+              var endM = parseInt(endRange) + 1;
+              end = endMonthYear + '-' + endM.toString();
+              if (endM < 10) {
+                end = endMonthYear + '-0' + endM.toString();
+              }
+
+              var Month = new Date();
+              var month = this._format(Month, 'month');
+
+              selectedType = "/monthly";
+              text = 'Bone Chamber';
+
+              var Month = Polymer.dom(this.root).querySelector("#Monthly");
+              Month.setAttribute("style", "display:block");
+              var Day = Polymer.dom(this.root).querySelector("#Daily");
+              Day.setAttribute("style", "display:none");
+              var Year = Polymer.dom(this.root).querySelector("#Yearly");
+              Year.setAttribute("style", "display:none");
+            }
+            else {
+              start = startYears;
+              end = endYears;
+              selectedType = "/yearly";
+              text = 'Lawn Lot ';
+
+              var Month = Polymer.dom(this.root).querySelector("#Monthly");
+              Month.setAttribute("style", "display:none");
+              var Day = Polymer.dom(this.root).querySelector("#Daily");
+              Day.setAttribute("style", "display:none");
+              var Year = Polymer.dom(this.root).querySelector("#Yearly");
+              Year.setAttribute("style", "display:block");
+
+
+            }
+          }
+
+          if (DailyfilterBy != 0) {
+            if (this.DailyfilterBy == 1) {
+              lotType = 'activity';
+              text = 'All Lot';
+            } else if (this.DailyfilterBy == 2) {
+              lotType = 'comparative/bonechamber';
+              text = 'Bone Chamber ';
+            } else if (this.DailyfilterBy == 3) {
+              lotType = 'comparative/lawnlots';
+              text = 'Lawn Lots';
+            }
+            else if (this.DailyfilterBy == 4) {
+              lotType = 'comparative/cinerarium';
+              text = 'Cinerarium';
+            }
+            else if (this.DailyfilterBy == 5) {
+              lotType = 'comparative/wallniche';
+              text = 'Wall Niche';
+            }
+          }
+
+          this.query(lotType, selectedType, text, start, end)
+        }
+      }
+
+      query(lotType, selectedType, text, start, end) {
+
+        var ctx = Polymer.dom(this.root).querySelector("#myChart");
+        var myChart = new Chart(ctx, {
+          type: 'line',
+          options: {
+            plugins: {
+              datalabels: {
+                anchor: 'end',
+                align: 'right'
+              }
+            },
+            responsive: true,
+            // title: {
+            //   display: true,
+            //   fontSize: 18,
+            //   text: text + ' ' + 'Comparative Report'
+            // }
+          }
+        });
+
+        if (lotType == 'activity') {
+          firebase.database().ref("reports/" + lotType + selectedType)
+            .orderByKey().startAt(start).endAt(end).limitToFirst(15).on("value", function (snapshot) {
+              var typeHold = [];
+              var typeSold = [];
+              var typeReserved = [];
+              var labels = [];
+              snapshot.forEach(element => {
+                labels.push(element.key);
+                typeSold.push(element.val().totalSold);
+                typeHold.push(element.val().totalHold);
+                typeReserved.push(element.val().totalReserved);
+              });
+
+              var data = {
+                labels: labels,
+                datasets: [{
+                  label: 'Sold',
+                  data: typeSold,
+                  backgroundColor: 'transparent',
+                  borderColor: 'red',
+                  borderWidth: 1
+                },
+                {
+                  label: 'Hold',
+                  data: typeHold,
+                  backgroundColor: 'transparent',
+                  borderColor: 'orange',
+                  borderWidth: 1
+                },
+                {
+                  label: 'Reserved',
+                  data: typeReserved,
+                  backgroundColor: 'transparent',
+                  borderColor: 'yellow',
+                  borderWidth: 1
+                }],
+
+              };
+              myChart.data = data;
+              myChart.update();
+            });
+
+        }
+        else {
+          firebase.database().ref("reports/" + lotType + selectedType)
+            .orderByKey().startAt(start).endAt(end).limitToFirst(15).on("value", function (snapshot) {
+              var typeHold = [];
+              var typeSold = [];
+              var typeReserved = [];
+              var labels = [];
+              snapshot.forEach(element => {
+                labels.push(element.key);
+                typeSold.push(element.val().totalSold);
+                typeHold.push(element.val().totalHold);
+                typeReserved.push(element.val().totalReserved);
+              });
+
+              var data = {
+                labels: labels,
+                datasets: [{
+                  label: 'Sold',
+                  data: typeSold,
+                  backgroundColor: 'transparent',
+                  borderColor: 'red',
+                  borderWidth: 1
+                },
+                {
+                  label: 'Hold',
+                  data: typeHold,
+                  backgroundColor: 'transparent',
+                  borderColor: 'orange',
+                  borderWidth: 1
+                },
+                {
+                  label: 'Reserved',
+                  data: typeReserved,
+                  backgroundColor: 'transparent',
+                  borderColor: 'yellow',
+                  borderWidth: 1
+                }],
+
+              };
+              myChart.data = data;
+              myChart.update();
+            });
+        }
+
+      }
+      _buttonsChanged(e) {
+        if (e == 0) {
+
+        }
+        else if (e == 1) {
+          this.open = true;
+          var compare = Polymer.dom(this.root).querySelector("#comparative");
+          compare.setAttribute("style", "display:block");
+          var card = Polymer.dom(this.root).querySelector("#card1");
+          card.setAttribute("style", "display:block");
+
+          // var text = 'Daily';
+          var ctx = Polymer.dom(this.root).querySelector("#myChart");
+          var myChart = new Chart(ctx, {
+            type: 'line',
+            options: {
+              plugins: {
+                datalabels: {
+                  anchor: 'end',
+                  align: 'right'
+                }
+              },
+              responsive: true,
+              // title: {
+              //   display: true,
+              //   fontSize: 18,
+              //   text: 'Comparative Report'
+              // }
+            }
+          });
+          var current = new Date();
+          this.currentTime = current.getFullYear() + "-" + ("0" + (current.getMonth() + 1)).slice(-2);
+          // console.log(this.currentTime);
+          var DailyRunning = firebase.database().ref("reports/activity/daily");
+          DailyRunning.orderByKey().startAt(this.currentTime).limitToFirst(15).on("value", function (snapshot) {
+            var typeHold = [];
+            var typeSold = [];
+            var typeReserved = [];
+            var labels = [];
+            snapshot.forEach(element => {
+              // console.log(element.val());
+              labels.push(element.key);
+              // console.log(labels);
+              typeSold.push(element.val().totalSold);
+              typeHold.push(element.val().totalHold);
+              typeReserved.push(element.val().totalReserved);
+            });
+
+            var data = {
+              labels: labels,
+              datasets: [{
+                label: 'Sold',
+                data: typeSold,
+                backgroundColor: 'transparent',
+                borderColor: 'red',
+                borderWidth: 1
+              },
+              {
+                label: 'Hold',
+                data: typeHold,
+                backgroundColor: 'transparent',
+                borderColor: 'orange',
+                borderWidth: 1
+              },
+              {
+                label: 'Reserved',
+                data: typeReserved,
+                backgroundColor: 'transparent',
+                borderColor: 'yellow',
+                borderWidth: 1
+              }],
+
+            };
+            myChart.data = data;
+            myChart.update();
+          });
+        } else {
+
+        }
+
+      }
       toggleDrawer() {
         this.dispatchEvent(new CustomEvent('toggleDrawer', {
           bubbles: true, composed: true, detail: {
@@ -538,5 +1192,5 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
     }
     resetUI();
-  </script> -->
+  </script>-->
 </dom-module>
