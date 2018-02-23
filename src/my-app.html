@@ -198,6 +198,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-weight: 400;
         width: 80px;
       }
+
+      #overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
     </style>
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
@@ -220,6 +232,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- NOTICE!!! -->
 
     <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="password" on-error="showError"></firebase-auth>
+
+    <div id="overlay">
+      <paper-spinner id="spinner" active></paper-spinner>
+    </div>
 
     <template is="dom-if" if="{{_needToSignIn(user,statusKnown)}}">
       <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
@@ -363,7 +379,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             </app-drawer-layout>
 
-            
+
 
           </template>
 
@@ -591,6 +607,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _routePageChanged(page, user, active) {
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'view1' in that case.
+       
         if (user) {
           if (user.emailVerified) {
             if (user.phoneNumber) {
@@ -629,10 +646,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
+        // Load page import on demand. Show 404 page if fails
+        var loader = Polymer.dom(this.root).querySelector("#overlay");
+        var spinner = Polymer.dom(this.root).querySelector("#spinner");
+
+        Polymer.dom(this.root).querySelector("#overlay").style.display = 'flex';
+        Polymer.dom(this.root).querySelector("#spinner").active = true;
+
         var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
         Polymer.importHref(
           resolvedPageUrl,
-          null,
+          function () {
+            loader.style.display = 'none';
+            spinner.active = false;
+          },
           this._showPage404.bind(this),
           true);
       }
