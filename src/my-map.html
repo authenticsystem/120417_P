@@ -10,12 +10,20 @@
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
+<link rel="import" href="search-bar.html">
 
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="my-lot-details.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+
 
 <dom-module id="my-map">
   <template>
@@ -28,6 +36,11 @@
         iron-image.logo {
           width: 64px;
           height: 64px;
+        }
+        paper-search-bar {
+          margin-left: 80px;
+          width: 50%;
+          color: black;
         }
 
         /* div.legendHeader {
@@ -70,6 +83,11 @@
         iron-image.logo {
           width: 128px;
           height: 128px;
+        }
+        paper-search-bar {
+          margin-left: 80px;
+          width: 50%;
+          color: black;
         }
 
         div.myLegend {
@@ -185,10 +203,54 @@
       paper-dialog.colored {
         background-color: #EEEEEE;
       }
+
+      #btn-arrow {
+        position: absolute;
+        color: black;
+      }
+
+      #btn-menu {
+        color: gray;
+        position: fixed;
+        right: 40px;
+      }
+
+      #btn-clear {
+        position: fixed;
+        right: 80px;
+        color: gray;
+      }
+
+      #tool2 {
+        background-color: white;
+      }
     </style>
 
     <app-header-layout fullbleed has-scrolling-region>
-
+      <app-header fixed slot="header">
+        <template is="dom-if" if="{{openSearch}}">
+          <app-toolbar primary id="tool2">
+            <paper-icon-button id="btn-arrow" icon="my-icons:arrow-back" drawer-toggle on-tap="toggleReturn"></paper-icon-button>
+            <paper-search-bar id="search" query="{{search}}" disable-filter-button></paper-search-bar>
+            <template is="dom-if" if="{{search}}">
+              <paper-icon-button id="btn-clear" icon="my-icons:close" drawer-toggle on-tap="toggleClear"></paper-icon-button>
+            </template>
+            <paper-menu-button id="btn-menu" horizontal-align="right">
+              <paper-icon-button slot="dropdown-trigger" icon="my-icons:tune"></paper-icon-button>
+              <paper-listbox style="cursor:pointer" slot="dropdown-content" selected="{{filterBy}}">
+                <paper-item style="display:none;">Filter By</paper-item>
+                <paper-item>By Lots</paper-item>
+                <paper-item>By Part</paper-item>
+              </paper-listbox>
+            </paper-menu-button>
+          </app-toolbar>
+          
+          <firebase-query id="query" path="/lots" data="{{lots}}" order-by-child="part" equal-to="{{selectedType}}">
+          </firebase-query>
+        </template>
+      </app-header>
+      <!-- <firebase-query id="query" path="/lots" data="{{lots}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}" end-at="{{typeValue}}">
+      </firebase-query> -->
       <template is="dom-if" if="{{_viewMap('false',viewMap)}}">
         <iron-image class="logo" placeholder="images/manifest/map-ph.png" data-src="images/manifest/map-ph.png" sizing="cover" preload
           fade style="width:100%; height:100%;"></iron-image>
@@ -333,7 +395,7 @@
             <div class="displayBig" style="margin-left: 8px;">
               <span>Family Lots 1 (Irregular Lots)</span>
             </div>
-          </div>          
+          </div>
 
           <div style="display:flex;align-items:center;">
             <div style="display: inline-block; height: 16px; width: 16px;" data-args="familylots1" id="legendFamilyLots1"></div>
@@ -429,44 +491,49 @@
         </div>
 
       </template>
+      <template is="dom-if" if="{{!openSearch}}">
+        <template is="dom-if" if="{{_needToSignIn(user,statusKnown)}}">
+          <div class="logo">
+            <a href="/">
+              <iron-image class="logo" placeholder="images/manifest/icon-48x48.png" data-src="images/manifest/icon-48x48.png" sizing="contain"
+                preload fade></iron-image>
+            </a>
+          </div>
 
-      <template is="dom-if" if="{{_needToSignIn(user,statusKnown)}}">
-        <div class="logo">
-          <a href="/">
-            <iron-image class="logo" placeholder="images/manifest/icon-48x48.png" data-src="images/manifest/icon-48x48.png" sizing="contain"
-              preload fade></iron-image>
-          </a>
-        </div>
+          <paper-icon-button class="myToolbar_refresh" icon="my-icons:refresh" on-tap="_refreshMap"></paper-icon-button>
 
-        <paper-icon-button class="myToolbar_refresh" icon="my-icons:refresh" on-tap="_refreshMap"></paper-icon-button>
+          <div class="myToolbar">
+            <a href="/signin" style="text-decoration: none;">
+              <paper-button raised noink class="myToolbarSignIn">Sign In</paper-button>
+            </a>
+          </div>
 
-        <div class="myToolbar">
-          <a href="/signin" style="text-decoration: none;">
-            <paper-button raised noink class="myToolbarSignIn">Sign In</paper-button>
-          </a>
-        </div>
+        </template>
 
+        <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
+          <!-- <template is="dom-if" if="{{!openSearch}}"> -->
+          <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer" style="position: absolute; left: 16px; top: 16px; color: green;"></paper-icon-button>
+          <paper-icon-button style="position: absolute; float: right; right: 10px; color: green; top:16px;" class="menu" icon="my-icons:search"
+            drawer-toggle on-tap="toggleSearch"></paper-icon-button>
+          <div style="position: absolute; float: right; right: 32px; padding: 16px;">
+            <a href="/">
+              <iron-image class="logo" placeholder="images/manifest/icon-48x48.png" data-src="images/manifest/icon-48x48.png" sizing="contain"
+                preload fade></iron-image>
+            </a>
+          </div>
+
+          <paper-icon-button style="position: absolute; float: left; left: 52px; color: green; top:16px;" icon="my-icons:refresh" on-tap="_refreshMap"></paper-icon-button>
+
+
+        </template>
+
+        <paper-button class="myViewMap" id="myViewMap" raised on-click="_showMap">
+          <iron-icon icon="my-icons:map" style="padding-right: 8px;"></iron-icon>
+          <span>VIEW MAP</span>
+        </paper-button>
+
+        <my-lot-details id="lotDetailsPane" selected-lot="{{selectedLot}}" style="display: none;"></my-lot-details>
       </template>
-
-      <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
-        <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer" style="position: absolute; left: 16px; top: 16px; color: green;"></paper-icon-button>
-        <div style="position: absolute; float: right; right: 16px; padding: 16px;">
-          <a href="/">
-            <iron-image class="logo" placeholder="images/manifest/icon-48x48.png" data-src="images/manifest/icon-48x48.png" sizing="contain"
-              preload fade></iron-image>
-          </a>
-        </div>
-
-        <paper-icon-button style="position: absolute; float: left; left: 52px; color: green; top:16px;" icon="my-icons:refresh" on-tap="_refreshMap"></paper-icon-button>
-      </template>
-
-
-      <paper-button class="myViewMap" id="myViewMap" raised on-click="_showMap">
-        <iron-icon icon="my-icons:map" style="padding-right: 8px;"></iron-icon>
-        <span>VIEW MAP</span>
-      </paper-button>
-
-      <my-lot-details id="lotDetailsPane" selected-lot="{{selectedLot}}" style="display: none;"></my-lot-details>
     </app-header-layout>
 
 
@@ -513,10 +580,88 @@
           type: Boolean,
           value: true,
           notify: true,
-        }
+        },
+        openSearch: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+        filterBy: {
+          type: Number,
+          value: 1
+        },
+        selectedType: {
+          type: String,
+          value: ''
+        },
+        search: {
+          type: String,
+          value: '',
+        },
+        observers: [
+          '_searchChanged(filterBy, search)',
+        ]
+      },
+      toggleSearch() {
+        this.openSearch = true;
+
+        var legend = Polymer.dom(this.root).querySelector("#myLegend");
+        legend.style.display = "none";
+
+        var legendless = Polymer.dom(this.root).querySelector("#myLegendLess");
+        legendless.style.display = "block";
 
       },
-
+      toggleReturn() {
+        this.openSearch = false;
+        this.search = '';
+      },
+      toggleClear() {
+        this.search = '';
+      },
+      _searchChanged(g, e) {
+        if (g) {
+          if (g == 1) {
+            // this.selectedLabel = 'by reference';
+            if (e) {
+              this.selectedType = 'lots';
+            }
+          }
+          else if (g == 2) {
+            // this.selectedLabel = 'by lot';
+            if (e) {
+              this.selectedType = 'part';
+            }
+          }
+          // else if (g == 3) {
+          //   // this.selectedLabel = 'by type';
+          //   if (e) {
+          //     this.selectedType = 'type';
+          //     e = e.charAt(0).toUpperCase() + e.slice(1);
+          //   }
+          // }
+          // else if (g == 4) {
+          //   // this.selectedLabel = 'by buyer lastname';
+          //   if (e) {
+          //     this.selectedType = 'buyerdetails/lastname';
+          //   }
+          // }
+          // else {
+          //   // this.selectedLabel = 'by agent lastname';
+          //   if (e) {
+          //     this.selectedType = 'agentdetails/lastname';
+          //   }
+          // }
+        }
+        if (e) {
+          this.typeValue = e;
+        }
+        else {
+          this.selectedType = '';
+          // this.typeValue = '';
+          // this.msg = '';
+        }
+      },
       hideLegend() {
         var legend = Polymer.dom(this.root).querySelector("#myLegend");
         legend.style.display = "none";
@@ -728,7 +873,49 @@
         }
 
       },
-
+      _searchChanged(g, e) {
+        if (g) {
+          if (g == 1) {
+            // this.selectedLabel = 'by reference';
+            if (e) {
+              this.selectedType = 'reference';
+            }
+          }
+          else if (g == 2) {
+            // this.selectedLabel = 'by lot';
+            if (e) {
+              this.selectedType = 'lot';
+            }
+          }
+          else if (g == 3) {
+            // this.selectedLabel = 'by type';
+            if (e) {
+              this.selectedType = 'type';
+              e = e.charAt(0).toUpperCase() + e.slice(1);
+            }
+          }
+          else if (g == 4) {
+            // this.selectedLabel = 'by buyer lastname';
+            if (e) {
+              this.selectedType = 'buyerdetails/lastname';
+            }
+          }
+          else {
+            // this.selectedLabel = 'by agent lastname';
+            if (e) {
+              this.selectedType = 'agentdetails/lastname';
+            }
+          }
+        }
+        if (e) {
+          this.typeValue = e;
+        }
+        else {
+          this.selectedType = '';
+          this.typeValue = '';
+          this.msg = '';
+        }
+      },
       polyClicked(e) {
 
         var data_args = Polymer.dom(e).rootTarget.getAttribute("id");

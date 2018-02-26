@@ -13,12 +13,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-messaging.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <dom-module id="my-account">
   <template>
     <style include="shared-styles">
@@ -124,11 +130,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <!-- <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth> -->
-
 
     <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
     </firebase-query>
+
+    <!-- <firebase-document path="/users/{{user.uid}}" data="{{usersToken}}"></firebase-document>
+    <firebase-messaging id="messaging" token="{{token}}" on-message="handleMessage"></firebase-messaging> -->
+    <!-- <firebase-document path="/users/[[user.uid]]/token" data="[[token]]"></firebase-document> -->
+
 
     <app-header-layout fullbleed has-scrolling-region>
       <app-header fixed slot="header">
@@ -140,7 +149,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </app-header>
 
       <div class="card">
-        <div class="profilePhoto">
+        <!-- <div class="toggleNotification">
+          <paper-toggle-button id="subscribe" style="display:inline-block" on-tap="toggleSubscription" checked="[[token]]">Subscribe to Notifications</paper-toggle-button>
+          <paper-button on-tap="_sendNotification" style="display:inline-block">Send</paper-button>
+        </div> -->
+        <!-- <p style="font-size:12px">{{userToken}}</p>
+        <br>
+        <p style="font-size:12px">{{token}}</p> -->
+        <paper-menu-button style="float:right">
+          <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" title="Change email/password" horizontal-align="left"></paper-icon-button>
+          <paper-listbox slot="dropdown-content">
+            <paper-item style="font-size:12px">Change email</paper-item>
+            <paper-item style="font-size:12px">Change password</paper-item>
+          </paper-listbox>
+        </paper-menu-button>
+        <div class="profilePhoto" style="text-align:center">
           <iron-icon hidden$="{{user.photoURL}}" icon="my-icons:account-circle" style=" height:180px;width:180px; max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></iron-icon>
           <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img>
           <br>
@@ -152,6 +175,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
         <br>
         <div class="info">
+          <paper-input label="Email" value="{{user.email}}" id="email" readonly></paper-input>
           <paper-input label="Firstname" value="{{firstname}}" id="fname" readonly></paper-input>
           <paper-input label="Middlename" value="{{middlename}}" id="mname" readonly></paper-input>
           <paper-input label="Lastname" value="{{lastname}}" id="lname" readonly></paper-input>
@@ -222,6 +246,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         verified: {
           type: Boolean,
           value: false
+        },
+        usersToken: {
+          type: Object,
+          observer: 'usersTokenChanged'
+        }
+
+      },
+      usersTokenChanged() {
+        if (Object.keys(this.usersToken).length > 0) {
+          this.userToken = this.usersToken.token;
+          // console.log(this.userToken);
         }
       },
       accountChanged() {
@@ -236,6 +271,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.lastname = this.account[0].name.lastname;
           this.suffix = this.account[0].name.suffix;
           this.key = this.account[0].$key;
+          this.accountkey = this.account[0].accountkey;
+          this.userId = this.account[0].uid;
         }
       },
 
@@ -346,38 +383,77 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (!this.firstname || !this.middlename || !this.lastname) {
           this.msg = 'Please fill-up the required field.';
         }
-          else {
-            this.msg = '';
-            if (!this.suffix) {
-              this.suffix = '';
-            }
-            var ref = firebase.database().ref('/accountlist');
-            ref.child(this.key).update({
-              name: {
-                firstname: this.firstname,
-                middlename: this.middlename,
-                lastname: this.lastname,
-                suffix: this.suffix
-              },
-            });
+        else {
+          this.msg = '';
+          if (!this.suffix) {
+            this.suffix = '';
           }
-          window.location = "/account"
+          var ref = firebase.database().ref('/accountlist');
+          ref.child(this.key).update({
+            name: {
+              firstname: this.firstname,
+              middlename: this.middlename,
+              lastname: this.lastname,
+              suffix: this.suffix
+            },
+          });
         }
+        window.location = "/account"
+      },
+      // toggleSubscription() {
+      //   this.$.messaging.requestPermission()
+      //     .then(function () {
+      //       console.log('Notification permission granted.');
+      //       this.saveToken();
+      //     })
+      //     .catch(function (err) {
+      //       console.log('Unable to get permission to notify.', err);
+      //     });
+      // },
+      // saveToken() {
+      //   this.$.messaging.getToken()
+      //     .then(function (token) {
+      //       if (token) {
+      //         firebase.database().ref('users/' + this.userId + '/token/' + token).set(true);
+      //       } else {
+      //         this.toggleSubscription();
+      //       }
+      //     })
+      //     .catch(function (err) {
+      //       console.log('An error occurred while retrieving token. ', err);
+      //       showToken('Error retrieving Instance ID token. ', err);
+      //       setTokenSentToServer(false);
+      //     });
+      // },
+      // handleMessage(payload) {
+      //   console.log('message recieved', payload);
+      // },
 
-      // _update() {
-      //   var user = firebase.auth().currentUser;
-      //   var name = Polymer.dom(this.root).querySelector("#name");
-      //   user.updateProfile({
-      //     displayName: name.value
-      //   }).then(function () {
-      //     // Update successful.
-      //     window.location.reload()
+      // _sendNotification() {
+      //   var key = 'AAAAYRWQPB8:APA91bHX03IsFX7JFre5nsMNjZ_4BFKsJZl3NCpEpFi8eJQkug5c3aJmIWdZWMiH_eoARBgSoXswyM2djDIqMkpRjpJxWOizUQZKtkfJoUbd0N0F2NXUIHPNpvrC_O4W61wh16FJaaMg';
+      //   var to = this.userToken;
+      //   var notification = {
+      //     'title': 'Portugal vs. Denmark',
+      //     'body': 'Salamat nigawas na gayud',
+      //     'click_action': 'http://localhost:8081'
+      //   };
+
+      //   fetch('https://fcm.googleapis.com/fcm/send', {
+      //     'method': 'POST',
+      //     'headers': {
+      //       'Authorization': 'key=' + key,
+      //       'Content-Type': 'application/json'
+      //     },
+      //     'body': JSON.stringify({
+      //       'notification': notification,
+      //       'to': to
+      //     })
+      //   }).then(function (response) {
+      //     console.log(response);
       //   }).catch(function (error) {
-      //     // An error happened.
-      //   });
+      //     console.error(error);
+      //   })
       // },
     })
-
-
   </script>
 </dom-module>
