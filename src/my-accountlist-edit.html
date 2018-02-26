@@ -149,18 +149,20 @@
                     <div class="docu-header">Edit Account</div>
                     <div class="details">
                         <paper-input readonly="true" value="{{accountkey}}" always-float-label label="Account no"></paper-input>
-                        <paper-input  value="{{firstname}}" always-float-label label="First Name"></paper-input>
-                        <paper-input  value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
-                        <paper-input  value="{{lastname}}" always-float-label label="Last Name"></paper-input>
-                        <paper-input  value="{{suffix}}" always-float-label label="Suffix"></paper-input>
+                        <paper-input required auto-validate pattern="[a-zA-Z-.]*" value="{{firstname}}" always-float-label label="First Name"></paper-input>
+                        <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
+                        <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{lastname}}" always-float-label label="Last Name"></paper-input>
+                        <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{suffix}}" always-float-label label="Suffix"></paper-input>
                         <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label
                             label="Cellphone">
                             <div slot="prefix">+63</div>
                         </paper-input>
                         <paper-dropdown-menu style="cursor:pointer" label="Role">
                             <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{roleAdd}}">
+                                <paper-item>Owner</paper-item>
                                 <paper-item>Manager</paper-item>
                                 <paper-item>Sales Agent</paper-item>
+                                <paper-item>Staff</paper-item>
                             </paper-listbox>
                         </paper-dropdown-menu>
                         <br>
@@ -168,6 +170,7 @@
                         <paper-checkbox id="dash">Dashboard</paper-checkbox>
                         <paper-checkbox id="app">Applications</paper-checkbox>
                         <paper-checkbox id="acc">Accounts</paper-checkbox>
+                        <paper-checkbox id="case">Briefcase</paper-checkbox>
                     </div>
                     <br>
                     <br>
@@ -184,10 +187,11 @@
     <script>
         Polymer({
             is: 'my-accountlist-edit',
+
             properties: {
-                editData: {
+                account: {
                     type: Object,
-                    observer: '_editDataChanged'
+                    observer: '_accountChanged'
                 },
                 equal: {
                     type: String,
@@ -200,7 +204,7 @@
                 transactionKey: {
                     type: String,
                     value: '',
-                    observer: 'transactionKeyChanged'
+                    // observer: 'transactionKeyChanged'
                 },
                 selectedItem: {
                     observer: '_selectedItemChanged'
@@ -214,8 +218,7 @@
                 },
                 roleAdd: {
                     type: Number,
-                    value: 1,
-                    observer: 'roleAddChanged'
+                    value: 1
                 },
                 role: {
                     type: String,
@@ -226,74 +229,44 @@
                     value: ''
                 },
             },
-            roleAddChanged() {
-                if (this.roleAdd == 0) {
-                    this.role = 'Manager';
-                }
-                else {
-                    this.role = 'Sales Agent';
-                }
-            },
-            _editDataChanged() {
-                if (this.editData.length > 0) {
-                    this.accountkey = this.editData[1].$val;
-                    this.firstname = this.editData[4].firstname;
-                    this.middlename = this.editData[4].middlename;
-                    this.lastname = this.editData[4].lastname;
-                    this.suffix = this.editData[4].suffix;
-                    this.cellphone = this.editData[3].$val;
-
-                    if (this.editData[0].accountlist == true) {
-                        Polymer.dom(this.root).querySelector("#acc").checked = true;
-                    }
-
-                    if (this.editData[0].applications == true) {
-                        Polymer.dom(this.root).querySelector("#app").checked = true;
-                    }
-
-                    if (this.editData[0].dashboard == true) {
-                        Polymer.dom(this.root).querySelector("#dash").checked = true;
-                    }
-
-                    if (this.editData[5].$val == "Manager") {
+            _accountChanged() {
+                if (this.account.length > 0) {
+                    this.accountkey = this.account[1].$val;
+                    this.firstname = this.account[4].firstname;
+                    this.middlename = this.account[4].middlename;
+                    this.lastname = this.account[4].lastname;
+                    this.suffix = this.account[4].suffix;
+                    this.cellphone = this.account[3].$val;
+                    // console.log(this.account);
+                    // console.log(this.account[0].accountlist);
+                    var role = this.account[5].$val;
+                    if (role == "Manager") {
                         this.roleAdd = 0;
                     }
                     else {
                         this.roleAdd = 1;
                     }
+
                 }
+
             },
-            transactionKeyChanged() {
-                this.$.appheader.resetLayout();
-            },
+            // transactionKeyChanged(){
+            //     console.log('e',this.transactionKey);
+            // },
             getpath() {
                 this.accountkey = this.guid();
             },
+
             guid: function () {
                 var uid = new ShortUniqueId();
                 return uid.randomUUID(7);
             },
-            _done() {
-                var box1 = Polymer.dom(this.root).querySelector("#dash");
-                var box2 = Polymer.dom(this.root).querySelector("#app");
-                var box3 = Polymer.dom(this.root).querySelector("#acc");
-                var dashboard = false;
-                var applications = false;
-                var accounts = false;
 
+            _done() {
                 if (!this.firstname || !this.middlename || !this.lastname) {
                     this.msg = 'Please fill-up the required field.';
                 }
                 else {
-                    if (box1.checked == true) {
-                        dashboard = true;
-                    }
-                    if (box2.checked == true) {
-                        applications = true;
-                    }
-                    if (box3.checked == true) {
-                        accounts = true;
-                    }
                     if (this.cellphone.length != 10) {
                         this.msg = 'Error! Invalid cellphone number.';
                     }
@@ -303,12 +276,20 @@
                             this.suffix = '';
                         }
 
+                        if (this.roleAdd == 0) {
+                            this.role = 'Manager';
+                            this.access = true;
+                        }
+                        else {
+                            this.role = 'Sales Agent';
+                            this.access = false;
+                        }
                         var ref = firebase.database().ref('/accountlist');
                         ref.child(this.transactionKey).update({
                             access: {
-                                accountlist: accounts,
-                                applications: applications,
-                                dashboard: dashboard
+                                accountlist: this.access,
+                                applications: this.access,
+                                dashboard: this.access
                             },
                             name: {
                                 firstname: this.firstname,
@@ -323,7 +304,11 @@
                     window.location = "/accountlist"
                 }
             },
-            _cancel() { }
+            _cancel(){}
+
         })
+
+
+
     </script>
 </dom-module>

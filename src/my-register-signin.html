@@ -5,6 +5,8 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 
 
 <link rel="import" href="shared-styles.html">
@@ -77,9 +79,9 @@
         color: white;
       }
 
-      paper-button.green[active] {
+      /* paper-button.green[active] {
         background-color: var(--paper-red-500);
-      }
+      } */
     </style>
 
     <firebase-auth id="auth" user="{{user}}" provider="google" on-error="handleError"></firebase-auth>
@@ -100,12 +102,15 @@
       <!-- <paper-input label="Name" id="name" value="{{name}}"></paper-input> -->
       <paper-input label="Email" id="email" value="{{email}}" required auto-validate error-message=""></paper-input>
       <paper-input label="Password" type="password" id="password" value="{{password}}" required auto-validate error-message=""></paper-input>
+      <!-- <paper-checkbox on-tap="showPassword" style="font-size:13px">Show password</paper-checkbox>
+      </br> -->
       </br>
       <div class="footer">
         <div class="action">
-            <paper-button on-tap="_cancel">cancel</paper-button>
-          <paper-button toggles raised class="custom green" on-tap="_registerAccount">next</paper-button>
+          <paper-button on-tap="_cancel">cancel</paper-button>
+          <paper-button toggles raised id="next" class="green" on-tap="_registerAccount">next</paper-button>
         </div>
+        <paper-spinner id="spinnerNext" active style="float:right; margin-right:10px; display:none"></paper-spinner>
       </div>
     </div>
 
@@ -115,6 +120,25 @@
   <script>
     Polymer({
       is: 'my-register-signin',
+      properties: {
+        email: {
+          type: String,
+          observer: 'emailChanged'
+        },
+        password: {
+          type: String,
+          observer: 'passwordChanged'
+        }
+      },
+      emailChanged() {
+        Polymer.dom(this.root).querySelector("#spinnerNext").style.display = "none";
+        Polymer.dom(this.root).querySelector("#next").disabled = false;
+      },
+
+      passwordChanged() {
+        Polymer.dom(this.root).querySelector("#spinnerNext").style.display = "none";
+        Polymer.dom(this.root).querySelector("#next").disabled = false;
+      },
 
       handleError() {
         var errormsg = Polymer.dom(this.root).querySelector("#errorMessage");
@@ -131,6 +155,8 @@
       },
 
       _registerAccount() {
+        Polymer.dom(this.root).querySelector("#spinnerNext").style.display = "block";
+        Polymer.dom(this.root).querySelector("#next").disabled = true;
         // here 1am
         if (!this.email || !this.password) {
           var errormsg = Polymer.dom(this.root).querySelector("#errorMessage");
@@ -162,6 +188,14 @@
                 });
             }
           }
+        }
+      },
+      showPassword() {
+        var showPw = Polymer.dom(this.root).querySelector("#password");
+        if (showPw.type === "password") {
+          showPw.type = "text";
+        } else {
+          showPw.type = "password";
         }
       }
     })

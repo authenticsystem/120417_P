@@ -85,6 +85,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
   </script>
 
+  <!-- preloade jquery -->
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+  <!-- <script>
+    window.addEventListener('load', function () {
+        var load_screen = document.getElementById("load_screen");
+        document.body.removeChild(load_screen);
+    })
+  </script> -->
+
   <!-- Load webcomponents-loader.js to check and load any polyfills your browser needs -->
   <script src="bower_components/webcomponentsjs/webcomponents-loader.js"></script>
 
@@ -100,15 +111,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       min-height: 100vh;
       background-color: #eeeeee;
     }
+
+    .preload {
+      position: absolute;
+      right: 0;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .preload paper-spinner {
+      height: 150px;
+      width: 150px;
+    }
   </style>
 </head>
 
 <body>
+  <!-- <div class="preload" id="load_screen">
+    <paper-spinner active></paper-spinner>
+  </div>
+  <div class="content"> -->
   <my-app></my-app>
+  <!-- </div> -->
   <noscript>
     Please enable JavaScript to view this website.
   </noscript>
   <!-- Built with love using Polymer Starter Kit -->
 </body>
+
+<!-- <script type="text/javascript">
+  $(function () {
+    $('.preload').fadeOut(2000, function () {
+      $('.content').fadeIn(1000);
+    })
+  });
+</script> -->
 
 </html>
