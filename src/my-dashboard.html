@@ -435,6 +435,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-input prefix="" hidden$="{{hideDailyInputDate}}" id="myDate" label="Date" type="date" value="{{dailyAct}}" style="display:inline-block; margin-top:5px; width:150px;">
                 <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
               </paper-input>
+              <span style="font-size:12px">Data Table</span>
 
               <span hidden$="{{hideMonthSelection}}">
                 <paper-dropdown-menu class="month" label="Month" style="width:100px; display:inline-block">
@@ -458,7 +459,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <!-- <paper-icon-button on-tap="lessYear" icon="my-icons:chevron-left" slot="suffix"></paper-icon-button>
                   <paper-icon-button on-tap="addYear" id="addYear" icon="my-icons:chevron-right" slot="suffix"></paper-icon-button> -->
                 </paper-input>
-                <span style="font-size:12px">Data Table</span>
               </span>
 
               <paper-input hidden$="{{hideYearly}}" value={{yearly}} type="number" style="display:inline-block" label="Year">
