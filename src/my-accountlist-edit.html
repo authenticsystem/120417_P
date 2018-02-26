@@ -68,11 +68,6 @@
                 margin: 0;
             }
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> master
             @media (min-width: 800px) {
                 .footer {
                     position: absolute;
@@ -84,19 +79,11 @@
                     left: 48px;
                     bottom: 48px;
                 }
-<<<<<<< HEAD
-=======
-
->>>>>>> master
                 .paper-fab-1 {
                     position: absolute;
                     right: 48px;
                     bottom: 48px;
                 }
-<<<<<<< HEAD
-=======
-
->>>>>>> master
             }
 
             @media (max-width: 800px) {
@@ -105,27 +92,15 @@
                     left: 16px;
                     bottom: 48px;
                 }
-<<<<<<< HEAD
-=======
-
->>>>>>> master
                 .paper-fab-1 {
                     position: absolute;
                     right: 16px;
                     bottom: 48px;
                 }
-<<<<<<< HEAD
-=======
-
->>>>>>> master
                 .docu {
                     margin-left: 16px;
                     margin-right: 16px;
                 }
-<<<<<<< HEAD
-=======
-
->>>>>>> master
             }
 
             paper-button.indigo {
@@ -146,15 +121,10 @@
                 width: 80px;
             }
 
-<<<<<<< HEAD
-=======
-
->>>>>>> master
             paper-button.green {
                 background-color: var(--paper-green-500);
                 color: white;
             }
-<<<<<<< HEAD
 
             paper-checkbox {
                 font-size: 14px;
@@ -163,59 +133,30 @@
         </style>
         <!-- <firebase-document id="transactionFire" path="/accountlist/{{transactionKey}}" data="{{transactionData}}" disabled="true"></firebase-document> -->
         <firebase-query id="query" path="/accountlist/{{transactionKey}}" data="{{editData}}"></firebase-query>
-=======
-        </style>
-        <!-- <firebase-document id="transactionFire" path="/accountlist/{{transactionKey}}" data="{{transactionData}}" disabled="true"></firebase-document> -->
-        <firebase-query id="query" path="/accountlist/{{transactionKey}}" data="{{account}}"></firebase-query>
->>>>>>> master
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-header-layout id="appheader" has-scrolling-region>
                 <app-header fixed slot="header">
                     <app-toolbar>
                         <a href="/accountlist">
-<<<<<<< HEAD
                             <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
-=======
-                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="toggleDrawer"></paper-icon-button>
->>>>>>> master
                         </a>
                         <div main-title>Edit Account</div>
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
-<<<<<<< HEAD
-                    
-                    <!-- <paper-dialog id="modal">
-                        <h3>Successfully Updated.</h3>
-                        <div class="buttons">
-                            <a href="/accountlist" style="text-decoration:none">
-                                <paper-button dialog-confirm>Ok</paper-button>
-                            </a>
-                        </div>
-                    </paper-dialog> -->
-=======
->>>>>>> master
                 </app-header>
                 <div class="docu">
                     <div class="docu-header">Edit Account</div>
                     <div class="details">
                         <paper-input readonly="true" value="{{accountkey}}" always-float-label label="Account no"></paper-input>
-<<<<<<< HEAD
-                        <paper-input value="{{firstname}}" always-float-label label="First Name"></paper-input>
-                        <paper-input value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
-                        <paper-input value="{{lastname}}" always-float-label label="Last Name"></paper-input>
-                        <paper-input value="{{suffix}}" always-float-label label="Suffix"></paper-input>
-=======
                         <paper-input required auto-validate pattern="[a-zA-Z-.]*" value="{{firstname}}" always-float-label label="First Name"></paper-input>
                         <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
                         <paper-input required auto-validate="true" pattern="[a-zA-Z-.]*" value="{{lastname}}" always-float-label label="Last Name"></paper-input>
                         <paper-input auto-validate="true" pattern="[a-zA-Z-.]*" value="{{suffix}}" always-float-label label="Suffix"></paper-input>
->>>>>>> master
                         <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label
                             label="Cellphone">
                             <div slot="prefix">+63</div>
                         </paper-input>
-<<<<<<< HEAD
                         <paper-dropdown-menu style="cursor:pointer" label="Role">
                             <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{roleAdd}}">
                                 <paper-item>Owner</paper-item>
@@ -238,23 +179,6 @@
                         <paper-button class="cancel" on-tap="_cancel">Cancel</paper-button>
                     </a>
                     <span style="color:red; font-size:13px; float:right">{{msg}}</span>
-=======
-                        <paper-dropdown-menu label="Role">
-                            <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{roleAdd}}">
-                                <paper-item>Manager</paper-item>
-                                <paper-item>Sales Agent</paper-item>
-                            </paper-listbox>
-                        </paper-dropdown-menu>
-                    </div>
-                    <br>
-                    <br>
-                        <paper-button class="indigo" on-click="_done" raised>Update</paper-button>
-                        <a href="/accountlist" style="text-decoration:none">
-                        <paper-button class="cancel" on-tap="_cancel">Cancel</paper-button>
-                    </a>
-                        <span style="color:red; font-size:13px; float:right">{{msg}}</span>
-                   
->>>>>>> master
                 </div>
             </app-header-layout>
         </app-drawer-layout>
@@ -263,18 +187,11 @@
     <script>
         Polymer({
             is: 'my-accountlist-edit',
-<<<<<<< HEAD
-            properties: {
-                editData: {
-                    type: Object,
-                    observer: '_editDataChanged'
-=======
 
             properties: {
                 account: {
                     type: Object,
                     observer: '_accountChanged'
->>>>>>> master
                 },
                 equal: {
                     type: String,
@@ -287,11 +204,7 @@
                 transactionKey: {
                     type: String,
                     value: '',
-<<<<<<< HEAD
-                    observer: 'transactionKeyChanged'
-=======
                     // observer: 'transactionKeyChanged'
->>>>>>> master
                 },
                 selectedItem: {
                     observer: '_selectedItemChanged'
@@ -305,12 +218,7 @@
                 },
                 roleAdd: {
                     type: Number,
-<<<<<<< HEAD
-                    value: 1,
-                    observer: 'roleAddChanged'
-=======
                     value: 1
->>>>>>> master
                 },
                 role: {
                     type: String,
@@ -321,66 +229,6 @@
                     value: ''
                 },
             },
-<<<<<<< HEAD
-            roleAddChanged() {
-                if (this.roleAdd == 0) {
-                    this.role = 'Owner';
-                }
-                else if (this.roleAdd == 1) {
-                    this.role = 'Manager';
-                }
-                else if (this.roleAdd == 2) {
-                    this.role = 'Sales Agent';
-                }
-                else {
-                    this.role = 'Staff';
-                }
-            },
-            _editDataChanged() {
-                if (this.editData.length > 0) {
-                    this.accountkey = this.editData[1].$val;
-                    this.firstname = this.editData[4].firstname;
-                    this.middlename = this.editData[4].middlename;
-                    this.lastname = this.editData[4].lastname;
-                    this.suffix = this.editData[4].suffix;
-                    this.cellphone = this.editData[3].$val;
-
-                    if (this.editData[0].accountlist == true) {
-                        Polymer.dom(this.root).querySelector("#acc").checked = true;
-                    }
-
-                    if (this.editData[0].applications == true) {
-                        Polymer.dom(this.root).querySelector("#app").checked = true;
-                    }
-
-                    if (this.editData[0].dashboard == true) {
-                        Polymer.dom(this.root).querySelector("#dash").checked = true;
-                    }
-                    if (this.editData[0].briefcase == true) {
-                        Polymer.dom(this.root).querySelector("#case").checked = true;
-                    }
-
-                    if (this.editData[5].$val == "Owner") {
-                        this.roleAdd = 0;
-                    }
-                    if (this.editData[5].$val == "Manager") {
-                        this.roleAdd = 1;
-                    }
-                    if (this.editData[5].$val == "Sales Agent") {
-                        this.roleAdd = 2;
-                    }
-                    else {
-                        this.roleAdd = 3;
-                    }
-                }
-            },
-            transactionKeyChanged() {
-                this.$.appheader.resetLayout();
-            },
-            getpath() {
-                this.accountkey = this.guid();
-            },
-=======
             _accountChanged() {
                 if (this.account.length > 0) {
                     this.accountkey = this.account[1].$val;
@@ -409,45 +257,16 @@
                 this.accountkey = this.guid();
             },
 
->>>>>>> master
             guid: function () {
                 var uid = new ShortUniqueId();
                 return uid.randomUUID(7);
             },
-<<<<<<< HEAD
-            _done() {
-                var box1 = Polymer.dom(this.root).querySelector("#dash");
-                var box2 = Polymer.dom(this.root).querySelector("#app");
-                var box3 = Polymer.dom(this.root).querySelector("#acc");
-                var box4 = Polymer.dom(this.root).querySelector("#case");
-                var dashboard = false;
-                var applications = false;
-                var accounts = false;
-                var briefcase = false;
-
-=======
 
             _done() {
->>>>>>> master
                 if (!this.firstname || !this.middlename || !this.lastname) {
                     this.msg = 'Please fill-up the required field.';
                 }
                 else {
-<<<<<<< HEAD
-                    if (box1.checked == true) {
-                        dashboard = true;
-                    }
-                    if (box2.checked == true) {
-                        applications = true;
-                    }
-                    if (box3.checked == true) {
-                        accounts = true;
-                    }
-                    if (box4.checked == true) {
-                        briefcase = true;
-                    }
-=======
->>>>>>> master
                     if (this.cellphone.length != 10) {
                         this.msg = 'Error! Invalid cellphone number.';
                     }
@@ -457,15 +276,6 @@
                             this.suffix = '';
                         }
 
-<<<<<<< HEAD
-                        var ref = firebase.database().ref('/accountlist');
-                        ref.child(this.transactionKey).update({
-                            access: {
-                                accountlist: accounts,
-                                applications: applications,
-                                dashboard: dashboard,
-                                briefcase: briefcase
-=======
                         if (this.roleAdd == 0) {
                             this.role = 'Manager';
                             this.access = true;
@@ -480,7 +290,6 @@
                                 accountlist: this.access,
                                 applications: this.access,
                                 dashboard: this.access
->>>>>>> master
                             },
                             name: {
                                 firstname: this.firstname,
@@ -492,15 +301,6 @@
                             role: this.role,
                         });
                     }
-<<<<<<< HEAD
-                    // this.$.modal.open();
-                    window.location = "/accountlist"
-                }
-
-            },
-            _cancel() { }
-        })
-=======
                     window.location = "/accountlist"
                 }
             },
@@ -510,6 +310,5 @@
 
 
 
->>>>>>> master
     </script>
 </dom-module>
