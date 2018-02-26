@@ -354,10 +354,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <a name="account" href="[[rootPath]]account">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
-                        <span>Accounts</span>
+                        <span>My Account</span>
                       </paper-icon-item>
                     </a>
-                    <a on-tap="_signOut" href="/">
+                    <a on-tap="_signOut" href="#">
                       <paper-icon-item toggles="true">
                         <iron-icon icon="my-icons:close" slot="item-icon"></iron-icon>
                         <span>Sign-out</span>
@@ -607,7 +607,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _routePageChanged(page, user, active) {
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'view1' in that case.
-       
+
         if (user) {
           if (user.emailVerified) {
             if (user.phoneNumber) {
@@ -720,9 +720,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       _signOut() {
-        this.$.auth.signOut();
-        window.location.reload()
-        this.set("route.path", "");
+        this.$.auth.signOut()
+          .then(function () {
+            location.reload();
+          });
       }
 
       openPhotoUrl() {
