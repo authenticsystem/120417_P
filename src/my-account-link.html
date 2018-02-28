@@ -16,6 +16,7 @@
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 
@@ -66,9 +67,9 @@
                 margin-top: 3px;
             }
 
-            paper-button.green[active] {
+            /* paper-button.green[active] {
                 background-color: var(--paper-red-500);
-            }
+            } */
 
             .action paper-button {
                 height: 32px;
@@ -107,8 +108,9 @@
                     <div class="action">
                         <!-- <paper-icon-button icon="my-icons:close" on-tap="_signOut" title="Sign Out" style="float: left"></paper-icon-button> -->
                         <paper-button on-tap="_signOut">Sign out</paper-button>
-                        <paper-button toggles raised class="custom green" on-tap="_submitKey">Next</paper-button>
+                        <paper-button id="next" toggles raised class="green" on-tap="_submitKey">Next</paper-button>
                     </div>
+                    <paper-spinner id="spinnerNext" active style="float:right; margin-right:10px; display:none"></paper-spinner>
                 </div>
                 <br>
 
@@ -120,8 +122,9 @@
                         auto-validate required></paper-input>
                     <br>
                     <div class="action">
-                        <paper-button toggles raised class="custom green" on-tap="_verifyCode">Verify</paper-button>
+                        <paper-button id="next2" toggles raised class="green" on-tap="_verifyCode">Verify</paper-button>
                     </div>
+                    <paper-spinner id="spinnerNext2" active style="float:right; margin-right:10px; display:none"></paper-spinner>
 
                     <br>
                 </div>
@@ -190,14 +193,27 @@
                     type: String,
                     observer: '_accKeyChanged'
                 },
+                confirmationCode: {
+                    type: String,
+                    observer: '_confirmationCodeChanged'
+                },
                 accountInfo: Object,
             },
 
             _accKeyChanged() {
+                Polymer.dom(this.root).querySelector("#spinnerNext").style.display="none";
+                Polymer.dom(this.root).querySelector("#next").disabled=false;
                 this.accountKey = this.accKey;
             },
 
+            _confirmationCodeChanged(){
+                Polymer.dom(this.root).querySelector("#spinnerNext2").style.display="none";
+                Polymer.dom(this.root).querySelector("#next2").disabled=false;
+            },
+
             _submitKey() {
+                Polymer.dom(this.root).querySelector("#spinnerNext").style.display="block";
+                Polymer.dom(this.root).querySelector("#next").disabled=true;
                 if (!this.accKey) {
                     this.msg = 'Please enter account number.';
                 }
@@ -258,6 +274,8 @@
 
 
             _verifyCode() {
+                Polymer.dom(this.root).querySelector("#spinnerNext2").style.display="block";
+                Polymer.dom(this.root).querySelector("#next2").disabled=true;
                 if (!this.confirmationCode) {
                     this.msg = 'Please enter verification code.'
                 }

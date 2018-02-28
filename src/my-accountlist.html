@@ -56,6 +56,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         position: fixed;
         bottom: 32px;
         right: 32px;
+
+      }
+
+      paper-dialog#editUser,
+      #addUser {
+        width: 60%;
+        margin: 0 auto;
+        padding: 16px;
+        margin-top: 2%
+      }
+
+      h2 {
+        margin-top: 2px;
       }
 
       paper-toast {
@@ -74,12 +87,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: rgb(233, 79, 164);
       }
 
-      paper-icon-button.menu {
-        margin-right: 16px;
-      }
-
-      paper-search-bar#searching {
-        color: #388E3C
+      paper-icon-button.edit {
+        color: rgb(233, 79, 164);
       }
 
       paper-button#done {
@@ -92,20 +101,71 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width: 80px;
       }
     </style>
-    <app-route route="{{route}}" pattern="" active="{{accountActive}}"></app-route>
-    <app-route route="{{route}}" pattern="/edit/:key" data="{{editData}}" active="{{editActive}}"></app-route>
+    <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
+    <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
 
-    <template is="dom-if" if="{{!access}}">
-      <app-header-layout fullbleed has-scrolling-region>
-        <app-header fixed slot="header">
-          <app-toolbar primary>
-            <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-            <div main-title>Opps!</div>
-          </app-toolbar>
-        </app-header>
-        <div class="card">
-          <h3>Sorry!</h3>
-          <div>You're not allowed to access this content.</div>
+    <div hidden$="{{!applicationActive}}">
+      <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
+        <div name="">
+
+          <app-header-layout fullbleed has-scrolling-region>
+            <app-header fixed slot="header">
+              <app-toolbar primary>
+                <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                <div main-title id="addAccount">Accounts</div>
+                <div main-title id="addNew" style="display:none">New Account</div>
+              </app-toolbar>
+            </app-header>
+            <firebase-query id="query" path="/accountlist" data="{{account}}"></firebase-query>
+
+            <paper-datatable-card style="padding:17px;" header-fixed id-property="$key" header="Accounts" id="datatableCard">
+
+              <div slot="toolbar-select">
+                <paper-icon-button class="delete" icon="my-icons:delete-forever" no-ink on-tap="_deleteSelected"></paper-icon-button>
+              </div>
+              <div slot="toolbar-select-single">
+                <a href$="{{_getAccount(keyS)}}">
+                  <paper-icon-button class="edit" alt="{{keyS}}" id="{{keyS}}" data-args="{{keyS}}" icon="datatable:editable"></paper-icon-button>
+                </a>
+              </div>
+
+              <paper-dialog id="deleteUserInfo">
+                <br>
+                <h2>Delete Account Permanently?</h2>
+                <div class="buttons">
+                  <paper-button dialog-dismiss autofocus>No</paper-button>
+                  <paper-button dialog-confirm on-tap="deleteUser">Yes</paper-button>
+                </div>
+              </paper-dialog>
+
+              <paper-datatable data="{{account}}" id="datatable" header-fixed multi-selection selectable selected-items="{{selectedItem}}">
+                <div no-results>
+                  Loading or no more items...
+                </div>
+                <paper-datatable-column header="Account No" type="String" property="accountkey" sortable></paper-datatable-column>
+                <paper-datatable-column header="Name" type="Object" property="name" sortable>
+                  <template>
+                    <span>[[value.firstname]]</span>
+                    <span>[[value.middlename]]</span>
+                    <span>[[value.lastname]]</span>
+                    <span>[[value.suffix]]</span>
+                  </template>
+                </paper-datatable-column>
+                <paper-datatable-column header="Cellphone" type="String" property="cellphone" sortable></paper-datatable-column>
+                <paper-datatable-column header="Role" type="String" property="role" sortable></paper-datatable-column>
+                <paper-datatable-column header="Active" type="Boolean" property="active" sortable></paper-datatable-column>
+              </paper-datatable>
+            </paper-datatable-card>
+
+          </app-header-layout>
+          <a href="/accountlist/new" style="text-decoration: none;">
+            <paper-fab noink class="fab-menu" on-tap="_appsnew" icon="my-icons:add"></paper-fab>
+          </a>
+        </div>
+
+        <div name="/new">
+          <div id="appnew"></div>
+          <my-accountlist-new id="d23" path="" prev-route="{{route.prefix}}"></my-accountlist-new>
         </div>
       </app-header-layout>
     </template>
@@ -149,25 +209,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <paper-button dialog-confirm on-tap="delete">Yes</paper-button>
                 </div>
               </paper-dialog> -->
-
-                <paper-dialog id="deactivateAccount">
-                  <br>
-                  <h3>Deactivate account?</h3>
-                  <div class="buttons">
-                    <paper-button dialog-dismiss autofocus>No</paper-button>
-                    <paper-button dialog-confirm on-tap="deactivate">Yes</paper-button>
-                  </div>
-                </paper-dialog>
-
-                <paper-dialog id="activateAccount">
-                  <br>
-                  <h3>Activate account?</h3>
-                  <div class="buttons">
-                    <paper-button dialog-dismiss autofocus>No</paper-button>
-                    <paper-button dialog-confirm on-tap="activate">Yes</paper-button>
-                  </div>
-                </paper-dialog>
-
                 <paper-datatable data="{{account}}" id="datatable" header-fixed multi-selection selectable selected-items="{{selectedItem}}">
                   <div no-results>
                     Loading or no more items...
@@ -192,6 +233,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-fab noink class="fab-menu" on-tap="_appsnew" icon="my-icons:add"></paper-fab>
             </a>
 
+<<<<<<< HEAD
           </div>
 
           <div name="/new">
@@ -211,6 +253,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <paper-toast id="toast" text="{{txt}}"></paper-toast>
     </template>
+
+    <paper-dialog id="deactivateAccount">
+<<<<<<< HEAD
+      <br>
+      <h3>Deactivate account?</h3>
+      <div class="buttons">
+        <paper-button dialog-dismiss autofocus>No</paper-button>
+        <paper-button dialog-confirm on-tap="deactivate">Yes</paper-button>
+      </div>
+    </paper-dialog>
+
+    
+    <paper-dialog id="activateAccount">
+      <br>
+      <h3>Activate account?</h3>
+      <div class="buttons">
+        <paper-button dialog-dismiss autofocus>No</paper-button>
+        <paper-button dialog-confirm on-tap="activate">Yes</paper-button>
+      </div>
+    </paper-dialog>
+=======
+        <div name="view404">Not found.</div>
+
+      </iron-pages>
+      <div hidden$="{{!editActive}}">
+        <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
+        <div id="appedit"></div>
+        <my-accountlist-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-accountlist-edit>
+        <!-- </template> -->
+      </div>
+      <paper-toast id="toast" text="{{txt}}"></paper-toast>
+>>>>>>> master
+=======
+        <br>
+        <h3>Deactivate account?</h3>
+        <div class="buttons">
+          <paper-button dialog-dismiss autofocus>No</paper-button>
+          <paper-button dialog-confirm on-tap="deactivate">Yes</paper-button>
+        </div>
+      </paper-dialog>
+
+      <paper-dialog id="activateAccount">
+        <br>
+        <h3>Activate account?</h3>
+        <div class="buttons">
+          <paper-button dialog-dismiss autofocus>No</paper-button>
+          <paper-button dialog-confirm on-tap="activate">Yes</paper-button>
+        </div>
+      </paper-dialog>
+>>>>>>> ardie
   </template>
 
   <script> 
@@ -218,7 +310,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       is: 'my-accountlist',
       properties: {
         route: Object,
+
         account: Object,
+
+        account: {
+          type: Object,
+        },
+        equal: {
+          type: String,
+          value: ''
+        },
+        accountkey: {
+          type: String,
+          value: ''
+        },
+
         selectedItem: {
           type: String,
           observer: '_selectedItemChanged'
@@ -230,6 +336,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: String,
           value: ''
         },
+
         block: {
           type: Boolean,
           value: true
@@ -237,6 +344,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         access: {
           type: Boolean,
           value: false
+        },
+
+        roleAdd: {
+          type: Number,
+          value: 1
+
         }
       },
 
@@ -252,6 +365,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
           if (oldDiv) {
             Polymer.dom(node.parentNode).removeChild(oldDiv);
+
           }
           var newDiv = document.createElement("my-accountlist-new");
           newDiv.setAttribute("id", "d23");
@@ -293,8 +407,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       //     this.$.datatable.deselectAll();
       //   }
       // },
+      _deactivateSelected() {
+        this.$.deactivateAccount.open();
+      },
+
+      _activateSelected() {
+        this.$.activateAccount.open();
+      },
 
       deactivate() {
+          var newDiv = document.createElement("my-accountlist-new");
+          newDiv.setAttribute("id", "d23");
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          // newDiv.setAttribute("block", "3")
+          //if open existing
+          var currentDiv = document.getElementById("appnew");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+  
+      },
+      editDetails(e) {
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var node = Polymer.dom(this.root).querySelector("#appedit");
+        if (node) {
+          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
+          if (oldDiv) {
+            Polymer.dom(node.parentNode).removeChild(oldDiv);
+          }
+          var newDiv = document.createElement("my-accountlist-edit");
+          newDiv.setAttribute("id", "d25")
+
+          newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("prev-route", this.route.prefix);
+          //if open existing
+          var currentDiv = document.getElementById("appedit");
+          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+        }
+      },
+      deleteUser() {
         if (this.selectedItems.length > 0) {
           var ref = firebase.database().ref('/accountlist');
           for (var i = 0; i < this.selectedItems.length; ++i) {
@@ -318,13 +467,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       //   this.$.deleteAccount.open();
       // },
 
-      _deactivateSelected() {
-        this.$.deactivateAccount.open();
-      },
-
-      _activateSelected() {
-        this.$.activateAccount.open();
-      },
 
       _selectedItemChanged() {
         if (this.selectedItem.length > 0) {
@@ -343,6 +485,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.roleUpdate = this.selectedItem[0].role;
             this.keyS = this.selectedItem[0].$key;
             this.selectedItems = this.selectedItem;
+
             if (this.selectedItem[0].active == false) {
               this.block = false;
             }
@@ -360,7 +503,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }));
         this.$.narrow = !this.$.narrow;
-      }
+      },
 
     })
   </script>

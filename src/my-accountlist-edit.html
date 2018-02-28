@@ -144,23 +144,34 @@
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
+                    
+                    <!-- <paper-dialog id="modal">
+                        <h3>Successfully Updated.</h3>
+                        <div class="buttons">
+                            <a href="/accountlist" style="text-decoration:none">
+                                <paper-button dialog-confirm>Ok</paper-button>
+                            </a>
+                        </div>
+                    </paper-dialog> -->
                 </app-header>
                 <div class="docu">
                     <div class="docu-header">Edit Account</div>
                     <div class="details">
                         <paper-input readonly="true" value="{{accountkey}}" always-float-label label="Account no"></paper-input>
-                        <paper-input  value="{{firstname}}" always-float-label label="First Name"></paper-input>
-                        <paper-input  value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
-                        <paper-input  value="{{lastname}}" always-float-label label="Last Name"></paper-input>
-                        <paper-input  value="{{suffix}}" always-float-label label="Suffix"></paper-input>
+                        <paper-input value="{{firstname}}" always-float-label label="First Name"></paper-input>
+                        <paper-input value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
+                        <paper-input value="{{lastname}}" always-float-label label="Last Name"></paper-input>
+                        <paper-input value="{{suffix}}" always-float-label label="Suffix"></paper-input>
                         <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label
                             label="Cellphone">
                             <div slot="prefix">+63</div>
                         </paper-input>
                         <paper-dropdown-menu style="cursor:pointer" label="Role">
                             <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{roleAdd}}">
+                                <paper-item>Owner</paper-item>
                                 <paper-item>Manager</paper-item>
                                 <paper-item>Sales Agent</paper-item>
+                                <paper-item>Staff</paper-item>
                             </paper-listbox>
                         </paper-dropdown-menu>
                         <br>
@@ -168,6 +179,7 @@
                         <paper-checkbox id="dash">Dashboard</paper-checkbox>
                         <paper-checkbox id="app">Applications</paper-checkbox>
                         <paper-checkbox id="acc">Accounts</paper-checkbox>
+                        <paper-checkbox id="case">Briefcase</paper-checkbox>
                     </div>
                     <br>
                     <br>
@@ -228,10 +240,16 @@
             },
             roleAddChanged() {
                 if (this.roleAdd == 0) {
+                    this.role = 'Owner';
+                }
+                else if (this.roleAdd == 1) {
                     this.role = 'Manager';
                 }
-                else {
+                else if (this.roleAdd == 2) {
                     this.role = 'Sales Agent';
+                }
+                else {
+                    this.role = 'Staff';
                 }
             },
             _editDataChanged() {
@@ -254,12 +272,21 @@
                     if (this.editData[0].dashboard == true) {
                         Polymer.dom(this.root).querySelector("#dash").checked = true;
                     }
+                    if (this.editData[0].briefcase == true) {
+                        Polymer.dom(this.root).querySelector("#case").checked = true;
+                    }
 
-                    if (this.editData[5].$val == "Manager") {
+                    if (this.editData[5].$val == "Owner") {
                         this.roleAdd = 0;
                     }
-                    else {
+                    if (this.editData[5].$val == "Manager") {
                         this.roleAdd = 1;
+                    }
+                    if (this.editData[5].$val == "Sales Agent") {
+                        this.roleAdd = 2;
+                    }
+                    else {
+                        this.roleAdd = 3;
                     }
                 }
             },
@@ -277,9 +304,11 @@
                 var box1 = Polymer.dom(this.root).querySelector("#dash");
                 var box2 = Polymer.dom(this.root).querySelector("#app");
                 var box3 = Polymer.dom(this.root).querySelector("#acc");
+                var box4 = Polymer.dom(this.root).querySelector("#case");
                 var dashboard = false;
                 var applications = false;
                 var accounts = false;
+                var briefcase = false;
 
                 if (!this.firstname || !this.middlename || !this.lastname) {
                     this.msg = 'Please fill-up the required field.';
@@ -293,6 +322,9 @@
                     }
                     if (box3.checked == true) {
                         accounts = true;
+                    }
+                    if (box4.checked == true) {
+                        briefcase = true;
                     }
                     if (this.cellphone.length != 10) {
                         this.msg = 'Error! Invalid cellphone number.';
@@ -308,7 +340,8 @@
                             access: {
                                 accountlist: accounts,
                                 applications: applications,
-                                dashboard: dashboard
+                                dashboard: dashboard,
+                                briefcase: briefcase
                             },
                             name: {
                                 firstname: this.firstname,
@@ -320,8 +353,10 @@
                             role: this.role,
                         });
                     }
+                    // this.$.modal.open();
                     window.location = "/accountlist"
                 }
+
             },
             _cancel() { }
         })

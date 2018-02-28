@@ -31,6 +31,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymerfire/firebase-app.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 
@@ -197,6 +198,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-weight: 400;
         width: 80px;
       }
+
+      #overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
     </style>
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
@@ -209,7 +222,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <!-- dev server -->
     <firebase-app auth-domain="hpmg-56df3.firebaseapp.com" database-url="https://hpmg-56df3.firebaseio.com/" api-key="AIzaSyCKxkkMfRQlhG5vTWh8Y_1yNWtMCTa-YPM"
-      storage-bucket="hpmg-56df3.appspot.com">
+      storage-bucket="hpmg-56df3.appspot.com" messaging-sender-id="416973601823">
     </firebase-app>
 
     <!-- LIVE Server -->
@@ -218,7 +231,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <!-- NOTICE!!! -->
 
-    <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth>
+    <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="password" on-error="showError"></firebase-auth>
+
+    <div id="overlay">
+      <paper-spinner id="spinner" active></paper-spinner>
+    </div>
 
     <template is="dom-if" if="{{_needToSignIn(user,statusKnown)}}">
       <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
@@ -265,6 +282,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <template is="dom-if" if="{{isActive}}">
             <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
               <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
+
                 <div style="height: 100%; overflow: auto;">
                   <app-header fixed>
                     <app-toolbar>
@@ -316,7 +334,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>Briefcase</span>
                       </paper-icon-item>
                     </a> -->
-                    <a style$="{{access(appAccess)}}" name="briefcase" href="[[rootPath]]briefcase">
+                    <a style$="{{access(briefcaseAccess)}}" name="briefcase" href="[[rootPath]]briefcase">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:work" slot="item-icon"></iron-icon>
                         <span>Briefcase</span>
@@ -335,12 +353,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </a>
                     <a name="account" href="[[rootPath]]account">
                       <paper-icon-item toggles="true" class="menuSelected">
-                        <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
-                        <span>My Account
-                          <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
-                            DRY RUN
-                          </span>
-                        </span>
+                        <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
+                        <span>Accounts</span>
                       </paper-icon-item>
                     </a>
                     <a on-tap="_signOut" href="/">
@@ -350,24 +364,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       </paper-icon-item>
                     </a>
                   </iron-selector>
-
                 </div>
               </app-drawer>
 
               <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-                <my-dashboard name="dashboard" access="{{dashAccess}}"></my-dashboard>
+                <my-dashboard name="dashboard" access="{{dashAccess}}" user="{{user}}"></my-dashboard>
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
                 <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]"></my-applications>
                 <my-briefcase name="briefcase" access="{{appAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-briefcase>
-                <my-briefcase-draft name="briefcase-draft" access="{{appAccess}}" route="[[subroute]]"></my-briefcase-draft>
                 <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
                 <my-accountlist name="accountlist" access="{{accountAccess}}" route="[[subroute]]"></my-accountlist>
-                <!-- <my-view3 name="view3"></my-view3> -->
                 <my-view404 name="view404"></my-view404>
               </iron-pages>
+
             </app-drawer-layout>
+
+
+
           </template>
+
         </template>
+
       </template>
 
       <!-- alert dialog photoUrl-->
@@ -440,6 +457,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </div>
       </paper-dialog>
     </template>
+
   </template>
 
   <script>
@@ -478,14 +496,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean,
             value: false
           },
+          briefcaseAccess: {
+            type: Boolean,
+            value: false
+          },
           appAccess: {
             type: Boolean,
             value: false
           },
           isActive: {
             type: Boolean,
-            value: false,
-            notify: true
           },
           // hasAccount: {
           //   type: Boolean,
@@ -497,7 +517,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       static get observers() {
         return [
-          '_routePageChanged(routeData.page, user, isActive)'
+          '_routePageChanged(routeData.page, user, isActive)',
+
         ];
       }
 
@@ -525,7 +546,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               if (this.myaccount[0].access.accountlist == true) {
                 this.accountAccess = true;
               }
+              if (this.myaccount[0].access.briefcase == true) {
+                this.briefcaseAccess = true;
+              }
             }
+          }
+          else {
+            this.isActive = false;
           }
         }
       }
@@ -580,11 +607,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _routePageChanged(page, user, active) {
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'view1' in that case.
+       
         if (user) {
           if (user.emailVerified) {
             if (user.phoneNumber) {
               if (active == true) {
-                this.page = page || 'account';
+                this.page = page || 'dashboard';
                 var drawer = Polymer.dom(this.root).querySelector("#drawerMain");
                 if (drawer) {
                   if (!drawer.persistent) {
@@ -606,6 +634,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         else {
           this.page = page || 'landing-page';
+          this.isLoading = false;
+          // this.page = page || 'account-deactivated';
         }
 
         // Close a non-persistent drawer when the page & route are changed.
@@ -616,10 +646,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _pageChanged(page) {
         // Load page import on demand. Show 404 page if fails
+        // Load page import on demand. Show 404 page if fails
+        var loader = Polymer.dom(this.root).querySelector("#overlay");
+        var spinner = Polymer.dom(this.root).querySelector("#spinner");
+
+        Polymer.dom(this.root).querySelector("#overlay").style.display = 'flex';
+        Polymer.dom(this.root).querySelector("#spinner").active = true;
+
         var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
         Polymer.importHref(
           resolvedPageUrl,
-          null,
+          function () {
+            loader.style.display = 'none';
+            spinner.active = false;
+          },
           this._showPage404.bind(this),
           true);
       }
@@ -631,6 +671,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _needToSignIn(e, f) {
         if (f === true) {
           return e === null;
+
         }
         else {
           return false;
@@ -640,6 +681,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _alreadySignedIn(e, f) {
         if (f === true) {
           return e !== null;
+
         }
         else {
           return false;
