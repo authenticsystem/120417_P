@@ -1085,6 +1085,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             text = 'Wall Niche';
           }
 
+
           this.peterquery(lotType, selectedType, text, start, end, this.comparativeChart)
         }
       },
@@ -1380,6 +1381,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         else {
           this.selectedReport = 0;
+          this.selectedDMY = 0;
           //create chart
           if (!this.Chart) {
             var ctx = Polymer.dom(this.root).querySelector("#dailyChart");
@@ -1443,7 +1445,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       selectedReportChanged(e) {
         if (e == 0) {
-          this.selectedDMY = 0;
+          // this.selectedDMY = 0;
           this.hideActivity = false;
           this.hideComparative = true;
           this.hideOverAll = true;
