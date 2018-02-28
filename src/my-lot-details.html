@@ -89,7 +89,7 @@
       <div id="reservationBlock" style="display: none;">
 
         <div id="refKey" style="font-size: 12px; color: black;padding-bottom: 8px;">
-          Ref. [[selectedLotDetails.reservationdetails.reference]]
+          Ref. [[_formatRef(selectedLotDetails.reservationdetails.reference)]]
         </div>
 
         <div>
@@ -168,6 +168,15 @@
       // _levelLotsChanged(){
       //   console.log(this.levelLots);
       // },
+
+      _formatRef(e) {
+        var f = "";
+        if (e) {
+          f = Array(e.length - 3).join("*") + e.substring(e.length - 3, e.length)
+          // f = e;
+        }
+        return f;
+      },
 
       _selectedLotDetailsChanged(newData, oldData) {
         if (this.levelLots) this.levelLots = null;
