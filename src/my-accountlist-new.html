@@ -121,16 +121,25 @@
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
+                    
+                    <!-- <paper-dialog id="modal">
+                            <h3>Successfully Added.</h3>
+                            <div class="buttons">
+                                <a href="/accountlist" style="text-decoration:none">
+                                    <paper-button dialog-confirm>Ok</paper-button>
+                                </a>
+                            </div>
+                        </paper-dialog> -->
                 </app-header>
 
                 <div class="docu" hidden$="[[firstStep]]">
                     <!-- <div class="docu-header">Add New Account</div> -->
                     <div class="details">
                         <paper-input readonly="true" value="{{accountkey}}" always-float-label label="Account No."></paper-input>
-                        <paper-input  value="{{firstname}}" always-float-label label="First Name"></paper-input>
-                        <paper-input  value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
-                        <paper-input  value="{{lastname}}" always-float-label label="Last Name"></paper-input>
-                        <paper-input  value="{{suffix}}" always-float-label label="Suffix"></paper-input>
+                        <paper-input value="{{firstname}}" always-float-label label="First Name"></paper-input>
+                        <paper-input value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
+                        <paper-input value="{{lastname}}" always-float-label label="Last Name"></paper-input>
+                        <paper-input value="{{suffix}}" always-float-label label="Suffix"></paper-input>
                         <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label
                             label="Cellphone">
                             <div slot="prefix">+63</div>
@@ -148,6 +157,7 @@
                         <paper-checkbox id="dash">Dashboard</paper-checkbox>
                         <paper-checkbox id="app">Applications</paper-checkbox>
                         <paper-checkbox id="acc">Accounts</paper-checkbox>
+                        <paper-checkbox id="case">Briefcase</paper-checkbox>
                         <!-- <paper-checkbox noink value="{{checked}}" >Allow Access</paper-checkbox> -->
                     </div>
                     <br>
@@ -171,16 +181,21 @@
                         </span>
                     </div>
                     <div class="details" id="printMe">
-                        <div>Account No. <span style="font-family: Courier New; font-size: 20px">{{accountkey}}</span></div>
+                        <div>Account No.
+                            <span style="font-family: Courier New; font-size: 20px">{{accountkey}}</span>
+                        </div>
                         <div>Name: {{firstname}} {{middlename}} {{lastname}}</div>
                         <div>Contact No. +63{{cellphone}}</div>
                         <div>Position: {{role}}</div>
                         <br>
-                        <div><strong>To login to Haven of Peace, Please follow instructions below.</strong></div>
+                        <div>
+                            <strong>To login to Haven of Peace, Please follow instructions below.</strong>
+                        </div>
                         <div>Step 1. Create an account to Haven of Peace under more options</div>
                         <div>Step 2. Verify Email, click the link that was sent to your email account.</div>
                         <div>Step 3. Enter the account number above to link your Haven of Peace account.</div>
-                        <div>Step 4. Enter the account code that was sent to your phone number provided above to complete the login procedure.</div>    
+                        <div>Step 4. Enter the account code that was sent to your phone number provided above to complete the
+                            login procedure.</div>
                     </div>
                 </div>
                 <!-- <paper-toast id="toast" text="{{txt}}"></paper-toast> -->
@@ -239,15 +254,15 @@
             roleAddChanged() {
                 if (this.roleAdd == 0) {
                     this.role = 'Owner';
-                    // Polymer.dom(this.root).querySelector("#dash").checked = true;
-                    // Polymer.dom(this.root).querySelector("#app").checked = true;
-                    // Polymer.dom(this.root).querySelector("#acc").checked = true;
+                }
+                else if (this.roleAdd == 1) {
+                    this.role = 'Manager';
+                }
+                else if (this.roleAdd == 2) {
+                    this.role = 'Sales Agent';
                 }
                 else {
-                    this.role = 'Sales Agent';
-                    // Polymer.dom(this.root).querySelector("#dash").checked = false;
-                    // Polymer.dom(this.root).querySelector("#app").checked = true;
-                    // Polymer.dom(this.root).querySelector("#acc").checked = false;
+                    this.role = 'Staff';
                 }
             },
             _print() {
@@ -270,9 +285,11 @@
                 var box1 = Polymer.dom(this.root).querySelector("#dash");
                 var box2 = Polymer.dom(this.root).querySelector("#app");
                 var box3 = Polymer.dom(this.root).querySelector("#acc");
+                var box4 = Polymer.dom(this.root).querySelector("#case");
                 var dashboard = false;
                 var applications = false;
                 var accounts = false;
+                var briefcase = false;
 
                 if (!this.firstname || !this.middlename || !this.lastname) {
                     this.msg = 'Please fill-up the required field.';
@@ -286,6 +303,9 @@
                     }
                     if (box3.checked == true) {
                         accounts = true;
+                    }
+                    if (box4.checked == true) {
+                        briefcase = true;
                     }
                     if (this.cellphone.length != 10) {
                         this.msg = 'Error! Invalid cellphone number.';
@@ -302,7 +322,8 @@
                             access: {
                                 accountlist: accounts,
                                 applications: applications,
-                                dashboard: dashboard
+                                dashboard: dashboard,
+                                briefcase: briefcase
                             },
                             active: true,
                             name: {
@@ -320,6 +341,7 @@
                         this.finalstepHide = false;
                         this.firstStep = true;
                         // window.location = "/accountlist"
+                        // this.$.modal.open();
                     }
                 }
             },

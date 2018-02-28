@@ -11,10 +11,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<!-- <link rel="import" href="../bower_components/polymerfire/firebase-messaging.html"> -->
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-button-group/paper-button-group.html">
+<link rel="import" href="../bower_components/paper-buttons-group/paper-buttons-group.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
-
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+
+<script src="../bower_components/chart.js/dist/Chart.js"></script>
+<script src="../bower_components/chartjs-plugin-datalabels/dist/Chartjs-plugin-datalabels.js"></script>
+<script type="text/javascript" src="../bower_components/Chart.PieceLabel.js/src/Chart.PieceLabel.js"></script>
 
 <dom-module id="my-dashboard">
   <template>
@@ -38,7 +59,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin: 0 auto;
       }
 
-      table,
+      /* table,
       th,
       td {
         border: 1px solid gray;
@@ -49,92 +70,286 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       td {
         padding: 5px;
         text-align: right;
+      } */
+
+      table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 100%;
+        border: 1px solid #ddd;
       }
 
-      /* .bg { */
+      th,
+      td {
+        text-align: left;
+        padding: 8px;
+      }
 
-      /* The image used */
+      tr:nth-child(even) {
+        background-color: #f2f2f2
+      }
 
-      /* background-image: url("/images/manifest/icon-72x72.png"); */
+      .smallButton {
+        min-width: 3em;
+        min-height: 2em;
+        font-size: 13px;
+      }
 
-      /* Full height */
+      /* paper-button[toggles] {
+        transition: background-color 0.3s;
+      } */
 
-      /* height: 100%; */
+      paper-button:focus {
+        color: white;
+        background-color: green;
+      }
 
-      /* Center and scale the image nicely */
+      paper-button[active] {
+        color: white;
+        background-color: green;
+      }
 
-      /* background-position: center; */
+      /* paper-button[toggles][active] {
+        color: white;
+        background-color: var(--paper-pink-500);
+        --paper-button-flat-focus-color: var(--paper-pink-50);
+      }
 
-      /* background-repeat: no-repeat; */
+      paper-button:hover {
+        background: #eee;
+      }
 
-      /* background-size: cover; */
+      paper-button.ripple::shadow paper-ripple {
+        color: var(--paper-pink-a200);
+      }
 
-      /* } */
+      paper-button.ripple paper-ripple {
+        color: var(--paper-pink-a200);
+      } */
+
+      @media (max-width: 768px) {
+        paper-button-group {
+          height: 30px;
+          width: 300px;
+        }
+        .card {
+          margin-left: 10px;
+          margin-right: 10px;
+        }
+        #flex {
+          display: flex;
+        }
+        #flexMain {
+          display: block;
+        }
+        #date {
+          display: none;
+        }
+        #icons {
+          display: block;
+        }
+        #tabs {
+          display: none;
+        }
+        .totalSRH_Hold {
+          display: inline-block;
+          padding: 0px;
+          color: white;
+          border: 1px solid rgb(145, 145, 0);
+          width: 25%;
+          border-radius: 5px
+        }
+        .totalSRH_Reserved {
+          display: inline-block;
+          padding: 0px;
+          margin-right: 5px;
+          color: white;
+          border: 1px solid orange;
+          width: 25%;
+          border-radius: 5px
+        }
+        .totalSRH_Sold {
+          display: inline-block;
+          padding: 0px;
+          margin-right: 5px;
+          color: white;
+          border: 1px solid red;
+          width: 25%;
+          border-radius: 5px
+        }
+
+        #totalTxt {
+          display: inline-block;
+          transform: scale(1, 2);
+          /* W3C */
+          -webkit-transform: scale(1, 2);
+          /* Safari and Chrome */
+          -moz-transform: scale(1, 2);
+          /* Firefox */
+          -ms-transform: scale(1, 2);
+          /* IE 9 */
+          -o-transform: scale(1, 2);
+          /* Opera */
+          margin: 5px;
+        }
+
+        canvas {
+          width: 100% !important;
+          max-width: 100%;
+          height: auto !important;
+          margin: auto;
+        }
+
+        #customGroup {
+          --paper-buttons-group-selected: {
+            background-color: green !important;
+            color: white;
+          }
+          paper-button {
+            width: 50px;
+          }
+        }
+      }
+
+      @media (min-width: 768px) {
+        paper-button-group {
+          height: 30px;
+          width: 300px;
+          size: 10px;
+        }
+        .card {
+          margin-left: 10px;
+          margin-right: 10px;
+        }
+        #flexMain {
+          display: flex;
+        }
+
+        #flex {
+          display: flex;
+        }
+        #date {
+          float: left;
+          margin-top: 50px;
+        }
+        #card1 {
+          margin-top: 10px;
+        }
+        #icons {
+          display: block;
+        }
+        #tabs {
+          display: block;
+        }
+        .totalSRH_Hold {
+          display: inline-block;
+          padding: 0px;
+          color: white;
+          border: 1px solid rgb(145, 145, 0);
+          width: 15%;
+          border-radius: 5px
+        }
+        .totalSRH_Reserved {
+          display: inline-block;
+          padding: 0px;
+          margin-right: 5px;
+          color: white;
+          border: 1px solid orange;
+          width: 15%;
+          border-radius: 5px
+        }
+        .totalSRH_Sold {
+          display: inline-block;
+          padding: 0px;
+          margin-right: 5px;
+          color: white;
+          border: 1px solid red;
+          width: 15%;
+          border-radius: 5px
+        }
+
+        #totalTxt {
+          display: inline-block;
+          transform: scale(2, 4);
+          /* W3C */
+          -webkit-transform: scale(2, 4);
+          /* Safari and Chrome */
+          -moz-transform: scale(2, 4);
+          /* Firefox */
+          -ms-transform: scale(2, 4);
+          /* IE 9 */
+          -o-transform: scale(2, 4);
+          /* Opera */
+          margin: 18px;
+        }
+        canvas {
+          width: 100% !important;
+          max-width: 70%;
+          height: auto !important;
+          margin: auto;
+        }
+
+        #customGroup {
+          --paper-buttons-group-selected: {
+            background-color: green !important;
+            color: white;
+          }
+          paper-button {
+            width: 80px;
+          }
+        }
+      }
+
+      paper-button.blue {
+        --paper-button-checked-color: var(--paper-light-blue-500);
+        --paper-button-checked-ink-color: var(--paper-light-blue-500);
+        --paper-button-unchecked-color: var(--paper-light-blue-900);
+        --paper-button-unchecked-ink-color: var(--paper-light-blue-900);
+      }
+
+      paper-dropdown-menu {
+        width: 100px;
+      }
+
+      paper-item {
+        font-size: 13px;
+      }
+
+      #compPaper-item {
+        border-bottom: .5px solid gray
+      }
     </style>
 
-
-    <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" provider="google" on-error="showError"></firebase-auth>
+    <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" on-error="showError"></firebase-auth>
+    <firebase-messaging id="messaging" on-message="handleMessage" token="{{token}}"></firebase-messaging>
+    <firebase-document path="/users/[[user.uid]]/token" data="[[token]]"></firebase-document>
 
     <firebase-query path="/reports/lotstatus/Today" limit-to-first=50 data="{{todayLotStatus}}"></firebase-query>
 
+    <firebase-query path="/reports/activity/{{changeQry}}/lotType" data="{{dailyData}}"></firebase-query>
+    <firebase-query path="/reports/overAll/{{overAllDate}}/lotType" data="{{overallData}}"></firebase-query>
+    <!-- <firebase-query path="/reports/overAll/{{overAllDate}}/overall" data="{{overallTotalData}}"></firebase-query> -->
 
     <app-header-layout fullbleed has-scrolling-region>
-      <app-header fixed slot="header">
+      <app-header slot="header">
         <app-toolbar primary>
           <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
           <div main-title hidden$="{{!access}}">Dashboard</div>
           <div main-title hidden$="{{access}}">Opps!</div>
         </app-toolbar>
+        <paper-tabs selected="{{selectedTab}}" scrollable>
+          <paper-tab>
+            <iron-icon icon="my-icons:announcement" id="icons"></iron-icon>
+            &nbsp;
+            <span id="tabs">Announcements</span>
+          </paper-tab>
+          <paper-tab>
+            <iron-icon icon="my-icons:assessment" id="icons"></iron-icon>
+            &nbsp;
+            <span id="tabs">Reports</span>
+          </paper-tab>
+        </paper-tabs>
       </app-header>
-
-      <!-- <skeleton-carousel dots nav loop>
-        <div>
-          <iron-image placeholder="images/brochure/b1-alt.jpg" data-src="images/brochure/b1.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b2-alt.jpg" data-src="images/brochure/b2.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b3-1-alt.jpg" data-src="images/brochure/b3-1.jpg" sizing="contain" preload fade
-            style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b3-2-alt.jpg" data-src="images/brochure/b3-2.jpg" sizing="contain" preload fade
-            style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b3-3-alt.jpg" data-src="images/brochure/b3-3.jpg" sizing="contain" preload fade
-            style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b3-4-alt.jpg" data-src="images/brochure/b3-4.jpg" sizing="contain" preload fade
-            style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b4-alt.jpg" data-src="images/brochure/b4.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b5-alt.jpg" data-src="images/brochure/b5.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b6-alt.jpg" data-src="images/brochure/b6.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b7-alt.jpg" data-src="images/brochure/b7.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b8-alt.jpg" data-src="images/brochure/b8.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b9-alt.jpg" data-src="images/brochure/b9.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b10-alt.jpg" data-src="images/brochure/b10.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-        <div>
-          <iron-image placeholder="images/brochure/b11-alt.jpg" data-src="images/brochure/b11.jpg" sizing="contain" preload fade style="width:100%; height:100%;"></iron-image>
-        </div>
-      </skeleton-carousel> -->
 
       <template is="dom-if" if="{{!access}}">
         <div class="card">
@@ -144,62 +359,930 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
       <!-- <div class="bg"> -->
       <template is="dom-if" if="{{access}}">
-        <div class="card">
-          <!-- <iron-icon on-tap="gettotal" icon="my-icons:map" slot="item-icon"></iron-icon> -->
-          <h3 style="display: inline-block;">
-            Activity Report: Today
-            <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
-              DRY RUN
-            </span>
-          </h3>
 
-          <div style="padding-top: 3px; font-size: 14px;">
-            <table>
-              <tr>
-                <th style="text-align: left;">Type</th>
-                <th style="color: orange;">Hold</th>
-                <th style="color: rgb(145, 145, 0);">Reserved</th>
-                <th style="color: red;">Sold</th>
-              </tr>
-              <template is="dom-repeat" items="{{todayLotStatus}}">
+        <iron-pages selected="{{selectedTab}}">
+
+          <!-- Announcements -->
+          <div class="card">
+            <h3 style="display: inline-block;">
+              Activity Report: Today
+              <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+                DRY RUN
+              </span>
+            </h3>
+            <div style="padding-top: 3px; font-size: 14px; overflow-x:auto;">
+              <table>
                 <tr>
-                  <td style="text-align: left;">{{_formatType(item.$key)}}</td>
-                  <td style="color: black;">{{_formatNumber(item.hold)}}</td>
-                  <td style="color: black;">{{_formatNumber(item.reserved)}}</td>
-                  <td style="color: black;">{{_formatNumber(item.sold)}}</td>
+                  <th style="text-align: left;">Type</th>
+                  <th style="color: orange;">Hold</th>
+                  <th style="color: rgb(145, 145, 0);">Reserved</th>
+                  <th style="color: red;">Sold</th>
                 </tr>
-              </template>
-            </table>
+                <template is="dom-repeat" items="{{todayLotStatus}}">
+                  <tr>
+                    <td style="text-align: left;">{{_formatType(item.$key)}}</td>
+                    <td style="color: black;">{{_formatNumber(item.hold)}}</td>
+                    <td style="color: black;">{{_formatNumber(item.reserved)}}</td>
+                    <td style="color: black;">{{_formatNumber(item.sold)}}</td>
+                  </tr>
+                </template>
+              </table>
+            </div>
           </div>
-        </div>
+          <!-- End of Announcements -->
+
+          <!-- Reports -->
+          <div>
+            <firebase-query id="query" path="reports/activity/daily/{{dailyDate}}" data="{{dailyTotal}}"></firebase-query>
+            <firebase-query id="query" path="reports/activity/weekly/{{yearWeekDate}}" data="{{weeklyTotal}}"></firebase-query>
+            <firebase-query id="query" path="reports/activity/monthly/{{yearDate}}-{{monthDate}}" data="{{monthlyTotal}}"></firebase-query>
+            <firebase-query id="query" path="reports/activity/yearly/{{yearlyDate}}" data="{{yearlyTotal}}"></firebase-query>
+
+            <div style="padding:26px; margin-top:-30px; margin-bottom:56px;">
+              <div style="float:right;">
+                <div style="display:flex;">
+                  <paper-dropdown-menu style="cursor:pointer;width:120px">
+                    <paper-listbox slot="dropdown-content" selected="{{selectedReport}}">
+                      <paper-item>Activity</paper-item>
+                      <paper-item>Comparative</paper-item>
+                      <paper-item>Overall</paper-item>
+                    </paper-listbox>
+                  </paper-dropdown-menu>
+                </div>
+                <!-- <paper-input value="{{selectedValue}}">
+                          <paper-icon-button id="back" on-tap="_back" icon="my-icons:chevron-left" slot="prefix"></paper-icon-button>
+                          <paper-icon-button id="next" on-tap="_next" icon="my-icons:chevron-right" slot="suffix"></paper-icon-button>
+                        </paper-input> -->
+              </div>
+            </div>
+
+            <!--daily Activity Report -->
+            <div class="card" hidden$="{{hideActivity}}">
+              <div>
+                <center>
+                  <paper-buttons-group selected="{{selectedDMY}}" id="customGroup">
+                    <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
+                    <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Weekly</paper-button>
+                    <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Monthly</paper-button>
+                    <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
+                  </paper-buttons-group>
+                </center>
+              </div>
+
+              <span hidden$="{{hideDailyInputDate}}">
+                <paper-input prefix="" id="myDate" label="Date" type="date" value="{{dailyAct}}" style="display:inline-block;width:150px;">
+                  <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                </paper-input>
+              </span>
+
+              <span hidden$="{{hideWeekly}}">
+                <paper-input value={{wyear}} style="width:70px;display:inline-block" type="number" label="Year">
+                </paper-input>
+                <paper-input value={{week}} style="width:70px;display:inline-block" type="number" label="Week">
+                </paper-input>
+                <span style="font-size:12px">
+                  {{weekDates}}
+                </span>
+              </span>
+
+              <span hidden$="{{hideMonthSelection}}">
+                <paper-dropdown-menu class="month" label="Month" style="width:100px; display:inline-block">
+                  <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{month}}">
+                    <paper-item value="01">January</paper-item>
+                    <paper-item value="02">February</paper-item>
+                    <paper-item value="03">March</paper-item>
+                    <paper-item value="04">April</paper-item>
+                    <paper-item value="05">May</paper-item>
+                    <paper-item value="06">June</paper-item>
+                    <paper-item value="07">July</paper-item>
+                    <paper-item value="08">August</paper-item>
+                    <paper-item value="09">September</paper-item>
+                    <paper-item value="10">October</paper-item>
+                    <paper-item value="11">November</paper-item>
+                    <paper-item value="12">December</paper-item>
+                  </paper-listbox>
+                </paper-dropdown-menu>
+
+                <paper-input value={{year}} style="width:70px;display:inline-block" type="number" label="Year">
+                  <!-- <paper-icon-button on-tap="lessYear" icon="my-icons:chevron-left" slot="suffix"></paper-icon-button>
+                  <paper-icon-button on-tap="addYear" id="addYear" icon="my-icons:chevron-right" slot="suffix"></paper-icon-button> -->
+                </paper-input>
+              </span>
+
+              <span hidden$="{{hideYearly}}">
+                <paper-input value={{yearly}} type="number" style="width:100px; display:inline-block" label="Year">
+                  <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                  <!-- <paper-icon-button on-tap="lessYear" icon="my-icons:chevron-left" slot="suffix"></paper-icon-button>
+                <paper-icon-button on-tap="addYearly" id="addYear" icon="my-icons:chevron-right" slot="suffix"></paper-icon-button> -->
+                </paper-input>
+              </span>
+
+              <span style="float:right; margin-top:10px">
+                <paper-toggle-button checked="{{showDailyTable}}" on-tap="_showDailyTable" style="font-size:12px;margin-left:10px;">Data Table</paper-toggle-button>
+              </span>
+              <!-- <a style="font-size:12px; text-decoration:none; cursor:pointer; margin-left:20px" on-tap="_showDailyTable" hidden$="{{hideDailyTable}}">Data Table</a>
+              <a style="font-size:12px; text-decoration:none; cursor:pointer; margin-left:20px" on-tap="_showDailyGraph" hidden$="{{hideDailyGraph}}">Chart</a> -->
+
+
+              <div style="text-align:center; margin-bottom:20px; margin-top:35px">
+                <div class="totalSRH_Sold">
+                  <div style="background-color:red; font-size:12px">Sold</div>
+                  <span id="totalTxt" style="color:red;">{{totalSold}}</span>
+                </div>
+                <div class="totalSRH_Reserved">
+                  <div style="background-color:orange; font-size:12px">Reserved</div>
+                  <span id="totalTxt" style="color:orange;">{{totalReserved}}</span>
+                </div>
+                <div class="totalSRH_Hold">
+                  <div style="background-color:rgb(145, 145, 0); font-size:12px">Hold</div>
+                  <span id="totalTxt" style="color:rgb(145, 145, 0);">{{totalHold}}</span>
+                </div>
+              </div>
+
+              <div class="chart-container" hidden$="{{hideDailyChart}}">
+                <canvas id="dailyChart"></canvas>
+              </div>
+
+              <div style="margin-top: 10px; font-size: 12px; overflow-x:auto;" hidden$="{{hideDailyTableData}}">
+                <table>
+                  <tr>
+                    <th style="text-align: left;">Type</th>
+                    <th style="color: orange;">Hold</th>
+                    <th style="color: rgb(145, 145, 0);">Reserved</th>
+                    <th style="color: red;">Sold</th>
+                  </tr>
+                  <template is="dom-repeat" items="{{dailyData}}">
+                    <tr>
+                      <td style="text-align: left;">{{_formatType(item.$key)}}</td>
+                      <td style="color: black;">{{_formatAllNumber(item.hold)}}</td>
+                      <td style="color: black;">{{_formatAllNumber(item.reserved)}}</td>
+                      <td style="color: black;">{{_formatAllNumber(item.sold)}}</td>
+                    </tr>
+                  </template>
+                </table>
+              </div>
+
+            </div>
+            <!--end daily Activity Report -->
+
+            <!-- comparative report -->
+            <div id="comparative" class="card" hidden$="{{hideComparative}}">
+              <div>
+                <center>
+                  <paper-buttons-group selected="{{selectedDaily}}" id="customGroup">
+                    <paper-button style="font-size: 13px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; width:80px; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
+                    <paper-button style="font-size: 13px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; width:80px; height:33px">Monthly</paper-button>
+                    <paper-button style="font-size: 13px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; width:80px; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
+                  </paper-buttons-group>
+                </center>
+              </div>
+
+              <div id="flexMain">
+                <span style="margin-right:10px" style="width:150px">
+                  <paper-dropdown-menu style="cursor:pointer;" id="all" label="Filter" vertical-align="top" horizontal-align="left">
+                    <paper-listbox slot="dropdown-content" selected="{{DailyfilterBy}}">
+                      <paper-item id="compPaper-item">All</paper-item>
+                      <paper-item id="compPaper-item">Bone Chamber</paper-item>
+                      <paper-item id="compPaper-item">Lawn Lots</paper-item>
+                      <paper-item id="compPaper-item">Cinerarium</paper-item>
+                      <paper-item id="compPaper-item">Wall Niche</paper-item>
+                      <paper-item id="compPaper-item">Family Lots 1 (Area=37.45m²)</paper-item>
+                      <paper-item id="compPaper-item">Family Lots 1 (Irregular Lots)</paper-item>
+                      <paper-item id="compPaper-item">Family Lots 2 (Area=53.27m²)</paper-item>
+                      <paper-item id="compPaper-item">Family Lots 2 (Area=52.83m²)</paper-item>
+                      <paper-item id="compPaper-item">Family Lots 2 (Irregular Lots)</paper-item>
+                      <paper-item id="compPaper-item">Garden Lots 1 (Area=12.52m²)</paper-item>
+                      <paper-item id="compPaper-item">Garden Lots 1 (Area=12.43m²)</paper-item>
+                      <paper-item id="compPaper-item">Garden Lots 1 (Irregular Lots)</paper-item>
+                      <paper-item id="compPaper-item">Garden Lots 2 (Area=20.00m²)</paper-item>
+                      <paper-item id="compPaper-item">Garden Lots 2 (Irregular Lots)</paper-item>
+                    </paper-listbox>
+                  </paper-dropdown-menu>
+                </span>
+
+                <span id="Daily">
+                  <span id="flex">
+                    <span id="flex" style="margin-right:10px;">
+                      <!-- <iron-icon style="margin-top:30px; margin-right:10px;color:dodgerblue;" icon="my-icons:event" id="date"></iron-icon> -->
+                      <paper-input label="Start Date" type="date" value="{{startDate}}" id="day" style="width:150px">
+                        <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                      </paper-input>
+                    </span>
+                    <span id="flex">
+                      <!-- <iron-icon style="margin-top:30px; margin-right:10px;color:dimgray;" icon="my-icons:event" id="date"></iron-icon> -->
+                      <paper-input label="End Date" type="date" value="{{endDate}}" id="day" style="width:150px">
+                        <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                      </paper-input>
+                    </span>
+                  </span>
+                </span>
+
+
+                <div style="display:none" id="Monthly">
+
+                  <span id="flex">
+                    <span id="flex">
+                      <iron-icon style="margin-top:30px; margin-right:5px;" icon="my-icons:event" id="date"></iron-icon>
+                      <paper-dropdown-menu style="cursor:pointer" label="Start Month">
+                        <paper-listbox slot="dropdown-content" selected="{{startRange}}">
+                          <paper-item>January</paper-item>
+                          <paper-item>February</paper-item>
+                          <paper-item>March</paper-item>
+                          <paper-item>April</paper-item>
+                          <paper-item>May</paper-item>
+                          <paper-item>June</paper-item>
+                          <paper-item>July</paper-item>
+                          <paper-item>August</paper-item>
+                          <paper-item>September</paper-item>
+                          <paper-item>October</paper-item>
+                          <paper-item>November</paper-item>
+                          <paper-item>December</paper-item>
+                        </paper-listbox>
+                      </paper-dropdown-menu>
+                    </span>
+
+                    <span id="flex">
+                      <span id="firstyear">
+                        <paper-input value={{startMonthYear}} type="number" style="width:50px; margin-left:5px; margin-right:5px" label="Year">
+                        </paper-input>
+
+                        <!-- <paper-dropdown-menu style="cursor:pointer" label="Start Year">
+                            <paper-listbox slot="dropdown-content" selected="{{startMonthYear}}" attr-for-selected="value">
+                              <paper-item value="2015">2015</paper-item>
+                              <paper-item value="2016">2016</paper-item>
+                              <paper-item value="2017">2017</paper-item>
+                              <paper-item value="2018">2018</paper-item>
+                            </paper-listbox>
+                          </paper-dropdown-menu> -->
+                      </span>
+                    </span>
+
+                    <span id="flex">
+                      <iron-icon style="margin-top:30px; margin-right:5px;" icon="my-icons:event" id="date"></iron-icon>
+                      <paper-dropdown-menu style="cursor:pointer" label="Start Month">
+                        <paper-listbox slot="dropdown-content" selected="{{endRange}}">
+                          <paper-item>January</paper-item>
+                          <paper-item>February</paper-item>
+                          <paper-item>March</paper-item>
+                          <paper-item>April</paper-item>
+                          <paper-item>May</paper-item>
+                          <paper-item>June</paper-item>
+                          <paper-item>July</paper-item>
+                          <paper-item>August</paper-item>
+                          <paper-item>September</paper-item>
+                          <paper-item>October</paper-item>
+                          <paper-item>November</paper-item>
+                          <paper-item>December</paper-item>
+                        </paper-listbox>
+                      </paper-dropdown-menu>
+                    </span>
+                    <span id="flex">
+                      <span id="lastyear">
+                        <paper-input value={{endMonthYear}} type="number" style="margin-left:5px; width:50px" label="Year">
+                        </paper-input>
+                        <!-- <paper-dropdown-menu style="cursor:pointer" label="End Year">
+                            <paper-listbox slot="dropdown-content" selected="{{endMonthYear}}" attr-for-selected="value">
+                              <paper-item value="2015">2015</paper-item>
+                              <paper-item value="2016">2016</paper-item>
+                              <paper-item value="2017">2017</paper-item>
+                              <paper-item value="2018">2018</paper-item>
+                            </paper-listbox>
+                          </paper-dropdown-menu> -->
+                      </span>
+                    </span>
+                  </span>
+                </div>
+
+                <div style="display:none" id="Yearly">
+                  <div id="flex">
+                    <div id="flex">
+                      <paper-input label="Start Year" type="number" value="{{startYear}}" id="day" style="width:100px">
+                        <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                      </paper-input>
+                      <!-- <iron-icon style="margin-top:30px; margin-right:10px;color:dodgerblue" icon="my-icons:event" id="date"></iron-icon> -->
+                      <!-- <paper-dropdown-menu style="cursor:pointer" label="Start Year">
+                          <paper-listbox slot="dropdown-content" selected="{{startYear}}">
+                            <paper-item>2015</paper-item>
+                            <paper-item>2016</paper-item>
+                            <paper-item>2017</paper-item>
+                            <paper-item>2018</paper-item>
+                          </paper-listbox>
+                        </paper-dropdown-menu> -->
+                    </div>
+                    <div id="flex">
+                      <paper-input label="End Year" type="number" value="{{endYear}}" id="day" style="margin-left:10px; width:100px">
+                        <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                      </paper-input>
+                      <!-- <iron-icon style="margin-top:30px; margin-right:20px;color:dimgray;" icon="my-icons:event" id="date"></iron-icon> -->
+                      <!-- <paper-dropdown-menu style="cursor:pointer" label="End Year">
+                          <paper-listbox slot="dropdown-content" selected="{{endYear}}">
+                            <paper-item>2015</paper-item>
+                            <paper-item>2016</paper-item>
+                            <paper-item>2017</paper-item>
+                            <paper-item>2018</paper-item>
+                          </paper-listbox>
+                        </paper-dropdown-menu> -->
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <canvas id="myChart"></canvas>
+            </div>
+            <!-- end comparative report -->
+
+            <!--OverAll Report -->
+            <div class="card" hidden$="{{hideOverAll}}">
+
+              <span class="typeSelection" style="display:flex">
+                <paper-dropdown-menu class="month" label="Lot type" vertical-align="top" horizontal-align="left">
+                  <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{lotType}}">
+                    <paper-item value="all" id="compPaper-item">All</paper-item>
+                    <paper-item value="lawnlots" id="compPaper-item">Lawn Lots</paper-item>
+                    <paper-item value="bonechamber" id="compPaper-item">Bone Chamber</paper-item>
+                    <paper-item value="wallniche" id="compPaper-item">Wall Niche</paper-item>
+                    <paper-item value="cinerarium" id="compPaper-item">Cinerarium</paper-item>
+                    <paper-item value="familylots1" id="compPaper-item">Family Lots 1 (Area=37.45m²)</paper-item>
+                    <paper-item value="familylots2" id="compPaper-item">Family Lots 1 (Irregular Lots)</paper-item>
+                    <paper-item value="familylots3" id="compPaper-item">Family Lots 2 (Area=53.27m²)</paper-item>
+                    <paper-item value="familylots4" id="compPaper-item">Family Lots 2 (Area=52.83m²)</paper-item>
+                    <paper-item value="familylots5" id="compPaper-item">Family Lots 2 (Irregular Lots)</paper-item>
+                    <paper-item value="gardenlots1" id="compPaper-item">Garden Lots 1 (Area=12.52m²)</paper-item>
+                    <paper-item value="gardenlots2" id="compPaper-item">Garden Lots 1 (Area=12.43m²)</paper-item>
+                    <paper-item value="gardenlots3" id="compPaper-item">Garden Lots 1 (Irregular Lots)</paper-item>
+                    <paper-item value="gardenlots4" id="compPaper-item">Garden Lots 2 (Area=20.00m²)</paper-item>
+                    <paper-item value="gardenlots5" id="compPaper-item">Garden Lots 2 (Irregular Lots)</paper-item>
+                  </paper-listbox>
+                </paper-dropdown-menu>
+
+                <paper-input value={{overAllDate}} type="date" label="As of" style="width:150px;margin-left:5px;">
+                  <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                </paper-input>
+
+              </span>
+
+              <span style="float:right;" hidden$="{{hideToggleOverall}}">
+                <paper-toggle-button checked="{{showSummaryTable}}" on-tap="_showSummary" style="font-size:12px">Data Table</paper-toggle-button>
+              </span>
+
+              <!-- <span style="float:right">
+                  <a hidden$="{{hideSummary}}" on-tap="_showSummary" style="font-size:12px; text-decoration:none; cursor:pointer">Summary</a>
+                  <a hidden$="{{showSummary}}" on-tap="_hideSummary" style="font-size:12px; text-decoration:none; cursor:pointer">Graph</a>
+                </span> -->
+
+              <div class="chart-container" hidden$="{{overallchart}}">
+                <canvas id="overAllChart"></canvas>
+              </div>
+              </br>
+              </br>
+              <div style="font-size: 12px; overflow-x:auto;" hidden$="{{hideSummaryTable}}">
+                <span>
+                  <table>
+                    <tr>
+                      <th style="text-align: left;">Type</th>
+                      <th style="color: red;">Sold</th>
+                      <th style="color: rgb(145, 145, 0);">Reserved</th>
+                      <th style="color: orange;">Hold</th>
+                      <th style="color: green;">Available</th>
+                      <th style="color: gray;">Not yet available</th>
+                      <th>Total</th>
+                    </tr>
+                    <template is="dom-repeat" items="{{overallData}}">
+                      <tr>
+                        <td style="text-align: left;">{{_formatType(item.$key)}}</td>
+                        <td style="color: black;">{{_formatAllNumber(item.sold)}}</td>
+                        <td style="color: black;">{{_formatAllNumber(item.reserved)}}</td>
+                        <td style="color: black;">{{_formatAllNumber(item.hold)}}</td>
+                        <td style="color: black;">{{_formatAllNumber(item.available)}}</td>
+                        <td style="color: black;">{{_formatAllNumber(item.notyetavailable)}}</td>
+                        <td style="color: black;font-weight:bold">{{_formatAllTotal(item.available,item.hold,item.notyetavailable,item.reserved,item.sold)}}</td>
+                      </tr>
+                    </template>
+                  </table>
+                </span>
+              </div>
+              <!--end OverAll Report -->
+
+            </div>
+          </div>
+          <!-- End of Reports -->
+
+
+        </iron-pages>
+
       </template>
-
-
-      <!-- </div> -->
-
-
-
     </app-header-layout>
-
-
   </template>
 
   <script>
-    class MyDashboard extends Polymer.Element {
-      static get is() { return 'my-dashboard'; }
+    Polymer({
+      is: 'my-dashboard',
+      properties: {
+        narrow: {
+          type: Boolean,
+          notify: true
+        },
+        access: {
+          type: Boolean,
+          value: false
+        },
+        token: {
+          type: Object,
+          observer: 'tokenChanged'
+        },
+        selectedTab: {
+          type: Number,
+          value: 0
+        },
+        selectedReport: {
+          type: Number,
+        },
+        selectedDMY: Number,
+        dailyAct: {
+          type: String,
+        },
+        weeklyTotal: {
+          type: Object,
+        },
+        dailyTotal: {
+          type: Object,
+        },
+        monthlyTotal: {
+          type: Object
+        },
+        yearlyTotal: {
+          type: Object
+        },
+        data: String,
+        hideDailyInputDate: {
+          type: Boolean,
+          value: false
+        },
+        hideWeekly: {
+          type: Boolean,
+          value: true
+        },
+        hideMonthSelection: {
+          type: Boolean,
+          value: true
+        },
+        hideYearly: {
+          type: Boolean,
+          value: true
+        },
+        wyear: Number,
+        week: Number,
+        month: String,
+        year: Number,
+        yearly: {
+          type: Number,
+        },
+        Chart: Object,
+        allChart: Object,
+        hideActivity: Boolean,
+        hideComparative: Boolean,
+        hideOverAll: Boolean,
+        overAllDate: Number,
+        lotType: String,
+        // overallTotalData: {
+        //   observer: 'overallTotalDataChanged'
+        // },
+        hideSummary: {
+          type: Boolean,
+          value: true,
+        },
+        showSummary: {
+          type: Boolean,
+          value: true
+        },
+        hideSummaryTable: {
+          type: Boolean,
+          value: true
+        },
+        overallchart: Boolean,
+        selectedDaily: {
+          type: Number,
+          value: 0
+        },
+        // selectedButtons: {
+        //   type: Number,
+        //   value: 0,
+        //   observer: '_buttonsChanged'
+        // },
+        DailyfilterBy: {
+          type: Number,
+          value: 0
+        },
+        open: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+        startDate: {
+          type: String,
+          value: '',
+        },
+        endDate: {
+          type: String,
+          value: '',
+        },
+        startRange: {
+          type: Number,
+          value: 0
+        },
+        startMonthYear: String,
+        endMonthYear: String,
+        startYear: String,
+        endYear: String,
+        endRange: Number,
+        comparativeChart: Object,
+        totalHold: {
+          type: Number,
+          value: 0
+        },
+        totalReserved: {
+          type: Number,
+          value: 0
+        },
+        totalSold: {
+          type: Number,
+          value: 0
+        },
+        hideDailyGraph: {
+          type: Boolean,
+          value: true
+        },
+        hideDailyTableData: {
+          type: Boolean,
+          value: true
+        },
+        showDailyTable: Boolean,
+        showSummaryTable: Boolean,
+        weekDates: String
+      },
 
-      static get properties() {
-        return {
-          narrow: {
-            type: Boolean,
-            notify: true
-          },
-          access: {
-            type: Boolean,
-            value: false
+      ready() {
+        var date = new Date();
+        this.startMonthYear = date.getFullYear().toString();
+        this.endMonthYear = date.getFullYear().toString();
+        this.startYear = date.getFullYear().toString();
+        this.endYear = date.getFullYear().toString();
+        this.endRange = date.getMonth();
+        this.endDate = this._format(date, 'day');
+        this.dailyAct = this._format(date, 'day');
+
+        date.setDate(date.getDate() - 14);
+        this.startDate = this._format(date, 'day');
+      },
+
+      observers: [
+        'onChangedAll(selectedDMY,dailyAct,wyear,week,month,year,yearly)',
+        'dailyTotalChanged(dailyTotal.*)',
+        'weeklyTotalChanged(weeklyTotal.*)',
+        'monthlyTotalChanged(monthlyTotal.*)',
+        'yearlyTotalChanged(yearlyTotal.*)',
+        'selectedTabChanged(selectedTab)',
+        'selectedReportChanged(selectedReport)',
+        'overAllChanged(lotType,overAllDate)',
+        '_onChanged(selectedDaily,DailyfilterBy,startDate,endDate,startRange,endRange,startYear,endYear,startMonthYear,endMonthYear)'
+      ],
+
+      _format(date, type) {
+
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+        if (month < 10) { month = '0' + month };
+        if (day < 10) { day = '0' + day };
+
+        if (type == 'day') {
+          return year + '-' + month + '-' + day;
+        }
+        if (type == 'month') {
+          return year + '-' + month;
+        }
+        if (type == 'year') {
+          return year;
+        }
+      },
+
+      _onChanged(selectedDaily, DailyfilterBy, startDate, endDate, startRange, endRange, startYear, endYear, startMonthYear, endMonthYear) {
+
+        if (this.open == true) {
+          var selectedType, lotType, text, start, end;
+
+          if (selectedDaily == 0) {
+            start = startDate;
+            end = endDate;
+            selectedType = "/daily";
+            // text = 'Daily';
+            var Month = Polymer.dom(this.root).querySelector("#Monthly");
+            Month.setAttribute("style", "display:none");
+            var Day = Polymer.dom(this.root).querySelector("#Daily");
+            Day.setAttribute("style", "display:block");
+            var Year = Polymer.dom(this.root).querySelector("#Yearly");
+            Year.setAttribute("style", "display:none");
           }
-        };
-      }
+
+          else if (selectedDaily == 1) {
+            // text = 'Monthly';
+            var startM = parseInt(startRange) + 1;
+            start = startMonthYear;
+            if (startM < 10) {
+              start = startMonthYear + '-0' + startM.toString();
+            }
+
+            var endM = parseInt(endRange) + 1;
+            end = endMonthYear + '-' + endM.toString();
+            if (endM < 10) {
+              end = endMonthYear + '-0' + endM.toString();
+            }
+
+            var Month = new Date();
+            var month = this._format(Month, 'month');
+
+            selectedType = "/monthly";
+            text = 'Bone Chamber';
+
+            var Month = Polymer.dom(this.root).querySelector("#Monthly");
+            Month.setAttribute("style", "display:block");
+            var Day = Polymer.dom(this.root).querySelector("#Daily");
+            Day.setAttribute("style", "display:none");
+            var Year = Polymer.dom(this.root).querySelector("#Yearly");
+            Year.setAttribute("style", "display:none");
+          }
+
+          else if (selectedDaily == 2) {
+            start = startYear;
+            end = endYear;
+            selectedType = "/yearly";
+            text = 'Lawn Lot ';
+
+            var Month = Polymer.dom(this.root).querySelector("#Monthly");
+            Month.setAttribute("style", "display:none");
+            var Day = Polymer.dom(this.root).querySelector("#Daily");
+            Day.setAttribute("style", "display:none");
+            var Year = Polymer.dom(this.root).querySelector("#Yearly");
+            Year.setAttribute("style", "display:block");
+          }
+
+          if (DailyfilterBy == 0) {
+            lotType = 'activity';
+            text = 'All Lot';
+          } else if (DailyfilterBy == 1) {
+            lotType = 'comparative/bonechamber';
+            text = 'Bone Chamber ';
+          } else if (DailyfilterBy == 2) {
+            lotType = 'comparative/lawnlots';
+            text = 'Lawn Lots';
+          }
+          else if (DailyfilterBy == 3) {
+            lotType = 'comparative/cinerarium';
+            text = 'Cinerarium';
+          }
+          else if (DailyfilterBy == 4) {
+            lotType = 'comparative/wallniche';
+            text = 'Wall Niche';
+          }
+          else if (DailyfilterBy == 5) {
+            lotType = 'comparative/familylots1';
+            text = 'Wall Niche';
+          }
+          else if (DailyfilterBy == 6) {
+            lotType = 'comparative/familylots2';
+            text = 'Wall Niche';
+          }
+          else if (DailyfilterBy == 7) {
+            lotType = 'comparative/familylots3';
+            text = 'Wall Niche';
+          }
+          else if (DailyfilterBy == 8) {
+            lotType = 'comparative/familylots4';
+            text = 'Wall Niche';
+          }
+          else if (DailyfilterBy == 9) {
+            lotType = 'comparative/familylots5';
+            text = 'Wall Niche';
+          }
+          else if (DailyfilterBy == 10) {
+            lotType = 'comparative/gardenlots1';
+            text = 'Wall Niche';
+          }
+          else if (DailyfilterBy == 11) {
+            lotType = 'comparative/gardenlots2';
+            text = 'Wall Niche';
+          }
+          else if (DailyfilterBy == 12) {
+            lotType = 'comparative/gardenlots3';
+            text = 'Wall Niche';
+          }
+          else if (DailyfilterBy == 13) {
+            lotType = 'comparative/gardenlots4';
+            text = 'Wall Niche';
+          }
+          else if (DailyfilterBy == 14) {
+            lotType = 'comparative/gardenlots5';
+            text = 'Wall Niche';
+          }
+
+
+          this.peterquery(lotType, selectedType, text, start, end, this.comparativeChart)
+        }
+      },
+
+      peterquery(lotType, selectedType, text, start, end, myChart) {
+
+        var monthNames = [
+          "Jan", "Feb", "Mar",
+          "Apr", "May", "Jun", "Jul",
+          "Aug", "Sep", "Oct",
+          "Nov", "Dec"
+        ];
+
+        if (lotType == 'activity') {
+
+          firebase.database().ref("reports/" + lotType + selectedType)
+            .orderByKey().startAt(start).endAt(end).on("value", function (snapshot) {
+              var typeHold = [];
+              var typeSold = [];
+              var typeReserved = [];
+              var labels = [];
+              snapshot.forEach(element => {
+                if (selectedType == '/daily') {
+                  labels.push(element.key.substring(8, 10));
+                }
+
+                if (selectedType == '/monthly') {
+                  var index = new Date(element.key).getMonth();
+                  labels.push(monthNames[index]);
+                }
+
+                if (selectedType == '/yearly') {
+                  labels.push(element.key.substring(0, 4));
+                }
+
+                typeSold.push(element.val().totalSold);
+                typeHold.push(element.val().totalHold);
+                typeReserved.push(element.val().totalReserved);
+              });
+
+              var data = {
+                labels: labels,
+                datasets: [{
+                  label: 'Sold',
+                  data: typeSold,
+                  backgroundColor: 'transparent',
+                  borderColor: 'red',
+                  borderWidth: 1,
+                  datalabels: {
+                    align: 'end',
+                    anchor: 'end',
+                    display: true,
+                    backgroundColor: 'red',
+                    borderRadius: 4,
+                    color: '#ddd',
+                    font: {
+                      weight: 'bold'
+                    }
+                  }
+                },
+                {
+                  label: 'Hold',
+                  data: typeHold,
+                  backgroundColor: 'transparent',
+                  borderColor: 'orange',
+                  borderWidth: 1,
+                  hidden: true,
+                  datalabels: {
+                    align: 'end',
+                    anchor: 'end',
+                    display: true,
+                    backgroundColor: 'orange',
+                    borderRadius: 4,
+                    color: '#001f3f',
+                    font: {
+                      weight: 'bold'
+                    }
+                  }
+                },
+                {
+                  label: 'Reserved',
+                  data: typeReserved,
+                  backgroundColor: 'transparent',
+                  borderColor: 'yellow',
+                  borderWidth: 1,
+                  hidden: true,
+                  datalabels: {
+                    align: 'end',
+                    anchor: 'end',
+                    display: true,
+                    backgroundColor: 'yellow',
+                    borderRadius: 4,
+                    color: '#001f3f',
+                    font: {
+                      weight: 'bold'
+                    }
+                  }
+                }],
+
+              };
+              myChart.data = data;
+              myChart.update();
+            });
+
+        }
+        else {
+          firebase.database().ref("reports/" + lotType + selectedType)
+            .orderByKey().startAt(start).endAt(end).on("value", function (snapshot) {
+              var typeHold = [];
+              var typeSold = [];
+              var typeReserved = [];
+              var labels = [];
+              snapshot.forEach(element => {
+
+                if (selectedType == '/daily') {
+                  labels.push(element.key.substring(8, 10));
+                }
+
+                if (selectedType == '/monthly') {
+                  var index = new Date(element.key).getMonth();
+                  labels.push(monthNames[index]);
+                }
+
+                if (selectedType == '/yearly') {
+                  labels.push(element.key.substring(0, 4));
+                }
+
+                typeSold.push(element.val().totalSold);
+                typeHold.push(element.val().totalHold);
+                typeReserved.push(element.val().totalReserved);
+              });
+
+              var data = {
+                labels: labels,
+                datasets: [{
+                  label: 'Sold',
+                  data: typeSold,
+                  backgroundColor: 'transparent',
+                  borderColor: 'red',
+                  borderWidth: 1,
+                  datalabels: {
+                    align: 'end',
+                    anchor: 'end',
+                    display: true,
+                    backgroundColor: 'red',
+                    borderRadius: 4,
+                    color: '#ddd',
+                    font: {
+                      weight: 'bold'
+                    }
+                  }
+                },
+                {
+                  label: 'Hold',
+                  data: typeHold,
+                  backgroundColor: 'transparent',
+                  borderColor: 'orange',
+                  borderWidth: 1,
+                  hidden: true,
+                  datalabels: {
+                    align: 'end',
+                    anchor: 'end',
+                    display: true,
+                    backgroundColor: 'orange',
+                    borderRadius: 4,
+                    color: '#001f3f',
+                    font: {
+                      weight: 'bold'
+                    }
+                  }
+                },
+                {
+                  label: 'Reserved',
+                  data: typeReserved,
+                  backgroundColor: 'transparent',
+                  borderColor: 'yellow',
+                  borderWidth: 1,
+                  hidden: true,
+                  datalabels: {
+                    align: 'end',
+                    anchor: 'end',
+                    display: true,
+                    backgroundColor: 'yellow',
+                    borderRadius: 4,
+                    color: '#001f3f',
+                    font: {
+                      weight: 'bold'
+                    }
+                  }
+                }],
+
+              };
+              myChart.data = data;
+              myChart.update();
+            });
+        }
+      },
 
       toggleDrawer() {
         this.dispatchEvent(new CustomEvent('toggleDrawer', {
@@ -208,7 +1291,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }));
         this.$.narrow = !this.$.narrow;
-      }
+      },
 
       _formatType(e) {
         if (e == 'lawnlots') return 'Lawn Lots';
@@ -225,75 +1308,759 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         else if (e == 'gardenlots3') return 'Garden Lots 1 (Irregular Lots)';
         else if (e == 'gardenlots4') return 'Garden Lots 2 (Area=20.00m²)';
         else if (e == 'gardenlots5') return 'Garden Lots 2 (Irregular Lots)';
-
-      }
+      },
 
       _formatNumber(e) {
         if (e == 0) return '-'
         else return e;
+      },
+
+      _formatAllNumber(e) {
+        if (!e) return '-'
+        else return e;
+      },
+
+      _formatAllTotal(e, f, g, h, i) {
+        if (!e) e = 0;
+        if (!f) f = 0;
+        if (!g) g = 0;
+        if (!h) h = 0;
+        if (!i) i = 0;
+        if (e == 0 && f == 0 && g == 0 && h == 0 && i == 0) return '-';
+        else return e + f + g + h + i;
+      },
+
+      tokenChanged() {
+        firebase.messaging().onTokenRefresh(function () {
+          firebase.messaging().getToken()
+            .then(function (refreshedToken) {
+              console.log('Token refreshed.');
+              resetUI();
+            })
+            .catch(function (err) {
+              console.log('Unable to retrieve refreshed token ', err);
+              showToken('Unable to retrieve refreshed token ', err);
+            });
+        });
+      },
+
+      resetUI() {
+        firebase.messaging().getToken().then(function (currentToken) {
+          if (currentToken) {
+            console.log('Got FCM device token:', currentToken);
+            // Saving the Device Token to the datastore.
+            firebase.database().ref('/users' + this.user.uid + '/token').child(currentToken);
+          } else {
+            // Need to request permissions to show notifications.
+            this.requestNotificationsPermissions();
+          }
+        }.bind(this)).catch(function (error) {
+          console.error('Unable to get messaging token.', error);
+        });
+      },
+
+      requestNotificationsPermissions() {
+        this.$.messaging.requestPermission()
+          .then(function () {
+            console.log('Notification permission granted.');
+            // TODO(developer): Retrieve an Instance ID token for use with FCM.
+            // ...
+          })
+          .catch(function (err) {
+            console.log('Unable to get permission to notify.', err);
+          });
+      },
+
+      handleMessage(payload) {
+        console.log('message received', payload);
+      },
+
+      selectedTabChanged(e) {
+        if (e === 0) {
+
+        }
+        else {
+          this.selectedReport = 0;
+          this.selectedDMY = 0;
+          //create chart
+          if (!this.Chart) {
+            var ctx = Polymer.dom(this.root).querySelector("#dailyChart");
+            var dailyChart = new Chart(ctx, {
+              type: 'horizontalBar',
+              data: {},
+              options: {
+                responsive: true,
+                legend: {
+                  position: 'bottom',
+                },
+                // title: {
+                //   display: true,
+                //   text: 'Daily Activity Report'
+                // },
+                plugins: {
+                  datalabels: {
+                    color: 'white',
+                    font: {
+                      weight: 'bold'
+                    },
+                  }
+                },
+                scales: {
+                  yAxes: [{
+                    stacked: true,
+                    ticks: {
+                      beginAtZero: true
+                    },
+                    ticks: {
+                      fontSize: 11
+                    }
+                  }],
+                  xAxes: [{
+                    stacked: true,
+                    ticks: {
+                      beginAtZero: true
+                    }
+                  }]
+                }
+              }
+            });
+            Chart.defaults.global.responsive = true;
+            Chart.defaults.global.maintainAspectRatio = false;
+            this.Chart = dailyChart;
+          }
+
+          var d = new Date();
+          this.year = d.getFullYear();
+          this.month = "01";
+          this.yearly = d.getFullYear();
+
+          this.wyear = d.getFullYear();
+
+          var dayNum = d.getUTCDay() || 7;
+          d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+          var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+          this.week = Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
+        }
+      },
+
+      selectedReportChanged(e) {
+        if (e == 0) {
+          // this.selectedDMY = 0;
+          this.hideActivity = false;
+          this.hideComparative = true;
+          this.hideOverAll = true;
+        }
+        else if (e == 1) {
+          this.hideActivity = true;
+          this.hideComparative = false;
+          this.hideOverAll = true;
+          this.open = true;
+
+          if (!this.comparativeChart) {
+            var ctx = Polymer.dom(this.root).querySelector("#myChart");
+            var myChart = new Chart(ctx, {
+              type: 'line',
+              options: {
+                plugins: {
+                  datalabels: {
+                    display: false
+                  }
+                },
+                responsive: true,
+                // title: {
+                //   display: true,
+                //   fontSize: 18,
+                //   text: 'Comparative Report'
+                // }
+              }
+            });
+            this.comparativeChart = myChart;
+          }
+          else {
+            var myChart = this.comparativeChart;
+          }
+
+          var DailyRunning = firebase.database().ref("reports/activity/daily");
+          DailyRunning.orderByKey().startAt(this.startDate).endAt(this.endDate).on("value", function (snapshot) {
+            var typeHold = [];
+            var typeSold = [];
+            var typeReserved = [];
+            var labels = [];
+            snapshot.forEach(element => {
+
+              labels.push(element.key.substring(8, 10));
+              typeSold.push(element.val().totalSold);
+              typeHold.push(element.val().totalHold);
+              typeReserved.push(element.val().totalReserved);
+            });
+
+            var data = {
+              labels: labels,
+              datasets: [{
+                label: 'Sold',
+                data: typeSold,
+                backgroundColor: 'transparent',
+                borderColor: 'red',
+                borderWidth: 1,
+                datalabels: {
+                  align: 'end',
+                  anchor: 'end',
+                  display: true,
+                  backgroundColor: 'red',
+                  borderRadius: 4,
+                  color: '#ddd',
+                  font: {
+                    weight: 'bold'
+                  }
+                }
+              },
+              {
+                label: 'Hold',
+                data: typeHold,
+                backgroundColor: 'transparent',
+                borderColor: 'orange',
+                borderWidth: 1,
+                hidden: true,
+                datalabels: {
+                  align: 'end',
+                  anchor: 'end',
+                  display: true,
+                  backgroundColor: 'orange',
+                  borderRadius: 4,
+                  color: '#001f3f',
+                  font: {
+                    weight: 'bold'
+                  }
+                }
+              },
+              {
+                label: 'Reserved',
+                data: typeReserved,
+                backgroundColor: 'transparent',
+                borderColor: 'yellow',
+                borderWidth: 1,
+                hidden: true,
+                datalabels: {
+                  align: 'end',
+                  anchor: 'end',
+                  display: true,
+                  backgroundColor: 'yellow',
+                  borderRadius: 4,
+                  color: '#001f3f',
+                  font: {
+                    weight: 'bold'
+                  }
+                }
+              }],
+
+            };
+            myChart.data = data;
+            myChart.update();
+          });
+        }
+        else {
+          this.hideActivity = true;
+          this.hideComparative = true;
+          this.hideOverAll = false;
+
+          if (!this.allChart) {
+            var ctx = Polymer.dom(this.root).querySelector("#overAllChart");
+            var overAllChart = new Chart(ctx, {
+              type: 'pie',
+
+              options: {
+                pieceLabel: {
+                  render: 'percentage',
+                  fontColor: ['white', 'white', 'white', 'black', 'white'],
+                  precision: 2
+                },
+                legend: {
+                  display: true,
+                  position: 'left',
+
+                },
+                plugins: {
+                  datalabels: {
+                    // color: 'white',
+                    // font: {
+                    //   weight: 'bold'
+                    // },
+                    display: false
+                  }
+                },
+                responsive: true,
+                // title: {
+                //   display: true,
+                //   text: 'Overall Report'
+                // }
+              }
+            });
+            this.allChart = overAllChart;
+          }
+
+          var d = new Date();
+          datestring = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+          this.overAllDate = datestring;
+          this.lotType = 'all';
+        }
+      },
+
+      onChangedAll(selectedDMY, dailyAct, wyear, week, month, year, yearly) {
+        var dailyChart, datestring, query;
+        dailyChart = this.Chart;
+
+        if (this.Chart) {
+
+          if (selectedDMY == 0) {
+            this.totalHold = 0;
+            this.totalReserved = 0;
+            this.totalSold = 0;
+            this.hideDailyInputDate = false;
+
+            this.hideWeekly = true;
+            this.hideMonthSelection = true;
+            this.hideYearly = true;
+
+            this.dailyDate = dailyAct;
+            this.yearWeekDate = '';
+            this.yearDate = '';
+            this.monthDate = '';
+            this.yearlyDate = '';
+
+            query = 'daily/' + dailyAct;
+            this.changeQry = query;
+          }
+
+          if (selectedDMY == 1) {
+            this.hideWeekly = false;
+            this.totalHold = 0;
+            this.totalReserved = 0;
+            this.totalSold = 0;
+            this.hideDailyInputDate = true;
+            this.hideMonthSelection = true;
+            this.hideYearly = true;
+
+            var weeks = "";
+            if (week < 10) {
+              weeks = '0' + week
+            }
+            else {
+              weeks = week;
+            }
+            var wyears = wyear.toString().substring(2, 4);
+            var yearWeek = wyears + 'w' + weeks;
+
+            this.dailyDate = '';
+            this.yearDate = '';
+            this.monthDate = '';
+            this.yearlyDate = '';
+            this.yearWeekDate = yearWeek;
+            this.weekDates = this.getDateRangeOfWeek(week, wyear);
+
+            query = 'weekly/' + yearWeek;
+            this.changeQry = query;
+          }
+
+          if (selectedDMY == 2) {
+            this.hideMonthSelection = false;
+            this.totalHold = 0;
+            this.totalReserved = 0;
+            this.totalSold = 0;
+            this.hideWeekly = true;
+            this.hideDailyInputDate = true;
+            this.hideYearly = true;
+
+            this.yearDate = year;
+            this.monthDate = month;
+            this.dailyDate = '';
+            this.yearlyDate = '';
+            this.yearWeekDate = '';
+
+            query = 'monthly/' + year + '-' + month;
+            this.changeQry = query;
+          }
+
+          if (selectedDMY == 3) {
+            this.hideYearly = false;
+            this.totalHold = 0;
+            this.totalReserved = 0;
+            this.totalSold = 0;
+            this.hideWeekly = true;
+            this.hideMonthSelection = true;
+            this.hideDailyInputDate = true;
+
+            this.yearlyDate = yearly;
+            this.yearDate = '';
+            this.monthDate = '';
+            this.dailyDate = '';
+            this.yearWeekDate = '';
+
+            query = 'yearly/' + yearly;
+            this.changeQry = query;
+          }
+
+          this.query(query, dailyChart);
+        }
+
+      },
+
+      query(query, dailyChart) {
+        firebase.database().ref('/reports/activity/' + query + '/lotType').on('value', function (snapshot) {
+          if (snapshot.exists()) {
+
+            var itemHold = [];
+            var itemSold = [];
+            var itemReserved = [];
+            var itemKey = [];
+            // var itemTotalHold = [];
+
+            snapshot.forEach(function (element) {
+              var itemhold = element.val().hold;
+              var itemsold = element.val().sold;
+              var itemreserved = element.val().reserved;
+              // var itemkey = element.key;
+
+              if (element.key == 'lawnlots') itemkey = 'Lawn Lots';
+              else if (element.key == 'wallniche') itemkey = 'Wall Niche';
+              else if (element.key == 'bonechamber') itemkey = 'Bone Chamber';
+              else if (element.key == 'cinerarium') itemkey = 'Cinerarium';
+              else if (element.key == 'familylots4') itemkey = 'Family Lots 1 (37.45m²)';
+              else if (element.key == 'familylots5') itemkey = 'Family Lots 1 (Irregular)';
+              else if (element.key == 'familylots1') itemkey = 'Family Lots 2 (53.27m²)';
+              else if (element.key == 'familylots2') itemkey = 'Family Lots 2 (52.83m²)';
+              else if (element.key == 'familylots3') itemkey = 'Family Lots 2 (Irregular)';
+              else if (element.key == 'gardenlots1') itemkey = 'Garden Lots 1 (12.52m²)';
+              else if (element.key == 'gardenlots2') itemkey = 'Garden Lots 1 (12.43m²)';
+              else if (element.key == 'gardenlots3') itemkey = 'Garden Lots 1 (Irregular)';
+              else if (element.key == 'gardenlots4') itemkey = 'Garden Lots 2 (20.00m²)';
+              else if (element.key == 'gardenlots5') itemkey = 'Garden Lots 2 (Irregular)';
+
+              // var itemtotalhold = element.val().totalHold;
+
+              itemHold.push(itemhold);
+              itemSold.push(itemsold);
+              itemReserved.push(itemreserved);
+              itemKey.push(itemkey);
+              // itemTotalHold.push(itemtotalhold);
+
+            });
+            var soldColor = [];
+            var holdColor = [];
+            var reservedColor = [];
+            for (var i = 0; i < itemKey.length; i++) {
+              soldColor.push('rgb(245,0,0)');
+              holdColor.push('rgb(145, 145, 0)');
+              reservedColor.push('orange');
+            }
+
+            var data = {
+              labels: itemKey,
+              datasets: [
+                {
+                  label: 'Sold',
+                  data: itemSold,
+                  backgroundColor: soldColor,
+                  borderColor: [
+                    'rgb(245,0,0)'
+                  ],
+                  borderWidth: 1
+                },
+                {
+                  label: 'Reserved',
+                  data: itemReserved,
+                  backgroundColor: reservedColor,
+                  borderColor: [
+                    'orange'
+                  ],
+                  borderWidth: 1
+                },
+                {
+                  label: 'Hold',
+                  data: itemHold,
+                  backgroundColor: holdColor,
+                  borderColor: [
+                    'rgb(145, 145, 0)'
+                  ],
+                  borderWidth: 1
+                }
+              ]
+            }
+
+            dailyChart.data = data;
+            dailyChart.update();
+          }
+          else {
+            var data = {
+              labels: [],
+              datasets: [
+                {
+                  label: 'Sold',
+                  data: [],
+                  backgroundColor: [],
+                  borderColor: [
+                    'rgb(245,0,0)'
+                  ],
+                  borderWidth: 1
+                },
+                {
+                  label: 'Reserved',
+                  data: [],
+                  backgroundColor: [],
+                  borderColor: [
+                    'orange'
+                  ],
+                  borderWidth: 1
+                },
+                {
+                  label: 'Hold',
+                  data: [],
+                  backgroundColor: [],
+                  borderColor: [
+                    'rgb(145, 145, 0)'
+                  ],
+                  borderWidth: 1
+                }
+              ]
+            }
+
+            dailyChart.data = data;
+            dailyChart.update();
+            // console.log('No Data')
+          }
+        });
+      },
+
+      _showDailyTable() {
+        if (this.showDailyTable) {
+          this.hideDailyTable = true;
+          this.hideDailyGraph = false;
+          this.hideDailyChart = true;
+          this.hideDailyTableData = false;
+        } else {
+          this.hideDailyTable = false;
+          this.hideDailyGraph = true;
+          this.hideDailyChart = false;
+          this.hideDailyTableData = true;
+        }
+      },
+
+      _showDailyGraph() {
+        this.hideDailyTable = false;
+        this.hideDailyGraph = true;
+        this.hideDailyChart = false;
+        this.hideDailyTableData = true;
+      },
+
+      overAllChanged(lotType, overAllDate) {
+        var que;
+        if (lotType == 'all') {
+          que = '/overall';
+          this.hideToggleOverall = false;
+        }
+        else {
+          que = '/lotType/' + lotType;
+          this.hideToggleOverall = true;
+        }
+        var allChart = this.allChart;
+        firebase.database().ref('/reports/overAll/' + overAllDate + que).on('value', function (snapshot) {
+          if (snapshot.exists()) {
+
+            var datas = [];
+            var labels = [];
+
+            snapshot.forEach(function (element) {
+              datas.push(element.val());
+              labels.push(element.key);
+            });
+
+            var data = {
+              datasets: [{
+                data: datas,
+                backgroundColor: [
+                  'green',
+                  'orange',
+                  'gray',
+                  'yellow',
+                  'red'
+                ]
+              }],
+              labels: labels,
+            }
+
+            allChart.data = data;
+            allChart.update();
+          }
+          else {
+            var data = {
+              datasets: [{
+                data: [],
+                backgroundColor: [
+                  'green',
+                  'orange',
+                  'gray',
+                  'yellow',
+                  'red'
+                ]
+              }],
+              labels: ['available', 'hold', 'notyetavailable', 'reserved', 'sold'],
+            }
+
+            allChart.data = data;
+            allChart.update();
+            // console.log('No Data')
+          }
+        });
+      },
+
+      _showSummary() {
+        if (this.showSummaryTable) {
+          this.showSummary = false;
+          this.hideSummary = true;
+          this.hideSummaryTable = false;
+          this.overallchart = true;
+        }
+        else {
+          this.showSummary = true;
+          this.hideSummary = false;
+          this.hideSummaryTable = true;
+          this.overallchart = false;
+        }
+
+
+      },
+
+      _hideSummary() {
+        this.showSummary = true;
+        this.hideSummary = false;
+        this.hideSummaryTable = true;
+        this.overallchart = false;
+      },
+
+      dailyTotalChanged() {
+        if (this.dailyTotal.length > 0) {
+
+          var keys = Object.keys(this.dailyTotal);
+          keys.forEach(x => {
+            if (this.dailyTotal[x].$key == 'totalHold') {
+              this.totalHold = this.dailyTotal[x].$val;
+            }
+            else if (this.dailyTotal[x].$key == 'totalReserved') {
+              this.totalReserved = this.dailyTotal[x].$val;
+            }
+            else if (this.dailyTotal[x].$key == 'totalSold') {
+              this.totalSold = this.dailyTotal[x].$val;
+            }
+          });
+        }
+        else {
+          if (this.selectedDMY == 0) {
+            this.totalHold = 0;
+            this.totalReserved = 0;
+            this.totalSold = 0;
+          }
+        }
+
+      },
+
+      weeklyTotalChanged() {
+        if (this.weeklyTotal.length > 0) {
+          var keys = Object.keys(this.weeklyTotal);
+
+          keys.forEach(x => {
+            if (this.weeklyTotal[x].$key == 'totalHold') {
+              this.totalHold = this.weeklyTotal[x].$val;
+            }
+            else if (this.weeklyTotal[x].$key == 'totalReserved') {
+              this.totalReserved = this.weeklyTotal[x].$val;
+            }
+            else if (this.weeklyTotal[x].$key == 'totalSold') {
+              this.totalSold = this.weeklyTotal[x].$val;
+            }
+          });
+        }
+        else {
+          if (this.selectedDMY == 1) {
+            this.totalHold = 0;
+            this.totalReserved = 0;
+            this.totalSold = 0;
+          }
+        }
+      },
+
+      monthlyTotalChanged() {
+        if (this.monthlyTotal.length > 0) {
+          var keys = Object.keys(this.monthlyTotal);
+
+          keys.forEach(x => {
+            if (this.monthlyTotal[x].$key == 'totalHold') {
+              this.totalHold = this.monthlyTotal[x].$val;
+            }
+            else if (this.monthlyTotal[x].$key == 'totalReserved') {
+              this.totalReserved = this.monthlyTotal[x].$val;
+            }
+            else if (this.monthlyTotal[x].$key == 'totalSold') {
+              this.totalSold = this.monthlyTotal[x].$val;
+            }
+          });
+        }
+        else {
+          if (this.selectedDMY == 2) {
+            this.totalHold = 0;
+            this.totalReserved = 0;
+            this.totalSold = 0;
+          }
+        }
+      },
+
+      yearlyTotalChanged() {
+        if (this.yearlyTotal.length > 0) {
+          var keys = Object.keys(this.yearlyTotal);
+
+          keys.forEach(x => {
+            if (this.yearlyTotal[x].$key == 'totalHold') {
+              this.totalHold = this.yearlyTotal[x].$val;
+            }
+            else if (this.yearlyTotal[x].$key == 'totalReserved') {
+              this.totalReserved = this.yearlyTotal[x].$val;
+            }
+            else if (this.yearlyTotal[x].$key == 'totalSold') {
+              this.totalSold = this.yearlyTotal[x].$val;
+            }
+          });
+        }
+        else {
+          if (this.selectedDMY == 3) {
+            this.totalHold = 0;
+            this.totalReserved = 0;
+            this.totalSold = 0;
+          }
+        }
+      },
+
+      getDateRangeOfWeek(weekNo, y) {
+        Date.prototype.getWeek = function () {
+          var date = new Date(this.getTime());
+          date.setHours(0, 0, 0, 0);
+          // Thursday in current week decides the year.
+          date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+          // January 4 is always in week 1.
+          var week1 = new Date(date.getFullYear(), 0, 4);
+          // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+          return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+        }
+
+        var d1, numOfdaysPastSinceLastMonday, rangeIsFrom, rangeIsTo;
+        d1 = new Date('' + y + '');
+        numOfdaysPastSinceLastMonday = d1.getDay() - 1;
+        d1.setDate(d1.getDate() - numOfdaysPastSinceLastMonday);
+        d1.setDate(d1.getDate() + (7 * (weekNo - d1.getWeek())));
+        rangeIsFrom = (d1.getMonth() + 1) + "-" + d1.getDate() + "-" + d1.getFullYear();
+        d1.setDate(d1.getDate() + 6);
+        rangeIsTo = (d1.getMonth() + 1) + "-" + d1.getDate() + "-" + d1.getFullYear();
+        return rangeIsFrom + " to " + rangeIsTo;
+
       }
 
-      // gettotal() {
-
-
-      //   // firebase.database().ref('/lots').orderByChild('status').equalTo('reserved').once('value').then(snap => {
-      //   //   if (snap.exists()) {
-      //   //     var counter = 0;
-
-      //   //     snap.forEach(element => {
-      //   //       if (element.val().reservationdetails) {
-      //   //         var serverDateTimePH = new Date(element.val().reservationdetails.start);
-      //   //         var serverDatePH_String = serverDateTimePH.getFullYear() + "-" + ("0" + (serverDateTimePH.getMonth() + 1)).slice(-2) + "-" + ("0" + serverDateTimePH.getDate()).slice(-2) + "T00:00";
-      //   //         var serverDatePH = new Date(serverDatePH_String);
-
-      //   //         if (serverDatePH.toISOString() == '2018-01-13T16:00:00.000Z') {
-      //   //           console.log(serverDatePH.toISOString());
-      //   //           console.log(counter + ' ' +serverDatePH + ' ' + element.val().type);
-      //   //           counter = counter + 1;
-      //   //         }
-      //   //       }
-      //   //     });
-
-      //   //     this._totalHold = counter;
-
-      //   //   }
-      //   //   else {
-      //   //     this._totalHold = '11';
-      //   //   }
-
-      //   // });
-
-      //   var serverdatetime = firebase.database().ref("info/serverdatetime");
-      //   serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
-      //   serverdatetime.once('value').then(snapshot => {
-      //     var sdate = new Date(snapshot.val());
-
-      //     var serverDateTime = new Date();
-      //     var serverDateTimePH = new Date(serverDateTime);
-      //     serverDateTimePH.setHours(serverDateTime.getHours() + 8); //manila +8 offset from UTC     
-
-      //     var startAt = serverDateTimePH.getFullYear() + "-" + ("0" + (serverDateTimePH.getMonth() + 1)).slice(-2) + "-" + ("0" + serverDateTimePH.getDate()).slice(-2) + "T00:00";
-      //     var endAt = serverDateTimePH.getFullYear() + "-" + ("0" + (serverDateTimePH.getMonth() + 1)).slice(-2) + "-" + ("0" + serverDateTimePH.getDate()).slice(-2) + "T23:59";
-
-      //     firebase.database().ref('/lots').orderByChild('reservationdetails/start').startAt('2018-01-14T00:00').endAt('2018-01-14T23:59').on('child_changed', snap => {
-      //       // snap.forEach(element => {
-      //       //   console.log(element.val());
-      //       // })
-      //       console.log(snap.val());
-      //     });
-
-
-      //   });
-
-
-      // }
-
-    }
-
-
-
-
-
-    window.customElements.define(MyDashboard.is, MyDashboard);
+    })
   </script>
 </dom-module>
