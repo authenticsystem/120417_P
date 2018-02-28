@@ -112,8 +112,8 @@
         <div style="padding-bottom: 8px;">
           <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Buyer</div>
           <span style="font-weight: 400;">
-            [[selectedLotDetails.reservationdetails.buyerdetails.firstname]] [[selectedLotDetails.reservationdetails.buyerdetails.middlename]]
-            [[selectedLotDetails.reservationdetails.buyerdetails.lastname]]
+            [[_formatName(selectedLotDetails.reservationdetails.buyerdetails.firstname)]] [[_formatName(selectedLotDetails.reservationdetails.buyerdetails.middlename)]]
+            [[_formatName(selectedLotDetails.reservationdetails.buyerdetails.lastname)]]
           </span>
         </div>
 
@@ -168,6 +168,22 @@
       // _levelLotsChanged(){
       //   console.log(this.levelLots);
       // },
+
+      _formatName(e) {
+        var f = "";
+        if (e) {
+          if (e.length == 1) {
+            f = e;
+          }
+          else if (e.length > 1 && e.length < 5) {
+            f = e.replace(e.slice(e.length - 1, e.length), "*");
+          }
+          else {
+            f = e.charAt(0) + Array(e.length - 3).join("*") + e.slice(e.length - 3, e.length);
+          }
+        }
+        return f;
+      },
 
       _formatRef(e) {
         var f = "";
