@@ -61,7 +61,9 @@
     "chartjs-plugin-datalabels": "^0.2.0",
     "paper-dropdown": "pushkar8723/paper-dropdown#^2.0.0",
     "paper-buttons-group": "NeilujD/paper-buttons-group#^2.0.0",
-    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.2.0"
+    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.2.0",
+    "photo-gallery":"hectorsantillan/photo-gallery#2.0.5",
+    "app-media":"PolymerElements/app-media#^0.8.1"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"
