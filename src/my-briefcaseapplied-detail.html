@@ -185,7 +185,7 @@
                             <paper-icon-button class="menu" noink style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{newdata.reference}}</div>
-                        <paper-icon-button hidden="{{newdata.isapproved}}" icon="my-icons:delete-forever" on-tap="deleteBriefcaseOpen" title="Delete briefcase draft"></paper-icon-button>
+                        <paper-icon-button hidden$="{{newdata.isapproved}}"icon="my-icons:delete-forever" on-tap="deleteBriefcaseOpen" title="Delete briefcase draft"></paper-icon-button>
 
                         <paper-dialog id="deleteBriefcasePD">
                             <h2>Delete applied briefcase?</h2>

@@ -104,7 +104,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
     <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
 
-    <div hidden$="{{!applicationActive}}">
+    <!-- <div hidden$="{{!applicationActive}}">
       <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
         <div name="">
 
@@ -168,7 +168,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <my-accountlist-new id="d23" path="" prev-route="{{route.prefix}}"></my-accountlist-new>
         </div>
       </app-header-layout>
-    </template>
+    </template> -->
 
     <template is="dom-if" if="{{access}}">
       <div hidden$="{{!accountActive}}">
@@ -232,8 +232,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <a href="/accountlist/new" style="text-decoration: none;">
               <paper-fab noink class="fab-menu" on-tap="_appsnew" icon="my-icons:add"></paper-fab>
             </a>
-
-<<<<<<< HEAD
           </div>
 
           <div name="/new">
@@ -255,37 +253,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <paper-dialog id="deactivateAccount">
-<<<<<<< HEAD
-      <br>
-      <h3>Deactivate account?</h3>
-      <div class="buttons">
-        <paper-button dialog-dismiss autofocus>No</paper-button>
-        <paper-button dialog-confirm on-tap="deactivate">Yes</paper-button>
-      </div>
-    </paper-dialog>
-
-    
-    <paper-dialog id="activateAccount">
-      <br>
-      <h3>Activate account?</h3>
-      <div class="buttons">
-        <paper-button dialog-dismiss autofocus>No</paper-button>
-        <paper-button dialog-confirm on-tap="activate">Yes</paper-button>
-      </div>
-    </paper-dialog>
-=======
-        <div name="view404">Not found.</div>
-
-      </iron-pages>
-      <div hidden$="{{!editActive}}">
-        <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
-        <div id="appedit"></div>
-        <my-accountlist-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-accountlist-edit>
-        <!-- </template> -->
-      </div>
-      <paper-toast id="toast" text="{{txt}}"></paper-toast>
->>>>>>> master
-=======
         <br>
         <h3>Deactivate account?</h3>
         <div class="buttons">
@@ -302,7 +269,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-button dialog-confirm on-tap="activate">Yes</paper-button>
         </div>
       </paper-dialog>
->>>>>>> ardie
   </template>
 
   <script> 
