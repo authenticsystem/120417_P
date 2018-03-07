@@ -419,8 +419,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <table>
                 <tr>
                   <th style="text-align: left;">Type</th>
-                  <th style="color: orange;">Hold</th>
-                  <th style="color: rgb(145, 145, 0);">Reserved</th>
+                  <th style="color: rgb(145, 145, 0);">Hold</th>
+                  <th style="color: orange;">Reserved</th>
                   <th style="color: red;">Sold</th>
                 </tr>
                 <template is="dom-repeat" items="{{todayLotStatus}}">
@@ -553,8 +553,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <table>
                     <tr>
                       <th style="text-align: left;">Type</th>
-                      <th style="color: orange;">Hold</th>
-                      <th style="color: rgb(145, 145, 0);">Reserved</th>
+                      <th style="color: rgb(145, 145, 0);">Hold</th>
+                      <th style="color: orange;">Reserved</th>
                       <th style="color: red;">Sold</th>
                     </tr>
                     <template is="dom-repeat" items="{{dailyData}}">
@@ -608,7 +608,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                   <span id="Daily">
                     <span id="flex">
-                      <span id="flex" style="margin-right:10px;">
+                      <span id="flex" style="margin-right:18px;">
                         <!-- <iron-icon style="margin-top:30px; margin-right:10px;color:dodgerblue;" icon="my-icons:event" id="date"></iron-icon> -->
                         <paper-input label="Start Date" type="date" value="{{startDate}}" id="day" style="width:150px">
                           <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
@@ -787,8 +787,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <tr>
                         <th style="text-align: left;">Type</th>
                         <th style="color: red;">Sold</th>
-                        <th style="color: rgb(145, 145, 0);">Reserved</th>
-                        <th style="color: orange;">Hold</th>
+                        <th style="color: orange;">Reserved</th>
+                        <th style="color: rgb(145, 145, 0);">Hold</th>
                         <th style="color: green;">Available</th>
                         <th style="color: gray;">Not yet available</th>
                         <th>Total</th>
@@ -1980,9 +1980,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               var colors = [];
 
               snapshot.forEach(function (element) {
-                if (element.key == 'totalHold') { itemkey = 'Hold'; bgColor = 'orange'; }
+                if (element.key == 'totalHold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
                 else if (element.key == 'totalSold') { itemkey = 'Sold'; bgColor = 'red'; }
-                else if (element.key == 'totalReserved') { itemkey = 'Reserved'; bgColor = 'yellow'; }
+                else if (element.key == 'totalReserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
                 else if (element.key == 'totalAvailable') { itemkey = 'Available'; bgColor = 'green'; }
                 else if (element.key == 'totalNotyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
 
@@ -2049,9 +2049,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               var colors = [];
 
               snapshot.forEach(function (element) {
-                if (element.key == 'hold') { itemkey = 'Hold'; bgColor = 'orange'; }
+                if (element.key == 'hold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
                 else if (element.key == 'sold') { itemkey = 'Sold'; bgColor = 'red'; }
-                else if (element.key == 'reserved') { itemkey = 'Reserved'; bgColor = 'yellow'; }
+                else if (element.key == 'reserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
                 else if (element.key == 'available') { itemkey = 'Available'; bgColor = 'green'; }
                 else if (element.key == 'notyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
 
