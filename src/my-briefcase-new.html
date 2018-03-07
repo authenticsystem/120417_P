@@ -1007,7 +1007,7 @@
                                             processordetails: '',
                                             served: '',
                                             start: this.startDateTimeValue,
-                                            status: 'Pending',
+                                            status: 'Draft',
                                             timestamp: { ".sv": "timestamp" },
                                             type: 'Hold',
                                             reference: this.applicationKey
@@ -1242,7 +1242,7 @@
                                     Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:done");
                                 }
                                 else {
-                                    this.favlefthide = true;
+                                    this.favlefthide = false;
                                 }
                             }
                         }

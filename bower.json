@@ -62,6 +62,7 @@
     "paper-dropdown": "pushkar8723/paper-dropdown#^2.0.0",
     "paper-buttons-group": "NeilujD/paper-buttons-group#^2.0.0",
     "Chart.PieceLabel.js": "^0.8.2"
+    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.2.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"
