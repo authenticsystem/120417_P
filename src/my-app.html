@@ -56,6 +56,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-activation.html">
 <link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
+<link rel="lazy-import" href="my-galleries.html">
 
 <dom-module id="my-app">
   <template>
@@ -314,6 +315,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>Map</span>
                       </paper-icon-item>
                     </a>
+                    <a name="galleries" href="[[rootPath]]galleries">
+                        <paper-icon-item toggles="true" class="menuSelected">
+                          <iron-icon icon="my-icons:perm-media" slot="item-icon"></iron-icon>
+                          <span>Galleries</span>
+                        </paper-icon-item>
+                      </a>                    
                     <a style$="{{access(appAccess)}}" name="applications" href="[[rootPath]]applications">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
@@ -337,7 +344,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <a style$="{{access(briefcaseAccess)}}" name="briefcase" href="[[rootPath]]briefcase">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:work" slot="item-icon"></iron-icon>
-                        <span>Briefcase</span>
+                        <span>Briefcase
+                          <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+                            BETA
+                          </span>
+                        </span>
                       </paper-icon-item>
                     </a>
                     <hr>
@@ -345,9 +356,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
                         <span>Accounts
-                          <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+                          <!-- <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
                             DRY RUN
-                          </span>
+                          </span> -->
                         </span>
                       </paper-icon-item>
                     </a>
@@ -370,6 +381,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
                 <my-dashboard name="dashboard" access="{{dashAccess}}" account="{{myaccount}}"></my-dashboard>
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
+                <my-galleries name="galleries"></my-galleries>
                 <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-applications>
                 <my-briefcase name="briefcase" access="{{appAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-briefcase>
                 <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
@@ -607,7 +619,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _routePageChanged(page, user, active) {
         // If no page was found in the route data, page will be an empty string.
         // Deault to 'view1' in that case.
-       
+
         if (user) {
           if (user.emailVerified) {
             if (user.phoneNumber) {

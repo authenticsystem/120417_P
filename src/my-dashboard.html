@@ -384,6 +384,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <iron-icon icon="my-icons:assessment" id="icons"></iron-icon>
             &nbsp;
             <span id="tabs">Reports</span>
+            &nbsp;
+            <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+              BETA
+            </span>
           </paper-tab>
           <paper-tab>
             <iron-icon icon="my-icons:notifications" id="icons"></iron-icon>
@@ -407,9 +411,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div class="card">
             <h3 style="display: inline-block;">
               Activity Report: Today
-              <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+              <!-- <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
                 DRY RUN
-              </span>
+              </span> -->
             </h3>
             <div style="padding-top: 3px; font-size: 14px; overflow-x:auto;">
               <table>
@@ -814,6 +818,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <!-- Notification -->
           <div>
+            <div>
+            </div>
             <!-- <template is="dom-if" if="{{staff}}"> -->
             <firebase-query path="/notifications" order-by-child="recipient_role" equal-to="{{myrole}}" limit-to-last="50" data="{{notificationData}}"></firebase-query>
             <firebase-query path="/notifications" order-by-child="recipient_code" equal-to="{{myaccountcode}}" limit-to-last="50" data="{{notificationData2}}"></firebase-query>
@@ -839,27 +845,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </div>
               </template>
             </iron-list>
-
-
-            <!-- </template> -->
-
-            <!-- <template is="dom-if" if="{{!staff}}">
-              <firebase-query path="/notifications" order-by-child="recipient_code" equal-to="{{key}}" data="{{notificationData}}"></firebase-query>
-              <iron-list items="[[notificationData]]" as="item" scroll-target="document">
-                <template>
-                  <div class="personItem" tabindex$="[[tabIndex]]">
-                    <iron-image class="avatar" sizing="contain" src="../images/user.png"></iron-image>
-                    <div class="pad">
-                      <div class="primary">
-                        [[item.sender]]
-                      </div>
-                      [[item.message]]
-                    </div>
-                    <paper-icon-button icon="my-icons:more-vert"></paper-icon-button>
-                  </div>
-                </template>
-              </iron-list>
-            </template> -->
           </div>
           <!-- end Notification -->
 
@@ -1018,7 +1003,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         owner: {
           type: Boolean,
-          value:true
+          value: true
         }
         // x: {
         //   type: Array,
@@ -1071,7 +1056,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (e.value) {
           e.value.forEach(element => {
             this.notificationdata_merge.push(element);
-           
+            // console.log(this.notificationdata_merge)
+            // console.log(this.notificationdata_merge[0].message)
           });
         }
 
@@ -1101,6 +1087,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       //     });
       //   });
       // },
+     
+
       accountChanged() {
         if (this.account.length > 0) {
           this.myrole = this.account[0].role;
