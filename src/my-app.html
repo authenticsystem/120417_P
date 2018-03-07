@@ -368,9 +368,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </app-drawer>
 
               <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-                <my-dashboard name="dashboard" access="{{dashAccess}}" user="{{user}}"></my-dashboard>
+                <my-dashboard name="dashboard" access="{{dashAccess}}" account="{{myaccount}}"></my-dashboard>
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
-                <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]"></my-applications>
+                <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-applications>
                 <my-briefcase name="briefcase" access="{{appAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-briefcase>
                 <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
                 <my-accountlist name="accountlist" access="{{accountAccess}}" route="[[subroute]]"></my-accountlist>

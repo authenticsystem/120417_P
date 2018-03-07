@@ -433,7 +433,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div hidden$="{{!viewActive}}">
         <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
         <div id="appview"></div>
-        <my-applied-view id="d26" transaction-key='{{viewData.key}}' prev-route="{{route.prefix}}"></my-applied-view>
+        <my-applied-view id="d26" transaction-key='{{viewData.key}}' prev-route="{{route.prefix}}" accountkey="{{accountkey}}"></my-applied-view>
         <!-- [[detailData.key]] -->
         <!-- </template> -->
       </div>
@@ -495,6 +495,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         route: Object,
         routeData: Object,
+        account: Object,
       },
       observers: [
         '_searchChanged(filterBy, search)',
@@ -502,6 +503,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '_applicationsNewChanged(applicationsNew.*)',
         'startDateTimeValueChanged(startDateTimeValue,expiryHoursDaysValue)',
         'selectedPageChanged(selectedPage)',
+        'accountChanged(account)'
       ],
       ready() {
         this.selectedPage = 0;
@@ -510,6 +512,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // var App =Polymer.dom(this.root).querySelector("#app");
         // App.setAttribute("style","display:block");
 
+      },
+      accountChanged(e) {
+        this.accountkey = e[0].accountkey;
       },
       selectedPageChanged(e) {
         if (e == 0) {
