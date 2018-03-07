@@ -964,7 +964,7 @@
                     this.draftdata_agentdetails_lastname = e[0].lastname;
                     this.draftdata_agentdetails_suffix = e[0].suffix;
                     this.draftdata_agentdetails_email = e[0].email;
-                    // console.log(e[0].$key);
+                    console.log(e[0].uid);
                 }
                 // else {
                 //     this.agentKey = '';
@@ -1395,7 +1395,8 @@
                                         lastname: this.draftdata_agentdetails_lastname,
                                         suffix: this.draftdata_agentdetails_suffix,
                                         email: this.draftdata_agentdetails_email,
-                                        cellphone: this.draftdata_agentdetails_cellphone
+                                        cellphone: this.draftdata_agentdetails_cellphone,
+                                        uid: firebase.auth().currentUser.uid
                                     },
                                     buyer: this.buyerKey,
                                     buyerdetails: {
@@ -1414,7 +1415,7 @@
                                     processordetails: this.transactionData.processordetails, //get value from current
                                     served: this.transactionData.served, //get value from current
                                     start: this.startDateTimeValue,
-                                    status: this.transactionData.status, //get value from current
+                                    status: 'Pending', //get value from current
                                     timestamp: { ".sv": "timestamp" },
                                     type: this.transactionData.type,
                                     reference: this.applicationKey,
@@ -1841,6 +1842,9 @@
                             //change color and icon here
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: green;");
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:done");
+                        }
+                        if (parseInt(this.selectedPage) === 3) {
+                            this.favlefthide = true;
                         }
                     }
 
