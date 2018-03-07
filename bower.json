@@ -60,7 +60,9 @@
     "paper-buttons-group": "NeilujD/paper-buttons-group#^2.0.0",
     "paper-button-group": "Protoss78/paper-button-group#^1.0.0",
     "chartjs-plugin-datalabels": "^0.2.0",
-    "paper-dropdown": "pushkar8723/paper-dropdown#^2.0.0"
+    "paper-dropdown": "pushkar8723/paper-dropdown#^2.0.0",
+    "paper-buttons-group": "NeilujD/paper-buttons-group#^2.0.0",
+    "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.2.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"

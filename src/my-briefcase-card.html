@@ -80,18 +80,11 @@
                     </span>
                 </div>
             </div>
-            <div style="padding:10px; padding-left:16px; border-top:1px solid #e8e8e8;">
-                <span id="spanStatus" style="font-size: 13px; color:rgb(75, 189, 75);">
-                    <iron-icon id="iconStatus" icon="my-icons:check-circle" style="margin-right:5px;"></iron-icon>{{status}}
+            <div style="padding:13px; border-top:1px solid #e8e8e8;">
+                <span id="spanStatus" style="font-size: 13px; color:gray;">
+                    <iron-icon id="iconStatus" icon="my-icons:drafts" style="margin-right:5px;"></iron-icon>{{item.status}}
                 </span>
-                <!-- <span hidden$="[[item.isapproved]]" style="font-size: 13px; color:gray">
-                    <iron-icon icon="my-icons:cancel" style="margin-right:5px"></iron-icon>Pending
-                </span> -->
             </div>
-            <!-- <br>
-            <div style="border-top:.5px solid">
-                <paper-button>Send</paper-button>
-            </div> -->
 
 
             <!-- <div style="border-top:solid rgba(179, 176, 176, 0.788) 1px; height: 48px; vertical-align:middle; ">
@@ -121,30 +114,35 @@
                 item: {
                     type: Object,
                     notify: true,
-                    observer: '_itemChanged'
                 },
                 lotsubdetail: {
                     type: String,
                     value: ''
-                }
+                },
+                status: String
             },
+            observers: [
+                '_itemChanged(item.*)',
+            ],
             _itemChanged() {
                 if (this.item) {
-                    if (this.item.isdraft) {
-                        this.status = "DRAFT";
+                    if (this.item.status === 'Draft') {
                         Polymer.dom(this.root).querySelector("#spanStatus").setAttribute("style", "font-size: 13px; color: gray;");
                         Polymer.dom(this.root).querySelector("#iconStatus").setAttribute("icon", "my-icons:drafts");
                     }
-                    else if (this.item.isapproved) {
-                        this.status = "APPROVED";
+                    else if (this.item.status === 'Approved') {
                         Polymer.dom(this.root).querySelector("#spanStatus").setAttribute("style", "font-size: 13px; color: rgb(75, 189, 75);");
                         Polymer.dom(this.root).querySelector("#iconStatus").setAttribute("icon", "my-icons:check-box");
                     }
-                    else {
-                        this.status = "PENDING";
+                    else if (this.item.status === 'Pending') {
                         Polymer.dom(this.root).querySelector("#spanStatus").setAttribute("style", "font-size: 13px; color: red;");
                         Polymer.dom(this.root).querySelector("#iconStatus").setAttribute("icon", "my-icons:check-box-outline-blank");
                     }
+                    else if (this.item.status === 'Disapproved') {
+                        Polymer.dom(this.root).querySelector("#spanStatus").setAttribute("style", "font-size: 13px; color: red;");
+                        Polymer.dom(this.root).querySelector("#iconStatus").setAttribute("icon", "my-icons:close");
+                    }
+
                     this.lotsubdetail = '';
                     if (this.item.lotdetails.maprenderdetails.type_name) this.lotsubdetail = this.item.lotdetails.maprenderdetails.type_name;
                     if (this.item.lotdetails.area) {
