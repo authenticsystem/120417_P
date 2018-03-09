@@ -364,8 +364,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </a>
                     <a name="account" href="[[rootPath]]account">
                       <paper-icon-item toggles="true" class="menuSelected">
-                        <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
-                        <span>Accounts</span>
+                        <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
+                        <span>My account</span>
                       </paper-icon-item>
                     </a>
                     <a on-tap="_signOut" href="/">
@@ -383,7 +383,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
                 <my-galleries name="galleries"></my-galleries>
                 <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-applications>
-                <my-briefcase name="briefcase" access="{{appAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-briefcase>
+                <my-briefcase name="briefcase" access="{{briefcaseAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-briefcase>
                 <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
                 <my-accountlist name="accountlist" access="{{accountAccess}}" route="[[subroute]]"></my-accountlist>
                 <my-view404 name="view404"></my-view404>

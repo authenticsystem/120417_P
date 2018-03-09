@@ -553,6 +553,8 @@
                     observer: 'usersTokenChanged'
                 },
                 accountkey: String,
+                myname: String
+               
             },
             observers: [
                 'fulllotDataChanged(fullLotData.*)',
@@ -1079,6 +1081,7 @@
                 this.draftdata_buyerdetails_cellphone = '';
                 this.minStartDateTime = '';
                 this.saveErrorDetails = '...';
+
             },
             _select1(e) {
                 this.entryanimation = "slide-from-left-animation";
@@ -1292,6 +1295,10 @@
                     // else {
                     // this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
                     this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
+                    var firebaseDb = this.$.idd.db;
+                    var firebaseDbRef = firebaseDb.ref();
+                    var firebaseUpdate = {};
+
                     var draftdata = {
                         agent: this.agentKey,
                         agentdetails: {
@@ -1328,6 +1335,9 @@
                         // type_status_inventoriable:this.draftdata_type+,
                         reference: this.applicationKey
                     };
+
+                    var notifPostKey = firebaseDbRef.child('notifications').push().key;
+
                     var notificationData = {
                         click: 'briefcase/applied/detail/'+ this.transactionKey,
                         message: "approved your application request.",
@@ -1355,12 +1365,9 @@
                         email: this.draftdata_agentdetails_email,
                         cellphone: this.draftdata_agentdetails_cellphone
                     };
-                    var firebaseDb = this.$.idd.db;
-                    var firebaseDbRef = firebaseDb.ref();
-                    var firebaseUpdate = {};
-
+                    
                     var transactionPush = firebaseDbRef.child('applications').push();
-                    var notifPostKey = firebaseDbRef.child('notifications').push().key;
+                   
                     // this.transactionKey = transactionPush.key;
                     if (this.transactionKey) {
                         //save to /applications/{id}
@@ -1549,8 +1556,12 @@
 
             _disApproved() {
                 if (this.transactionKey) {
-                    var personRef = firebase.database().ref().child("applicationsNew").child(this.transactionKey).remove();
+                    
                     // this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
+                    var firebaseDb = this.$.idd.db;
+                    var firebaseDbRef = firebaseDb.ref();
+                    var firebaseUpdate = {};
+
                     var draftdata = {
                         agent: this.agentKey,
                         agentdetails: {
@@ -1587,29 +1598,44 @@
                         // type_status_inventoriable:this.draftdata_type+,
                         reference: this.applicationKey
                     };
-                    var draftBuyer = {
-                        firstname: this.draftdata_buyerdetails_firstname,
-                        middlename: this.draftdata_buyerdetails_middlename,
-                        lastname: this.draftdata_buyerdetails_lastname,
-                        suffix: this.draftdata_buyerdetails_suffix,
-                        cellphone: this.draftdata_buyerdetails_cellphone,
-                        email: this.draftdata_buyerdetails_email
-                    };
-                    var draftAgent = {
-                        firstname: this.draftdata_agentdetails_firstname,
-                        middlename: this.draftdata_agentdetails_middlename,
-                        lastname: this.draftdata_agentdetails_lastname,
-                        suffix: this.draftdata_agentdetails_suffix,
-                        email: this.draftdata_agentdetails_email,
-                        cellphone: this.draftdata_agentdetails_cellphone
-                    };
-                    var firebaseDb = this.$.idd.db;
-                    var firebaseDbRef = firebaseDb.ref();
-                    var firebaseUpdate = {};
+                    // var draftBuyer = {
+                    //     firstname: this.draftdata_buyerdetails_firstname,
+                    //     middlename: this.draftdata_buyerdetails_middlename,
+                    //     lastname: this.draftdata_buyerdetails_lastname,
+                    //     suffix: this.draftdata_buyerdetails_suffix,
+                    //     cellphone: this.draftdata_buyerdetails_cellphone,
+                    //     email: this.draftdata_buyerdetails_email
+                    // };
+                    // var draftAgent = {
+                    //     firstname: this.draftdata_agentdetails_firstname,
+                    //     middlename: this.draftdata_agentdetails_middlename,
+                    //     lastname: this.draftdata_agentdetails_lastname,
+                    //     suffix: this.draftdata_agentdetails_suffix,
+                    //     email: this.draftdata_agentdetails_email,
+                    //     cellphone: this.draftdata_agentdetails_cellphone
+                    // };
 
+                    var notifPostKey = firebaseDbRef.child('notifications').push().key;
+
+                    var notificationData = {
+                        click: 'briefcase/applied/detail/'+ this.transactionKey,
+                        message: "disapproved your application request.",
+                        photo: firebase.auth().currentUser.photoURL,
+                        read: false,
+                        recipient_role: 'Sales Agent',
+                        recipient_role_code: 'Sales Agent_' + this.agentKey,
+                        sender: this.myname,
+                        timestamp: { ".sv": "timestamp" },
+                        title: 'Application disapproved',
+                    };
+
+                   
+
+                    firebaseUpdate['/notifications/' + notifPostKey] = notificationData;
                     firebaseUpdate["/briefcase/" + this.agentKey + "/" + this.transactionKey] = draftdata;
                     // this.$.successApprove.open();
                     firebase.database().ref().update(firebaseUpdate);
+                    var personRef = firebase.database().ref().child("applicationsNew/"+this.transactionKey).remove();
                     window.location = "/applications";
 
                 }

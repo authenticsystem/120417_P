@@ -298,8 +298,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         paper-badge {
-          --paper-badge-margin-left: -20px;
-          --paper-badge-margin-bottom: -30px;
+          --paper-badge-margin-left: 0px;
+          --paper-badge-margin-bottom: -20px;
+        }
+        .notifySpan{
+          margin-right:15px;
         }
       }
 
@@ -378,7 +381,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-tab>
             <iron-icon icon="my-icons:notifications" id="icons" class="notifyIcon"></iron-icon>
             <div style="display:inline-block">
-              <span id="tabs" style="margin-right:30px;">Notifications</span>
+              <span id="tabs" class="notifySpan">Notifications</span>
               <paper-badge label="{{countNotification}}"></paper-badge>
             </div>
           </paper-tab>
@@ -842,8 +845,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                           <iron-image hidden$="[[!item.photo]]" class="avatar" sizing="contain" src="{{item.photo}}"></iron-image>
                         </div>
                         <paper-item-body two-line>
-                          <div>
-                            <strong>[[item.sender]]</strong>&nbsp;[[item.message]]
+                          <div hidden$="[[item.read]]">
+                            <strong>[[item.sender]]&nbsp;[[item.message]]</strong>
+                          </div>
+                          <div hidden$="[[!item.read]]">
+                            [[item.sender]]&nbsp;[[item.message]]
                           </div>
                           <div class="secondary">
                             <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
