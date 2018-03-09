@@ -396,7 +396,8 @@
                         <div class="docu">
                             <div class="docu-header">2. Buyer's Information</div>
                             <div class="details">
-                                <paper-input readonly always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_buyerdetails_cellphone}}"></paper-input>
+                                <paper-input readonly always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No."
+                                    value="{{draftdata_buyerdetails_cellphone}}"></paper-input>
                                 <paper-input readonly always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_buyerdetails_firstname}}"></paper-input>
                                 <paper-input readonly always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_buyerdetails_middlename}}"></paper-input>
                                 <paper-input readonly always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_buyerdetails_lastname}}"></paper-input>
@@ -413,7 +414,8 @@
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
                             <div class="detais">
-                                <paper-input readonly always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
+                                <paper-input readonly always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No."
+                                    value="{{draftdata_agentdetails_cellphone}}"></paper-input>
                                 <paper-input readonly always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}"></paper-input>
                                 <paper-input readonly always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"></paper-input>
                                 <paper-input readonly always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_agentdetails_lastname}}"></paper-input>
@@ -1108,119 +1110,119 @@
                         this.favrighthide = true;
                         this.favlefthide = false;
                         //complete
-                    //     if (this.isStartDateTimeInvalidGlobal == true) {
-                    //         var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                    //         this.saveErrorDetails = "Start date conflict, please change the start date accordingly.";
-                    //         saveFailed.setAttribute("style", "display: block; color: red;");
-                    //     }
-                    //     else {
-                    //         var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
-                    //         var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                    //         // var favRightVar = Polymer.dom(this.root).querySelector("#favright");
-                    //         if (this.transactionKey) {
-                    //             var firebaseDb = this.$.idd.db;
-                    //             var firebaseDbRef = firebaseDb.ref();
-                    //             var firebaseUpdate = {};
-                    //             //get agent and buyer key, use 
-                    //             this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
-                    //             this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
-                    //             var draftdata = {
-                    //                 agent: this.agentKey,
-                    //                 agentdetails: {
-                    //                     firstname: this.draftdata_agentdetails_firstname,
-                    //                     middlename: this.draftdata_agentdetails_middlename,
-                    //                     lastname: this.draftdata_agentdetails_lastname,
-                    //                     suffix: this.draftdata_agentdetails_suffix,
-                    //                     email: this.draftdata_agentdetails_email,
-                    //                     cellphone: this.draftdata_agentdetails_cellphone
-                    //                 },
-                    //                 buyer: this.buyerKey,
-                    //                 buyerdetails: {
-                    //                     firstname: this.draftdata_buyerdetails_firstname,
-                    //                     middlename: this.draftdata_buyerdetails_middlename,
-                    //                     lastname: this.draftdata_buyerdetails_lastname,
-                    //                     suffix: this.draftdata_buyerdetails_suffix,
-                    //                     cellphone: this.draftdata_buyerdetails_cellphone,
-                    //                     email: this.draftdata_buyerdetails_email
-                    //                 },
-                    //                 expiry: '',
-                    //                 isdraft: true,
-                    //                 lot: this.fullLot,
-                    //                 lotdetails: this.fullLotData,
-                    //                 start: this.startDateTimeValue,
-                    //                 timestamp: { ".sv": "timestamp" },
-                    //                 type: '',
-                    //                 reference: this.applicationKey
-                    //             };
+                        //     if (this.isStartDateTimeInvalidGlobal == true) {
+                        //         var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+                        //         this.saveErrorDetails = "Start date conflict, please change the start date accordingly.";
+                        //         saveFailed.setAttribute("style", "display: block; color: red;");
+                        //     }
+                        //     else {
+                        //         var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
+                        //         var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+                        //         // var favRightVar = Polymer.dom(this.root).querySelector("#favright");
+                        //         if (this.transactionKey) {
+                        //             var firebaseDb = this.$.idd.db;
+                        //             var firebaseDbRef = firebaseDb.ref();
+                        //             var firebaseUpdate = {};
+                        //             //get agent and buyer key, use 
+                        //             this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
+                        //             this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
+                        //             var draftdata = {
+                        //                 agent: this.agentKey,
+                        //                 agentdetails: {
+                        //                     firstname: this.draftdata_agentdetails_firstname,
+                        //                     middlename: this.draftdata_agentdetails_middlename,
+                        //                     lastname: this.draftdata_agentdetails_lastname,
+                        //                     suffix: this.draftdata_agentdetails_suffix,
+                        //                     email: this.draftdata_agentdetails_email,
+                        //                     cellphone: this.draftdata_agentdetails_cellphone
+                        //                 },
+                        //                 buyer: this.buyerKey,
+                        //                 buyerdetails: {
+                        //                     firstname: this.draftdata_buyerdetails_firstname,
+                        //                     middlename: this.draftdata_buyerdetails_middlename,
+                        //                     lastname: this.draftdata_buyerdetails_lastname,
+                        //                     suffix: this.draftdata_buyerdetails_suffix,
+                        //                     cellphone: this.draftdata_buyerdetails_cellphone,
+                        //                     email: this.draftdata_buyerdetails_email
+                        //                 },
+                        //                 expiry: '',
+                        //                 isdraft: true,
+                        //                 lot: this.fullLot,
+                        //                 lotdetails: this.fullLotData,
+                        //                 start: this.startDateTimeValue,
+                        //                 timestamp: { ".sv": "timestamp" },
+                        //                 type: '',
+                        //                 reference: this.applicationKey
+                        //             };
 
-                    //             //save to /applications/{id}
-                    //             firebaseUpdate["/briefcasedraft/" + this.transactionKey] = draftdata;
+                        //             //save to /applications/{id}
+                        //             firebaseUpdate["/briefcasedraft/" + this.transactionKey] = draftdata;
 
-                    //             var draftBuyer = {
-                    //                 firstname: this.draftdata_buyerdetails_firstname,
-                    //                 middlename: this.draftdata_buyerdetails_middlename,
-                    //                 lastname: this.draftdata_buyerdetails_lastname,
-                    //                 suffix: this.draftdata_buyerdetails_suffix,
-                    //                 cellphone: this.draftdata_buyerdetails_cellphone,
-                    //                 email: this.draftdata_buyerdetails_email
-                    //             };
-                    //             if (this.buyerKey) {
-                    //                 //save to /buyers/{new id}
-                    //                 firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
-                    //             }
-                    //             else {
-                    //                 this.saveErrorDetails = "Buyer Key is empty.";
-                    //                 saveSuccess.setAttribute("style", "display: none; color: green;");
-                    //                 saveFailed.setAttribute("style", "display: block; color: red;");
-                    //                 return;
-                    //             }
-                    //             var draftAgent = {
-                    //                 firstname: this.draftdata_agentdetails_firstname,
-                    //                 middlename: this.draftdata_agentdetails_middlename,
-                    //                 lastname: this.draftdata_agentdetails_lastname,
-                    //                 suffix: this.draftdata_agentdetails_suffix,
-                    //                 email: this.draftdata_agentdetails_email,
-                    //                 cellphone: this.draftdata_agentdetails_cellphone
-                    //             };
-                    //             if (this.agentKey) {
-                    //                 //save to /agents/{new id}
-                    //                 firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
-                    //             }
-                    //             else {
-                    //                 this.saveErrorDetails = "Agent Key is empty.";
-                    //                 saveSuccess.setAttribute("style", "display: none; color: green;");
-                    //                 saveFailed.setAttribute("style", "display: block; color: red;");
-                    //             }
-                    //             var sdate;
-                    //             var serverdatetime = firebase.database().ref("info/serverdatetime");
-                    //             serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
-                    //             serverdatetime.once('value').then(snapshot => {
-                    //                 var sdate = new Date(snapshot.val());
-                    //             });
-                    //         }
-                    //         else {
-                    //             //transactionKey is missing
-                    //             var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                    //             this.saveErrorDetails = "Transaction Key is missing.";
-                    //             saveFailed.setAttribute("style", "display: block; color: red;");
-                    //         }
-                    //         //verification first
-                    //         //get colors
-                    //         //get map_lot
-                    //         //get reservations
-                    //     }
-                    // }
-                    // else {
-                    //     // console.log('xx ' + this.selectedPage);
-                    //     this.favlefthide = false;
-                    //     this.favrighthide = false;
-                    //     if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname
-                    //         && this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
-                    //         this.favrighthide = false;
-                    //     }
-                    //     else {
-                    //         this.favrighthide = true;
-                    //     }
+                        //             var draftBuyer = {
+                        //                 firstname: this.draftdata_buyerdetails_firstname,
+                        //                 middlename: this.draftdata_buyerdetails_middlename,
+                        //                 lastname: this.draftdata_buyerdetails_lastname,
+                        //                 suffix: this.draftdata_buyerdetails_suffix,
+                        //                 cellphone: this.draftdata_buyerdetails_cellphone,
+                        //                 email: this.draftdata_buyerdetails_email
+                        //             };
+                        //             if (this.buyerKey) {
+                        //                 //save to /buyers/{new id}
+                        //                 firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
+                        //             }
+                        //             else {
+                        //                 this.saveErrorDetails = "Buyer Key is empty.";
+                        //                 saveSuccess.setAttribute("style", "display: none; color: green;");
+                        //                 saveFailed.setAttribute("style", "display: block; color: red;");
+                        //                 return;
+                        //             }
+                        //             var draftAgent = {
+                        //                 firstname: this.draftdata_agentdetails_firstname,
+                        //                 middlename: this.draftdata_agentdetails_middlename,
+                        //                 lastname: this.draftdata_agentdetails_lastname,
+                        //                 suffix: this.draftdata_agentdetails_suffix,
+                        //                 email: this.draftdata_agentdetails_email,
+                        //                 cellphone: this.draftdata_agentdetails_cellphone
+                        //             };
+                        //             if (this.agentKey) {
+                        //                 //save to /agents/{new id}
+                        //                 firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
+                        //             }
+                        //             else {
+                        //                 this.saveErrorDetails = "Agent Key is empty.";
+                        //                 saveSuccess.setAttribute("style", "display: none; color: green;");
+                        //                 saveFailed.setAttribute("style", "display: block; color: red;");
+                        //             }
+                        //             var sdate;
+                        //             var serverdatetime = firebase.database().ref("info/serverdatetime");
+                        //             serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
+                        //             serverdatetime.once('value').then(snapshot => {
+                        //                 var sdate = new Date(snapshot.val());
+                        //             });
+                        //         }
+                        //         else {
+                        //             //transactionKey is missing
+                        //             var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
+                        //             this.saveErrorDetails = "Transaction Key is missing.";
+                        //             saveFailed.setAttribute("style", "display: block; color: red;");
+                        //         }
+                        //         //verification first
+                        //         //get colors
+                        //         //get map_lot
+                        //         //get reservations
+                        //     }
+                        // }
+                        // else {
+                        //     // console.log('xx ' + this.selectedPage);
+                        //     this.favlefthide = false;
+                        //     this.favrighthide = false;
+                        //     if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname
+                        //         && this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
+                        //         this.favrighthide = false;
+                        //     }
+                        //     else {
+                        //         this.favrighthide = true;
+                        //     }
                     }
                     if (parseInt(this.selectedPage) !== 3) {
                         this.selectedPage = (parseInt(this.selectedPage) + 1);
@@ -1326,14 +1328,17 @@
                         // type_status_inventoriable:this.draftdata_type+,
                         reference: this.applicationKey
                     };
-                    // var notificationData = {
-                    //     sender: this.accountkey,
-                    //     recipient_role: 'salesAgent',
-                    //     recipient_code: this.agentKey,
-                    //     message: 'New application request has been approved',
-                    //     timestamp: { ".sv": "timestamp" },
-                    //     read: true
-                    // };
+                    var notificationData = {
+                        click: 'briefcase/applied/detail/'+ this.transactionKey,
+                        message: "approved your application request.",
+                        photo: firebase.auth().currentUser.photoURL,
+                        read: false,
+                        recipient_role: 'Sales Agent',
+                        recipient_role_code: 'Sales Agent_'+this.agentKey,
+                        sender: this.myname,
+                        timestamp: { ".sv": "timestamp" },
+                        title: 'Application approved',
+                    };
                     var draftBuyer = {
                         firstname: this.draftdata_buyerdetails_firstname,
                         middlename: this.draftdata_buyerdetails_middlename,
@@ -1355,14 +1360,13 @@
                     var firebaseUpdate = {};
 
                     var transactionPush = firebaseDbRef.child('applications').push();
-                    // var notifPostKey = firebaseDbRef.child('notifications').push().key;
+                    var notifPostKey = firebaseDbRef.child('notifications').push().key;
                     // this.transactionKey = transactionPush.key;
                     if (this.transactionKey) {
                         //save to /applications/{id}
                         firebaseUpdate["/applications/" + this.transactionKey] = draftdata;
                         firebaseUpdate["/briefcase/" + this.agentKey + "/" + this.transactionKey] = draftdata;
-
-                        // firebaseUpdate['/notifications/' + notifPostKey] = notificationData;
+                        firebaseUpdate['/notifications/' + notifPostKey] = notificationData;
                         //this.path
                         if (this.buyerKey) {
                             //save to /buyers/{new id}

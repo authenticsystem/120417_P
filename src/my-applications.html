@@ -433,7 +433,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div hidden$="{{!viewActive}}">
         <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
         <div id="appview"></div>
-        <my-applied-view id="d26" transaction-key='{{viewData.key}}' prev-route="{{route.prefix}}" accountkey="{{accountkey}}"></my-applied-view>
+        <my-applied-view id="d26" transaction-key='{{viewData.key}}' prev-route="{{route.prefix}}" accountkey="{{accountkey}}" myname="{{myname}}"></my-applied-view>
         <!-- [[detailData.key]] -->
         <!-- </template> -->
       </div>
@@ -515,6 +515,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       accountChanged(e) {
         this.accountkey = e[0].accountkey;
+        this.fname = e[0].name.firstname;
+        this.mname = e[0].name.middlename;
+        this.lname = e[0].name.lastname;
+        this.myname = this.fname + ' ' + this.mname + ' ' + this.lname;
       },
       selectedPageChanged(e) {
         if (e == 0) {

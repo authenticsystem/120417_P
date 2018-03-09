@@ -26,6 +26,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/neon-animation/web-animations.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
@@ -38,6 +40,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/paper-badge/paper-badge.html">
 
 <link rel="import" href="time-element.html">
 
@@ -195,6 +198,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             width: 50px;
           }
         }
+
+        paper-badge {
+          --paper-badge-margin-left: 0px;
+          --paper-badge-margin-bottom: 0px;
+        }
+
+        .notifyIcon{
+          margin-right:10px;
+        }
       }
 
       @media (min-width: 768px) {
@@ -284,6 +296,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             width: 80px;
           }
         }
+
+        paper-badge {
+          --paper-badge-margin-left: -20px;
+          --paper-badge-margin-bottom: -30px;
+        }
       }
 
       paper-button.blue {
@@ -305,54 +322,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         border-bottom: .5px solid gray
       }
 
-      iron-list {
-        margin-top: 16px;
-        padding: 16px;
-      }
-
-      .item {
-        @apply --layout-horizontal;
-        padding: 20px;
-        border-radius: 8px;
-        background-color: white;
-        border: 1px solid #ddd;
-        max-width: 800px;
-        margin: 16px auto 0 auto;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        transition: 0.3s;
-      }
-
-      .item:focus {
-        outline: 0;
-        border-color: #333;
+      div[role="listbox"] {
+        border-bottom: 0.5px solid #e5e5e5;
+        padding: 10px;
       }
 
       .avatar {
-        height: 40px;
-        width: 40px;
-        border-radius: 20px;
+        display: inline-block;
         box-sizing: border-box;
-        background-color: #DDD;
-      }
-
-      .pad {
-        padding: 0 16px;
-        @apply --layout-flex;
-        @apply --layout-vertical;
-      }
-
-      .primary {
-        font-size: 16px;
-        font-weight: bold;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        /* background: var(--paper-amber-500); */
       }
 
       .secondary {
-        font-size: 14px;
-        font-style: italic
-      }
-
-      .item:hover {
-        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+        font-size: 12px;
+        color: gray;
       }
     </style>
 
@@ -390,9 +376,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </span>
           </paper-tab>
           <paper-tab>
-            <iron-icon icon="my-icons:notifications" id="icons"></iron-icon>
-            &nbsp;
-            <span id="tabs">Notifications</span>
+            <iron-icon icon="my-icons:notifications" id="icons" class="notifyIcon"></iron-icon>
+            <div style="display:inline-block">
+              <span id="tabs" style="margin-right:30px;">Notifications</span>
+              <paper-badge label="{{countNotification}}"></paper-badge>
+            </div>
           </paper-tab>
         </paper-tabs>
       </app-header>
@@ -817,14 +805,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!-- End of Reports -->
 
           <!-- Notification -->
-          <div>
-            <div>
-            </div>
-            <!-- <template is="dom-if" if="{{staff}}"> -->
-            <firebase-query path="/notifications" order-by-child="recipient_role" equal-to="{{myrole}}" limit-to-last="50" data="{{notificationData}}"></firebase-query>
-            <firebase-query path="/notifications" order-by-child="recipient_code" equal-to="{{myaccountcode}}" limit-to-last="50" data="{{notificationData2}}"></firebase-query>
+          <div class="card" style="padding:0">
 
-            <iron-list items="{{notificationdata_merge}}" as="item" scroll-target="document">
+            <firebase-query path="/notifications" order-by-child="recipient_role" equal-to="{{myrole}}" limit-to-last="50" data="{{notificationData}}"></firebase-query>
+            <firebase-query path="/notifications" order-by-child="recipient_role_code" equal-to="{{myrolecode}}" limit-to-last="50" data="{{notificationData}}"></firebase-query>
+
+            <!-- <iron-list items="[[notificationdata_merge]]" as="item" scroll-target="document">
               <template>
                 <div>
                   <div class="item" tabindex$="[[tabIndex]]">
@@ -840,11 +826,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
                       </span>
                     </div>
-                    <!-- <paper-icon-button icon="my-icons:more-vert"></paper-icon-button> -->
+                    <paper-icon-button on-tap="_notificationLink" icon="my-icons:open-in-new" alt="{{item}}" title="View notifications"></paper-icon-button>
+                  </div>
+                </div>
+              </template>
+            </iron-list> -->
+
+            <iron-list items="[[notificationdata_merge]]" as="item" scroll-target="document">
+              <template>
+                <div>
+                  <div class="item" tabindex$="[[tabIndex]]">
+                    <div role="listbox">
+                      <paper-icon-item>
+                        <div slot="item-icon">
+                          <iron-image hidden$="[[!item.photo]]" class="avatar" sizing="contain" src="{{item.photo}}"></iron-image>
+                        </div>
+                        <paper-item-body two-line>
+                          <div>
+                            <strong>[[item.sender]]</strong>&nbsp;[[item.message]]
+                          </div>
+                          <div class="secondary">
+                            <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
+                          </div>
+                        </paper-item-body>
+                        <paper-icon-button icon="my-icons:open-in-new" title="View notifications" on-tap="_notificationLink" alt="{{item}}"></paper-icon-button>
+                      </paper-icon-item>
+                    </div>
                   </div>
                 </div>
               </template>
             </iron-list>
+
           </div>
           <!-- end Notification -->
 
@@ -866,10 +878,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: false
         },
-        // token: {
-        //   type: Object,
-        //   observer: 'tokenChanged'
-        // },
         selectedTab: {
           type: Number,
           value: 0
@@ -997,18 +1005,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         notificationData: Object,
         account: Object,
         accountlistData: Object,
-        notificationdata_merge: {
-          type: Array,
-          value: []
-        },
+        // notificationdata_merge: {
+        //   type: Array,
+        //   value: []
+        // },
+        // message: {
+        //   type: Array,
+        //   value: []
+        // },
         owner: {
           type: Boolean,
           value: true
         }
-        // x: {
-        //   type: Array,
-        //   value: []
-        // }
       },
 
       ready() {
@@ -1037,62 +1045,55 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'overAllChanged(lotType,overAllDate)',
         '_onChanged(selectedDaily,DailyfilterBy,startDate,endDate,startRange,endRange,startYear,endYear,startMonthYear,endMonthYear)',
         'accountChanged(account.*)',
-        'notificationDataChanged(notificationData.*,notificationData2.*)',
-        // 'notificationDataChanged(notificationData.*)'
+        // 'notificationDataChanged(notificationData.*,notificationData2.*)',
+        'notificationDataChanged(notificationData.*)'
       ],
-      notificationDataChanged(e, f) {
-        // console.log(e.value);
-        // console.log(f.value);
-        // var x = Object.assign({},e.value);
-        // var y = Object.assign({},f.value);
-        // var z = Object.assign(x,y);
-        // this.notificationdata_merge = x;
-        // console.log(f.value);
-        // this.x = Object.assign({},e.value);
-        // this.notificationdata_merge = Object.assign(e.value,f.value);
-        // console.log(this.notificationData);
-        //  console.log(this.notificationdata_merge);
 
-        if (e.value) {
-          e.value.forEach(element => {
-            this.notificationdata_merge.push(element);
-            // console.log(this.notificationdata_merge)
-            // console.log(this.notificationdata_merge[0].message)
+      notificationDataChanged(e) {
+        this.countNotification = e.base.length;
+
+        if (e.base) {
+          var notifications = [];
+          e.base.forEach(element => {
+            notifications.push(element);
           });
+          this.notificationdata_merge = notifications;
         }
-
-        // this.notificationdata_merge = this.notificationData2;
-
-        // console.log(e.value);
-        // console.log(z);
       },
 
       _timeStampToDateTime(ts) {
         return new Date(ts);
       },
-      // getNotif(role) {
-      //   firebase.database().ref().child('notifications').orderByChild('recipient_role').equalTo(role).on('value', snap => {
-      //     snap.forEach(element => {
-      //       this.message = element.val().message;
-      //       this.timestamp = element.val().timestamp;
-      //       // if (element.val().read == false) {
-      //       //   Polymer.dom(this.root).querySelector("#notifDiv").setAttribute('style', 'background-color:rgba(192,192,192,0.3)');
-      //       // }
-      //       firebase.database().ref().child('accountlist').orderByChild('accountkey').equalTo(element.val().sender).once('value', sendersnap => {
-      //         sendersnap.forEach(elements => {
-      //           this.sender = elements.val().name.firstname + ' ' + elements.val().name.lastname
 
-      //         });
-      //       });
-      //     });
-      //   });
-      // },
-     
+      _notificationLink(e) {
+        var transkey = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var data = JSON.parse(transkey);
+        // console.log(data);
+
+        var postData = {
+          click: data.click,
+          message: data.message,
+          read: true,
+          recipient_role: data.recipient_role,
+          recipient_role_code: data.recipient_role_code,
+          sender: data.sender,
+          timestamp: data.timestamp,
+          title: data.title,
+          photo: data.photo
+        };
+        var updates = {};
+        updates['/notifications/' + data.$key] = postData;
+        window.location = data.click;
+        return firebase.database().ref().update(updates);
+
+      },
 
       accountChanged() {
         if (this.account.length > 0) {
           this.myrole = this.account[0].role;
           this.myaccountcode = this.account[0].accountkey;
+          this.myrolecode = this.myrole + '_' + this.myaccountcode;
+          // console.log(this.myaccountcode);
           if (this.myrole === 'Owner') {
             this.owner = false;
           }

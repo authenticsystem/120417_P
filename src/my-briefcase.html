@@ -801,6 +801,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
 
           var personRef = firebase.database().ref().child("briefcasedraft").child(data.agent).child(data.$key).remove();
+          
           var postData = {
             agent: data.agent,
             agentdetails: data.agentdetails,
@@ -822,17 +823,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             isdraft: false
 
           };
+
+           var newPostKey = firebase.database().ref().child('briefcase').push().key;
+
           var notificationData = {
-            sender: this.fname + ' ' + this.mname + ' ' + this.lname,
+            click: '/applications/view/'+newPostKey,
+            message: 'request a new application.',
+            photo: firebase.auth().currentUser.photoURL,
+            read: false,
             recipient_role: 'Staff',
-            recipient_code: '',
-            title: 'Application request',
-            message: 'Request to hold the block ' + data.lotdetails.block + ' lot ' + data.lotdetails.lot + ' level ' + data.lotdetails.level,
+            recipient_role_code: '',
+            sender: this.fname + ' ' + this.mname + ' ' + this.lname,
             timestamp: { ".sv": "timestamp" },
-            read: false
+            title: 'New application request',
           };
 
-          var newPostKey = firebase.database().ref().child('briefcase').push().key;
           var notifPostKey = firebase.database().ref().child('notifications').push().key;
 
           var updates = {};
