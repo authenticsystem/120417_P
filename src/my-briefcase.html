@@ -343,10 +343,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <p style="padding: 16px; margin:0px; color: red; background-color: #ffdddd; border-left: 6px solid #f44336;">
                     <iron-icon icon="my-icons:info-outline"></iron-icon> 
                     Your request can't be process this lot was already on hold.
+                    <paper-icon-button style="color: black" dialog-confirm autofocus icon="my-icons:close"></paper-icon-button>
                   </p>
-                  <div class="buttons">
-                    <paper-button dialog-confirm autofocus>OK</paper-button>
-                  </div>
                 </paper-dialog>
 
               </neon-animatable>
@@ -452,7 +450,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <div hidden$="{{!appliedEditActive}}">
         <div id="appliededit"></div>
-        <my-briefcaseapplied-edit id="d27" transaction-key='{{appliedEditData.key}}' prev-route="{{route.prefix}}" account-key='{{accountkey}}'></my-briefcaseapplied-edit>
+        <my-briefcaseapplied-edit id="d27" transaction-key='{{appliedEditData.key}}' prev-route="{{route.prefix}}" account-key='{{accountkey}}' myname="{{myname}}"></my-briefcaseapplied-edit>
       </div>
 
     </template>
@@ -545,6 +543,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.fname = e[0].name.firstname;
         this.mname = e[0].name.middlename;
         this.lname = e[0].name.lastname;
+
         // console.log(this.name);
       },
       _getKey(e) {
@@ -722,6 +721,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var newDiv = document.createElement("my-briefcaseapplied-edit");
           newDiv.setAttribute("id", "d27")
           newDiv.setAttribute("transaction-key", data_args)
+          newDiv.setAttribute("myname", this.myname)
           newDiv.setAttribute("account-key", this.accountkey)
           newDiv.setAttribute("prev-route", this.route.prefix);
           //if open existing
@@ -801,6 +801,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
 
           var personRef = firebase.database().ref().child("briefcasedraft").child(data.agent).child(data.$key).remove();
+          
           var postData = {
             agent: data.agent,
             agentdetails: data.agentdetails,
@@ -822,19 +823,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             isdraft: false
 
           };
-          var notificationData = {
-            sender: this.fname + ' ' + this.mname + ' ' + this.lname,
-            recipient_role: 'Staff',
-            recipient_code: '',
-            title: 'Application request',
-            message: 'Request to hold the block ' + data.lotdetails.block + ' lot ' + data.lotdetails.lot + ' level ' + data.lotdetails.level,
-            timestamp: { ".sv": "timestamp" },
-            read: false
-          };
 
           var newPostKey = firebase.database().ref().child('briefcase').push().key;
           var notifPostKey = firebase.database().ref().child('notifications').push().key;
-
+          
+          var notificationData = {
+            click: '/applications/view/'+newPostKey,
+            message: 'request a new application.',
+            photo: firebase.auth().currentUser.photoURL,
+            read: false,
+            recipient_role: 'Staff',
+            recipient_role_code: '',
+            sender: this.fname + ' ' + this.mname + ' ' + this.lname,
+            timestamp: { ".sv": "timestamp" },
+            title: 'New application request',
+          };
+          
           var updates = {};
           updates['/applicationsNew/' + newPostKey] = postData;
           updates['/briefcase/' + data.agent + '/' + newPostKey] = postData;

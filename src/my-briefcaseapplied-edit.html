@@ -210,8 +210,7 @@
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
                         <!-- for current Transaction Keys data -->
-                        <firebase-document id="transactionFire" path="/briefcase/{{accountKey}}/{{transactionKey}}" data="{{transactionData}}"
-                            disabled="true"></firebase-document>
+                        <firebase-document id="transactionFire" path="/briefcase/{{accountKey}}/{{transactionKey}}" data="{{transactionData}}" disabled="true"></firebase-document>
 
                         <!-- for Lot Details when entering Block, Lot, Level -->
                         <firebase-document id="lotFire" path="/lots/{{fullLot}}" data="{{fullLotData}}" disabled="true"></firebase-document>
@@ -304,7 +303,8 @@
                                             <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
                                                 <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
                                             <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}" type="datetime-local"
-                                                no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}" readonly></paper-input>
+                                                no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"
+                                                readonly></paper-input>
 
                                         </div>
                                         <!-- <div id="expiry" style="position: relative; padding-top: 16px;"> -->
@@ -367,20 +367,46 @@
                                 <br>
                                 <paper-card style="width:100%">
                                     <div class="card-content">
-                                        <div>Block: <b>{{block}}</b> - Lot: <b>{{lot}}</b> - Level: <b>{{level}}</b></div>
-                                        <div>Type: <b>{{fullLotData.maprenderdetails.type_name}}</b> -- Area: <b>{{fullLotData.area}}</b> -- Designation: <b>{{fullLotData.maprenderdetails.designation_name}}</b></div>
+                                        <div>Block:
+                                            <b>{{block}}</b> - Lot:
+                                            <b>{{lot}}</b> - Level:
+                                            <b>{{level}}</b>
+                                        </div>
+                                        <div>Type:
+                                            <b>{{fullLotData.maprenderdetails.type_name}}</b> -- Area:
+                                            <b>{{fullLotData.area}}</b> -- Designation:
+                                            <b>{{fullLotData.maprenderdetails.designation_name}}</b>
+                                        </div>
                                         <br>
-                                        <div>Transaction: <b>{{draftdata_type}}</b></div>
-                                        <div>Start: <b>{{startDateTimeValue}}</b></div>
-                                        <div>Expires: <b>{{expiryDate}}</b></div>
+                                        <div>Transaction:
+                                            <b>{{draftdata_type}}</b>
+                                        </div>
+                                        <div>Start:
+                                            <b>{{startDateTimeValue}}</b>
+                                        </div>
+                                        <div>Expires:
+                                            <b>{{expiryDate}}</b>
+                                        </div>
                                         <hr style="margin-top:10px; margin-bottom:10px">
-                                        <div>Buyer's Fullname: <b>{{draftdata_buyerdetails_firstname}}&nbsp;{{draftdata_buyerdetails_middlename}}&nbsp;{{draftdata_buyerdetails_lastname}}&nbsp;{{draftdata_buyerdetails_suffix}}</b></div>
-                                        <div>Buyer's Cellphone: <b>{{draftdata_buyerdetails_cellphone}}</b></div>
-                                        <div>Buyer's Email: <b>{{draftdata_buyerdetails_email}}</b></div>
+                                        <div>Buyer's Fullname:
+                                            <b>{{draftdata_buyerdetails_firstname}}&nbsp;{{draftdata_buyerdetails_middlename}}&nbsp;{{draftdata_buyerdetails_lastname}}&nbsp;{{draftdata_buyerdetails_suffix}}</b>
+                                        </div>
+                                        <div>Buyer's Cellphone:
+                                            <b>{{draftdata_buyerdetails_cellphone}}</b>
+                                        </div>
+                                        <div>Buyer's Email:
+                                            <b>{{draftdata_buyerdetails_email}}</b>
+                                        </div>
                                         <hr style="margin-top:10px; margin-bottom:10px">
-                                        <div>Agent's Fullname: <b>{{draftdata_agentdetails_firstname}}&nbsp;{{draftdata_agentdetails_middlename}}&nbsp;{{draftdata_agentdetails_lastname}}&nbsp;{{draftdata_agentdetails_suffix}}</b></div>
-                                        <div>Agent's Cellphone: <b>{{draftdata_agentdetails_cellphone}}</b></div>
-                                        <div>Agent's Email: <b>{{draftdata_agentdetails_email}}</b></div>
+                                        <div>Agent's Fullname:
+                                            <b>{{draftdata_agentdetails_firstname}}&nbsp;{{draftdata_agentdetails_middlename}}&nbsp;{{draftdata_agentdetails_lastname}}&nbsp;{{draftdata_agentdetails_suffix}}</b>
+                                        </div>
+                                        <div>Agent's Cellphone:
+                                            <b>{{draftdata_agentdetails_cellphone}}</b>
+                                        </div>
+                                        <div>Agent's Email:
+                                            <b>{{draftdata_agentdetails_email}}</b>
+                                        </div>
                                     </div>
                                 </paper-card>
                             </div>
@@ -964,7 +990,8 @@
                     this.draftdata_agentdetails_lastname = e[0].lastname;
                     this.draftdata_agentdetails_suffix = e[0].suffix;
                     this.draftdata_agentdetails_email = e[0].email;
-                    console.log(e[0].uid);
+                    this.myname = this.draftdata_agentdetails_firstname + " " + this.draftdata_agentdetails_middlename + " " + this.draftdata_agentdetails_lastname;
+                    // console.log(this.myname);
                 }
                 // else {
                 //     this.agentKey = '';
@@ -1307,6 +1334,7 @@
 
 
             ready() {
+
                 this.selectedPage = 0;
 
                 this.draftdata_buyerdetails_cellphone = '';
@@ -1421,9 +1449,24 @@
                                     reference: this.applicationKey,
                                     approved: false
                                 };
+
+                                var notificationData = {
+                                    click: '/applications/view/' + this.transactionKey,
+                                    message: 'request a new application.',
+                                    photo: firebase.auth().currentUser.photoURL,
+                                    read: false,
+                                    recipient_role: 'Staff',
+                                    recipient_role_code: '',
+                                    sender: this.myname,
+                                    timestamp: { ".sv": "timestamp" },
+                                    title: 'New application request',
+                                };
+
+                                var notifPostKey = firebase.database().ref().child('notifications').push().key;
                                 //save to /applications/{id}
                                 firebaseUpdate["/briefcase/" + this.accountKey + "/" + this.transactionKey] = draftdata;
                                 firebaseUpdate["/applicationsNew/" + this.transactionKey] = draftdata;
+                                firebaseUpdate['/notifications/' + notifPostKey] = notificationData;
 
                                 var draftBuyer = {
                                     firstname: this.draftdata_buyerdetails_firstname,

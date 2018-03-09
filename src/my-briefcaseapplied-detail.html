@@ -142,6 +142,11 @@
                 --datetime-background: #071533;
                 --datetime-color: #eeeeee;
             }
+            .danger {
+                background-color: #ffdddd;
+                border-left: 6px solid #f44336;
+                color: red;
+            }
         </style>
 
         <!-- <app-route route="{{route}}" pattern="/:key" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
@@ -201,6 +206,11 @@
                     </app-toolbar>
 
                 </app-header>
+
+                <div hidden$="{{newdata.isapproved}}" style="font-size:12px; padding:14px;" class="danger">
+                    <iron-icon icon="my-icons:info-outline"></iron-icon>
+                    {{newdata.status}}
+                </div>
 
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
