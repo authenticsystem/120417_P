@@ -1,0 +1,234 @@
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="../bower_components/photo-gallery/photo-gallery.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<!-- <link rel="import" href="../bower_components/app-route/app-route.html"> -->
+
+
+<dom-module id="my-galleries">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+
+        padding: 10px;
+      }
+
+      app-header {
+        color: rgb(255, 255, 255);
+        background-color: #388E3C;
+      }
+
+      .menu {
+        margin-right: 16px;
+      }
+
+      paper-fab {
+
+        position: fixed;
+        right: 32px;
+        bottom: 32px;
+      }
+
+      .myViewMap {
+        width: 250px;
+        height: 64px;
+        background-color: #880E4F;
+        color: white;
+
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+
+        max-width: 100%;
+        max-height: 100%;
+        overflow: auto;
+      }
+    </style>
+
+    <!-- <app-route route="[[route]]" pattern="/:selectedMenu" data="{{routeData}}"></app-route> -->
+
+    <app-header-layout fullbleed has-scrolling-region>
+      <app-header reveals effects="waterfall" slot="header">
+        <!-- fixed slot="header" -->
+        <app-toolbar primary>
+          <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+          Galleries
+
+          <paper-menu-button vertical-align="top" horizontal-align="left" style="float:right">
+            <paper-icon-button style="float:right" icon="my-icons:more-vert" slot="dropdown-trigger"></paper-icon-button>
+            <paper-listbox slot="dropdown-content">
+              <paper-item on-tap="_menuSelected" data-args="Walkthrough">
+                <iron-icon icon="my-icons:chevron-right"></iron-icon>Walk-through Video</paper-item>
+              <paper-item on-tap="_menuSelected" data-args="Marketing">
+                <iron-icon icon="my-icons:chevron-right"></iron-icon>Marketing Images</paper-item>
+              <paper-item on-tap="_menuSelected" data-args="Photo">
+                <iron-icon icon="my-icons:chevron-right"></iron-icon>Photo Gallery</paper-item>
+            </paper-listbox>
+          </paper-menu-button>
+
+        </app-toolbar>
+      </app-header>
+
+
+      <template is="dom-if" if="{{_checkGalleryMenu(selectedMenu,'Walkthrough')}}">
+        <a href="https://www.youtube.com/watch?v=AfXNuldEDqU">
+          <paper-button class="myViewMap" id="myViewMap" raised on-click="_showMap">
+            <iron-icon icon="my-icons:movie" style="padding-right: 8px;"></iron-icon>
+            <span>Walk-through Video</span>
+          </paper-button>
+
+        </a>
+      </template>
+      <template is="dom-if" if="{{_checkGalleryMenu(selectedMenu,'Marketing')}}">
+        <photo-gallery height='400'>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb1.jpg?alt=media&token=f8251631-105d-4ddd-9b61-8b93e6c7f4e1'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb2.jpg?alt=media&token=d608b8f7-4ee9-41eb-bc2b-d2cd24783162'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb3-1.jpg?alt=media&token=6e0bb05e-17be-4c24-8a18-203c2bcdbc44'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb3-2.jpg?alt=media&token=71729ca2-8add-4e43-9c9a-9e8b35bf682b'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb3-3.jpg?alt=media&token=a54799a8-13d4-4e7d-8fd5-f0e3a35c089a'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb3-4.jpg?alt=media&token=21742446-f1b6-4e0d-a0cd-b077c87b914b'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb4.jpg?alt=media&token=ca04b6cb-53f2-4619-8726-a6e78aa0562f'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb5.jpg?alt=media&token=f65225f4-1261-48e6-825f-ebacfa6ed344'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb6.jpg?alt=media&token=2d5aa1aa-3c75-4a0f-931e-57066eccd330'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb7.jpg?alt=media&token=0c95e51c-3d68-45b4-acea-bc42dcab25eb'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb8.jpg?alt=media&token=69cfee6b-4778-4723-b360-7f26f638f1be'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb9.jpg?alt=media&token=ad683058-e471-4181-ae94-6b49ca1a40f9'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb10.jpg?alt=media&token=17ca47ec-72cf-4391-8da9-cacb2e32686b'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2Fb11.jpg?alt=media&token=1a08b3c7-dc5c-4cdd-bf2a-2d376f9fd757'></div>
+        </photo-gallery>
+
+      </template>
+      <template is="dom-if" if="{{_checkGalleryMenu(selectedMenu,'Photo')}}">
+        <photo-gallery height='400'>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F1.jpg?alt=media&token=2a45c8bd-26ae-4fec-bb74-c43137b4ec12'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F2.jpg?alt=media&token=1d13df7c-9c0f-4763-9fb8-7c533a62a2fd'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F3.jpg?alt=media&token=9ed8bf32-4f3f-44c5-8d17-346a3bd0f820'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F4.jpg?alt=media&token=de39652d-4564-4dd1-9253-21f8e90ef72b'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F5.jpg?alt=media&token=811cf486-699b-4460-b42e-0ad2c0382108'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F6.jpg?alt=media&token=37dd698b-6455-4bee-83cf-a2a7bda7416c'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F7.jpg?alt=media&token=86507604-ed98-41c4-822d-ea372b24cc53'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F8.jpg?alt=media&token=0d204ee2-3609-4c9e-ad60-ec11a8b63476'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F9.jpg?alt=media&token=7b64828e-af24-4228-8b25-a95646a96bef'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F10.jpg?alt=media&token=1e696f79-8dc7-4137-9e14-29259ff23c02'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F11.jpg?alt=media&token=f149fe9a-d435-47ef-9bc3-66f214554fe0'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F12.jpg?alt=media&token=15443608-b9ac-48d3-834c-fa2b4b5151cd'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F13.jpg?alt=media&token=07067ab1-0448-4184-a053-0def1ddf4c39'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F14.jpg?alt=media&token=63895728-96b4-4112-ac7a-219344bd2b6e'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F15.jpg?alt=media&token=77b202b6-b3cb-4061-a391-b55c501ce71e'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F16.jpg?alt=media&token=777a3508-286f-461b-b745-f90ebd3f3afb'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F17.jpg?alt=media&token=da32e412-14e6-4b14-bade-ef8f9f867251'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F18.jpg?alt=media&token=927f4bf9-5782-4b79-9019-78556ef5d93b'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F19.jpg?alt=media&token=6896cd0e-908b-4192-8e7d-05bfbdf2dd13'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F20.jpg?alt=media&token=97fae405-87fb-4dbc-916c-d27da0d16449'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F21.jpg?alt=media&token=3e264a21-09f9-4d82-9e12-5524b5c79f10'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F22.jpg?alt=media&token=50d304b7-c74f-4f2f-8389-5f87de97f42f'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F23.jpg?alt=media&token=a89c19bf-36fd-447b-82b9-a15c6a10167c'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F24.jpg?alt=media&token=fa057797-5a5d-4d0c-964f-42ffdd7dca75'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F24.jpg?alt=media&token=fa057797-5a5d-4d0c-964f-42ffdd7dca75'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F26.jpg?alt=media&token=0cc53681-2abf-49ed-aa82-f34d6fd4ba0a'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F27.jpg?alt=media&token=4664b6e7-45fc-4eb1-8e56-ea09a7ee6179'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F28.jpg?alt=media&token=64b86f9c-a737-4ba4-ab61-dbf69c02f898'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F29.jpg?alt=media&token=c4660f16-899c-45d0-ab68-b1574b8c2345'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F30.jpg?alt=media&token=7e396ae8-fc37-4f54-9552-53b649779a3f'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F31.jpg?alt=media&token=435bf524-e683-4d0f-a148-e86bff897d9c'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F32.jpg?alt=media&token=0bd539ab-8a36-4e8d-bef5-6e97b82c14d6'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F33.jpg?alt=media&token=ca5db1eb-003a-44c7-906d-8887ae5235e3'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F34.jpg?alt=media&token=2303c66f-966d-46c2-b5fa-30c71c1061b1'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F35.jpg?alt=media&token=05211b7b-cea5-4186-be05-0e3d613ff3d7'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F36.jpg?alt=media&token=a1f2379b-9eca-4e95-be00-77170f587a14'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F37.jpg?alt=media&token=1226b221-20a3-46f7-aa9c-a37edabc9823'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F38.jpg?alt=media&token=121a44eb-b2ca-4508-8318-3c847633a8e6'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F39.jpg?alt=media&token=90729d09-1c83-4f4d-a70c-f483ee87854d'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F40.jpg?alt=media&token=95a7736f-8d99-47c0-889f-0bb6a0f3df69'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F41.jpg?alt=media&token=b462a7bb-c8a1-494e-b90a-9f056a235bd1'></div>
+          <div class='item' data-url='https://firebasestorage.googleapis.com/v0/b/hpmg-56df3.appspot.com/o/images%2F42.jpg?alt=media&token=9d0bec6e-5b56-4a16-ae66-79cd45bb8c04'></div>
+        </photo-gallery>
+      </template>
+
+
+    </app-header-layout>
+
+
+  </template>
+
+  <script>
+    class MyGalleries extends Polymer.Element {
+      static get is() { return 'my-galleries'; }
+
+      static get properties() {
+        return {
+          narrow: {
+            type: Boolean,
+            notify: true
+          },
+
+          selectedMenu: {
+            type: String,
+            value: 'Walkthrough',
+            notify: true
+          }
+
+        };
+      }
+
+      toggleDrawer() {
+        this.dispatchEvent(new CustomEvent('toggleDrawer', {
+          bubbles: true, composed: true, detail: {
+            narrow: this.$.narrow
+          }
+        }));
+        this.$.narrow = !this.$.narrow;
+      }
+
+      // toggleDrawer2(e) {
+      //   this.dispatchEvent(new CustomEvent('toggleDrawer2', {
+      //     bubbles: true, composed: true, detail: {
+      //       narrow: e
+      //     }
+      //   }));
+      //   this.$.narrow = e;
+
+      // }
+
+      _menuSelected(e) {
+        var data_args = Polymer.dom(e).rootTarget.getAttribute("data-args");
+        this.selectedMenu = data_args;
+
+      }
+
+
+      _checkGalleryMenu(selectedMenu, w) {
+        return selectedMenu === w;
+      }
+
+      ready() {
+        super.ready();
+        // this.addEventListener('fullscreenchange', (e) => this.toggleDrawer2(document.fullscreenElement));
+        // this.addEventListener('msfullscreenchange', (e) => this.toggleDrawer2(document.msFullscreenElement));
+        // this.addEventListener('mozfullscreenchange', (e) => this.toggleDrawer2(document.mozFullScreen));
+        // this.addEventListener('webkitfullscreenchange', (e) => this.toggleDrawer2(document.webkitIsFullScreen));
+        // this.addEventListener('photogallery_mouseevent', (e) => this.toggleDrawer2(e.detail.open));
+
+      }
+
+
+    }
+
+    window.customElements.define(MyGalleries.is, MyGalleries);
+
+
+  </script>
+</dom-module>

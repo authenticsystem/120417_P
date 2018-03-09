@@ -340,8 +340,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </paper-alert-dialog> -->
 
                 <paper-dialog id="modal">
-                  <p>
-                    <iron-icon icon="my-icons:info-outline"></iron-icon> Your request can't be process this lot is already on hold.</p>
+                  <p style="padding: 16px; margin:0px; color: red; background-color: #ffdddd; border-left: 6px solid #f44336;">
+                    <iron-icon icon="my-icons:info-outline"></iron-icon> 
+                    Your request can't be process this lot was already on hold.
+                  </p>
                   <div class="buttons">
                     <paper-button dialog-confirm autofocus>OK</paper-button>
                   </div>
@@ -823,9 +825,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var notificationData = {
             sender: this.fname + ' ' + this.mname + ' ' + this.lname,
             recipient_role: 'Staff',
-            recipient_code:'',
-            title:'Application request',
-            message:'Request to hold the block ' + data.lotdetails.block + ' lot ' + data.lotdetails.lot + ' level ' + data.lotdetails.level,
+            recipient_code: '',
+            title: 'Application request',
+            message: 'Request to hold the block ' + data.lotdetails.block + ' lot ' + data.lotdetails.lot + ' level ' + data.lotdetails.level,
             timestamp: { ".sv": "timestamp" },
             read: false
           };
@@ -847,18 +849,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var data = JSON.parse(transkey);
         var stat;
         this.datas = data;
-        firebase.database().ref('lots/' + data.lot).on('value', function (data) {
+        var successOpen =  Polymer.dom(this.root).querySelector("#sendBriefcasedraft");
+        var failedOpen =  Polymer.dom(this.root).querySelector("#modal");
+        firebase.database().ref('lots/' + data.lot).once('value', function (data) {
           if (data.exists()) {
             stat = data.val().status;
+            // console.log(stat);
+            if (stat == 'available') {
+              successOpen.open();
+            } else {
+              failedOpen.open();
+            }
           }
         });
-        // console.log(stat);
-        if(stat == 'available'){
-          this.$.sendBriefcasedraft.open();
-        }else{
-          this.$.modal.open();
-        }
-       
+
+
       },
       // _deleteBriefcaseDraft() {
       //   firebase.database().ref('briefcasedraft').child(this.accountkey).child(this.transkey).remove();

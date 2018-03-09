@@ -1866,6 +1866,9 @@
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: green;");
                             Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:done");
                         }
+                        if (parseInt(this.selectedPage) === 3) {
+                            this.favlefthide = true;
+                        }
                     }
 
 
