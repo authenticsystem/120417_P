@@ -646,15 +646,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <span id="firstyear">
                         <paper-input value={{startMonthYear}} type="number" style="width:50px; margin-left:5px; margin-right:5px" label="Year">
                         </paper-input>
-
-                        <!-- <paper-dropdown-menu style="cursor:pointer" label="Start Year">
-                            <paper-listbox slot="dropdown-content" selected="{{startMonthYear}}" attr-for-selected="value">
-                              <paper-item value="2015">2015</paper-item>
-                              <paper-item value="2016">2016</paper-item>
-                              <paper-item value="2017">2017</paper-item>
-                              <paper-item value="2018">2018</paper-item>
-                            </paper-listbox>
-                          </paper-dropdown-menu> -->
                       </span>
                     </span>
 
@@ -681,14 +672,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <span id="lastyear">
                         <paper-input value={{endMonthYear}} type="number" style="margin-left:5px; width:50px" label="Year">
                         </paper-input>
-                        <!-- <paper-dropdown-menu style="cursor:pointer" label="End Year">
-                            <paper-listbox slot="dropdown-content" selected="{{endMonthYear}}" attr-for-selected="value">
-                              <paper-item value="2015">2015</paper-item>
-                              <paper-item value="2016">2016</paper-item>
-                              <paper-item value="2017">2017</paper-item>
-                              <paper-item value="2018">2018</paper-item>
-                            </paper-listbox>
-                          </paper-dropdown-menu> -->
                       </span>
                     </span>
                   </span>
@@ -700,29 +683,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <paper-input label="Start Year" type="number" value="{{startYear}}" id="day" style="width:100px">
                         <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
                       </paper-input>
-                      <!-- <iron-icon style="margin-top:30px; margin-right:10px;color:dodgerblue" icon="my-icons:event" id="date"></iron-icon> -->
-                      <!-- <paper-dropdown-menu style="cursor:pointer" label="Start Year">
-                          <paper-listbox slot="dropdown-content" selected="{{startYear}}">
-                            <paper-item>2015</paper-item>
-                            <paper-item>2016</paper-item>
-                            <paper-item>2017</paper-item>
-                            <paper-item>2018</paper-item>
-                          </paper-listbox>
-                        </paper-dropdown-menu> -->
                     </div>
                     <div id="flex">
                       <paper-input label="End Year" type="number" value="{{endYear}}" id="day" style="margin-left:10px; width:100px">
                         <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
                       </paper-input>
-                      <!-- <iron-icon style="margin-top:30px; margin-right:20px;color:dimgray;" icon="my-icons:event" id="date"></iron-icon> -->
-                      <!-- <paper-dropdown-menu style="cursor:pointer" label="End Year">
-                          <paper-listbox slot="dropdown-content" selected="{{endYear}}">
-                            <paper-item>2015</paper-item>
-                            <paper-item>2016</paper-item>
-                            <paper-item>2017</paper-item>
-                            <paper-item>2018</paper-item>
-                          </paper-listbox>
-                        </paper-dropdown-menu> -->
                     </div>
                   </div>
                 </div>
@@ -766,11 +731,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <paper-toggle-button checked="{{showSummaryTable}}" on-tap="_showSummary" style="font-size:12px">Data Table</paper-toggle-button>
               </span>
 
-              <!-- <span style="float:right">
-                  <a hidden$="{{hideSummary}}" on-tap="_showSummary" style="font-size:12px; text-decoration:none; cursor:pointer">Summary</a>
-                  <a hidden$="{{showSummary}}" on-tap="_hideSummary" style="font-size:12px; text-decoration:none; cursor:pointer">Graph</a>
-                </span> -->
-
               <div class="chart-container" hidden$="{{overallchart}}">
                 <canvas id="overAllChart"></canvas>
               </div>
@@ -782,8 +742,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <tr>
                       <th style="text-align: left;">Type</th>
                       <th style="color: red;">Sold</th>
-                      <th style="color: rgb(145, 145, 0);">Reserved</th>
-                      <th style="color: orange;">Hold</th>
+                      <th style="color:  orange;">Reserved</th>
+                      <th style="color: rgb(145, 145, 0);">Hold</th>
                       <th style="color: green;">Available</th>
                       <th style="color: gray;">Not yet available</th>
                       <th>Total</th>

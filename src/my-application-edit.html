@@ -359,31 +359,53 @@
                     <neon-animatable>
                         <div class="docu">
                             <div class="docu-header">4. Finalize</div>
-
+                            <div>Please review the following details:</div>
+                            <br>
                             <div class="details">
-                                <div>Please review the following details:</div>
-                                <div>Block: {{block}}</div>
-                                <div>Lot: {{lot}}</div>
-                                <div>Level: {{level}}</div>
-                                <div>Area: {{fullLotData.area}}</div>
-                                <div>Designation: {{fullLotData.maprenderdetails.designation_name}}</div>
-                                <div>Type: {{fullLotData.maprenderdetails.type_name}}</div>
-                                <div>Transaction: {{draftdata_type}}</div>
-                                <div>Start: {{startDateTimeValue}}</div>
-                                <div>Expires: {{expiryDate}}</div>
-                                <div>Buyer's First Name: {{draftdata_buyerdetails_firstname}}</div>
-                                <div>Buyer's Middle Name: {{draftdata_buyerdetails_middlename}}</div>
-                                <div>Buyer's Last Name: {{draftdata_buyerdetails_lastname}}</div>
-                                <div>Buyer's Suffix: {{draftdata_buyerdetails_suffix}}</div>
-                                <div>Buyer's Cellphone: {{draftdata_buyerdetails_cellphone}}</div>
-                                <div>Buyer's Email: {{draftdata_buyerdetails_email}}</div>
-                                <div>Agent's First Name: {{draftdata_agentdetails_firstname}}</div>
-                                <div>Agent's Middle Name: {{draftdata_agentdetails_middlename}}</div>
-                                <div>Agent's Last Name: {{draftdata_agentdetails_lastname}}</div>
-                                <div>Agent's Suffix: {{draftdata_agentdetails_suffix}}</div>
-                                <div>Agent's Cellphone: {{draftdata_agentdetails_cellphone}}</div>
-                                <div>Agent's Email: {{draftdata_agentdetails_email}}</div>
-
+                                <paper-card style="width:100%">
+                                    <div class="card-content">
+                                        <div>Block:
+                                            <b>{{block}}</b> - Lot:
+                                            <b>{{lot}}</b> - Level:
+                                            <b>{{level}}</b>
+                                        </div>
+                                        <div>Type:
+                                            <b>{{fullLotData.maprenderdetails.type_name}}</b> -- Area:
+                                            <b>{{fullLotData.area}}</b> -- Designation:
+                                            <b>{{fullLotData.maprenderdetails.designation_name}}</b>
+                                        </div>
+                                        <br>
+                                        <div>Transaction:
+                                            <b>{{draftdata_type}}</b>
+                                        </div>
+                                        <div>Start:
+                                            <b>{{startDateTimeValue}}</b>
+                                        </div>
+                                        <div>Expires:
+                                            <b>{{expiryDate}}</b>
+                                        </div>
+                                        <hr style="margin-top:10px; margin-bottom:10px">
+                                        <div>Buyer's Fullname:
+                                            <b>{{draftdata_buyerdetails_firstname}}&nbsp;{{draftdata_buyerdetails_middlename}}&nbsp;{{draftdata_buyerdetails_lastname}}&nbsp;{{draftdata_buyerdetails_suffix}}</b>
+                                        </div>
+                                        <div>Buyer's Cellphone:
+                                            <b>{{draftdata_buyerdetails_cellphone}}</b>
+                                        </div>
+                                        <div>Buyer's Email:
+                                            <b>{{draftdata_buyerdetails_email}}</b>
+                                        </div>
+                                        <hr style="margin-top:10px; margin-bottom:10px">
+                                        <di v>Agent's Fullname:
+                                            <b>{{draftdata_agentdetails_firstname}}&nbsp;{{draftdata_agentdetails_middlename}}&nbsp;{{draftdata_agentdetails_lastname}}&nbsp;{{draftdata_agentdetails_suffix}}</b>
+                                        </div>
+                                        <div>Agent's Cellphone:
+                                            <b>{{draftdata_agentdetails_cellphone}}</b>
+                                        </div>
+                                        <div>Agent's Email:
+                                            <b>{{draftdata_agentdetails_email}}</b>
+                                        </div>
+                                    </div>
+                                </paper-card>
                             </div>
                         </div>
                     </neon-animatable>
