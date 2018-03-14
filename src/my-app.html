@@ -44,6 +44,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-register-signin.html">
 <link rel="lazy-import" href="my-dashboard.html">
 <link rel="lazy-import" href="my-briefcase.html">
+<link rel="lazy-import" href="my-announcement.html">
 <link rel="lazy-import" href="my-applications.html">
 <link rel="lazy-import" href="my-briefcase-draft.html">
 <link rel="lazy-import" href="my-corporate-account.html">
@@ -62,7 +63,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
     <style include="shared-styles">
       :host {
-        --app-primary-color: #FFFFFF;
+        /* --app-primary-color: #FFFFFF; */
         --app-secondary-color: #000000;
 
         display: block;
@@ -211,6 +212,64 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         align-items: center;
         justify-content: center;
       }
+
+      .avatar-container {
+        position: relative;
+        border: 2px solid #00AA8D;
+        border-radius: 50%;
+        height: 90px;
+        padding: 2px;
+        width: 90px;
+        margin: 20px auto;
+      }
+
+      .avatar-container .image {
+        /* background-image: url('//app-layout-assets.appspot.com/assets/pesto/avatar.jpg'); */
+        background-size: contain;
+        border-radius: 50%;
+        height: 100%;
+        width: 100%;
+      }
+
+      .contact-info {
+        margin: 0 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #CCC;
+        text-align: center;
+      }
+
+      .contact-info .name {
+        font-weight: bold;
+      }
+
+      .contact-info .email {
+        color: #999;
+      }
+
+      .upload-btn-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        /* text-align: center; */
+      }
+
+      .btn {
+        border: 2px solid gray;
+        color: gray;
+        background-color: white;
+        padding: 5px 10px;
+        border-radius: 8px;
+        font-size: 15px;
+        font-weight: bold;
+      }
+
+      .upload-btn-wrapper input[type=file] {
+        font-size: 15px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+      }
     </style>
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
@@ -285,7 +344,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
 
                 <div style="height: 100%; overflow: auto;">
-                  <app-header fixed>
+                  <!-- <app-header fixed>
                     <app-toolbar>
                       <div hidden$="{{!user.photoURL}}">
                         <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
@@ -300,6 +359,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                       </div>
                     </app-toolbar>
+                  </app-header> -->
+                  <app-header fixed slot="header">
+                    <div class="avatar-container">
+                      <div class="image">
+                        <img hidden$="{{user.photoURL}}" class="image" src="../images/user.png" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></img>
+                        <img hidden$="{{!user.photoURL}}" class="image" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></img>
+                      </div>
+                    </div>
+                    <div class="contact-info">
+                      <div class="name">[[user.email]]</div>
+                      <div class="email">{{_roleAcc(myaccount)}}</div>
+                    </div>
                   </app-header>
 
                   <iron-selector selected="[[page]]" attr-for-selected="name" class="drawer-list" role="navigation">
@@ -316,11 +387,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       </paper-icon-item>
                     </a>
                     <a name="galleries" href="[[rootPath]]galleries">
-                        <paper-icon-item toggles="true" class="menuSelected">
-                          <iron-icon icon="my-icons:perm-media" slot="item-icon"></iron-icon>
-                          <span>Galleries</span>
-                        </paper-icon-item>
-                      </a>                    
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:perm-media" slot="item-icon"></iron-icon>
+                        <span>Galleries</span>
+                      </paper-icon-item>
+                    </a>
+                    <a style$="{{access(annAccess)}}" name="announcement" href="[[rootPath]]announcement">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:announcement" slot="item-icon"></iron-icon>
+                        <span>Announcements</span>
+                      </paper-icon-item>
+                    </a>
                     <a style$="{{access(appAccess)}}" name="applications" href="[[rootPath]]applications">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
@@ -374,14 +451,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>Sign-out</span>
                       </paper-icon-item>
                     </a>
+                    <p style="font-size:12px; margin-left: 16px; color: gray;">v0.1.0 Beta</p>
                   </iron-selector>
+
                 </div>
               </app-drawer>
 
               <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-                <my-dashboard name="dashboard" access="{{dashAccess}}" account="{{myaccount}}" ></my-dashboard>
+                <my-dashboard name="dashboard" access="{{dashAccess}}" account="{{myaccount}}"></my-dashboard>
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
                 <my-galleries name="galleries"></my-galleries>
+                <my-announcement name="announcement" access="{{annAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-announcement>
                 <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-applications>
                 <my-briefcase name="briefcase" access="{{briefcaseAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-briefcase>
                 <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
@@ -391,8 +471,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             </app-drawer-layout>
 
-
-
           </template>
 
         </template>
@@ -400,13 +478,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
 
       <!-- alert dialog photoUrl-->
-      <paper-dialog id="photoUrl" confirm-button="Done">
+      <paper-dialog id="photoUrl" modal confirm-button="Done">
         <center>
           <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img>
           <!-- <img hidden$="{{user.photoURL}}" src="../images/user.png" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img> -->
           <iron-icon hidden$="{{user.photoURL}}" icon="my-icons:account-circle" style=" height:180px;width:180px; max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></iron-icon>
         </center>
-        <input type="file" id="fileButton" on-tap="_upload" accept="image/*"></input>
+        <!-- <input type="file" id="fileButton" on-tap="_upload" accept="image/*"></input> -->
+        <center>
+          <div class="upload-btn-wrapper">
+            <button class="btn">Change profile picture</button>
+            <input type="file" name="myfile" id="fileButton" on-tap="_upload" accept="image/*" />
+          </div>
+        </center>
         <progress value="0" max="100" id="uploader" style=" -webkit-appearance: none; width:100%; height:5px;">0%</progress>
         <div class="buttons">
           <div class="action">
@@ -512,6 +596,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean,
             value: false
           },
+          annAccess: {
+            type: Boolean,
+            value: false
+          },
           appAccess: {
             type: Boolean,
             value: false
@@ -551,6 +639,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             if (this.myaccount[0].role) {
               if (this.myaccount[0].access.dashboard == true) {
                 this.dashAccess = true;
+              }
+              if (this.myaccount[0].access.announcement == true) {
+                this.annAccess = true;
               }
               if (this.myaccount[0].access.applications == true) {
                 this.appAccess = true;

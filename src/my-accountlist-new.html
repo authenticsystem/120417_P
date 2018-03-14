@@ -157,7 +157,8 @@
                         <paper-checkbox id="dash">Dashboard</paper-checkbox>
                         <paper-checkbox id="app">Applications</paper-checkbox>
                         <paper-checkbox id="acc">Accounts</paper-checkbox>
-                        <paper-checkbox id="case">Briefcase</paper-checkbox>   
+                        <paper-checkbox id="case">Briefcase</paper-checkbox>
+                        <paper-checkbox id="ann">Announcement</paper-checkbox>
                         <!-- <paper-checkbox noink value="{{checked}}" >Allow Access</paper-checkbox> -->
                     </div>
                     <br>
@@ -286,10 +287,12 @@
                 var box2 = Polymer.dom(this.root).querySelector("#app");
                 var box3 = Polymer.dom(this.root).querySelector("#acc");
                 var box4 = Polymer.dom(this.root).querySelector("#case");
+                var box5 = Polymer.dom(this.root).querySelector("#ann");
                 var dashboard = false;
                 var applications = false;
                 var accounts = false;
                 var briefcase = false;
+                var announcement = false;
 
                 if (!this.firstname || !this.middlename || !this.lastname) {
                     this.msg = 'Please fill-up the required field.';
@@ -307,6 +310,9 @@
                     if (box4.checked == true) {
                         briefcase = true;
                     }
+                    if (box5.checked == true) {
+                        announcement = true;
+                    }
                     if (this.cellphone.length != 10) {
                         this.msg = 'Error! Invalid cellphone number.';
                     }
@@ -323,7 +329,8 @@
                                 accountlist: accounts,
                                 applications: applications,
                                 dashboard: dashboard,
-                                briefcase: briefcase
+                                briefcase: briefcase,
+                                announcement: announcement
                             },
                             active: true,
                             name: {
