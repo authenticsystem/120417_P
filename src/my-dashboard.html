@@ -26,6 +26,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/neon-animation/web-animations.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
@@ -38,10 +40,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
+<link rel="import" href="../bower_components/paper-badge/paper-badge.html">
 
 <link rel="import" href="time-element.html">
 
 <script src="../bower_components/chart.js/dist/Chart.js"></script>
+<script src="../bower_components/chart.js/dist/Chart.bundle.js"></script>
 <script src="../bower_components/chartjs-plugin-datalabels/dist/Chartjs-plugin-datalabels.js"></script>
 <script type="text/javascript" src="../bower_components/Chart.PieceLabel.js/src/Chart.PieceLabel.js"></script>
 
@@ -50,7 +54,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <style include="shared-styles">
       :host {
         display: block;
-
         padding: 10px;
       }
 
@@ -103,7 +106,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-size: 13px;
       }
 
-      paper-button:focus {
+      /* paper-button:focus {
         color: white;
         background-color: green;
       }
@@ -111,7 +114,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       paper-button[active] {
         color: white;
         background-color: green;
-      }
+      } */
 
       @media (max-width: 768px) {
         paper-button-group {
@@ -167,15 +170,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         #totalTxt {
           display: inline-block;
           transform: scale(1, 2);
-          /* W3C */
           -webkit-transform: scale(1, 2);
-          /* Safari and Chrome */
           -moz-transform: scale(1, 2);
-          /* Firefox */
           -ms-transform: scale(1, 2);
-          /* IE 9 */
           -o-transform: scale(1, 2);
-          /* Opera */
           margin: 5px;
         }
 
@@ -185,7 +183,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           height: auto !important;
           margin: auto;
         }
-
         #customGroup {
           --paper-buttons-group-selected: {
             background-color: green !important;
@@ -194,6 +191,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           paper-button {
             width: 50px;
           }
+        }
+
+        paper-badge {
+          --paper-badge-margin-left: 0px;
+          --paper-badge-margin-bottom: 0px;
+        }
+
+        .notifyIcon {
+          margin-right: 10px;
         }
       }
 
@@ -257,15 +263,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         #totalTxt {
           display: inline-block;
           transform: scale(2, 4);
-          /* W3C */
           -webkit-transform: scale(2, 4);
-          /* Safari and Chrome */
           -moz-transform: scale(2, 4);
-          /* Firefox */
           -ms-transform: scale(2, 4);
-          /* IE 9 */
           -o-transform: scale(2, 4);
-          /* Opera */
           margin: 18px;
         }
         canvas {
@@ -274,7 +275,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           height: auto !important;
           margin: auto;
         }
-
         #customGroup {
           --paper-buttons-group-selected: {
             background-color: green !important;
@@ -284,13 +284,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             width: 80px;
           }
         }
-      }
 
-      paper-button.blue {
-        --paper-button-checked-color: var(--paper-light-blue-500);
-        --paper-button-checked-ink-color: var(--paper-light-blue-500);
-        --paper-button-unchecked-color: var(--paper-light-blue-900);
-        --paper-button-unchecked-ink-color: var(--paper-light-blue-900);
+        paper-badge {
+          --paper-badge-margin-left: 0px;
+          --paper-badge-margin-bottom: -20px;
+        }
+        .notifySpan {
+          margin-right: 15px;
+        }
       }
 
       paper-dropdown-menu {
@@ -305,54 +306,54 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         border-bottom: .5px solid gray
       }
 
-      iron-list {
-        margin-top: 16px;
-        padding: 16px;
-      }
-
-      .item {
-        @apply --layout-horizontal;
-        padding: 20px;
-        border-radius: 8px;
-        background-color: white;
-        border: 1px solid #ddd;
-        max-width: 800px;
-        margin: 16px auto 0 auto;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        transition: 0.3s;
-      }
-
-      .item:focus {
-        outline: 0;
-        border-color: #333;
+      div[role="listbox"] {
+        border-bottom: 0.5px solid #e5e5e5;
+        padding: 10px;
       }
 
       .avatar {
-        height: 40px;
-        width: 40px;
-        border-radius: 20px;
+        display: inline-block;
         box-sizing: border-box;
-        background-color: #DDD;
-      }
-
-      .pad {
-        padding: 0 16px;
-        @apply --layout-flex;
-        @apply --layout-vertical;
-      }
-
-      .primary {
-        font-size: 16px;
-        font-weight: bold;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        /* background: var(--paper-amber-500); */
       }
 
       .secondary {
-        font-size: 14px;
-        font-style: italic
+        font-size: 12px;
+        color: gray;
       }
 
-      .item:hover {
-        box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+      .typewriter h1 {
+        color: black;
+        font-family: monospace;
+        overflow: hidden;
+        border-right: .15em solid black;
+        white-space: nowrap;
+        margin: 0 auto;
+        letter-spacing: .15em;
+        animation: typing 3.5s steps(30, end),
+        blink-caret .5s step-end infinite;
+      }
+
+      @keyframes typing {
+        from {
+          width: 0
+        }
+        to {
+          width: 100%
+        }
+      }
+
+      @keyframes blink-caret {
+        from,
+        to {
+          border-color: transparent
+        }
+        50% {
+          border-color: black
+        }
       }
     </style>
 
@@ -362,6 +363,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <firebase-query path="/reports/lotstatus/Today" limit-to-first=50 data="{{todayLotStatus}}"></firebase-query>
 
+    <firebase-query path="/reports/activity/{{changeQry}}" data="{{dailyTotalData}}"></firebase-query>
     <firebase-query path="/reports/activity/{{changeQry}}/lotType" data="{{dailyData}}"></firebase-query>
     <firebase-query path="/reports/overAll/{{overAllDate}}/lotType" data="{{overallData}}"></firebase-query>
     <!-- <firebase-query path="/reports/overAll/{{overAllDate}}/overall" data="{{overallTotalData}}"></firebase-query> -->
@@ -372,7 +374,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
           <div main-title hidden$="{{!access}}">Dashboard</div>
           <div main-title hidden$="{{access}}">Opps!</div>
-          <!-- <paper-icon-button icon="my-icons:notifications" style="float:right" on-tap="_openNotification"></paper-icon-button> -->
+          <!-- <paper-icon-button icon="my-icons:notifications"></paper-icon-button> -->
         </app-toolbar>
         <paper-tabs selected="{{selectedTab}}" scrollable>
           <paper-tab>
@@ -390,9 +392,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </span>
           </paper-tab>
           <paper-tab>
-            <iron-icon icon="my-icons:notifications" id="icons"></iron-icon>
-            &nbsp;
-            <span id="tabs">Notifications</span>
+            <iron-icon icon="my-icons:notifications" id="icons" class="notifyIcon"></iron-icon>
+            <div style="display:inline-block">
+              <span id="tabs" class="notifySpan">Notifications</span>
+              <paper-badge label="{{countNotification}}"></paper-badge>
+            </div>
           </paper-tab>
         </paper-tabs>
       </app-header>
@@ -438,11 +442,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <!-- Reports -->
           <div>
+
+            <!-- staff report (hidden$="{{staff}}")-->
+            <div class="card" hidden$="{{agent}}">
+              <div class="typewriter">
+                <h1>Coming soon......</h1>
+              </div>
+            </div>
+            <!-- end of staff report -->
+
+            <!-- owner's report -->
             <div hidden$="{{owner}}">
-              <firebase-query id="query" path="reports/activity/daily/{{dailyDate}}" data="{{dailyTotal}}"></firebase-query>
+              <!-- <firebase-query id="query" path="reports/activity/daily/{{dailyDate}}" data="{{dailyTotal}}"></firebase-query>
               <firebase-query id="query" path="reports/activity/weekly/{{yearWeekDate}}" data="{{weeklyTotal}}"></firebase-query>
               <firebase-query id="query" path="reports/activity/monthly/{{yearDate}}-{{monthDate}}" data="{{monthlyTotal}}"></firebase-query>
-              <firebase-query id="query" path="reports/activity/yearly/{{yearlyDate}}" data="{{yearlyTotal}}"></firebase-query>
+              <firebase-query id="query" path="reports/activity/yearly/{{yearlyDate}}" data="{{yearlyTotal}}"></firebase-query> -->
 
               <div style="padding:26px; margin-top:-30px; margin-bottom:56px;">
                 <div style="float:right;">
@@ -463,109 +477,123 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </div>
 
               <!--daily Activity Report -->
-              <div class="card" hidden$="{{hideActivity}}">
-                <div>
-                  <center>
-                    <paper-buttons-group selected="{{selectedDMY}}" id="customGroup">
-                      <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
-                      <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Weekly</paper-button>
-                      <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Monthly</paper-button>
-                      <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
-                    </paper-buttons-group>
-                  </center>
-                </div>
+              <div>
 
-                <span hidden$="{{hideDailyInputDate}}">
-                  <paper-input prefix="" id="myDate" label="Date" type="date" value="{{dailyAct}}" style="display:inline-block;width:150px;">
-                    <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                  </paper-input>
-                </span>
+                <div class="card" hidden$="{{hideActivity}}">
+                  <div>
+                    <center>
+                      <paper-buttons-group selected="{{selectedDMY}}" id="customGroup">
+                        <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
+                        <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Weekly</paper-button>
+                        <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Monthly</paper-button>
+                        <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
+                      </paper-buttons-group>
+                    </center>
+                  </div>
 
-                <span hidden$="{{hideWeekly}}">
-                  <paper-input value={{wyear}} style="width:70px;display:inline-block" type="number" label="Year">
-                  </paper-input>
-                  <paper-input value={{week}} style="width:70px;display:inline-block" type="number" label="Week">
-                  </paper-input>
-                  <span style="font-size:12px">
-                    {{weekDates}}
+                  <span hidden$="{{hideDailyInputDate}}">
+                    <paper-input prefix="" id="myDate" label="Date" type="date" value="{{dailyAct}}" style="display:inline-block;width:150px;">
+                      <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                    </paper-input>
                   </span>
-                </span>
 
-                <span hidden$="{{hideMonthSelection}}">
-                  <paper-dropdown-menu class="month" label="Month" style="width:100px; display:inline-block">
-                    <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{month}}">
-                      <paper-item value="01">January</paper-item>
-                      <paper-item value="02">February</paper-item>
-                      <paper-item value="03">March</paper-item>
-                      <paper-item value="04">April</paper-item>
-                      <paper-item value="05">May</paper-item>
-                      <paper-item value="06">June</paper-item>
-                      <paper-item value="07">July</paper-item>
-                      <paper-item value="08">August</paper-item>
-                      <paper-item value="09">September</paper-item>
-                      <paper-item value="10">October</paper-item>
-                      <paper-item value="11">November</paper-item>
-                      <paper-item value="12">December</paper-item>
+                  <span hidden$="{{hideWeekly}}">
+                    <paper-input value={{wyear}} style="width:70px;display:inline-block" type="number" label="Year">
+                    </paper-input>
+                    <paper-input value={{week}} style="width:70px;display:inline-block" type="number" label="Week">
+                    </paper-input>
+                    <span style="font-size:12px">
+                      {{weekDates}}
+                    </span>
+                  </span>
+
+                  <span hidden$="{{hideMonthSelection}}">
+                    <paper-dropdown-menu class="month" label="Month" style="width:100px; display:inline-block">
+                      <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{month}}">
+                        <paper-item value="01">January</paper-item>
+                        <paper-item value="02">February</paper-item>
+                        <paper-item value="03">March</paper-item>
+                        <paper-item value="04">April</paper-item>
+                        <paper-item value="05">May</paper-item>
+                        <paper-item value="06">June</paper-item>
+                        <paper-item value="07">July</paper-item>
+                        <paper-item value="08">August</paper-item>
+                        <paper-item value="09">September</paper-item>
+                        <paper-item value="10">October</paper-item>
+                        <paper-item value="11">November</paper-item>
+                        <paper-item value="12">December</paper-item>
+                      </paper-listbox>
+                    </paper-dropdown-menu>
+
+                    <paper-input value={{year}} style="width:70px;display:inline-block" type="number" label="Year"></paper-input>
+                  </span>
+
+                  <span hidden$="{{hideYearly}}">
+                    <paper-input value={{yearly}} type="number" style="width:100px; display:inline-block" label="Year">
+                      <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                    </paper-input>
+                  </span>
+
+                  <span style="float:right; margin-top:10px">
+                    <paper-toggle-button checked="{{showDailyTable}}" on-tap="_showDailyTable" style="font-size:12px;margin-left:10px;">Data Table</paper-toggle-button>
+                  </span>
+
+                  <div style="text-align:center; margin-bottom:20px; margin-top:35px">
+                    <div class="totalSRH_Sold">
+                      <div style="background-color:red; font-size:12px">Sold</div>
+                      <span id="totalTxt" style="color:red;">{{totalSold}}</span>
+                    </div>
+                    <div class="totalSRH_Reserved">
+                      <div style="background-color:orange; font-size:12px">Reserved</div>
+                      <span id="totalTxt" style="color:orange;">{{totalReserved}}</span>
+                    </div>
+                    <div class="totalSRH_Hold">
+                      <div style="background-color:rgb(145, 145, 0); font-size:12px">Hold</div>
+                      <span id="totalTxt" style="color:rgb(145, 145, 0);">{{totalHold}}</span>
+                    </div>
+                  </div>
+
+                  <div class="chart-container" hidden$="{{hideDailyChart}}">
+                    <canvas id="dailyChart"></canvas>
+                  </div>
+
+                  <div style="margin-top: 10px; font-size: 12px; overflow-x:auto;" hidden$="{{hideDailyTableData}}">
+                    <paper-button style="margin:5px;float:right" on-tap="_exportTableToCSV">
+                      <iron-icon icon="my-icons:description"></iron-icon>Export to CSV</paper-button>
+                    <table id="reportTable">
+                      <tr>
+                        <td colspan="4">{{reportTitle}}</td>
+                      </tr>
+                      <tr>
+                        <th style="text-align: left;">Type</th>
+                        <th style="color: red;">Sold</th>
+                        <th style="color: orange;">Reserved</th>
+                        <th style="color: rgb(145, 145, 0);">Hold</th>
+                      </tr>
+                      <template is="dom-repeat" items="{{dailyData}}">
+                        <tr>
+                          <td style="text-align: left;">{{_formatType(item.$key)}}</td>
+                          <td style="color: black;">{{_formatAllNumber(item.sold)}}</td>
+                          <td style="color: black;">{{_formatAllNumber(item.reserved)}}</td>
+                          <td style="color: black;">{{_formatAllNumber(item.hold)}}</td>
+                        </tr>
+                      </template>
+                    </table>
+                  </div>
+
+                </div>
+                <!-- second Card -->
+                <div class="card" hidden$="{{hideActivity}}">
+                  <paper-dropdown-menu class="selectedSHR" label="Filter" style="float:right" vertical-align="top" horizontal-align="right">
+                    <paper-listbox slot="dropdown-content" class="selectedSHR" attr-for-selected="value" selected="{{filterSHR}}">
+                      <paper-item value="sold">Sold</paper-item>
+                      <paper-item value="reserved">Reserved</paper-item>
+                      <paper-item value="hold">Hold</paper-item>
                     </paper-listbox>
                   </paper-dropdown-menu>
-
-                  <paper-input value={{year}} style="width:70px;display:inline-block" type="number" label="Year">
-                    <!-- <paper-icon-button on-tap="lessYear" icon="my-icons:chevron-left" slot="suffix"></paper-icon-button>
-                  <paper-icon-button on-tap="addYear" id="addYear" icon="my-icons:chevron-right" slot="suffix"></paper-icon-button> -->
-                  </paper-input>
-                </span>
-
-                <span hidden$="{{hideYearly}}">
-                  <paper-input value={{yearly}} type="number" style="width:100px; display:inline-block" label="Year">
-                    <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                    <!-- <paper-icon-button on-tap="lessYear" icon="my-icons:chevron-left" slot="suffix"></paper-icon-button>
-                <paper-icon-button on-tap="addYearly" id="addYear" icon="my-icons:chevron-right" slot="suffix"></paper-icon-button> -->
-                  </paper-input>
-                </span>
-
-                <span style="float:right; margin-top:10px">
-                  <paper-toggle-button checked="{{showDailyTable}}" on-tap="_showDailyTable" style="font-size:12px;margin-left:10px;">Data Table</paper-toggle-button>
-                </span>
-                <!-- <a style="font-size:12px; text-decoration:none; cursor:pointer; margin-left:20px" on-tap="_showDailyTable" hidden$="{{hideDailyTable}}">Data Table</a>
-              <a style="font-size:12px; text-decoration:none; cursor:pointer; margin-left:20px" on-tap="_showDailyGraph" hidden$="{{hideDailyGraph}}">Chart</a> -->
-
-
-                <div style="text-align:center; margin-bottom:20px; margin-top:35px">
-                  <div class="totalSRH_Sold">
-                    <div style="background-color:red; font-size:12px">Sold</div>
-                    <span id="totalTxt" style="color:red;">{{totalSold}}</span>
+                  <div class="chart-container">
+                    <canvas id="dailyChart2" height="500"></canvas>
                   </div>
-                  <div class="totalSRH_Reserved">
-                    <div style="background-color:orange; font-size:12px">Reserved</div>
-                    <span id="totalTxt" style="color:orange;">{{totalReserved}}</span>
-                  </div>
-                  <div class="totalSRH_Hold">
-                    <div style="background-color:rgb(145, 145, 0); font-size:12px">Hold</div>
-                    <span id="totalTxt" style="color:rgb(145, 145, 0);">{{totalHold}}</span>
-                  </div>
-                </div>
-
-                <div class="chart-container" hidden$="{{hideDailyChart}}">
-                  <canvas id="dailyChart"></canvas>
-                </div>
-
-                <div style="margin-top: 10px; font-size: 12px; overflow-x:auto;" hidden$="{{hideDailyTableData}}">
-                  <table>
-                    <tr>
-                      <th style="text-align: left;">Type</th>
-                      <th style="color: rgb(145, 145, 0);">Hold</th>
-                      <th style="color: orange;">Reserved</th>
-                      <th style="color: red;">Sold</th>
-                    </tr>
-                    <template is="dom-repeat" items="{{dailyData}}">
-                      <tr>
-                        <td style="text-align: left;">{{_formatType(item.$key)}}</td>
-                        <td style="color: black;">{{_formatAllNumber(item.hold)}}</td>
-                        <td style="color: black;">{{_formatAllNumber(item.reserved)}}</td>
-                        <td style="color: black;">{{_formatAllNumber(item.sold)}}</td>
-                      </tr>
-                    </template>
-                  </table>
                 </div>
 
               </div>
@@ -622,37 +650,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       </span>
                     </span>
                   </span>
+                </div>
 
+                <div style="display:none" id="Monthly">
 
-                  <div style="display:none" id="Monthly">
+                  <span id="flex">
+                    <span id="flex">
+                      <iron-icon style="margin-top:30px; margin-right:5px;" icon="my-icons:event" id="date"></iron-icon>
+                      <paper-dropdown-menu style="cursor:pointer" label="Start Month">
+                        <paper-listbox slot="dropdown-content" selected="{{startRange}}">
+                          <paper-item>January</paper-item>
+                          <paper-item>February</paper-item>
+                          <paper-item>March</paper-item>
+                          <paper-item>April</paper-item>
+                          <paper-item>May</paper-item>
+                          <paper-item>June</paper-item>
+                          <paper-item>July</paper-item>
+                          <paper-item>August</paper-item>
+                          <paper-item>September</paper-item>
+                          <paper-item>October</paper-item>
+                          <paper-item>November</paper-item>
+                          <paper-item>December</paper-item>
+                        </paper-listbox>
+                      </paper-dropdown-menu>
+                    </span>
 
                     <span id="flex">
-                      <span id="flex">
-                        <iron-icon style="margin-top:30px; margin-right:5px;" icon="my-icons:event" id="date"></iron-icon>
-                        <paper-dropdown-menu style="cursor:pointer" label="Start Month">
-                          <paper-listbox slot="dropdown-content" selected="{{startRange}}">
-                            <paper-item>January</paper-item>
-                            <paper-item>February</paper-item>
-                            <paper-item>March</paper-item>
-                            <paper-item>April</paper-item>
-                            <paper-item>May</paper-item>
-                            <paper-item>June</paper-item>
-                            <paper-item>July</paper-item>
-                            <paper-item>August</paper-item>
-                            <paper-item>September</paper-item>
-                            <paper-item>October</paper-item>
-                            <paper-item>November</paper-item>
-                            <paper-item>December</paper-item>
-                          </paper-listbox>
-                        </paper-dropdown-menu>
-                      </span>
+                      <span id="firstyear">
+                        <paper-input value={{startMonthYear}} type="number" style="width:50px; margin-left:5px; margin-right:5px" label="Year">
+                        </paper-input>
 
-                      <span id="flex">
-                        <span id="firstyear">
-                          <paper-input value={{startMonthYear}} type="number" style="width:50px; margin-left:5px; margin-right:5px" label="Year">
-                          </paper-input>
-
-                          <!-- <paper-dropdown-menu style="cursor:pointer" label="Start Year">
+                        <!-- <paper-dropdown-menu style="cursor:pointer" label="Start Year">
                             <paper-listbox slot="dropdown-content" selected="{{startMonthYear}}" attr-for-selected="value">
                               <paper-item value="2015">2015</paper-item>
                               <paper-item value="2016">2016</paper-item>
@@ -660,33 +688,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                               <paper-item value="2018">2018</paper-item>
                             </paper-listbox>
                           </paper-dropdown-menu> -->
-                        </span>
                       </span>
+                    </span>
 
-                      <span id="flex">
-                        <iron-icon style="margin-top:30px; margin-right:5px;" icon="my-icons:event" id="date"></iron-icon>
-                        <paper-dropdown-menu style="cursor:pointer" label="Start Month">
-                          <paper-listbox slot="dropdown-content" selected="{{endRange}}">
-                            <paper-item>January</paper-item>
-                            <paper-item>February</paper-item>
-                            <paper-item>March</paper-item>
-                            <paper-item>April</paper-item>
-                            <paper-item>May</paper-item>
-                            <paper-item>June</paper-item>
-                            <paper-item>July</paper-item>
-                            <paper-item>August</paper-item>
-                            <paper-item>September</paper-item>
-                            <paper-item>October</paper-item>
-                            <paper-item>November</paper-item>
-                            <paper-item>December</paper-item>
-                          </paper-listbox>
-                        </paper-dropdown-menu>
-                      </span>
-                      <span id="flex">
-                        <span id="lastyear">
-                          <paper-input value={{endMonthYear}} type="number" style="margin-left:5px; width:50px" label="Year">
-                          </paper-input>
-                          <!-- <paper-dropdown-menu style="cursor:pointer" label="End Year">
+                    <span id="flex">
+                      <iron-icon style="margin-top:30px; margin-right:5px;" icon="my-icons:event" id="date"></iron-icon>
+                      <paper-dropdown-menu style="cursor:pointer" label="Start Month">
+                        <paper-listbox slot="dropdown-content" selected="{{endRange}}">
+                          <paper-item>January</paper-item>
+                          <paper-item>February</paper-item>
+                          <paper-item>March</paper-item>
+                          <paper-item>April</paper-item>
+                          <paper-item>May</paper-item>
+                          <paper-item>June</paper-item>
+                          <paper-item>July</paper-item>
+                          <paper-item>August</paper-item>
+                          <paper-item>September</paper-item>
+                          <paper-item>October</paper-item>
+                          <paper-item>November</paper-item>
+                          <paper-item>December</paper-item>
+                        </paper-listbox>
+                      </paper-dropdown-menu>
+                    </span>
+                    <span id="flex">
+                      <span id="lastyear">
+                        <paper-input value={{endMonthYear}} type="number" style="margin-left:5px; width:50px" label="Year">
+                        </paper-input>
+                        <!-- <paper-dropdown-menu style="cursor:pointer" label="End Year">
                             <paper-listbox slot="dropdown-content" selected="{{endMonthYear}}" attr-for-selected="value">
                               <paper-item value="2015">2015</paper-item>
                               <paper-item value="2016">2016</paper-item>
@@ -694,96 +722,78 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                               <paper-item value="2018">2018</paper-item>
                             </paper-listbox>
                           </paper-dropdown-menu> -->
-                        </span>
                       </span>
                     </span>
-                  </div>
-
-                  <div style="display:none" id="Yearly">
-                    <div id="flex">
-                      <div id="flex">
-                        <paper-input label="Start Year" type="number" value="{{startYear}}" id="day" style="width:100px">
-                          <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                        </paper-input>
-                        <!-- <iron-icon style="margin-top:30px; margin-right:10px;color:dodgerblue" icon="my-icons:event" id="date"></iron-icon> -->
-                        <!-- <paper-dropdown-menu style="cursor:pointer" label="Start Year">
-                          <paper-listbox slot="dropdown-content" selected="{{startYear}}">
-                            <paper-item>2015</paper-item>
-                            <paper-item>2016</paper-item>
-                            <paper-item>2017</paper-item>
-                            <paper-item>2018</paper-item>
-                          </paper-listbox>
-                        </paper-dropdown-menu> -->
-                      </div>
-                      <div id="flex">
-                        <paper-input label="End Year" type="number" value="{{endYear}}" id="day" style="margin-left:10px; width:100px">
-                          <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                        </paper-input>
-                        <!-- <iron-icon style="margin-top:30px; margin-right:20px;color:dimgray;" icon="my-icons:event" id="date"></iron-icon> -->
-                        <!-- <paper-dropdown-menu style="cursor:pointer" label="End Year">
-                          <paper-listbox slot="dropdown-content" selected="{{endYear}}">
-                            <paper-item>2015</paper-item>
-                            <paper-item>2016</paper-item>
-                            <paper-item>2017</paper-item>
-                            <paper-item>2018</paper-item>
-                          </paper-listbox>
-                        </paper-dropdown-menu> -->
-                      </div>
-                    </div>
-                  </div>
+                  </span>
 
                 </div>
-                <canvas id="myChart"></canvas>
+
+                <div style="display:none" id="Yearly">
+                  <div id="flex">
+                    <div id="flex">
+                      <paper-input label="Start Year" type="number" value="{{startYear}}" id="day" style="width:100px">
+                        <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                      </paper-input>
+                    </div>
+                    <div id="flex">
+                      <paper-input label="End Year" type="number" value="{{endYear}}" id="day" style="margin-left:10px; width:100px">
+                        <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                      </paper-input>
+                    </div>
+                  </div>
+                </div>
+                <div class="chart-container">
+                  <canvas id="myChart"></canvas>
+                </div>
               </div>
               <!-- end comparative report -->
 
               <!--OverAll Report -->
-              <div class="card" hidden$="{{hideOverAll}}">
+              <div>
+                <div class="card" hidden$="{{hideOverAll}}">
 
-                <span class="typeSelection" style="display:flex">
-                  <paper-dropdown-menu class="month" label="Lot type" vertical-align="top" horizontal-align="left">
-                    <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{lotType}}">
-                      <paper-item value="all" id="compPaper-item">All</paper-item>
-                      <paper-item value="lawnlots" id="compPaper-item">Lawn Lots</paper-item>
-                      <paper-item value="bonechamber" id="compPaper-item">Bone Chamber</paper-item>
-                      <paper-item value="wallniche" id="compPaper-item">Wall Niche</paper-item>
-                      <paper-item value="cinerarium" id="compPaper-item">Cinerarium</paper-item>
-                      <paper-item value="familylots1" id="compPaper-item">Family Lots 1 (Area=37.45m²)</paper-item>
-                      <paper-item value="familylots2" id="compPaper-item">Family Lots 1 (Irregular Lots)</paper-item>
-                      <paper-item value="familylots3" id="compPaper-item">Family Lots 2 (Area=53.27m²)</paper-item>
-                      <paper-item value="familylots4" id="compPaper-item">Family Lots 2 (Area=52.83m²)</paper-item>
-                      <paper-item value="familylots5" id="compPaper-item">Family Lots 2 (Irregular Lots)</paper-item>
-                      <paper-item value="gardenlots1" id="compPaper-item">Garden Lots 1 (Area=12.52m²)</paper-item>
-                      <paper-item value="gardenlots2" id="compPaper-item">Garden Lots 1 (Area=12.43m²)</paper-item>
-                      <paper-item value="gardenlots3" id="compPaper-item">Garden Lots 1 (Irregular Lots)</paper-item>
-                      <paper-item value="gardenlots4" id="compPaper-item">Garden Lots 2 (Area=20.00m²)</paper-item>
-                      <paper-item value="gardenlots5" id="compPaper-item">Garden Lots 2 (Irregular Lots)</paper-item>
-                    </paper-listbox>
-                  </paper-dropdown-menu>
+                  <span class="typeSelection" style="display:flex">
+                    <paper-dropdown-menu class="month" label="Lot type" vertical-align="top" horizontal-align="left">
+                      <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{lotTypeFilter}}">
+                        <paper-item value="all" id="compPaper-item">All</paper-item>
+                        <paper-item value="lawnlots" id="compPaper-item">Lawn Lots</paper-item>
+                        <paper-item value="bonechamber" id="compPaper-item">Bone Chamber</paper-item>
+                        <paper-item value="wallniche" id="compPaper-item">Wall Niche</paper-item>
+                        <paper-item value="cinerarium" id="compPaper-item">Cinerarium</paper-item>
+                        <paper-item value="familylots1" id="compPaper-item">Family Lots 1 (Area=37.45m²)</paper-item>
+                        <paper-item value="familylots2" id="compPaper-item">Family Lots 1 (Irregular Lots)</paper-item>
+                        <paper-item value="familylots3" id="compPaper-item">Family Lots 2 (Area=53.27m²)</paper-item>
+                        <paper-item value="familylots4" id="compPaper-item">Family Lots 2 (Area=52.83m²)</paper-item>
+                        <paper-item value="familylots5" id="compPaper-item">Family Lots 2 (Irregular Lots)</paper-item>
+                        <paper-item value="gardenlots1" id="compPaper-item">Garden Lots 1 (Area=12.52m²)</paper-item>
+                        <paper-item value="gardenlots2" id="compPaper-item">Garden Lots 1 (Area=12.43m²)</paper-item>
+                        <paper-item value="gardenlots3" id="compPaper-item">Garden Lots 1 (Irregular Lots)</paper-item>
+                        <paper-item value="gardenlots4" id="compPaper-item">Garden Lots 2 (Area=20.00m²)</paper-item>
+                        <paper-item value="gardenlots5" id="compPaper-item">Garden Lots 2 (Irregular Lots)</paper-item>
+                      </paper-listbox>
+                    </paper-dropdown-menu>
+                    <paper-input value={{overAllDate}} type="date" label="As of" style="width:150px;margin-left:5px;">
+                      <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                    </paper-input>
+                  </span>
 
-                  <paper-input value={{overAllDate}} type="date" label="As of" style="width:150px;margin-left:5px;">
-                    <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                  </paper-input>
+                  <span style="float:right;" hidden$="{{hideToggleOverall}}">
+                    <paper-toggle-button checked="{{showSummaryTable}}" on-tap="_showSummary" style="font-size:12px">Data Table</paper-toggle-button>
+                  </span>
 
-                </span>
+                  <div class="chart-container" hidden$="{{overallchart}}">
+                    <canvas id="overAllChart" height="500"></canvas>
+                  </div>
 
-                <span style="float:right;" hidden$="{{hideToggleOverall}}">
-                  <paper-toggle-button checked="{{showSummaryTable}}" on-tap="_showSummary" style="font-size:12px">Data Table</paper-toggle-button>
-                </span>
-
-                <!-- <span style="float:right">
-                  <a hidden$="{{hideSummary}}" on-tap="_showSummary" style="font-size:12px; text-decoration:none; cursor:pointer">Summary</a>
-                  <a hidden$="{{showSummary}}" on-tap="_hideSummary" style="font-size:12px; text-decoration:none; cursor:pointer">Graph</a>
-                </span> -->
-
-                <div class="chart-container" hidden$="{{overallchart}}">
-                  <canvas id="overAllChart"></canvas>
-                </div>
-                </br>
-                </br>
-                <div style="font-size: 12px; overflow-x:auto;" hidden$="{{hideSummaryTable}}">
-                  <span>
-                    <table>
+                  </br>
+                  </br>
+                  <div style="font-size: 12px; overflow-x:auto;" hidden$="{{hideSummaryTable}}">
+                    <paper-button style="margin:5px;float:right" on-tap="_exportTableToCSVoverAll">
+                      <iron-icon icon="my-icons:description"></iron-icon>Export to CSV</paper-button>
+                    <table id="overAllReportTable">
+                      <tr>
+                        <td colspan="7">Over all report {{overAllDate}}</td>
+                      </tr>
                       <tr>
                         <th style="text-align: left;">Type</th>
                         <th style="color: red;">Sold</th>
@@ -805,46 +815,72 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         </tr>
                       </template>
                     </table>
-                  </span>
+                    <!-- <br> -->
+
+                  </div>
+
                 </div>
-                <!--end OverAll Report -->
+
+                <div class="card" hidden$="{{hideOverAll}}">
+                  <div>
+                    <paper-dropdown-menu class="selectedSHRAN" label="Filter" style="float:right" vertical-align="top" horizontal-align="right">
+                      <paper-listbox slot="dropdown-content" class="selectedSHRAN" attr-for-selected="value" selected="{{filterSHRAN}}">
+                        <paper-item value="sold">Sold</paper-item>
+                        <paper-item value="reserved">Reserved</paper-item>
+                        <paper-item value="hold">Hold</paper-item>
+                        <paper-item value="available">Available</paper-item>
+                        <paper-item value="notyetavailable">Not yet available</paper-item>
+                      </paper-listbox>
+                    </paper-dropdown-menu>
+                  </div>
+                  <div class="chart-container">
+                    <canvas id="overallchart2" height="500"></canvas>
+                  </div>
+                </div>
 
               </div>
-              <!--OverAll Report -->
+              <!--end OverAll Report -->
 
             </div>
+            <!-- owner's report -->
+
           </div>
           <!-- End of Reports -->
 
           <!-- Notification -->
-          <div>
-            <div>
-            </div>
-            <!-- <template is="dom-if" if="{{staff}}"> -->
-            <firebase-query path="/notifications" order-by-child="recipient_role" equal-to="{{myrole}}" limit-to-last="50" data="{{notificationData}}"></firebase-query>
-            <firebase-query path="/notifications" order-by-child="recipient_code" equal-to="{{myaccountcode}}" limit-to-last="50" data="{{notificationData2}}"></firebase-query>
+          <div class="card" style="padding:0">
 
-            <iron-list items="{{notificationdata_merge}}" as="item" scroll-target="document">
+            <firebase-query path="/notifications" order-by-child="recipient_role" equal-to="{{myrole}}" limit-to-last="50" data="{{notificationData}}"></firebase-query>
+            <firebase-query path="/notifications" order-by-child="recipient_role_code" equal-to="{{myrolecode}}" limit-to-last="50" data="{{notificationData}}"></firebase-query>
+
+            <iron-list items="[[notificationdata_merge]]" as="item" scroll-target="document">
               <template>
                 <div>
                   <div class="item" tabindex$="[[tabIndex]]">
-                    <iron-image class="avatar" sizing="contain" src="../images/user.png"></iron-image>
-                    <div class="pad">
-                      <div class="primary">
-                        [[item.sender]]
-                      </div>
-                      <div class="secondary">
-                        [[item.message]]
-                      </div>
-                      <span style="font-size:12px; color:gray">
-                        <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
-                      </span>
+                    <div role="listbox">
+                      <paper-icon-item>
+                        <div slot="item-icon">
+                          <iron-image class="avatar" sizing="contain" src="{{item.photo}}"></iron-image>
+                        </div>
+                        <paper-item-body two-line>
+                          <div hidden$="[[item.read]]">
+                            <strong>[[item.sender]]&nbsp;[[item.message]]</strong>
+                          </div>
+                          <div hidden$="[[!item.read]]">
+                            [[item.sender]]&nbsp;[[item.message]]
+                          </div>
+                          <div class="secondary">
+                            <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
+                          </div>
+                        </paper-item-body>
+                        <paper-icon-button icon="my-icons:open-in-new" title="View notifications" on-tap="_notificationLink" alt="{{item}}"></paper-icon-button>
+                      </paper-icon-item>
                     </div>
-                    <!-- <paper-icon-button icon="my-icons:more-vert"></paper-icon-button> -->
                   </div>
                 </div>
               </template>
             </iron-list>
+
           </div>
           <!-- end Notification -->
 
@@ -866,10 +902,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: false
         },
-        // token: {
-        //   type: Object,
-        //   observer: 'tokenChanged'
-        // },
         selectedTab: {
           type: Number,
           value: 0
@@ -918,15 +950,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Number,
         },
         Chart: Object,
+        Chart2: Object,
         allChart: Object,
+        allchart2: Object,
         hideActivity: Boolean,
         hideComparative: Boolean,
         hideOverAll: Boolean,
         overAllDate: Number,
-        lotType: String,
-        // overallTotalData: {
-        //   observer: 'overallTotalDataChanged'
-        // },
+        lotTypeFilter: String,
         hideSummary: {
           type: Boolean,
           value: true,
@@ -997,18 +1028,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         notificationData: Object,
         account: Object,
         accountlistData: Object,
-        notificationdata_merge: {
-          type: Array,
-          value: []
-        },
         owner: {
           type: Boolean,
           value: true
-        }
-        // x: {
-        //   type: Array,
-        //   value: []
-        // }
+        },
+        staff: {
+          type: Boolean,
+          value: true
+        },
+        agent: {
+          type: Boolean,
+          value: true
+        },
+        filterSHR: {
+          type: String,
+          value: 'sold'
+        },
+        filterSHRAN: {
+          type: String,
+        },
+        dailyTotalData: Object
       },
 
       ready() {
@@ -1024,80 +1063,119 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         date.setDate(date.getDate() - 14);
         this.startDate = this._format(date, 'day');
 
+        this.selectedReport = 0;
+        this.selectedDMY = 0;
       },
 
       observers: [
-        'onChangedAll(selectedDMY,dailyAct,wyear,week,month,year,yearly)',
-        'dailyTotalChanged(dailyTotal.*)',
-        'weeklyTotalChanged(weeklyTotal.*)',
-        'monthlyTotalChanged(monthlyTotal.*)',
+        'onChangedAll(selectedDMY,dailyAct,wyear,week,month,year,yearly, filterSHR)',
+        // 'dailyTotalChanged(dailyTotal.*)',
+        // 'weeklyTotalChanged(weeklyTotal.*)',
+        // 'monthlyTotalChanged(monthlyTotal.*)',
         'yearlyTotalChanged(yearlyTotal.*)',
         'selectedTabChanged(selectedTab)',
         'selectedReportChanged(selectedReport)',
-        'overAllChanged(lotType,overAllDate)',
+        'overAllChanged(lotTypeFilter,overAllDate, filterSHRAN)',
         '_onChanged(selectedDaily,DailyfilterBy,startDate,endDate,startRange,endRange,startYear,endYear,startMonthYear,endMonthYear)',
         'accountChanged(account.*)',
-        'notificationDataChanged(notificationData.*,notificationData2.*)',
-        // 'notificationDataChanged(notificationData.*)'
+        // 'notificationDataChanged(notificationData.*,notificationData2.*)',
+        'notificationDataChanged(notificationData.*)',
+        'dailyTotalDataChanged(dailyTotalData.*)'
       ],
-      notificationDataChanged(e, f) {
-        // console.log(e.value);
-        // console.log(f.value);
-        // var x = Object.assign({},e.value);
-        // var y = Object.assign({},f.value);
-        // var z = Object.assign(x,y);
-        // this.notificationdata_merge = x;
-        // console.log(f.value);
-        // this.x = Object.assign({},e.value);
-        // this.notificationdata_merge = Object.assign(e.value,f.value);
-        // console.log(this.notificationData);
-        //  console.log(this.notificationdata_merge);
 
-        if (e.value) {
-          e.value.forEach(element => {
-            this.notificationdata_merge.push(element);
-            // console.log(this.notificationdata_merge)
-            // console.log(this.notificationdata_merge[0].message)
-          });
+      _exportTableToCSV() {
+        this.export_table_to_csv('daily', "dailyReport.csv");
+      },
+      _exportTableToCSVoverAll() {
+        this.export_table_to_csv('overAll', "overAllReport.csv");
+      },
+
+      export_table_to_csv(report, filename) {
+        var csv = [];
+        if (report == 'daily') {
+          var rows = Polymer.dom(this.root).querySelectorAll("#reportTable tr");
         }
+        else if (report == 'overAll') {
+          var rows = Polymer.dom(this.root).querySelectorAll("#overAllReportTable tr");
+        }
+        for (var i = 0; i < rows.length; i++) {
+          var row = [], cols = rows[i].querySelectorAll("td, th");
 
-        // this.notificationdata_merge = this.notificationData2;
+          for (var j = 0; j < cols.length; j++)
+            row.push(cols[j].innerText);
 
-        // console.log(e.value);
-        // console.log(z);
+          csv.push(row.join(","));
+        }
+        this.download_csv(csv.join("\n"), filename);
+      },
+
+      download_csv(csv, filename) {
+        var csvFile;
+        var downloadLink;
+        // CSV FILE
+        csvFile = new Blob([csv], { type: "text/csv" });
+        downloadLink = document.createElement("a");
+        downloadLink.download = filename;
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+      },
+
+
+
+      notificationDataChanged(e) {
+        this.countNotification = e.base.length;
+        if (e.base) {
+          var notifications = [];
+          e.base.forEach(element => {
+            notifications.push(element);
+          });
+          this.notificationdata_merge = notifications;
+        }
       },
 
       _timeStampToDateTime(ts) {
         return new Date(ts);
       },
-      // getNotif(role) {
-      //   firebase.database().ref().child('notifications').orderByChild('recipient_role').equalTo(role).on('value', snap => {
-      //     snap.forEach(element => {
-      //       this.message = element.val().message;
-      //       this.timestamp = element.val().timestamp;
-      //       // if (element.val().read == false) {
-      //       //   Polymer.dom(this.root).querySelector("#notifDiv").setAttribute('style', 'background-color:rgba(192,192,192,0.3)');
-      //       // }
-      //       firebase.database().ref().child('accountlist').orderByChild('accountkey').equalTo(element.val().sender).once('value', sendersnap => {
-      //         sendersnap.forEach(elements => {
-      //           this.sender = elements.val().name.firstname + ' ' + elements.val().name.lastname
 
-      //         });
-      //       });
-      //     });
-      //   });
-      // },
-     
+      _notificationLink(e) {
+        var transkey = Polymer.dom(e).rootTarget.getAttribute("alt");
+        var data = JSON.parse(transkey);
+        // console.log(data);
+
+        var postData = {
+          click: data.click,
+          message: data.message,
+          read: true,
+          recipient_role: data.recipient_role,
+          recipient_role_code: data.recipient_role_code,
+          sender: data.sender,
+          timestamp: data.timestamp,
+          title: data.title,
+          photo: data.photo
+        };
+        var updates = {};
+        updates['/notifications/' + data.$key] = postData;
+        window.location = data.click;
+        return firebase.database().ref().update(updates);
+
+      },
 
       accountChanged() {
         if (this.account.length > 0) {
           this.myrole = this.account[0].role;
           this.myaccountcode = this.account[0].accountkey;
+          this.myrolecode = this.myrole + '_' + this.myaccountcode;
+          // console.log(this.myaccountcode);
           if (this.myrole === 'Owner') {
             this.owner = false;
           }
-          else {
-            this.owner = true;
+          else if (this.myrole === 'Staff') {
+            this.staff = false;
+          }
+          else if (this.myrole === 'Sales Agent') {
+            this.agent = false;
           }
         }
       },
@@ -1493,9 +1571,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (e === 0) {
 
         }
-        else {
-          this.selectedReport = 0;
-          this.selectedDMY = 0;
+        else if (e === 1) {
+          // this.selectedReport = 0;
+          // this.selectedDMY = 0;
           //create chart
           if (!this.Chart) {
             var ctx = Polymer.dom(this.root).querySelector("#dailyChart");
@@ -1504,6 +1582,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               data: {},
               options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 legend: {
                   position: 'bottom',
                 },
@@ -1538,9 +1617,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
               }
             });
-            Chart.defaults.global.responsive = true;
-            Chart.defaults.global.maintainAspectRatio = false;
             this.Chart = dailyChart;
+          }
+
+          if (!this.Chart2) {
+            var ctx = Polymer.dom(this.root).querySelector("#dailyChart2").getContext('2d');
+            var dailyChart2 = new Chart(ctx, {
+              type: 'pie',
+              options: {
+                pieceLabel: {
+                  render: 'percentage',
+                  position: 'outside',
+                  // fontColor: ['black', 'black', 'black'],
+                  precision: 2,
+                },
+                legend: {
+                  display: true,
+                  position: 'bottom',
+
+                },
+                plugins: {
+                  datalabels: {
+                    color: 'black',
+                    font: {
+                      weight: 'bold'
+                    },
+                  }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+                // title: {
+                //   display: true,
+                //   text: 'Overall Report'
+                // }
+              }
+            });
+            this.Chart2 = dailyChart2;
           }
 
           var d = new Date();
@@ -1555,6 +1667,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
           this.week = Math.ceil((((d - yearStart) / 86400000) + 1) / 7)
         }
+        else if (e === 2) {
+        }
+      },
+
+      randomScalingFactor() {
+        return Math.round(Math.random() * 100);
       },
 
       selectedReportChanged(e) {
@@ -1581,6 +1699,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   }
                 },
                 responsive: true,
+                maintainAspectRatio: false
                 // title: {
                 //   display: true,
                 //   fontSize: 18,
@@ -1691,7 +1810,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 },
                 legend: {
                   display: true,
-                  position: 'left',
+                  position: 'bottom',
 
                 },
                 plugins: {
@@ -1703,6 +1822,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   }
                 },
                 responsive: true,
+                maintainAspectRatio: false
                 // title: {
                 //   display: true,
                 //   text: 'Overall Report'
@@ -1711,24 +1831,81 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             });
             this.allChart = overAllChart;
           }
+          if (!this.allchart2) {
+            var ctx = Polymer.dom(this.root).querySelector("#overallchart2");
+            var overallchart22 = new Chart(ctx, {
+              type: 'pie',
+
+              options: {
+                pieceLabel: {
+                  render: 'percentage',
+                  position: 'outside',
+                  // fontColor: ['black', 'black', 'black', 'black', 'black'],
+                  precision: 2,
+                },
+                legend: {
+                  display: true,
+                  position: 'bottom',
+                },
+                plugins: {
+                  datalabels: {
+                    color: 'black',
+                    font: {
+                      weight: 'bold'
+                    },
+                  }
+                },
+                responsive: true,
+                maintainAspectRatio: false
+                // title: {
+                //   display: true,
+                //   text: 'Overall Report'
+                // }
+              }
+            });
+            this.allchart2 = overallchart22;
+          }
 
           var d = new Date();
           datestring = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
           this.overAllDate = datestring;
-          this.lotType = 'all';
+          this.lotTypeFilter = 'all';
+          this.filterSHRAN = 'sold';
         }
       },
 
-      onChangedAll(selectedDMY, dailyAct, wyear, week, month, year, yearly) {
-        var dailyChart, datestring, query;
+      dailyTotalDataChanged(e) {
+        if (this.dailyTotalData.length > 0) {
+          Object.keys(this.dailyTotalData).forEach(x => {
+            if (this.dailyTotalData[x].$key == 'totalHold') {
+              this.totalHold = this.dailyTotalData[x].$val;
+            }
+            else if (this.dailyTotalData[x].$key == 'totalSold') {
+              this.totalSold = this.dailyTotalData[x].$val;
+            }
+            else if (this.dailyTotalData[x].$key == 'totalReserved') {
+              this.totalReserved = this.dailyTotalData[x].$val;
+            }
+          })
+        }
+        else {
+          this.totalHold = 0;
+          this.totalReserved = 0;
+          this.totalSold = 0;
+        }
+      },
+
+      onChangedAll(selectedDMY, dailyAct, wyear, week, month, year, yearly, filterSHR) {
+        var dailyChart, datestring, query, dailyChart2;
         dailyChart = this.Chart;
+        dailyChart2 = this.Chart2;
 
         if (this.Chart) {
 
           if (selectedDMY == 0) {
-            this.totalHold = 0;
-            this.totalReserved = 0;
-            this.totalSold = 0;
+            // this.totalHold = 0;
+            // this.totalReserved = 0;
+            // this.totalSold = 0;
             this.hideDailyInputDate = false;
 
             this.hideWeekly = true;
@@ -1743,13 +1920,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             query = 'daily/' + dailyAct;
             this.changeQry = query;
+            this.reportTitle = 'Daily Report ' + dailyAct;
           }
 
-          if (selectedDMY == 1) {
+          else if (selectedDMY == 1) {
             this.hideWeekly = false;
-            this.totalHold = 0;
-            this.totalReserved = 0;
-            this.totalSold = 0;
+            // this.totalHold = 0;
+            // this.totalReserved = 0;
+            // this.totalSold = 0;
             this.hideDailyInputDate = true;
             this.hideMonthSelection = true;
             this.hideYearly = true;
@@ -1773,13 +1951,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             query = 'weekly/' + yearWeek;
             this.changeQry = query;
+            this.reportTitle = 'Weekly Report ' + this.weekDates;
           }
 
-          if (selectedDMY == 2) {
+          else if (selectedDMY == 2) {
             this.hideMonthSelection = false;
-            this.totalHold = 0;
-            this.totalReserved = 0;
-            this.totalSold = 0;
+            // this.totalHold = 0;
+            // this.totalReserved = 0;
+            // this.totalSold = 0;
             this.hideWeekly = true;
             this.hideDailyInputDate = true;
             this.hideYearly = true;
@@ -1792,13 +1971,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             query = 'monthly/' + year + '-' + month;
             this.changeQry = query;
+            this.reportTitle = 'Monthly Report ' + year + '-' + month;
           }
 
-          if (selectedDMY == 3) {
+          else if (selectedDMY == 3) {
             this.hideYearly = false;
-            this.totalHold = 0;
-            this.totalReserved = 0;
-            this.totalSold = 0;
+            // this.totalHold = 0;
+            // this.totalReserved = 0;
+            // this.totalSold = 0;
             this.hideWeekly = true;
             this.hideMonthSelection = true;
             this.hideDailyInputDate = true;
@@ -1811,14 +1991,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             query = 'yearly/' + yearly;
             this.changeQry = query;
+            this.reportTitle = 'Yearly Report ' + yearly;
           }
 
-          this.query(query, dailyChart);
+          this.query(query, dailyChart, dailyChart2, filterSHR);
         }
 
       },
-
-      query(query, dailyChart) {
+      query(query, dailyChart, dailyChart2, filterSHR) {
         firebase.database().ref('/reports/activity/' + query + '/lotType').on('value', function (snapshot) {
           if (snapshot.exists()) {
 
@@ -1826,36 +2006,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var itemSold = [];
             var itemReserved = [];
             var itemKey = [];
+            var colors = [];
             // var itemTotalHold = [];
 
             snapshot.forEach(function (element) {
               var itemhold = element.val().hold;
               var itemsold = element.val().sold;
               var itemreserved = element.val().reserved;
-              // var itemkey = element.key;
 
-              if (element.key == 'lawnlots') itemkey = 'Lawn Lots';
-              else if (element.key == 'wallniche') itemkey = 'Wall Niche';
-              else if (element.key == 'bonechamber') itemkey = 'Bone Chamber';
-              else if (element.key == 'cinerarium') itemkey = 'Cinerarium';
-              else if (element.key == 'familylots4') itemkey = 'Family Lots 1 (37.45m²)';
-              else if (element.key == 'familylots5') itemkey = 'Family Lots 1 (Irregular)';
-              else if (element.key == 'familylots1') itemkey = 'Family Lots 2 (53.27m²)';
-              else if (element.key == 'familylots2') itemkey = 'Family Lots 2 (52.83m²)';
-              else if (element.key == 'familylots3') itemkey = 'Family Lots 2 (Irregular)';
-              else if (element.key == 'gardenlots1') itemkey = 'Garden Lots 1 (12.52m²)';
-              else if (element.key == 'gardenlots2') itemkey = 'Garden Lots 1 (12.43m²)';
-              else if (element.key == 'gardenlots3') itemkey = 'Garden Lots 1 (Irregular)';
-              else if (element.key == 'gardenlots4') itemkey = 'Garden Lots 2 (20.00m²)';
-              else if (element.key == 'gardenlots5') itemkey = 'Garden Lots 2 (Irregular)';
+              // var itemkey = element.key; 
 
-              
+              if (element.key == 'lawnlots') { itemkey = 'Lawn Lots'; bgColor = '#2196F3'; }
+              else if (element.key == 'wallniche') { itemkey = 'Wall Niche'; bgColor = '#E91E63'; }
+              else if (element.key == 'bonechamber') { itemkey = 'Bone Chamber'; bgColor = '#3F51B5'; }
+              else if (element.key == 'cinerarium') { itemkey = 'Cinerarium'; bgColor = '#795548'; }
+              else if (element.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m²)'; bgColor = '#BA68C8'; }
+              else if (element.key == 'familylots5') { itemkey = 'Family Lots 1 (Irregular)'; bgColor = '#E1BEE7'; }
+              else if (element.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m²)'; bgColor = '#4A148C'; }
+              else if (element.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m²)'; bgColor = '#7B1FA2'; }
+              else if (element.key == 'familylots3') { itemkey = 'Family Lots 2 (Irregular)'; bgColor = '#9C27B0'; }
+              else if (element.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m²)'; bgColor = '#DCEDC8'; }
+              else if (element.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m²)'; bgColor = '#AED581'; }
+              else if (element.key == 'gardenlots3') { itemkey = 'Garden Lots 1 (Irregular)'; bgColor = '#8BC34A'; }
+              else if (element.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m²)'; bgColor = '#689F38'; }
+              else if (element.key == 'gardenlots5') { itemkey = 'Garden Lots 2 (Irregular)'; bgColor = '#33691E'; }
+
+
               // var itemtotalhold = element.val().totalHold;
 
               itemHold.push(itemhold);
               itemSold.push(itemsold);
               itemReserved.push(itemreserved);
               itemKey.push(itemkey);
+              colors.push(bgColor);
               // itemTotalHold.push(itemtotalhold);
 
             });
@@ -1903,6 +2086,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             dailyChart.data = data;
             dailyChart.update();
+
+            if (filterSHR == 'sold') {
+              var data2 = {
+                datasets: [{
+                  data: itemSold,
+                  backgroundColor: colors,
+                }],
+                labels: itemKey,
+
+              }
+
+              dailyChart2.data = data2;
+              dailyChart2.update();
+            }
+            else if (filterSHR == 'reserved') {
+              var data2 = {
+                datasets: [{
+                  data: itemReserved,
+                  backgroundColor: colors,
+                }],
+                labels: itemKey,
+
+              }
+
+              dailyChart2.data = data2;
+              dailyChart2.update();
+            }
+            else if (filterSHR == 'hold') {
+              var data2 = {
+                datasets: [{
+                  data: itemHold,
+                  backgroundColor: colors,
+                }],
+                labels: itemKey,
+
+              }
+
+              dailyChart2.data = data2;
+              dailyChart2.update();
+            }
+
           }
           else {
             var data = {
@@ -1940,7 +2164,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             dailyChart.data = data;
             dailyChart.update();
-            // console.log('No Data')
+
+            var data2 = {
+              datasets: [{
+                data: [],
+                backgroundColor: [
+                  'black'
+                ]
+              }],
+              labels: ['No data found'],
+            }
+
+            dailyChart2.data = data2;
+            dailyChart2.update();
           }
         });
       },
@@ -1966,12 +2202,139 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.hideDailyTableData = true;
       },
 
-      overAllChanged(lotType, overAllDate) {
+
+      overAllChanged(lotTypeFilter, overAllDate, filterSHRAN) {
         var que;
         var allChart = this.allChart;
-        if (lotType == 'all') {
+        var allchart22 = this.allchart2;
+
+        if (lotTypeFilter == 'all') {
           que = '/overall';
           this.hideToggleOverall = false;
+
+          firebase.database().ref('/reports/overAll/' + overAllDate + '/lotType').on('value', function (snap) {
+            var itemHold = [];
+            var itemSold = [];
+            var itemReserved = [];
+            var itemAvailable = [];
+            var itemNotyetavailable = [];
+            var itemKey = [];
+            var colors = [];
+            if (snap.exists()) {
+              snap.forEach(function (ele) {
+                var itemhold = ele.val().hold;
+                var itemsold = ele.val().sold;
+                var itemreserved = ele.val().reserved;
+                var itemavailable = ele.val().available;
+                var itemnotyetavailable = ele.val().notyetavailable;
+
+                if (ele.key == 'lawnlots') { itemkey = 'Lawn Lots'; bgColor = '#2196F3'; }
+                else if (ele.key == 'wallniche') { itemkey = 'Wall Niche'; bgColor = '#E91E63'; }
+                else if (ele.key == 'bonechamber') { itemkey = 'Bone Chamber'; bgColor = '#3F51B5'; }
+                else if (ele.key == 'cinerarium') { itemkey = 'Cinerarium'; bgColor = '#795548'; }
+                else if (ele.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m²)'; bgColor = '#BA68C8'; }
+                else if (ele.key == 'familylots5') { itemkey = 'Family Lots 1 (Irregular)'; bgColor = '#E1BEE7'; }
+                else if (ele.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m²)'; bgColor = '#4A148C'; }
+                else if (ele.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m²)'; bgColor = '#7B1FA2'; }
+                else if (ele.key == 'familylots3') { itemkey = 'Family Lots 2 (Irregular)'; bgColor = '#9C27B0'; }
+                else if (ele.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m²)'; bgColor = '#DCEDC8'; }
+                else if (ele.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m²)'; bgColor = '#AED581'; }
+                else if (ele.key == 'gardenlots3') { itemkey = 'Garden Lots 1 (Irregular)'; bgColor = '#8BC34A'; }
+                else if (ele.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m²)'; bgColor = '#689F38'; }
+                else if (ele.key == 'gardenlots5') { itemkey = 'Garden Lots 2 (Irregular)'; bgColor = '#33691E'; }
+
+                itemHold.push(itemhold);
+                itemSold.push(itemsold);
+                itemReserved.push(itemreserved);
+                itemAvailable.push(itemavailable);
+                itemNotyetavailable.push(itemnotyetavailable);
+
+                itemKey.push(itemkey);
+                colors.push(bgColor);
+
+              });
+
+              if (filterSHRAN == 'sold') {
+                var data2 = {
+                  datasets: [{
+                    data: itemSold,
+                    backgroundColor: colors,
+                  }],
+                  labels: itemKey,
+
+                }
+
+                allchart22.data = data2;
+                allchart22.update();
+              }
+              else if (filterSHRAN == 'hold') {
+                var data2 = {
+                  datasets: [{
+                    data: itemHold,
+                    backgroundColor: colors,
+                  }],
+                  labels: itemKey,
+
+                }
+
+                allchart22.data = data2;
+                allchart22.update();
+              }
+              else if (filterSHRAN == 'reserved') {
+                var data2 = {
+                  datasets: [{
+                    data: itemReserved,
+                    backgroundColor: colors,
+                  }],
+                  labels: itemKey,
+
+                }
+
+                allchart22.data = data2;
+                allchart22.update();
+              }
+              else if (filterSHRAN == 'available') {
+                var data2 = {
+                  datasets: [{
+                    data: itemAvailable,
+                    backgroundColor: colors,
+                  }],
+                  labels: itemKey,
+
+                }
+
+                allchart22.data = data2;
+                allchart22.update();
+              }
+              else if (filterSHRAN == 'notyetavailable') {
+                var data2 = {
+                  datasets: [{
+                    data: itemNotyetavailable,
+                    backgroundColor: colors,
+                  }],
+                  labels: itemKey,
+
+                }
+
+                allchart22.data = data2;
+                allchart22.update();
+              }
+            }
+            else {
+              var data2 = {
+                datasets: [{
+                  data: [],
+                  backgroundColor: [
+                    'black'
+                  ]
+                }],
+                labels: ['No data found'],
+              }
+
+              allchart22.data = data2;
+              allchart22.update();
+            }
+          });
 
           firebase.database().ref('/reports/overAll/' + overAllDate + que).on('value', function (snapshot) {
             if (snapshot.exists()) {
@@ -1990,24 +2353,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 datas.push(element.val());
                 labels.push(itemkey);
                 colors.push(bgColor);
-
-                // for(i=0;i>=itemkey.length;i++){
-                //   if(itemkey == 'totalHold'){
-                //     var bgColor = 'orange';
-                //   }
-                //   else if(itemkey == 'totalSold'){
-                //     var bgColor = 'red';
-                //   }
-                //   else if(itemkey == 'totalReserved'){
-                //     var bgColor = 'yellow';
-                //   }
-                //   else if(itemkey == 'totalAvailable'){
-                //     var bgColor = 'green';
-                //   }
-                //   else if(itemkey == 'totalAvailable'){
-                //     var bgColor = 'gray';
-                //   }
-                // }
               });
 
               var data = {
@@ -2037,10 +2382,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               // console.log('No Data')
             }
           });
+
+
         }
         else {
-          que = '/lotType/' + lotType;
+          que = '/lotType/' + lotTypeFilter;
           this.hideToggleOverall = true;
+
+          var data2 = {
+            datasets: [{
+              data: [],
+              backgroundColor: [
+                'black'
+              ]
+            }],
+            labels: ['No data found'],
+          }
+
+          allchart22.data = data2;
+          allchart22.update();
 
           firebase.database().ref('/reports/overAll/' + overAllDate + que).on('value', function (snapshot) {
             if (snapshot.exists()) {
@@ -2071,6 +2431,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               allChart.data = data;
               allChart.update();
+
             }
             else {
               var data = {
@@ -2085,7 +2446,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               allChart.data = data;
               allChart.update();
-              // console.log('No Data')
             }
           });
         }
@@ -2093,14 +2453,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _showSummary() {
         if (this.showSummaryTable) {
-          this.showSummary = false;
-          this.hideSummary = true;
+          // this.showSummary = false;
+          // this.hideSummary = true;
           this.hideSummaryTable = false;
           this.overallchart = true;
+
         }
         else {
-          this.showSummary = true;
-          this.hideSummary = false;
+          // this.showSummary = true;
+          // this.hideSummary = false;
           this.hideSummaryTable = true;
           this.overallchart = false;
         }
@@ -2108,115 +2469,114 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       },
 
-      _hideSummary() {
-        this.showSummary = true;
-        this.hideSummary = false;
-        this.hideSummaryTable = true;
-        this.overallchart = false;
-      },
+      // _hideSummary() {
+      //   this.showSummary = true;
+      //   this.hideSummary = false;
+      //   this.hideSummaryTable = true;
+      //   this.overallchart = false;
+      // },
 
-      dailyTotalChanged() {
+      // dailyTotalChanged() {
 
-        if (this.dailyTotal.length > 0) {
+      //   if (this.dailyTotal.length > 0) {
 
-          var keys = Object.keys(this.dailyTotal);
-          keys.forEach(x => {
-            if (this.dailyTotal[x].$key == 'totalHold') {
-              this.totalHold = this.dailyTotal[x].$val;
-            }
-            else if (this.dailyTotal[x].$key == 'totalReserved') {
-              this.totalReserved = this.dailyTotal[x].$val;
-            }
-            else if (this.dailyTotal[x].$key == 'totalSold') {
-              this.totalSold = this.dailyTotal[x].$val;
-            }
-          });
-        }
-        else {
-          if (this.selectedDMY == 0) {
-            this.totalHold = 0;
-            this.totalReserved = 0;
-            this.totalSold = 0;
-          }
-        }
+      //     var keys = Object.keys(this.dailyTotal);
+      //     keys.forEach(x => {
+      //       if (this.dailyTotal[x].$key == 'totalHold') {
+      //         this.totalHold = this.dailyTotal[x].$val;
+      //       }
+      //       else if (this.dailyTotal[x].$key == 'totalReserved') {
+      //         this.totalReserved = this.dailyTotal[x].$val;
+      //       }
+      //       else if (this.dailyTotal[x].$key == 'totalSold') {
+      //         this.totalSold = this.dailyTotal[x].$val;
+      //       }
+      //     });
+      //   }
+      //   else {
+      //     if (this.selectedDMY == 0) {
+      //       this.totalHold = 0;
+      //       this.totalReserved = 0;
+      //       this.totalSold = 0;
+      //     }
+      //   }
 
-      },
+      // },
 
-      weeklyTotalChanged() {
-        if (this.weeklyTotal.length > 0) {
-          var keys = Object.keys(this.weeklyTotal);
-          // var keys = CCCCC;
+      // weeklyTotalChanged() {
+      //   if (this.weeklyTotal.length > 0) {
+      //     var keys = Object.keys(this.weeklyTotal);
 
-          keys.forEach(x => {
-            if (this.weeklyTotal[x].$key == 'totalHold') {
-              this.totalHold = this.weeklyTotal[x].$val;
-            }
-            else if (this.weeklyTotal[x].$key == 'totalReserved') {
-              this.totalReserved = this.weeklyTotal[x].$val;
-            }
-            else if (this.weeklyTotal[x].$key == 'totalSold') {
-              this.totalSold = this.weeklyTotal[x].$val;
-            }
-          });
-        }
-        else {
-          if (this.selectedDMY == 1) {
-            this.totalHold = 0;
-            this.totalReserved = 0;
-            this.totalSold = 0;
-          }
-        }
-      },
+      //     keys.forEach(x => {
+      //       if (this.weeklyTotal[x].$key == 'totalHold') {
+      //         this.totalHold = this.weeklyTotal[x].$val;
+      //       }
+      //       else if (this.weeklyTotal[x].$key == 'totalReserved') {
+      //         this.totalReserved = this.weeklyTotal[x].$val;
+      //       }
+      //       else if (this.weeklyTotal[x].$key == 'totalSold') {
+      //         this.totalSold = this.weeklyTotal[x].$val;
+      //       }
+      //     });
+      //   }
+      //   else {
+      //     if (this.selectedDMY == 1) {
+      //       this.totalHold = 0;
+      //       this.totalReserved = 0;
+      //       this.totalSold = 0;
+      //     }
+      //   }
+      // },
 
-      monthlyTotalChanged() {
-        if (this.monthlyTotal.length > 0) {
-          var keys = Object.keys(this.monthlyTotal);
+      // monthlyTotalChanged() {
+      //   if (this.monthlyTotal.length > 0) {
+      //     var keys = Object.keys(this.monthlyTotal);
 
-          keys.forEach(x => {
-            if (this.monthlyTotal[x].$key == 'totalHold') {
-              this.totalHold = this.monthlyTotal[x].$val;
-            }
-            else if (this.monthlyTotal[x].$key == 'totalReserved') {
-              this.totalReserved = this.monthlyTotal[x].$val;
-            }
-            else if (this.monthlyTotal[x].$key == 'totalSold') {
-              this.totalSold = this.monthlyTotal[x].$val;
-            }
-          });
-        }
-        else {
-          if (this.selectedDMY == 2) {
-            this.totalHold = 0;
-            this.totalReserved = 0;
-            this.totalSold = 0;
-          }
-        }
-      },
+      //     keys.forEach(x => {
+      //       if (this.monthlyTotal[x].$key == 'totalHold') {
+      //         this.totalHold = this.monthlyTotal[x].$val;
+      //       }
+      //       else if (this.monthlyTotal[x].$key == 'totalReserved') {
+      //         this.totalReserved = this.monthlyTotal[x].$val;
+      //       }
+      //       else if (this.monthlyTotal[x].$key == 'totalSold') {
+      //         this.totalSold = this.monthlyTotal[x].$val;
+      //       }
+      //     });
+      //   }
+      //   else {
+      //     if (this.selectedDMY == 2) {
+      //       this.totalHold = 0;
+      //       this.totalReserved = 0;
+      //       this.totalSold = 0;
+      //     }
+      //   }
+      // },
 
-      yearlyTotalChanged() {
-        if (this.yearlyTotal.length > 0) {
-          var keys = Object.keys(this.yearlyTotal);
+      // yearlyTotalChanged() {
+      //   if (this.yearlyTotal.length > 0) {
+      //     var keys = Object.keys(this.yearlyTotal);
 
-          keys.forEach(x => {
-            if (this.yearlyTotal[x].$key == 'totalHold') {
-              this.totalHold = this.yearlyTotal[x].$val;
-            }
-            else if (this.yearlyTotal[x].$key == 'totalReserved') {
-              this.totalReserved = this.yearlyTotal[x].$val;
-            }
-            else if (this.yearlyTotal[x].$key == 'totalSold') {
-              this.totalSold = this.yearlyTotal[x].$val;
-            }
-          });
-        }
-        else {
-          if (this.selectedDMY == 3) {
-            this.totalHold = 0;
-            this.totalReserved = 0;
-            this.totalSold = 0;
-          }
-        }
-      },
+      //     keys.forEach(x => {
+      //       if (this.yearlyTotal[x].$key == 'totalHold') {
+      //         this.totalHold = this.yearlyTotal[x].$val;
+      //       }
+      //       else if (this.yearlyTotal[x].$key == 'totalReserved') {
+      //         this.totalReserved = this.yearlyTotal[x].$val;
+      //       }
+      //       else if (this.yearlyTotal[x].$key == 'totalSold') {
+      //         this.totalSold = this.yearlyTotal[x].$val;
+      //       }
+      //     });
+      //   }
+      //   else {
+      //     if (this.selectedDMY == 3) {
+      //       this.totalHold = 0;
+      //       this.totalReserved = 0;
+      //       this.totalSold = 0;
+      //     }
+      //   }
+      // },
 
       getDateRangeOfWeek(weekNo, y) {
         Date.prototype.getWeek = function () {

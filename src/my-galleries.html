@@ -65,9 +65,9 @@
         <!-- fixed slot="header" -->
         <app-toolbar primary>
           <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-          Galleries
+          <div main-title>Galleries</div>
 
-          <paper-menu-button vertical-align="top" horizontal-align="left" style="float:right">
+          <paper-menu-button vertical-align="top" horizontal-align="right">
             <paper-icon-button style="float:right" icon="my-icons:more-vert" slot="dropdown-trigger"></paper-icon-button>
             <paper-listbox slot="dropdown-content">
               <paper-item on-tap="_menuSelected" data-args="Walkthrough">

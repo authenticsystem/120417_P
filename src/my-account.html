@@ -159,17 +159,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <paper-item style="font-size:12px">Change password</paper-item>
           </paper-listbox>
         </paper-menu-button> -->
-        <div class="profilePhoto" style="text-align:center">
+        <!-- <div class="profilePhoto" style="text-align:center">
           <iron-icon hidden$="{{user.photoURL}}" icon="my-icons:account-circle" style=" height:180px;width:180px; max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></iron-icon>
           <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img>
           <br>
           <progress value="0" max="100" id="uploader" style=" -webkit-appearance: none; width:180px; height:5px;">0%</progress>
           <br>
           <input type="file" id="fileButton" on-tap="_upload" accept="image/*"></input>
-          <!-- <label for="file">Upload new picture</label> -->
-          <!-- <input type="file" id="file" id="fileButton" on-tap="_upload" accept="image/*" style="display:none" /> -->
+          <label for="file">Upload new picture</label>
+          <input type="file" id="file" id="fileButton" on-tap="_upload" accept="image/*" style="display:none" />
         </div>
-        <br>
+        <br> -->
         <div class="info">
           <paper-input label="Email" value="{{user.email}}" id="email" readonly></paper-input>
           <paper-input label="Firstname" value="{{firstname}}" id="fname" readonly></paper-input>

@@ -433,7 +433,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div hidden$="{{!viewActive}}">
         <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
         <div id="appview"></div>
-        <my-applied-view id="d26" transaction-key='{{viewData.key}}' prev-route="{{route.prefix}}" accountkey="{{accountkey}}"></my-applied-view>
+        <my-applied-view id="d26" transaction-key='{{viewData.key}}' prev-route="{{route.prefix}}" accountkey="{{accountkey}}" myname="{{myname}}"></my-applied-view>
         <!-- [[detailData.key]] -->
         <!-- </template> -->
       </div>
@@ -515,6 +515,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       accountChanged(e) {
         this.accountkey = e[0].accountkey;
+        this.fname = e[0].name.firstname;
+        this.mname = e[0].name.middlename;
+        this.lname = e[0].name.lastname;
+        this.myname = this.fname + ' ' + this.mname + ' ' + this.lname;
       },
       selectedPageChanged(e) {
         if (e == 0) {
@@ -703,6 +707,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var newDiv = document.createElement("my-applied-view");
           newDiv.setAttribute("id", "d26");
           newDiv.setAttribute("transaction-key", data_args);
+          newDiv.setAttribute("myname", this.myname);
           newDiv.setAttribute("prev-route", this.route.prefix);
           // window.location = '/applications/view/' + data_args;
           //if open existing
@@ -879,7 +884,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 start: this.startDateTimeValue,
                 timestamp: { ".sv": "timestamp" },
                 iscurrent: isCurrentReservation,
-                type: this.draftdata_type,
+                type: (this.draftdata_type === 'Reserve' ? 'reserved' :
+                                            this.draftdata_type === 'Hold' ? 'hold' :
+                                                this.draftdata_type === 'Buy' ? 'sold' : ''),
                 reference: this.applicationKey
               };
               firebaseUpdate["/reservations/" + this.fullLot + "/" + this.transactionKey] = dataForReservation;
@@ -892,6 +899,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = this.transTypeCorrespondingColor.name;
                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = this.transTypeCorrespondingColor.bg_color;
                 firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = this.transTypeCorrespondingColor.fore_color;
+                firebaseUpdate["/lots/" + this.fullLot + "/type_status_inventoriable"] = this.fullLotData.type + '_' + (this.draftdata_type === 'Reserve' ? 'reserved' : this.draftdata_type === 'Hold' ? 'hold' : this.draftdata_type === 'Buy' ? 'sold' : '') + '_' + this.fullLotData.inventoriable;
                 //shb 01/04
                 //for lots with level/map_lot: check other lots by map_lot, compare and get winning map_lot status
                 //get lots thru map_lot
@@ -931,6 +939,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                           firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
                           firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
                           firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
+                          firebaseUpdate["/lots/" + otherLotMapLot + "/type_status_inventoriable"] = this.fullLotData.type + '_' + winningColor + '_' + this.fullLotData.inventoriable;
                         }
                       });
                     }
