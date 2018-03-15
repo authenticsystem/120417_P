@@ -1196,7 +1196,7 @@
                                         firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = this.transTypeCorrespondingColor.name;
                                         firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = this.transTypeCorrespondingColor.bg_color;
                                         firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = this.transTypeCorrespondingColor.fore_color;
-                                        firebaseUpdate["/lots/" + this.fullLot + "/type_status_inventoriable"] = this.fullLotData.type + '_' + this.draftdata_type + '_' + this.fullLotData.inventoriable;
+                                        firebaseUpdate["/lots/" + this.fullLot + "/type_status_inventoriable"] = this.fullLotData.type + '_' + (this.draftdata_type === 'Reserve' ? 'reserved' : this.draftdata_type === 'Hold' ? 'hold' : this.draftdata_type === 'Buy' ? 'sold' : '') + '_' + this.fullLotData.inventoriable;
                                         //shb 01/04
                                         //for lots with level/map_lot: check other lots by map_lot, compare and get winning map_lot status
                                         //get lots thru map_lot
@@ -1238,6 +1238,8 @@
                                                             firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
                                                             firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
                                                             firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
+                                                            firebaseUpdate["/lots/" + otherLotMapLot + "/type_status_inventoriable"] = this.fullLotData.type + '_' + winningColor + '_' + 'no';
+
                                                         }
                                                     });
                                                 }
