@@ -366,6 +366,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <firebase-query path="/reports/activity/{{changeQry}}" data="{{dailyTotalData}}"></firebase-query>
     <firebase-query path="/reports/activity/{{changeQry}}/lotType" data="{{dailyData}}"></firebase-query>
     <firebase-query path="/reports/overAll/{{overAllDate}}/lotType" data="{{overallData}}"></firebase-query>
+    <firebase-query path="/reports/overAll/{{overAllDate}}/lotType" data="{{overallData}}"></firebase-query>
+    <firebase-query path="/lots" order-by-child="type_status_inventoriable" equal-to="{{detailsType}}_{{detailsStatus}}_{{detailsInventoriable}}" data="{{details}}"></firebase-query>
+    <!-- <firebase-query path="/lots" order-by-child="type" equal-to="gardenlots4" data="{{details}}"></firebase-query> -->
     <!-- <firebase-query path="/reports/overAll/{{overAllDate}}/overall" data="{{overallTotalData}}"></firebase-query> -->
 
     <app-header-layout fullbleed has-scrolling-region>
@@ -413,26 +416,65 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-pages selected="{{selectedTab}}">
           <!-- Announcements -->
           <div class="card">
-            <h3 style="display: inline-block;">
-              Activity Report: Today
-              <!-- <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+            <!-- <h3 style="display: inline-block;"> -->
+            <!-- Activity Report: Today -->
+            <!-- <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
                 DRY RUN
               </span> -->
-            </h3>
-            <div style="padding-top: 3px; font-size: 14px; overflow-x:auto;">
-              <table>
+            <!-- </h3> -->
+
+            <div>
+              <paper-dropdown-menu class="lot" label="Lot" vertical-align="top" horizontal-align="left">
+                <paper-listbox slot="dropdown-content" class="lot" attr-for-selected="value" selected="{{detailsType}}">
+                  <paper-item value="lawnlots">Lawnlots</paper-item>
+                  <paper-item value="wallniche">Wallniche</paper-item>
+                  <paper-item value="cinerarium">Cinerarium</paper-item>
+                  <paper-item value="bonechamber">Bonechamber</paper-item>
+                  <paper-item value="gardenlots1">Gardenlots1 (12.52)</paper-item>
+                  <paper-item value="gardenlots2">Gardenlots1 (12.43)</paper-item>
+                  <paper-item value="gardenlots3">Gardenlots1 (Irregular lots)</paper-item>
+                  <paper-item value="gardenlots4">Gardenlots2 (20.00)</paper-item>
+                  <paper-item value="gardenlots5">Gardenlots2 (Irregular lots)</paper-item>
+                  <paper-item value="familylots1">Familylots1 (53.27)</paper-item>
+                  <paper-item value="familylots2">Familylots1 (52.83)</paper-item>
+                  <paper-item value="familylots3">Familylots1 (Irregular lots)</paper-item>
+                  <paper-item value="familylots4">Familylots2 (37.45)</paper-item>
+                  <paper-item value="familylots5">Familylots2 (Irregular lots)</paper-item>
+                </paper-listbox>
+              </paper-dropdown-menu>
+              <paper-dropdown-menu class="status" label="Status" vertical-align="top" horizontal-align="left">
+                <paper-listbox slot="dropdown-content" class="status" attr-for-selected="value" selected="{{detailsStatus}}">
+                  <paper-item value="sold">Sold</paper-item>
+                  <paper-item value="reserved">Reserved</paper-item>
+                  <paper-item value="hold">Hold</paper-item>
+                  <paper-item value="available">Available</paper-item>
+                </paper-listbox>
+              </paper-dropdown-menu>
+              <paper-dropdown-menu class="inventoriable" label="Inventoriable" vertical-align="top" horizontal-align="left">
+                  <paper-listbox slot="dropdown-content" class="inventoriable" attr-for-selected="value" selected="{{detailsInventoriable}}">
+                    <paper-item value="yes">Yes</paper-item>
+                    <paper-item value="no">No</paper-item>
+                  </paper-listbox>
+                </paper-dropdown-menu>
+              <br>
+              <span style="font-size:12px; color:red">Total: {{detailsTotal}}</span>
+              <paper-button on-tap="_exportTableToCSVlawnlots" style="font-size:12px; float:right">
+                <iron-icon icon="my-icons:description"></iron-icon>Export to CSV</paper-button>
+              <table id="reportTableLawnlots">
                 <tr>
                   <th style="text-align: left;">Type</th>
-                  <th style="color: rgb(145, 145, 0);">Hold</th>
-                  <th style="color: orange;">Reserved</th>
-                  <th style="color: red;">Sold</th>
+                  <th style="text-align: left;">Lot</th>
+                  <th style="text-align: left;">Agent</th>
+                  <th style="text-align: left;">Buyer</th>
+                  <th style="text-align: left;">Date</th>
                 </tr>
-                <template is="dom-repeat" items="{{todayLotStatus}}">
+                <template is="dom-repeat" items="{{details}}">
                   <tr>
-                    <td style="text-align: left;">{{_formatType(item.$key)}}</td>
-                    <td style="color: black;">{{_formatNumber(item.hold)}}</td>
-                    <td style="color: black;">{{_formatNumber(item.reserved)}}</td>
-                    <td style="color: black;">{{_formatNumber(item.sold)}}</td>
+                    <td style="text-align: left;">{{item.type_status_inventoriable}}</td>
+                    <td style="text-align: left;">Block {{item.block}} Lot {{item.lot}} level {{item.level}}</td>
+                    <td style="text-align: left;">{{item.reservationdetails.agentdetails.firstname}} {{item.reservationdetails.agentdetails.middlename}} {{item.reservationdetails.agentdetails.lastname}}</td>
+                    <td style="text-align: left;">{{item.reservationdetails.buyerdetails.firstname}} {{item.reservationdetails.buyerdetails.middlename}} {{item.reservationdetails.buyerdetails.lastname}}</td>
+                    <td style="text-align: left;">{{item.reservationdetails.start}}</td>
                   </tr>
                 </template>
               </table>
@@ -595,8 +637,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <canvas id="dailyChart2" height="500"></canvas>
                   </div>
                 </div>
-
               </div>
+
+              <!-- <div class="card">
+                <paper-button style="margin:5px;float:right" on-tap="_exportTableToCSVlawnlots">
+                  <iron-icon icon="my-icons:description"></iron-icon>Export to CSV</paper-button>
+                <table id="reportTableLawnlots">
+                  <tr>
+                    <th style="text-align: left;">Type</th>
+                    <th style="text-align: left;">Status</th>
+                    <th style="text-align: left;">Block type</th>
+                  </tr>
+                  <template is="dom-repeat" items="{{details}}">
+                    <tr>
+                      <td style="text-align: left;">{{item.type}}</td>
+                      <td style="text-align: left;">{{item.status}}</td>
+                      <td style="text-align: left;">Block {{item.block}} Lot {{item.lot}}</td>
+                    </tr>
+                  </template>
+                </table>
+              </div> -->
               <!--end daily Activity Report -->
 
               <!-- comparative report -->
@@ -620,11 +680,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <paper-item id="compPaper-item">Lawn Lots</paper-item>
                         <paper-item id="compPaper-item">Cinerarium</paper-item>
                         <paper-item id="compPaper-item">Wall Niche</paper-item>
-                        <paper-item id="compPaper-item">Family Lots 1 (Area=37.45m²)</paper-item>
-                        <paper-item id="compPaper-item">Family Lots 1 (Irregular Lots)</paper-item>
-                        <paper-item id="compPaper-item">Family Lots 2 (Area=53.27m²)</paper-item>
-                        <paper-item id="compPaper-item">Family Lots 2 (Area=52.83m²)</paper-item>
+                        <paper-item id="compPaper-item">Family Lots 2 (Area=37.45m²)</paper-item>
                         <paper-item id="compPaper-item">Family Lots 2 (Irregular Lots)</paper-item>
+                        <paper-item id="compPaper-item">Family Lots 1 (Area=53.27m²)</paper-item>
+                        <paper-item id="compPaper-item">Family Lots 1 (Area=52.83m²)</paper-item>
+                        <paper-item id="compPaper-item">Family Lots 1 (Irregular Lots)</paper-item>
                         <paper-item id="compPaper-item">Garden Lots 1 (Area=12.52m²)</paper-item>
                         <paper-item id="compPaper-item">Garden Lots 1 (Area=12.43m²)</paper-item>
                         <paper-item id="compPaper-item">Garden Lots 1 (Irregular Lots)</paper-item>
@@ -1047,7 +1107,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         filterSHRAN: {
           type: String,
         },
-        dailyTotalData: Object
+        dailyTotalData: Object,
+        // allLotdetails: Object
       },
 
       ready() {
@@ -1065,6 +1126,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         this.selectedReport = 0;
         this.selectedDMY = 0;
+        this.detailsType = 'wallniche';
+        this.detailsStatus = 'sold';
+        this.detailsInventoriable = 'yes';
+        this.detailsTotal = 0;
       },
 
       observers: [
@@ -1080,8 +1145,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'accountChanged(account.*)',
         // 'notificationDataChanged(notificationData.*,notificationData2.*)',
         'notificationDataChanged(notificationData.*)',
-        'dailyTotalDataChanged(dailyTotalData.*)'
+        'dailyTotalDataChanged(dailyTotalData.*)',
+        'detailsChanged(details.*)'
       ],
+
+      _exportTableToCSVlawnlots() {
+        this.export_table_to_csv('lawnlots', "lawnlots.csv");
+      },
 
       _exportTableToCSV() {
         this.export_table_to_csv('daily', "dailyReport.csv");
@@ -1097,6 +1167,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         else if (report == 'overAll') {
           var rows = Polymer.dom(this.root).querySelectorAll("#overAllReportTable tr");
+        }
+        else if (report == 'lawnlots') {
+          var rows = Polymer.dom(this.root).querySelectorAll("#reportTableLawnlots tr");
         }
         for (var i = 0; i < rows.length; i++) {
           var row = [], cols = rows[i].querySelectorAll("td, th");
@@ -1133,6 +1206,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
           this.notificationdata_merge = notifications;
         }
+      },
+
+      detailsChanged(e) {
+        this.detailsTotal = e.base.length;
       },
 
       _timeStampToDateTime(ts) {
@@ -1282,23 +1359,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             text = 'Wall Niche';
           }
           else if (DailyfilterBy == 5) {
-            lotType = 'comparative/familylots1';
-            text = 'Wall Niche';
-          }
-          else if (DailyfilterBy == 6) {
-            lotType = 'comparative/familylots2';
-            text = 'Wall Niche';
-          }
-          else if (DailyfilterBy == 7) {
-            lotType = 'comparative/familylots3';
-            text = 'Wall Niche';
-          }
-          else if (DailyfilterBy == 8) {
             lotType = 'comparative/familylots4';
             text = 'Wall Niche';
           }
-          else if (DailyfilterBy == 9) {
+          else if (DailyfilterBy == 6) {
             lotType = 'comparative/familylots5';
+            text = 'Wall Niche';
+          }
+          else if (DailyfilterBy == 7) {
+            lotType = 'comparative/familylots1';
+            text = 'Wall Niche';
+          }
+          else if (DailyfilterBy == 8) {
+            lotType = 'comparative/familylots2';
+            text = 'Wall Niche';
+          }
+          else if (DailyfilterBy == 9) {
+            lotType = 'comparative/familylots3';
             text = 'Wall Niche';
           }
           else if (DailyfilterBy == 10) {
