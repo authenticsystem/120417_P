@@ -347,9 +347,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <firebase-query path="/reports/overAll/{{overAllDate}}/lotType" data="{{overallData}}"></firebase-query>
 
     <firebase-query path="/lots" order-by-child="reservationdetails/start" start-at="{{todayDate}}T00:00" data="{{todayLotDetails}}"></firebase-query>
-    <firebase-query path="/lots" order-by-child="reservationdetails/start" start-at="{{lotDetailsStartAt}}" end-at="{{lotDetailsEndAt}}"
-      data="{{lotDetails}}" limit-to-last="50"></firebase-query>
-
+    <!-- <firebase-query path="/lots" order-by-child="reservationdetails/start" start-at="{{lotDetailsStartAt}}" end-at="{{lotDetailsEndAt}}"
+      data="{{lotDetails}}" limit-to-last="50"></firebase-query> -->
     <!-- <firebase-query path="/reports/overAll/{{overAllDate}}/overall" data="{{overallTotalData}}"></firebase-query> -->
 
     <app-header-layout fullbleed has-scrolling-region>
@@ -604,12 +603,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       </paper-listbox>
                     </paper-dropdown-menu>
                   </span>
-                  <paper-toggle-button checked="{{showLotDetails}}" on-tap="_showLotDetails" style="font-size:12px; float: right;">View details</paper-toggle-button>
+                  <!-- <paper-toggle-button checked="{{showLotDetails}}" on-tap="_showLotDetails" style="font-size:12px; float: right; margin-bottom:10px">View details</paper-toggle-button> -->
                   <div class="chart-container" hidden$="{{hideDailyChart2}}">
                     <canvas id="dailyChart2" height="500"></canvas>
                   </div>
-                  <br>
-                  <div hidden$="{{hidelotDetailsTable}}" style="font-size: 12px; overflow-x:auto;">
+                  <div hidden$="{{hidelotDetailsTable}}">
                     <table id="lotDetailsTable">
                       <tr>
                         <td colspan="6">
@@ -1083,7 +1081,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         hidelotDetailsTable: {
           type: Boolean,
           value: true
-        },
+        }
       },
 
       ready() {
@@ -1171,6 +1169,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       //     }
       //   });
       // },
+
+      _exportTableToCSVtodayDetails() {
+        this.export_table_to_csv('today', "todayReport.csv");
+      },
 
       _exportTableToCSVtodayDetails() {
         this.export_table_to_csv('today', "todayReport.csv");
@@ -2048,6 +2050,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.yearlyDate = '';
             this.yearWeekDate = yearWeek;
             this.weekDates = this.getDateRangeOfWeek(week, wyear, 'spanDate');
+
+            this.lotDetailsDate = this.getDateRangeOfWeek(week, wyear, 'spanDate');
+            this.lotDetailsStartAt = this.getDateRangeOfWeek(week, wyear, 'spanDateStartAt');
+            this.lotDetailsEndAt = this.getDateRangeOfWeek(week, wyear, 'spanDateEndAt');
 
             this.lotDetailsDate = this.getDateRangeOfWeek(week, wyear, 'spanDate');
             this.lotDetailsStartAt = this.getDateRangeOfWeek(week, wyear, 'spanDateStartAt');
