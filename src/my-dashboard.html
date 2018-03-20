@@ -36,11 +36,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/paper-badge/paper-badge.html">
+
 
 <link rel="import" href="time-element.html">
 
@@ -48,6 +48,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <script src="../bower_components/chart.js/dist/Chart.bundle.js"></script>
 <script src="../bower_components/chartjs-plugin-datalabels/dist/Chartjs-plugin-datalabels.js"></script>
 <script type="text/javascript" src="../bower_components/Chart.PieceLabel.js/src/Chart.PieceLabel.js"></script>
+
+
 
 <dom-module id="my-dashboard">
   <template>
@@ -347,6 +349,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <firebase-query path="/lots" order-by-child="reservationdetails/start" start-at="{{todayDate}}T00:00" data="{{todayLotDetails}}"></firebase-query>
     <firebase-query path="/lots" order-by-child="reservationdetails/start" start-at="{{lotDetailsStartAt}}" end-at="{{lotDetailsEndAt}}"
       data="{{lotDetails}}" limit-to-last="50"></firebase-query>
+
     <!-- <firebase-query path="/reports/overAll/{{overAllDate}}/overall" data="{{overallTotalData}}"></firebase-query> -->
 
     <app-header-layout fullbleed has-scrolling-region>
@@ -487,7 +490,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               <!--daily Activity Report -->
               <div>
-
                 <div class="card" hidden$="{{hideActivity}}">
                   <div>
                     <center>
@@ -1081,10 +1083,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         hidelotDetailsTable: {
           type: Boolean,
           value: true
-        }
+        },
       },
 
       ready() {
+        // this.changePage(1);
+
         var date = new Date();
         this.startMonthYear = date.getFullYear().toString();
         this.endMonthYear = date.getFullYear().toString();
@@ -1117,8 +1121,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'accountChanged(account.*)',
         // 'notificationDataChanged(notificationData.*,notificationData2.*)',
         'notificationDataChanged(notificationData.*)',
-        'dailyTotalDataChanged(dailyTotalData.*)'
+        'dailyTotalDataChanged(dailyTotalData.*)',
+        'lotDetailsChanged(lotDetails)'
       ],
+      lotDetailsChanged() {
+        Object.keys(this.lotDetails).forEach(x => {
+          this.areas = this.lotDetails[x].area;
+        });
+      },
+
+      // changePage(page) {
+      //   var btn_next = Polymer.dom(this.root).querySelector("#btn_next");
+      //   var btn_prev = Polymer.dom(this.root).querySelector("#btn_prev");
+      //   var listing_table = document.querySelector("#listingTable");
+      //   // var listing_table = document.getElementById("listingTable");
+      //   var page_span = Polymer.dom(this.root).querySelector("#page");
+      //   firebase.database().ref("/lots").orderByChild("reservationdetails/start").startAt(this.lotDetailsStartAt).endAt(this.lotDetailsEndAt).limitToLast(50).on("value", function (snapshot) {
+      //     var objJson = [];
+      //     var current_page = 1;
+      //     var records_per_page = 3;
+
+      //     snapshot.forEach(element => {
+      //       objJson.push(element.val());
+      //       // console.log(element.val());
+      //     });
+      //     var numPages = Math.ceil(objJson.length / records_per_page);
+
+      //     // Validate page
+      //     if (page < 1) page = 1;
+      //     if (page > numPages) page = numPages;
+
+      //     listing_table.innerHTML="";
+
+      //     for (var i = (page - 1) * records_per_page; i < (page * records_per_page) && i < objJson.length; i++) {
+      //       listing_table.textContent += objJson[i].lot + "<br>";
+      //     }
+      //     page_span.innerHTML = page + "/" + numPages;
+
+      //     if (page == 1) {
+      //       btn_prev.style.visibility = "hidden";
+      //     } else {
+      //       btn_prev.style.visibility = "visible";
+      //     }
+
+      //     if (page == numPages) {
+      //       btn_next.style.visibility = "hidden";
+      //     } else {
+      //       btn_next.style.visibility = "visible";
+      //     }
+      //   });
+      // },
 
       _exportTableToCSVtodayDetails() {
         this.export_table_to_csv('today', "todayReport.csv");
@@ -1995,7 +2047,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.monthDate = '';
             this.yearlyDate = '';
             this.yearWeekDate = yearWeek;
-            this.weekDates = this.getDateRangeOfWeek(week, wyear);
+            this.weekDates = this.getDateRangeOfWeek(week, wyear, 'spanDate');
 
             this.lotDetailsDate = this.getDateRangeOfWeek(week, wyear, 'spanDate');
             this.lotDetailsStartAt = this.getDateRangeOfWeek(week, wyear, 'spanDateStartAt');
@@ -2049,8 +2101,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.changeQry = query;
             this.reportTitle = 'Yearly Report ' + yearly;
 
-             this.lotDetailsDate = yearly;
-            this.lotDetailsStartAt = yearly + '-01'+ '-01T00:00';
+            this.lotDetailsDate = yearly;
+            this.lotDetailsStartAt = yearly + '-01' + '-01T00:00';
             this.lotDetailsEndAt = yearly + '-12' + '-31T23:59';
           }
 
