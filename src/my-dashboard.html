@@ -358,16 +358,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
           <div main-title hidden$="{{!access}}">Dashboard</div>
           <div main-title hidden$="{{access}}">Opps!</div>
-          <!-- <div>
-            <paper-menu-button vertical-align="top" horizontal-align="right">
-              <paper-icon-button slot="dropdown-trigger" icon="my-icons:notifications"></paper-icon-button>
-              <paper-listbox slot="dropdown-content">
-                <paper-item>
-                  the quick brown fox jumps over the lazy dog
-                </paper-item>
-              </paper-listbox>
-            </paper-menu-button>
-          </div> -->
         </app-toolbar>
         <paper-tabs selected="{{selectedTab}}" scrollable>
           <paper-tab>
@@ -464,7 +454,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <template is="dom-repeat" items="{{todayLotDetails}}">
                     <tr>
                       <td style="text-align: left;">{{_formatType(item.type)}}</td>
-                      <td style="text-align: left;">Block {{item.block}} Lot {{item.lot}} Level {{item.level}}</td>
+                      <td style="text-align: left;">Block {{item.block}} Lot {{item.lot}} {{_formatLot(item.level)}}</td>
                       <td style="text-align: left;">{{item.status}}</td>
                       <td style="text-align: left;">{{item.reservationdetails.agentdetails.firstname}} {{item.reservationdetails.agentdetails.middlename}}
                         {{item.reservationdetails.agentdetails.lastname}}
@@ -624,7 +614,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <div class="chart-container" hidden$="{{hideDailyChart2}}">
                     <canvas id="dailyChart2" height="500"></canvas>
                   </div>
-                  <br>
+                  <!-- <br>
                   <div hidden$="{{hidelotDetailsTable}}" style="font-size: 12px; overflow-x:auto;">
                     <table id="lotDetailsTable">
                       <tr>
@@ -642,7 +632,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <template is="dom-repeat" items="{{lotDetails}}">
                         <tr>
                           <td style="text-align: left;">{{_formatType(item.type)}}</td>
-                          <td style="text-align: left;">Block {{item.block}} Lot {{item.lot}} Level{{item.level}}</td>
+                          <td style="text-align: left;">Block {{item.block}} Lot {{item.lot}}</td>
                           <td style="text-align: left;">{{item.status}}</td>
                           <td style="text-align: left;">{{item.reservationdetails.agentdetails.firstname}} {{item.reservationdetails.agentdetails.middlename}}
                             {{item.reservationdetails.agentdetails.lastname}}
@@ -654,7 +644,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         </tr>
                       </template>
                     </table>
-                  </div>
+                  </div> -->
                 </div>
 
               </div>
@@ -1142,10 +1132,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _download() {
         var data = [];
-        firebase.database().ref("/lots").orderByChild("reservationdetails/start").startAt(this.lotDetailsStartAt).endAt(this.lotDetailsEndAt).on("value", function (snapshot) {
+        firebase.database().ref("/lots").orderByChild("reservationdetails/start").startAt(this.lotDetailsStartAt).endAt(this.lotDetailsEndAt).once("value", function (snapshot) {
           snapshot.forEach(element => {
             data.push([
-              element.val().type,
+            this._formatType(element.val().type),
               element.val().block,
               element.val().lot,
               element.val().level,
@@ -1643,6 +1633,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         else if (e == 'gardenlots3') return 'Garden Lots 1 (Irregular Lots)';
         else if (e == 'gardenlots4') return 'Garden Lots 2 (Area=20.00m²)';
         else if (e == 'gardenlots5') return 'Garden Lots 2 (Irregular Lots)';
+      },
+
+      _formatLot(e){
+        if(e == ''){
+          return '';
+        }
+        else{
+          return 'Level '+e.toUpperCase();
+        }
       },
 
       _formatNumber(e) {
