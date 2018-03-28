@@ -79,6 +79,21 @@
     "iron-iconset-svg": "^2.0.0",
     "webcomponentsjs": "^v1.0.19",
     "polymer": "^2.2.0",
-    "iron-flex-layout": "^2.0.0"
+    "iron-flex-layout": "^2.0.0",
+    "iron-selector": "1 - 2",
+    "iron-ajax": "1 - 2",
+    "paper-item": "1 - 2",
+    "neon-animation": "1 - 2",
+    "paper-tooltip": "^2.0.1",
+    "iron-resizable-behavior": "1 - 2",
+    "iron-form": "^2.0.1",
+    "iron-icon": "1 - 2",
+    "iron-a11y-keys-behavior": "1 - 2",
+    "paper-behaviors": "1 - 2",
+    "paper-styles": "1 - 2",
+    "iron-form-element-behavior": "1 - 2",
+    "paper-material": "^2.0.0",
+    "paper-ripple": "1 - 2",
+    "iron-validatable-behavior": "1 - 2"
   }
 }
