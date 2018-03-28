@@ -62,9 +62,11 @@
     "paper-dropdown": "pushkar8723/paper-dropdown#^2.0.0",
     "paper-buttons-group": "NeilujD/paper-buttons-group#^2.0.0",
     "paper-dialog-scrollable": "PolymerElements/paper-dialog-scrollable#^2.2.0",
-    "photo-gallery":"hectorsantillan/photo-gallery#2.0.5",
-    "app-media":"PolymerElements/app-media#^0.8.1",
-    "Chart.PieceLabel.js": "^0.8.2"
+    "photo-gallery": "hectorsantillan/photo-gallery#2.0.5",
+    "app-media": "PolymerElements/app-media#^0.8.1",
+    "Chart.PieceLabel.js": "^0.8.2",
+    "paper-datatable-api": "RoXuS/paper-datatable-api#^2.0.13",
+    "paper-datatable": "^0.9.8"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"

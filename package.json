@@ -19,11 +19,5 @@
     "test:integration": "polymer build # test that psk builds without error with the CLI",
     "build": "gulp build"
   },
-<<<<<<< HEAD
   "dependencies": {}
-=======
-  "dependencies": {
-    "lodash.where": "^3.1.0"
-  }
->>>>>>> ardie
 }
