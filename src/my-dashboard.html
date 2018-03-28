@@ -349,6 +349,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <firebase-query path="/lots" order-by-child="reservationdetails/start" start-at="{{todayDate}}T00:00" data="{{todayLotDetails}}"></firebase-query>
     <!-- <firebase-query path="/lots" order-by-child="reservationdetails/start" start-at="{{lotDetailsStartAt}}" end-at="{{lotDetailsEndAt}}"
       data="{{lotDetails}}" limit-to-last="50"></firebase-query> -->
+
     <!-- <firebase-query path="/reports/overAll/{{overAllDate}}/overall" data="{{overallTotalData}}"></firebase-query> -->
 
     <app-header-layout fullbleed has-scrolling-region>
@@ -357,7 +358,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
           <div main-title hidden$="{{!access}}">Dashboard</div>
           <div main-title hidden$="{{access}}">Opps!</div>
-          <!-- <paper-icon-button icon="my-icons:notifications"></paper-icon-button> -->
+          <!-- <div>
+            <paper-menu-button vertical-align="top" horizontal-align="right">
+              <paper-icon-button slot="dropdown-trigger" icon="my-icons:notifications"></paper-icon-button>
+              <paper-listbox slot="dropdown-content">
+                <paper-item>
+                  the quick brown fox jumps over the lazy dog
+                </paper-item>
+              </paper-listbox>
+            </paper-menu-button>
+          </div> -->
         </app-toolbar>
         <paper-tabs selected="{{selectedTab}}" scrollable>
           <paper-tab>
@@ -395,76 +405,79 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <iron-pages selected="{{selectedTab}}">
           <!-- Announcements -->
-          <div>
-
-            <div class="card" style="font-size: 12px; overflow-x:auto;">
-              <h3>
-                Activity Report: Today
-              </h3>
-              <table>
-                <tr>
-                  <th style="text-align: left;">Type</th>
-                  <th style="color: rgb(145, 145, 0);">Hold</th>
-                  <th style="color: orange;">Reserved</th>
-                  <th style="color: red;">Sold</th>
-                </tr>
-                <template is="dom-repeat" items="{{todayLotStatus}}">
-                  <tr>
-                    <td style="text-align: left;">{{_formatType(item.$key)}}</td>
-                    <td style="color: black;">{{_formatNumber(item.hold)}}</td>
-                    <td style="color: black;">{{_formatNumber(item.reserved)}}</td>
-                    <td style="color: black;">{{_formatNumber(item.sold)}}</td>
-                  </tr>
-                </template>
-              </table>
+          <div class="card">
+            <div class="typewriter">
+              <h1>Coming soon......</h1>
             </div>
-
-            <div class="card" style="font-size: 12px; overflow-x:auto;">
-              <paper-button style="float:right; font-size:12px" on-tap="_exportTableToCSVtodayDetails">
-                <iron-icon icon="my-icons:description"></iron-icon>Export to CSV</paper-button>
-              <table id="todayDetailsTable">
-                <tr>
-                  <td colspan="6">
-                    <iron-icon icon="my-icons:event"></iron-icon>{{todayDate}}</td>
-                </tr>
-                <tr>
-                  <th style="text-align: left;">Lot type</th>
-                  <th style="text-align: left;">Lot</th>
-                  <th style="text-align: left;">Status</th>
-                  <th style="text-align: left;">Agent</th>
-                  <th style="text-align: left;">Buyer</th>
-                  <th style="text-align: left;">Date</th>
-                </tr>
-                <template is="dom-repeat" items="{{todayLotDetails}}">
-                  <tr>
-                    <td style="text-align: left;">{{_formatType(item.type)}}</td>
-                    <td style="text-align: left;">Block {{item.block}} Lot {{item.lot}} Level {{item.level}}</td>
-                    <td style="text-align: left;">{{item.status}}</td>
-                    <td style="text-align: left;">{{item.reservationdetails.agentdetails.firstname}} {{item.reservationdetails.agentdetails.middlename}}
-                      {{item.reservationdetails.agentdetails.lastname}}
-                    </td>
-                    <td style="text-align: left;">{{item.reservationdetails.buyerdetails.firstname}} {{item.reservationdetails.buyerdetails.middlename}}
-                      {{item.reservationdetails.buyerdetails.lastname}}
-                    </td>
-                    <td style="text-align: left;">{{item.reservationdetails.start}}</td>
-                  </tr>
-                </template>
-              </table>
-            </div>
-
           </div>
           <!-- End of Announcements -->
 
           <!-- Reports -->
           <div>
 
-            <!-- staff report (hidden$="{{staff}}")-->
+            <!-- agent report (hidden$="{{staff}}")-->
             <div class="card" hidden$="{{agent}}">
               <div class="typewriter">
                 <h1>Coming soon......</h1>
               </div>
             </div>
-            <!-- end of staff report -->
+            <!-- end of agent report -->
+            <div hidden$="{{staff}}">
+              <div class="card" style="font-size: 12px; overflow-x:auto;">
+                <h3>
+                  Activity Report: Today
+                </h3>
+                <table>
+                  <tr>
+                    <th style="text-align: left;">Type</th>
+                    <th style="color: rgb(145, 145, 0);">Hold</th>
+                    <th style="color: orange;">Reserved</th>
+                    <th style="color: red;">Sold</th>
+                  </tr>
+                  <template is="dom-repeat" items="{{todayLotStatus}}">
+                    <tr>
+                      <td style="text-align: left;">{{_formatType(item.$key)}}</td>
+                      <td style="color: black;">{{_formatNumber(item.hold)}}</td>
+                      <td style="color: black;">{{_formatNumber(item.reserved)}}</td>
+                      <td style="color: black;">{{_formatNumber(item.sold)}}</td>
+                    </tr>
+                  </template>
+                </table>
+              </div>
+
+              <div class="card" style="font-size: 12px; overflow-x:auto;">
+                <paper-button style="float:right; font-size:12px" on-tap="_exportTableToCSVtodayDetails">
+                  <iron-icon icon="my-icons:description"></iron-icon>Export to CSV</paper-button>
+                <table id="todayDetailsTable">
+                  <tr>
+                    <td colspan="6">
+                      <iron-icon icon="my-icons:event"></iron-icon>{{todayDate}}</td>
+                  </tr>
+                  <tr>
+                    <th style="text-align: left;">Lot type</th>
+                    <th style="text-align: left;">Lot</th>
+                    <th style="text-align: left;">Status</th>
+                    <th style="text-align: left;">Agent</th>
+                    <th style="text-align: left;">Buyer</th>
+                    <th style="text-align: left;">Date</th>
+                  </tr>
+                  <template is="dom-repeat" items="{{todayLotDetails}}">
+                    <tr>
+                      <td style="text-align: left;">{{_formatType(item.type)}}</td>
+                      <td style="text-align: left;">Block {{item.block}} Lot {{item.lot}} Level {{item.level}}</td>
+                      <td style="text-align: left;">{{item.status}}</td>
+                      <td style="text-align: left;">{{item.reservationdetails.agentdetails.firstname}} {{item.reservationdetails.agentdetails.middlename}}
+                        {{item.reservationdetails.agentdetails.lastname}}
+                      </td>
+                      <td style="text-align: left;">{{item.reservationdetails.buyerdetails.firstname}} {{item.reservationdetails.buyerdetails.middlename}}
+                        {{item.reservationdetails.buyerdetails.lastname}}
+                      </td>
+                      <td style="text-align: left;">{{item.reservationdetails.start}}</td>
+                    </tr>
+                  </template>
+                </table>
+              </div>
+            </div>
 
             <!-- owner's report -->
             <div hidden$="{{owner}}">
@@ -602,12 +615,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <paper-item value="hold">Hold</paper-item>
                       </paper-listbox>
                     </paper-dropdown-menu>
+                    <span style="float:right">
+                      <iron-icon icon="my-icons:description"></iron-icon>
+                      <paper-button on-tap="_download" style="font-size:12px">export to csv</paper-button>
+                    </span>
                   </span>
-                  <!-- <paper-toggle-button checked="{{showLotDetails}}" on-tap="_showLotDetails" style="font-size:12px; float: right; margin-bottom:10px">View details</paper-toggle-button> -->
+                  <!-- <paper-toggle-button checked="{{showLotDetails}}" on-tap="_showLotDetails" style="font-size:12px; float: right;">View details</paper-toggle-button> -->
                   <div class="chart-container" hidden$="{{hideDailyChart2}}">
                     <canvas id="dailyChart2" height="500"></canvas>
                   </div>
-                  <div hidden$="{{hidelotDetailsTable}}">
+                  <br>
+                  <div hidden$="{{hidelotDetailsTable}}" style="font-size: 12px; overflow-x:auto;">
                     <table id="lotDetailsTable">
                       <tr>
                         <td colspan="6">
@@ -1081,7 +1099,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         hidelotDetailsTable: {
           type: Boolean,
           value: true
-        }
+        },
       },
 
       ready() {
@@ -1119,59 +1137,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'accountChanged(account.*)',
         // 'notificationDataChanged(notificationData.*,notificationData2.*)',
         'notificationDataChanged(notificationData.*)',
-        'dailyTotalDataChanged(dailyTotalData.*)',
-        'lotDetailsChanged(lotDetails)'
+        'dailyTotalDataChanged(dailyTotalData.*)'
       ],
-      lotDetailsChanged() {
-        Object.keys(this.lotDetails).forEach(x => {
-          this.areas = this.lotDetails[x].area;
-        });
-      },
 
-      // changePage(page) {
-      //   var btn_next = Polymer.dom(this.root).querySelector("#btn_next");
-      //   var btn_prev = Polymer.dom(this.root).querySelector("#btn_prev");
-      //   var listing_table = document.querySelector("#listingTable");
-      //   // var listing_table = document.getElementById("listingTable");
-      //   var page_span = Polymer.dom(this.root).querySelector("#page");
-      //   firebase.database().ref("/lots").orderByChild("reservationdetails/start").startAt(this.lotDetailsStartAt).endAt(this.lotDetailsEndAt).limitToLast(50).on("value", function (snapshot) {
-      //     var objJson = [];
-      //     var current_page = 1;
-      //     var records_per_page = 3;
+      _download() {
+        var data = [];
+        firebase.database().ref("/lots").orderByChild("reservationdetails/start").startAt(this.lotDetailsStartAt).endAt(this.lotDetailsEndAt).on("value", function (snapshot) {
+          snapshot.forEach(element => {
+            data.push([
+              element.val().type,
+              element.val().block,
+              element.val().lot,
+              element.val().level,
+              element.val().status,
+              element.val().reservationdetails.agentdetails.firstname,
+              element.val().reservationdetails.agentdetails.middlename,
+              element.val().reservationdetails.agentdetails.lastname,
+              element.val().reservationdetails.buyerdetails.firstname,
+              element.val().reservationdetails.buyerdetails.middlename,
+              element.val().reservationdetails.buyerdetails.lastname,
+              element.val().reservationdetails.start,
+            ]);
+          });
+          var csv = 'Lot type,Block,Lot,Level,Status,Agent firstname,Agent middlename,Agent lastname,Buyer firstname,Buyer middlename,Buyer lastname,Date\n';
+          data.forEach(function (row) {
+            csv += row.join(',');
+            csv += "\n";
+          });
+          // console.log(csv);
 
-      //     snapshot.forEach(element => {
-      //       objJson.push(element.val());
-      //       // console.log(element.val());
-      //     });
-      //     var numPages = Math.ceil(objJson.length / records_per_page);
-
-      //     // Validate page
-      //     if (page < 1) page = 1;
-      //     if (page > numPages) page = numPages;
-
-      //     listing_table.innerHTML="";
-
-      //     for (var i = (page - 1) * records_per_page; i < (page * records_per_page) && i < objJson.length; i++) {
-      //       listing_table.textContent += objJson[i].lot + "<br>";
-      //     }
-      //     page_span.innerHTML = page + "/" + numPages;
-
-      //     if (page == 1) {
-      //       btn_prev.style.visibility = "hidden";
-      //     } else {
-      //       btn_prev.style.visibility = "visible";
-      //     }
-
-      //     if (page == numPages) {
-      //       btn_next.style.visibility = "hidden";
-      //     } else {
-      //       btn_next.style.visibility = "visible";
-      //     }
-      //   });
-      // },
-
-      _exportTableToCSVtodayDetails() {
-        this.export_table_to_csv('today', "todayReport.csv");
+          var hiddenElement = document.createElement('a');
+          hiddenElement.href = 'data:text/csv;charset=utf-8,' + encodeURI(csv);
+          hiddenElement.target = '_blank';
+          hiddenElement.download = 'lotdetailsReport.csv';
+          hiddenElement.click();
+        })
       },
 
       _exportTableToCSVtodayDetails() {
@@ -2050,10 +2050,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.yearlyDate = '';
             this.yearWeekDate = yearWeek;
             this.weekDates = this.getDateRangeOfWeek(week, wyear, 'spanDate');
-
-            this.lotDetailsDate = this.getDateRangeOfWeek(week, wyear, 'spanDate');
-            this.lotDetailsStartAt = this.getDateRangeOfWeek(week, wyear, 'spanDateStartAt');
-            this.lotDetailsEndAt = this.getDateRangeOfWeek(week, wyear, 'spanDateEndAt');
 
             this.lotDetailsDate = this.getDateRangeOfWeek(week, wyear, 'spanDate');
             this.lotDetailsStartAt = this.getDateRangeOfWeek(week, wyear, 'spanDateStartAt');
