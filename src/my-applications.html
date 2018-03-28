@@ -29,6 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
@@ -258,7 +259,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <firebase-query id="query" path="/applicationsNew" data="{{applicationsNew}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
                   end-at="{{typeValue}}" limit-to-last="50">
                 </firebase-query>
-                
+
                 <iron-scroll-document id="threshold">
 
                   <template is="dom-if" if="{{!access}}">
@@ -326,7 +327,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </div>
                   <div class="buttons">
                     <paper-button dialog-dismiss>Cancel</paper-button>
-                    <paper-button hidden$="{{!expiryHoursDaysValue}}"autofocus on-tap="_approveApp">Approve</paper-button>
+                    <paper-button hidden$="{{!expiryHoursDaysValue}}" autofocus on-tap="_approveApp">Approve</paper-button>
                   </div>
                 </paper-dialog>
 
@@ -346,6 +347,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </template>
 
                   <template is="dom-if" if="{{access}}">
+                      <!-- <paper-spinner active="{{tabSpinner}}"></paper-spinner> -->
                     <iron-list items="[[applications]]" as="item" selection-enabled multi-selection scroll-target="threshold">
                       <div style="text-align:center">{{msg}}</div>
                       <paper-toast id="toast" text="" duration="0"></paper-toast>
@@ -496,6 +498,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         route: Object,
         routeData: Object,
         account: Object,
+        tabSpinner: {
+          type: Boolean,
+          value: true
+        }
       },
       observers: [
         '_searchChanged(filterBy, search)',
@@ -885,8 +891,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 timestamp: { ".sv": "timestamp" },
                 iscurrent: isCurrentReservation,
                 type: (this.draftdata_type === 'Reserve' ? 'reserved' :
-                                            this.draftdata_type === 'Hold' ? 'hold' :
-                                                this.draftdata_type === 'Buy' ? 'sold' : ''),
+                  this.draftdata_type === 'Hold' ? 'hold' :
+                    this.draftdata_type === 'Buy' ? 'sold' : ''),
                 reference: this.applicationKey
               };
               firebaseUpdate["/reservations/" + this.fullLot + "/" + this.transactionKey] = dataForReservation;
