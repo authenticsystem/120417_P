@@ -13,10 +13,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="shared-styles.html">
 
 
-<dom-module id="my-announcement-new">
+<dom-module id="my-announcement-edit">
     <template>
         <style include="shared-styles">
             :host {
@@ -30,8 +31,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 background-color: #388E3C;
             }
 
-            .action{
-                padding-top:16px;
+            .action {
+                padding-top: 16px;
             }
 
             paper-button {
@@ -47,21 +48,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         </style>
 
+        <firebase-document path="{{path}}" data="{{newdata}}"></firebase-document>
         <app-header-layout fullbleed has-scrolling-region>
             <app-header fixed slot="header">
                 <app-toolbar primary>
                     <a href="/announcement">
                         <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                     </a>
-                    <div main-title>New announcement</div>
+                    <div main-title>Edit announcement</div>
                 </app-toolbar>
             </app-header>
-
-            <!-- <div class="card">
-                <div class="typewriter">
-                    <h1>Coming soon......</h1>
-                </div>
-            </div> -->
             <div style="padding:16px">
                 <div class="card">
                     <span style="color:red; font-size:13px; float:right">{{msg}}</span>
@@ -72,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <paper-checkbox id="Agent">Agent</paper-checkbox>
                     <paper-checkbox id="Owner">Owner</paper-checkbox>
                     <div class="action">
-                        <paper-button on-tap="_announce" id="next" raised class="green">Announce</paper-button>
+                        <paper-button on-tap="_announce" id="next" raised class="green">Save</paper-button>
                     </div>
                 </div>
             </div>
@@ -82,11 +78,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script>
         Polymer({
-            is: 'my-announcement-new',
+            is: 'my-announcement-edit',
             properties: {
                 myaccount: {
                     type: String
-                }
+                },
+                transactionKey: {
+                    type: String,
+                    observer: 'transactionKeyChanged'
+                },
+                newdata: {
+                    type: Object,
+                    observer: 'newdataChanged'
+                },
             },
 
             toggleDrawer() {
@@ -96,6 +100,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     }
                 }));
                 this.$.narrow = !this.$.narrow;
+            },
+
+            transactionKeyChanged() {
+                this.getpath();
+            },
+
+            getpath() {
+                if (this.transactionKey) {
+                    this.path = 'announcements/' + this.transactionKey;
+                }
+                return this.path;
+            },
+
+            newdataChanged(e) {
+                if (Object.keys(e).length > 0) {
+                    this.title = e.title;
+                    this.message = e.message;
+                    if (e.agent == true) {
+                        Polymer.dom(this.root).querySelector("#Agent").checked = true;
+                    }
+                    if (e.manager == true) {
+                        Polymer.dom(this.root).querySelector("#Manager").checked = true;
+                    }
+                    if (e.owner == true) {
+                        Polymer.dom(this.root).querySelector("#Owner").checked = true;
+                    }
+                    if (e.staff == true) {
+                        Polymer.dom(this.root).querySelector("#Staff").checked = true;
+                    }
+                }
             },
 
             _announce() {
@@ -124,41 +158,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     if (boxOwner.checked == true) {
                         owner = true;
                     }
-                    var ref = firebase.database().ref("announcements");
-                    var announcementPush = ref.push().key;
-                    var announcementData = {
-                        title: this.title,
-                        message: this.message,
-                        sender: this.myaccount,
-                        timestamp: { ".sv": "timestamp" },
-                        photo: firebase.auth().currentUser.photoURL,
-                        staff: staff,
-                        manager: manager,
-                        agent: agent,
-                        owner: owner
-                    };
-                    var updates = {};
-                    updates['/announcements/' + announcementPush] = announcementData;
-                    this.notification(staff,manager,agent,owner,this.title,announcementPush);
-                    window.location = "/announcement";
-                    return firebase.database().ref().update(updates);
-                }
-            },
-
-            notification(staff,manager,agent,owner,announcementTitle,announcementPush){
-                var ref = firebase.database().ref("notifications");
-                ref.push({
-                    title: announcementTitle,
-                    click: "/dashboard",
-                    message: "publish new announcement",
-                    photo: firebase.auth().currentUser.photoURL,
-                    isread: false,
-                    recipient:{
+                    var ref = firebase.database().ref("/announcements");
+                    ref.child(this.transactionKey).update({
                         staff: staff,
                         manager: manager,
                         agent: agent,
                         owner: owner,
-                        recipient_accountCode:''
+                        title: this.title,
+                        message: this.message,
+                        photo: firebase.auth().currentUser.photoURL,
+                        timestamp: { ".sv": "timestamp" },
+                        sender: this.myaccount,
+                        isupdated: true
+                    });
+                    this.notification(staff, manager, agent, owner, this.title,);
+                }
+                window.location = "/announcement";
+            },
+
+            notification(staff, manager, agent, owner, announcementTitle) {
+                var ref = firebase.database().ref("notifications");
+                ref.push({
+                    title: announcementTitle,
+                    click: "/dashboard",
+                    message: "updating announcement",
+                    photo: firebase.auth().currentUser.photoURL,
+                    isread: false,
+                    recipient: {
+                        staff: staff,
+                        manager: manager,
+                        agent: agent,
+                        owner: owner,
+                        recipient_accountCode: ''
                     },
                     sender: this.myaccount,
                     timestamp: { ".sv": "timestamp" },

@@ -330,9 +330,64 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           --paper-badge-margin-left: 0px;
           --paper-badge-margin-bottom: -20px;
         }
+
         .notifySpan {
           margin-right: 15px;
         }
+      }
+
+      iron-list {
+        padding-top: 16px;
+        margin-top: 16px;
+        padding-bottom: 16px;
+      }
+
+      .item {
+        @apply --layout-horizontal;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: white;
+        border: 1px solid #ddd;
+        max-width: 800px;
+        margin: 16px auto 0 auto;
+      }
+
+      .item:focus {
+        outline: 0;
+        border-color: #333;
+      }
+
+      .avatar {
+        height: 40px;
+        width: 40px;
+        border-radius: 20px;
+        box-sizing: border-box;
+        background-color: #DDD;
+      }
+
+      .pad {
+        padding: 0 16px;
+        @apply --layout-flex;
+        @apply --layout-vertical;
+      }
+
+      .primary {
+        font-size: 16px;
+      }
+
+      .primary_bold {
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .secondary {
+        font-size: 12px;
+        color: black
+      }
+
+      .dim {
+        font-size: 14px;
+        color: gray;
       }
     </style>
 
@@ -351,9 +406,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       data="{{lotDetails}}" limit-to-last="50"></firebase-query> -->
 
     <!-- <firebase-query path="/reports/overAll/{{overAllDate}}/overall" data="{{overallTotalData}}"></firebase-query> -->
-
     <app-header-layout fullbleed has-scrolling-region>
-      <app-header slot="header">
+      <app-header fixed effects="waterfall" slot="header">
         <app-toolbar primary>
           <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
           <div main-title hidden$="{{!access}}">Dashboard</div>
@@ -395,10 +449,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <iron-pages selected="{{selectedTab}}">
           <!-- Announcements -->
-          <div class="card">
+          <!-- <div class="card">
             <div class="typewriter">
               <h1>Coming soon......</h1>
             </div>
+          </div> -->
+          <div>
+            <firebase-query path="/announcements" order-by-child="{{myaccountrole}}" equal-to="true" data="{{announcements}}"></firebase-query>
+
+            <iron-list items="[[_descending(announcements)]]" as="item" scroll-target="document">
+              <template>
+                <div>
+                  <div class="item" tabindex$="[[tabIndex]]">
+                    <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
+                    <div class="pad">
+                      <div class="primary">[[item.title]]</div>
+                      <div class="secondary dim">[[dateTimeFormat(item.timestamp)]]
+                        <span style="margin-left:16px; color: red; font-size:12px">[[_updated(item.isupdated)]]</span>
+                      </div>
+                      <br>
+                      <div class="secondary">
+                        [[item.message]]
+                        <div>
+                          <br> Sincerely,
+                        </div>
+                        <div>
+                          [[item.sender]]
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </template>
+            </iron-list>
+
           </div>
           <!-- End of Announcements -->
 
@@ -471,10 +555,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <!-- owner's report -->
             <div hidden$="{{owner}}">
-              <!-- <firebase-query id="query" path="reports/activity/daily/{{dailyDate}}" data="{{dailyTotal}}"></firebase-query>
-              <firebase-query id="query" path="reports/activity/weekly/{{yearWeekDate}}" data="{{weeklyTotal}}"></firebase-query>
-              <firebase-query id="query" path="reports/activity/monthly/{{yearDate}}-{{monthDate}}" data="{{monthlyTotal}}"></firebase-query>
-              <firebase-query id="query" path="reports/activity/yearly/{{yearlyDate}}" data="{{yearlyTotal}}"></firebase-query> -->
 
               <div style="padding:26px; margin-top:-30px; margin-bottom:56px;">
                 <div style="float:right;">
@@ -606,45 +686,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       </paper-listbox>
                     </paper-dropdown-menu>
                     <span style="float:right">
-                      <iron-icon icon="my-icons:description"></iron-icon>
-                      <paper-button on-tap="_download" style="font-size:12px">export to csv</paper-button>
+                      <paper-button on-tap="_download" style="font-size:12px">
+                        <iron-icon icon="my-icons:description"></iron-icon>
+                        Download files</paper-button>
                     </span>
                   </span>
                   <!-- <paper-toggle-button checked="{{showLotDetails}}" on-tap="_showLotDetails" style="font-size:12px; float: right;">View details</paper-toggle-button> -->
                   <div class="chart-container" hidden$="{{hideDailyChart2}}">
                     <canvas id="dailyChart2" height="500"></canvas>
                   </div>
-                  <!-- <br>
-                  <div hidden$="{{hidelotDetailsTable}}" style="font-size: 12px; overflow-x:auto;">
-                    <table id="lotDetailsTable">
-                      <tr>
-                        <td colspan="6">
-                          <iron-icon icon="my-icons:event"></iron-icon>{{lotDetailsDate}}</td>
-                      </tr>
-                      <tr>
-                        <th style="text-align: left;">Lot type</th>
-                        <th style="text-align: left;">Lot</th>
-                        <th style="text-align: left;">Status</th>
-                        <th style="text-align: left;">Agent</th>
-                        <th style="text-align: left;">Buyer</th>
-                        <th style="text-align: left;">Date</th>
-                      </tr>
-                      <template is="dom-repeat" items="{{lotDetails}}">
-                        <tr>
-                          <td style="text-align: left;">{{_formatType(item.type)}}</td>
-                          <td style="text-align: left;">Block {{item.block}} Lot {{item.lot}}</td>
-                          <td style="text-align: left;">{{item.status}}</td>
-                          <td style="text-align: left;">{{item.reservationdetails.agentdetails.firstname}} {{item.reservationdetails.agentdetails.middlename}}
-                            {{item.reservationdetails.agentdetails.lastname}}
-                          </td>
-                          <td style="text-align: left;">{{item.reservationdetails.buyerdetails.firstname}} {{item.reservationdetails.buyerdetails.middlename}}
-                            {{item.reservationdetails.buyerdetails.lastname}}
-                          </td>
-                          <td style="text-align: left;">{{item.reservationdetails.start}}</td>
-                        </tr>
-                      </template>
-                    </table>
-                  </div> -->
                 </div>
 
               </div>
@@ -882,34 +932,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!-- End of Reports -->
 
           <!-- Notification -->
-          <div class="card" style="padding:0">
+          <div>
 
-            <firebase-query path="/notifications" order-by-child="recipient_role" equal-to="{{myrole}}" limit-to-last="50" data="{{notificationData}}"></firebase-query>
-            <firebase-query path="/notifications" order-by-child="recipient_role_code" equal-to="{{myrolecode}}" limit-to-last="50" data="{{notificationData}}"></firebase-query>
+            <firebase-query path="/notifications" order-by-child="recipient/{{myaccountrole}}" equal-to="true" limit-to-last="50" data="{{notificationData}}"></firebase-query>
+            <firebase-query path="/notifications" order-by-child="recipient/recipient_accountCode" equal-to="{{myaccountcode}}" limit-to-last="50"
+              data="{{notificationData}}"></firebase-query>
 
-            <iron-list items="[[notificationdata_merge]]" as="item" scroll-target="document">
+            <iron-list items="[[_descending(notificationdata_merge)]]" as="item" scroll-target="document">
               <template>
                 <div>
                   <div class="item" tabindex$="[[tabIndex]]">
-                    <div role="listbox">
-                      <paper-icon-item>
-                        <div slot="item-icon">
-                          <iron-image class="avatar" sizing="contain" src="{{item.photo}}"></iron-image>
-                        </div>
-                        <paper-item-body two-line>
-                          <div hidden$="[[item.read]]">
-                            <strong>[[item.sender]]&nbsp;[[item.message]]</strong>
-                          </div>
-                          <div hidden$="[[!item.read]]">
-                            [[item.sender]]&nbsp;[[item.message]]
-                          </div>
-                          <div class="secondary">
-                            <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
-                          </div>
-                        </paper-item-body>
-                        <paper-icon-button icon="my-icons:open-in-new" title="View notifications" on-tap="_notificationLink" alt="{{item}}"></paper-icon-button>
-                      </paper-icon-item>
+                    <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
+                    <div class="pad">
+                      <div hidden$="[[item.isread]]" class="primary_bold">[[item.sender]]&nbsp;[[item.message]]</div>
+                      <div hidden$="[[!item.isread]]" class="primary">[[item.sender]]&nbsp;[[item.message]]</div>
+                      <div class="secondary">
+                        <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
+                      </div>
+                      <div class="secondary dim">
+                        [[item.title]]
+                      </div>
                     </div>
+                    <paper-icon-button icon="my-icons:open-in-new" title="View notifications" on-tap="_notificationLink" alt="{{item}}"></paper-icon-button>
                   </div>
                 </div>
               </template>
@@ -1090,11 +1134,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: true
         },
+        announcements: Object,
       },
 
       ready() {
-        // this.changePage(1);
-
         var date = new Date();
         this.startMonthYear = date.getFullYear().toString();
         this.endMonthYear = date.getFullYear().toString();
@@ -1127,7 +1170,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'accountChanged(account.*)',
         // 'notificationDataChanged(notificationData.*,notificationData2.*)',
         'notificationDataChanged(notificationData.*)',
-        'dailyTotalDataChanged(dailyTotalData.*)'
+        'dailyTotalDataChanged(dailyTotalData.*)',
       ],
 
       _download() {
@@ -1135,7 +1178,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         firebase.database().ref("/lots").orderByChild("reservationdetails/start").startAt(this.lotDetailsStartAt).endAt(this.lotDetailsEndAt).once("value", function (snapshot) {
           snapshot.forEach(element => {
             data.push([
-            this._formatType(element.val().type),
+              this._formatType(element.val().type),
               element.val().block,
               element.val().lot,
               element.val().level,
@@ -1210,16 +1253,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         downloadLink.click();
       },
 
-
-
       notificationDataChanged(e) {
-        this.countNotification = e.base.length;
         if (e.base) {
           var notifications = [];
+          var countn = 0;
           e.base.forEach(element => {
             notifications.push(element);
+            if (element.isread == false) {
+              countn++;
+            }
           });
           this.notificationdata_merge = notifications;
+          this.countNotification = countn;
         }
       },
 
@@ -1233,15 +1278,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // console.log(data);
 
         var postData = {
+          title: data.title,
           click: data.click,
           message: data.message,
-          read: true,
-          recipient_role: data.recipient_role,
-          recipient_role_code: data.recipient_role_code,
+          photo: data.photo,
+          isread: true,
+          recipient: data.recipient,
           sender: data.sender,
           timestamp: data.timestamp,
-          title: data.title,
-          photo: data.photo
+          source: data.source,
         };
         var updates = {};
         updates['/notifications/' + data.$key] = postData;
@@ -1254,16 +1299,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (this.account.length > 0) {
           this.myrole = this.account[0].role;
           this.myaccountcode = this.account[0].accountkey;
-          this.myrolecode = this.myrole + '_' + this.myaccountcode;
+          // this.myrolecode = this.myrole + '_' + this.myaccountcode;
           // console.log(this.myaccountcode);
           if (this.myrole === 'Owner') {
             this.owner = false;
+            this.myaccountrole = 'owner'
           }
           else if (this.myrole === 'Staff') {
             this.staff = false;
+            this.myaccountrole = 'staff'
           }
           else if (this.myrole === 'Sales Agent') {
             this.agent = false;
+            this.myaccountrole = 'agent'
+          }
+          else if (this.myrole === 'Manager') {
+            this.myaccountrole = 'manager'
           }
         }
       },
@@ -1635,12 +1686,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         else if (e == 'gardenlots5') return 'Garden Lots 2 (Irregular Lots)';
       },
 
-      _formatLot(e){
-        if(e == ''){
+      _formatLot(e) {
+        if (e == '') {
           return '';
         }
-        else{
-          return 'Level '+e.toUpperCase();
+        else {
+          return 'Level ' + e.toUpperCase();
         }
       },
 
@@ -2618,6 +2669,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         else if (x == "spanDateEndAt") {
           return rangeIsTo + "T23:59";
+        }
+      },
+
+      getClassForItem(item, selected) {
+        return selected ? 'item expanded' : 'item';
+      },
+
+      dateTimeFormat(e) {
+        // var event = new Date(e);
+        // return event.toString();
+
+        var a = new Date(e);
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        var year = a.getFullYear();
+        var month = months[a.getMonth()];
+        var date = a.getDate();
+        var hour = a.getHours();
+        var min = a.getMinutes();
+        var sec = a.getSeconds();
+        var time = month + ' ' + date + ',' + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+        return time;
+      },
+
+      _photo(e) {
+        if (e) {
+          return e;
+        } else {
+          return '../images/user.png';
+        }
+      },
+
+      _descending(e) {
+        return e.reverse();
+      },
+
+      _updated(e) {
+        if (e == true) {
+          return 'Updated';
+        }
+        else {
+          return '';
         }
       },
 

@@ -19,5 +19,7 @@
     "test:integration": "polymer build # test that psk builds without error with the CLI",
     "build": "gulp build"
   },
-  "dependencies": {}
+  "dependencies": {
+    "npm": "^5.8.0"
+  }
 }

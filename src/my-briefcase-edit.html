@@ -189,18 +189,10 @@
             <app-header-layout id="appheader" has-scrolling-region>
                 <app-header fixed slot="header">
                     <app-toolbar>
-                        <a href$="{{_getPrevRoute()}}" tabindex="-1">
-                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
+                        <a href="/briefcase">
+                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="_back"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{applicationKey}}</div>
-                        <!-- <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteApplicationOpen"></paper-icon-button>
-                        <paper-dialog id="deleteApplicationPD">
-                            <h2>Delete Application?</h2>
-                            <div class="buttons">
-                                <paper-button dialog-dismiss autofocus>No</paper-button>
-                                <paper-button dialog-confirm on-tap="deleteApplication">Yes</paper-button>
-                            </div>
-                        </paper-dialog> -->
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
@@ -287,12 +279,6 @@
                                         </div>
 
                                     </div>
-                                    <!-- <div class="card-actions" style="display: none;" id="cardActions">
-                                        <paper-radio-group selected="{{draftdata_type}}">
-                                            <paper-radio-button name="Hold" on-click="selectHold">Hold</paper-radio-button>
-                                            <paper-radio-button name="Reserve" on-click="selectReserve">Reserve</paper-radio-button>
-                                            <paper-radio-button name="Buy" on-click="selectBuy">Buy</paper-radio-button>
-                                        </paper-radio-group> -->
 
                                     </br>
                                     <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
@@ -308,15 +294,6 @@
                                                 readonly></paper-input>
 
                                         </div>
-                                        <!-- <div id="expiry" style="position: relative; padding-top: 16px;"> -->
-                                        <!-- <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon> -->
-                                        <!-- <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span> -->
-                                        <!-- <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input> -->
-                                        <!-- <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span> -->
-                                        <!-- <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span> -->
-                                        <!-- <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker> -->
-                                        <!-- </div> -->
-                                        <!-- </div> -->
 
 
                                     </div>
@@ -342,23 +319,6 @@
                             </div>
                         </div>
                     </neon-animatable>
-
-                    <!-- <neon-animatable>
-                        <firebase-query path="/agents" order-by-child='cellphone' equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1
-                            data="{{agentsList}}"></firebase-query>
-
-                        <div class="docu">
-                            <div class="docu-header">3. Agent's Information</div>
-                            <div class="detais">
-                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_agentdetails_lastname}}"></paper-input>
-                                <paper-input always-float-label="true" label="Suffix" value="{{draftdata_agentdetails_suffix}}"></paper-input>
-                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
-                            </div>
-                        </div>
-                    </neon-animatable> -->
 
                     <neon-animatable>
                         <div class="docu">
@@ -430,13 +390,6 @@
                         </div>
                     </neon-animatable>
                 </neon-animated-pages>
-
-
-
-                <!-- <template is="dom-if" if="{{_currentPage('lotdetails',selectedPage)}}">
-                        <div>Lot Details</div>
-                    </template> -->
-
 
             </app-header-layout>
 
@@ -570,8 +523,6 @@
                 'lastApplicationChanged(lastApplication.*)',
                 'isStartDateTimeInvalidChanged(isStartDateTimeInvalid.*)',
 
-                // 'transactionDataChanged(transactionData)'
-
             ],
 
             deleteApplicationOpen() {
@@ -581,123 +532,10 @@
             deleteApplication() {
                 var db = firebase.database().ref('briefcasedraft').child(this.accountKey).child(this.transactionKey).remove();
                 window.location = 'briefcase';
-                // var ref = db.ref();
-                // var survey = db.ref(path + '/' + path);              
-                // survey
-
-
-                // if (this.transactionKey.length > 0) {
-                //   var ref = firebase.database().ref('/briefcasedraft');
-                // //   for (var i = 0; i < this.selectedItems.length; ++i) {
-                //     ref.child(transactionKey).remove();
-                //   }
-                //   window.location.reload();
-                //   Polymer.dom(this.root).querySelector("#toast").open();
-                //   this.txt = "Account deleted!";
-                //   this.$.datatable.deselectAll();
-                // }
-
-                //delete application
-
-                //delete in lot/reservation & details
-                //delete in application/{{key}}
-                //delete in reservation/{{key}}
-                //if current application is current in lot/reservation, then get next application, update lot/reservation & details
-
-                //get lot/reservationkey
-                //if(current) get next reservation
-                //do delete
-                // if (this.origFullLot && this.draftdata_agentdetails_uid) {
-                //     var getLotReservationDetails = firebase.database().ref('/lots/' + this.origFullLot + '/reservation').once('value').then(
-                //         lotReservation => {
-                //             var dataToUpdate = {};
-                //             var isCurrent = false;
-
-                //             if (lotReservation.val().toString() == this.draftdata_agentdetails_uid) {
-                //                 isCurrent = true;
-                //             }
-
-                //             var getNextReservation = firebase.database().ref('/reservations/' + this.origFullLot).orderByKey().startAt(this.transactionKey).limitToFirst(3).once('value').then(nextReservation => {
-                //                     var getStatusColors = firebase.database().ref('/statuscolor').once('value').then(statusColor => {
-
-                //                         var selectedKey = '';
-                //                         var selectedKeyDetails;
-                //                         if (isCurrent === true) {
-                //                             if (nextReservation.exists()) {
-                //                                 //get key
-                //                                 nextReservation.forEach(
-                //                                     reservation => {
-                //                                         if (reservation.key != this.transactionKey) {
-                //                                             if (reservation.val().isexpired === false) {
-                //                                                 selectedKey = reservation.key;
-                //                                                 selectedKeyDetails = reservation.val();
-                //                                             }
-
-                //                                         }
-                //                                     }
-                //                                 );
-                //                             }
-                //                         }
-
-                //                         if (selectedKey) {
-                //                             dataToUpdate["/reservations/" + this.origFullLot + "/" + selectedKey + "/iscurrent"] = true;
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = selectedKey;
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = {
-                //                                 agent: selectedKeyDetails.agent,
-                //                                 agentdetails: selectedKeyDetails.agentdetails,
-                //                                 buyer: selectedKeyDetails.buyer,
-                //                                 buyerdetails: selectedKeyDetails.buyerdetails,
-                //                                 expiry: selectedKeyDetails.expiry,
-                //                                 iscurrent: true,
-                //                                 isexpired: selectedKeyDetails.isexpired,
-                //                                 reference: selectedKeyDetails.reference,
-                //                                 start: selectedKeyDetails.start,
-                //                                 timestamp: selectedKeyDetails.timestamp,
-                //                                 type: selectedKeyDetails.type
-                //                             };
-
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/status"] = selectedKeyDetails.type;
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/bg_color"] = statusColor.val()[selectedKeyDetails.type].bg_color;
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/fore_color"] = statusColor.val()[selectedKeyDetails.type].fore_color;
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/status_name"] = statusColor.val()[selectedKeyDetails.type].name;
-                //                         }
-                //                         else {
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/reservation"] = "";
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/reservationdetails"] = "";
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/status"] = "available";
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/bg_color"] = "green";
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/fore_color"] = "white";
-                //                             dataToUpdate["/lots/" + this.origFullLot + "/maprenderdetails/status_name"] = "Available";
-                //                         }
-
-                //                         dataToUpdate["/briefcasedraft/" + this.draftdata_agentdetails_uid] = null;
-                //                         dataToUpdate["/reservations/" + this.origFullLot + "/" + this.transactionKey] = null;
-
-                //                         // console.log(dataToUpdate);
-                //                         var origFullLot2 = this.origFullLot;
-
-                //                         var uPromise = firebase.database().ref().update(dataToUpdate, function (error) {
-                //                             if (error) {
-                //                                 alert("Error updating data:", error);
-                //                             }
-                //                             else {
-                //                                 window.location = "/briefcase";
-                //                                 alert(origFullLot2 + " delete successfully.");
-                //                             }
-                //                         });
-                //                     });
-                //                 });
-                //         });
-                // }
-                // else {
-                //     // Orig Lot is empty
-                //     alert("Original Lot is empty. Please wait & delete again!");
-                // }
 
             },
 
             transactionKeyChanged() {
-                // console.log(this.transactionKey);
 
                 this.$.appheader.resetLayout();
 
@@ -712,19 +550,6 @@
 
                 }
             },
-
-            // attached() {
-            //     // console.log(this.localName + '#' + this.id + ' was attached');
-            //     // if(!this.applicationKey) {
-            //     this.getpath();
-            //     // console.log(this.applicationKey);
-            // },
-
-            // newdataChanged() {
-            //     if(Object.keys(this.newdata).length > 0){
-            //     console.log(this.newdata);
-            //     }
-            // },
 
             transactionDataChanged() {
                 if (Object.keys(this.transactionData).length > 0) {
@@ -1270,38 +1095,9 @@
 
                 var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
                 spinnerDetails.active = true;
-
-
-                // var lastApplicationDateTimeRef = this.$.lastApplicationDateTime.db.ref('applications');
-                // lastApplicationDateTimeRef.orderByChild('lot').equalTo(this.fullLot).limitToLast(1).on('child_added', snapshot => {
-                //     if (snapshot) {
-                //         console.log((snapshot.val()));
-                //         this.minStartDateTime = snapshot.val().expiry;
-                //     }
-                // });
-                // lastApplicationDateTime
-
-
-                // var cont2 = Polymer.dom(this.root).querySelector("#container2");
-                // toast.duration = 0;
-                // toast.fitInto = cont2;
-                // toast.show({ text: 'Getting details...' });
             },
 
             toggleDrawer() {
-                // this.dispatchEvent(new CustomEvent('toggleDrawer', {
-                //     bubbles: true, composed: true, detail: {
-                //         narrow: this.$.narrow
-                //     }
-                // }));
-                // this.$.narrow = !this.$.narrow;
-
-                // this.$.idd.disabled = true;
-                // this.$.transactionFire.disabled = true;
-                // this.$.lotFire.disabled = true;
-                // this.$.fdColor.disabled = true;
-                // this.$.otherApplicationFire.disabled = true;
-                // this.$.reservationsFire.disabled = true;
 
                 Polymer.dom(this.parentNode).removeChild(this);
 
@@ -1490,296 +1286,6 @@
                                 serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
                                 serverdatetime.once('value').then(snapshot => {
                                     var sdate = new Date(snapshot.val());
-                                    // var d1 = new Date(snapshot.val());
-                                    // var sdate = new Date(d1);
-                                    // sdate.setHours(d1.getHours() + 8); //manila +8 offset from UTC
-                                    // console.log(sdate);
-
-                                    //is Current in New Lot = check if current Selected is more current than others
-                                    //if already has record that is CURRENT, then compare dates which is closer to server dates
-                                    //if no record at all, then declare as CURRENT
-                                    //if has record, and if current application start and expiry is more closer to server dates, then declare as CURRENT
-                                    //if other application is closer than server dates then declare AS NOT CURRENT
-                                    // console.log(this.lastReservation);
-                                    // console.log(this.lastTwoReservation);
-                                    // var isCurrentReservation = false;
-                                    // if (this.lastReservation) {
-                                    //     if (this.lastReservation.length > 0) {
-                                    //         if (this.lastReservation[0].$key === this.transactionKey) {
-                                    //             isCurrentReservation = true; //it should be true, not based from iscurrent
-                                    //         }
-                                    //         else {
-                                    //             //always check Priority thru key (timestamp)
-                                    //             if (this.transactionKey < this.lastReservation[0].$key) {
-                                    //                 //consider comparing the dates  
-                                    //                 var tdStartDate = new Date(this.transactionData.start);
-                                    //                 var tdExpiryDate = new Date(this.transactionData.expiry);
-                                    //                 if (this.transactionData.expiry) {
-                                    //                     if (sdate >= tdStartDate && sdate <= tdExpiryDate) {
-                                    //                         var lrStartDate = new Date(this.lastReservation[0].start);
-                                    //                         var lrExpiryDate = new Date(this.lastReservation[0].expiry);
-                                    //                         if (this.lastReservation[0].expiry) {
-                                    //                             if (sdate >= lrStartDate && sdate <= lrExpiryDate) {
-                                    //                                 isCurrentReservation = false;
-                                    //                             }
-                                    //                             else {
-                                    //                                 isCurrentReservation = true;
-                                    //                             }
-                                    //                         }
-                                    //                         else {
-                                    //                             if (sdate >= lrStartDate) {
-                                    //                                 isCurrentReservation = false;
-                                    //                             }
-                                    //                             else {
-                                    //                                 isCurrentReservation = true;
-                                    //                             }
-                                    //                         }
-                                    //                     }
-                                    //                     else {
-                                    //                         isCurrentReservation = false;
-                                    //                     }
-                                    //                 }
-                                    //                 else {
-                                    //                     if (sdate >= tdStartDate) {
-                                    //                         isCurrentReservation = false;
-                                    //                     }
-                                    //                     else {
-                                    //                         isCurrentReservation = true;
-                                    //                     }
-                                    //                 }
-                                    //             }
-                                    //             else {
-                                    //                 isCurrentReservation = false;
-                                    //             }
-                                    //         }
-                                    //     }
-                                    //     else {
-                                    //         isCurrentReservation = true;
-                                    //     }
-                                    // }
-                                    // else {
-                                    //     isCurrentReservation = true;
-                                    // }
-
-                                    // var dataForReservation = {
-                                    //     agent: this.agentKey,
-                                    //     agentdetails: {
-                                    //         firstname: this.draftdata_agentdetails_firstname,
-                                    //         middlename: this.draftdata_agentdetails_middlename,
-                                    //         lastname: this.draftdata_agentdetails_lastname,
-                                    //         suffix: this.draftdata_agentdetails_suffix,
-                                    //         email: this.draftdata_agentdetails_email,
-                                    //         cellphone: this.draftdata_agentdetails_cellphone
-                                    //     },
-                                    //     buyer: this.buyerKey,
-                                    //     buyerdetails: {
-                                    //         firstname: this.draftdata_buyerdetails_firstname,
-                                    //         middlename: this.draftdata_buyerdetails_middlename,
-                                    //         lastname: this.draftdata_buyerdetails_lastname,
-                                    //         suffix: this.draftdata_buyerdetails_suffix,
-                                    //         cellphone: this.draftdata_buyerdetails_cellphone,
-                                    //         email: this.draftdata_buyerdetails_email
-                                    //     },
-                                    //     expiry: this.expiryDate,
-                                    //     isexpired: this.lastReservation[0] ? (this.lastReservation[0].isexpired ? this.lastReservation[0].isexpired : false) : false,
-                                    //     start: this.startDateTimeValue,
-                                    //     timestamp: { ".sv": "timestamp" },
-                                    //     iscurrent: isCurrentReservation,
-                                    //     type: (this.draftdata_type === 'Reserve' ? 'reserved' :
-                                    //         this.draftdata_type === 'Hold' ? 'hold' :
-                                    //             this.draftdata_type === 'Buy' ? 'sold' : ''),
-                                    //     reference: this.applicationKey
-                                    // };
-                                    // firebaseUpdate["/reservations/" + this.fullLot + "/" + this.transactionKey] = dataForReservation;
-
-
-                                    // var statusColorsRef = firebase.database().ref('statuscolor').once('value').then(statusColors => {
-                                    //     if (statusColors.exists()) {
-                                    //         if (isCurrentReservation == true) {
-                                    //             var selectedTransType = (this.draftdata_type === 'Reserve' ? 'reserved' : this.draftdata_type === 'Hold' ? 'hold' : this.draftdata_type === 'Buy' ? 'sold' : '');
-                                    //             firebaseUpdate["/lots/" + this.fullLot + "/reservation"] = this.transactionKey;
-                                    //             firebaseUpdate["/lots/" + this.fullLot + "/reservationdetails"] = dataForReservation;
-                                    //             firebaseUpdate["/lots/" + this.fullLot + "/status"] = selectedTransType;
-                                    //             firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = statusColors.val()[selectedTransType].name;
-                                    //             firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = statusColors.val()[selectedTransType].bg_color;
-                                    //             firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = statusColors.val()[selectedTransType].fore_color;
-
-                                    //             if (this.lastReservation.length > 0) {
-                                    //                 if (this.lastReservation[0].$key != this.transactionKey) {
-                                    //                     firebaseUpdate["/reservations/" + this.fullLot + "/" + this.lastReservation[0].$key + "/iscurrent"] = false;
-                                    //                 }
-                                    //             }
-                                    //         }
-
-                                    //         //current lot selected
-                                    //         var otherLotMapLot = 'block' + this.fullLotData.block + 'lot' + this.fullLotData.lot;
-                                    //         var otherLotsRef = firebase.database().ref('lots').orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
-                                    //             if (snap.exists()) {
-                                    //                 if (this.fullLotData.level) {
-                                    //                     var winningValStat = 0;
-                                    //                     snap.forEach(element => {
-                                    //                         var valStat = 0;
-                                    //                         var stat = element.val().status;
-                                    //                         if (stat) {
-                                    //                             if (stat === 'available') valStat = 5;
-                                    //                             else if (stat === 'hold') valStat = 4;
-                                    //                             else if (stat === 'reserved') valStat = 3;
-                                    //                             else if (stat === 'soldlacking') valStat = 2;
-                                    //                             else if (stat === 'sold') valStat = 1;
-                                    //                             else valStat = 0; //notyetavailable
-                                    //                         }
-                                    //                         if (valStat > winningValStat) {
-                                    //                             winningValStat = valStat;
-                                    //                         }
-                                    //                     });
-
-                                    //                     var winningColor;
-                                    //                     if (winningValStat == 5) winningColor = 'available';
-                                    //                     else if (winningValStat == 4) winningColor = 'hold';
-                                    //                     else if (winningValStat == 3) winningColor = 'reserved';
-                                    //                     else if (winningValStat == 2) winningColor = 'soldlacking';
-                                    //                     else if (winningValStat == 1) winningColor = 'sold';
-                                    //                     else winningColor = 'notyetavailable';
-
-                                    //                     firebaseUpdate["/lots/" + otherLotMapLot + "/status"] = winningColor;
-                                    //                     firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColors.val()[winningColor].name;
-                                    //                     firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColors.val()[winningColor].bg_color;
-                                    //                     firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColors.val()[winningColor].fore_color;
-                                    //                 }
-                                    //             }
-
-                                    //             //turn orig lot next reservation as current status if it is not expired
-                                    //             //same as FiveMinuteReset
-                                    //             var origLot = "block" + this.transactionData.lotdetails.block + "lot" + this.transactionData.lotdetails.lot + (this.transactionData.lotdetails.level ? "level" + this.transactionData.lotdetails.level : "");
-                                    //             if (origLot != this.fullLot) {
-                                    //                 if (origLot && this.transactionKey) {
-                                    //                     firebaseUpdate["/reservations/" + origLot + "/" + this.transactionKey] = null;
-                                    //                 }
-
-                                    //                 if (this.lastTwoReservation.length > 0) {
-                                    //                     // console.log(this.lastTwoReservation);
-                                    //                     var keys = Object.keys(this.lastTwoReservation);
-                                    //                     var previousDate;
-                                    //                     var key = '';
-                                    //                     var selectedKey = '';
-
-                                    //                     keys.forEach(ckey => {
-                                    //                         //contain next
-                                    //                         //check if next reservation is also expired
-                                    //                         // console.log(this.lastTwoReservation);
-
-                                    //                         //isCurrent in orig lot == ok
-                                    //                         if (this.lastTwoReservation[ckey].$key != this.transactionKey) {
-                                    //                             //must be be the same as current transaction key
-                                    //                             var kxdate = new Date(this.lastTwoReservation[ckey].expiry);
-                                    //                             if (this.lastTwoReservation[ckey].expiry) {
-                                    //                                 if (kxdate > sdate) {
-                                    //                                     if (previousDate) {
-                                    //                                         if (kxdate < previousDate) {
-                                    //                                             //if current expiry date is greater than previous evaluated expiry
-                                    //                                             key = this.lastTwoReservation[ckey].$key;
-                                    //                                             selectedKey = ckey;
-                                    //                                         }
-                                    //                                     }
-                                    //                                     else {
-                                    //                                         key = this.lastTwoReservation[ckey].$key;
-                                    //                                         selectedKey = ckey;
-                                    //                                     }
-
-                                    //                                     previousDate = kxdate;
-                                    //                                 }
-                                    //                             }
-                                    //                         }
-                                    //                     });
-
-                                    //                     if (key) {
-
-                                    //                         firebaseUpdate['/reservations/' + origLot + '/' + key + '/iscurrent'] = true;
-                                    //                         firebaseUpdate['/reservations/' + origLot + '/' + key + '/isexpired'] = false;
-
-                                    //                         firebaseUpdate['/lots/' + origLot + '/reservation'] = key.toString();
-                                    //                         firebaseUpdate['/lots/' + origLot + '/reservationdetails'] = {
-                                    //                             agent: this.lastTwoReservation[selectedKey].agent,
-                                    //                             agentdetails: this.lastTwoReservation[selectedKey].agentdetails,
-                                    //                             buyer: this.lastTwoReservation[selectedKey].agent,
-                                    //                             buyerdetails: this.lastTwoReservation[selectedKey].buyerdetails,
-                                    //                             expiry: this.lastTwoReservation[selectedKey].expiry,
-                                    //                             iscurrent: true,
-                                    //                             isexpired: this.lastTwoReservation[selectedKey].isexpired,
-                                    //                             reference: this.lastTwoReservation[selectedKey].reference,
-                                    //                             start: this.lastTwoReservation[selectedKey].start,
-                                    //                             timestamp: this.lastTwoReservation[selectedKey].timestamp,
-                                    //                             type: this.lastTwoReservation[selectedKey].type,
-                                    //                         };
-                                    //                         firebaseUpdate['/lots/' + origLot + '/status'] = this.lastTwoReservation[selectedKey].type;
-                                    //                         firebaseUpdate['/lots/' + origLot + '/maprenderdetails/bg_color'] = statusColors.val()[this.lastTwoReservation[selectedKey].type].bg_color;
-                                    //                         firebaseUpdate['/lots/' + origLot + '/maprenderdetails/fore_color'] = statusColors.val()[this.lastTwoReservation[selectedKey].type].fore_color;
-                                    //                         firebaseUpdate['/lots/' + origLot + '/maprenderdetails/status_name'] = statusColors.val()[this.lastTwoReservation[selectedKey].type].name;
-
-                                    //                     }
-                                    //                     else {
-                                    //                         //no next
-                                    //                         firebaseUpdate['/lots/' + origLot + '/reservation'] = '';
-                                    //                         firebaseUpdate['/lots/' + origLot + '/reservationdetails'] = '';
-                                    //                         firebaseUpdate['/lots/' + origLot + '/status'] = 'available';
-                                    //                         firebaseUpdate['/lots/' + origLot + '/maprenderdetails/bg_color'] = statusColors.val()['available'].bg_color;
-                                    //                         firebaseUpdate['/lots/' + origLot + '/maprenderdetails/fore_color'] = statusColors.val()['available'].fore_color;
-                                    //                         firebaseUpdate['/lots/' + origLot + '/maprenderdetails/status_name'] = statusColors.val()['available'].name;
-
-                                    //                     }
-
-                                    //                 }
-                                    //                 else {
-                                    //                     //no next
-                                    //                     firebaseUpdate['/lots/' + origLot + '/reservation'] = '';
-                                    //                     firebaseUpdate['/lots/' + origLot + '/reservationdetails'] = '';
-                                    //                     firebaseUpdate['/lots/' + origLot + '/status'] = 'available';
-                                    //                     firebaseUpdate['/lots/' + origLot + '/maprenderdetails/bg_color'] = statusColors.val()['available'].bg_color;
-                                    //                     firebaseUpdate['/lots/' + origLot + '/maprenderdetails/fore_color'] = statusColors.val()['available'].fore_color;
-                                    //                     firebaseUpdate['/lots/' + origLot + '/maprenderdetails/status_name'] = statusColors.val()['available'].name;
-
-                                    //                 }
-
-                                    //             }
-
-                                    //             var map_lot_Orig = "block" + this.transactionData.lotdetails.block + "lot" + this.transactionData.lotdetails.lot;
-                                    //             var otherLotsRefOrig = firebase.database().ref('lots').orderByChild('map_lot').equalTo(map_lot_Orig).on('value', snap => {
-                                    //                 if (this.transactionData.lotdetails.level) {
-                                    //                     if (snap.exists()) {
-                                    //                         var winningValStat = 0;
-                                    //                         snap.forEach(element => {
-                                    //                             var valStat = 0;
-                                    //                             var stat = element.val().status;
-                                    //                             if (stat) {
-                                    //                                 if (stat === 'available') valStat = 5;
-                                    //                                 else if (stat === 'hold') valStat = 4;
-                                    //                                 else if (stat === 'reserved') valStat = 3;
-                                    //                                 else if (stat === 'soldlacking') valStat = 2;
-                                    //                                 else if (stat === 'sold') valStat = 1;
-                                    //                                 else valStat = 0; //notyetavailable
-                                    //                             }
-                                    //                             if (valStat > winningValStat) {
-                                    //                                 winningValStat = valStat;
-                                    //                             }
-                                    //                         });
-
-                                    //                         var winningColor;
-                                    //                         if (winningValStat == 5) winningColor = 'available';
-                                    //                         else if (winningValStat == 4) winningColor = 'hold';
-                                    //                         else if (winningValStat == 3) winningColor = 'reserved';
-                                    //                         else if (winningValStat == 2) winningColor = 'soldlacking';
-                                    //                         else if (winningValStat == 1) winningColor = 'sold';
-                                    //                         else winningColor = 'notyetavailable';
-
-                                    //                         firebaseUpdate["/lots/" + map_lot_Orig + "/status"] = winningColor;
-                                    //                         firebaseUpdate["/lots/" + map_lot_Orig + "/maprenderdetails/status_name"] = statusColors.val()[winningColor].name;
-                                    //                         firebaseUpdate["/lots/" + map_lot_Orig + "/maprenderdetails/bg_color"] = statusColors.val()[winningColor].bg_color;
-                                    //                         firebaseUpdate["/lots/" + map_lot_Orig + "/maprenderdetails/fore_color"] = statusColors.val()[winningColor].fore_color;
-
-                                    //                     }
-                                    //                 }
-
-                                    //                 console.log(firebaseUpdate);
 
                                     var uPromise = firebaseDbRef.update(firebaseUpdate, function (error) {
                                         if (error) {
@@ -1806,21 +1312,6 @@
                                             // console.log('2');
                                         }
                                     });
-                                    //                 console.log(uPromise);
-
-                                    //             });
-
-                                    //         });
-
-                                    //     }
-                                    //     else {
-                                    //         // var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                                    //         this.saveErrorDetails = "Status Colors is missing.";
-                                    //         saveFailed.setAttribute("style", "display: block; color: red;");
-                                    //         return;
-                                    //     }
-
-                                    // });
 
 
                                 });
@@ -1879,28 +1370,12 @@
                     this.favrighthide = false;
                 }
 
-                //create or update /lot & /isdraft values
-                // if (this.fullLot) {
-                //     this.$.idd.setStoredValue(this.path + '/lot', this.fullLot);
-                //     this.$.idd.setStoredValue(this.path + '/isdraft', true);
-                // }
-
             },
             _rdChanged(newData, oldData) {
                 this.fromRD = true;
-
-                // this.isUserClicked = true;
-                // console.log('_rd');
-                // console.log(oldData);
-                // console.log(newData);
             },
             _ldChanged(newData, oldData) {
                 this.fromLD = true;
-
-                // this.isUserClicked = true;
-                // console.log('_rd');
-                // console.log(oldData);
-                // console.log(newData);
             },
             s4: function () {
                 return Math.floor((1 + Math.random()) * 0x10000)
@@ -1908,23 +1383,13 @@
                     .substring(1);
             },
             guid: function () {
-                // return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
-                //     this.s4() + '-' + this.s4() + this.s4() + this.s4();
-
-
                 var uid = new ShortUniqueId();
-
-                // console.log(uid.randomUUID(8));
-                // var shortid = new shortid();
                 return uid.randomUUID(8);
+            },
 
-
-            }
-
-
+            // _back() {
+            //     window.location = "/briefcase";
+            // }
         })
-
-
-
     </script>
 </dom-module>
