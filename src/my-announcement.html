@@ -159,7 +159,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 </div>
                             </div> -->
                             <firebase-query path="/announcements" order-by-child="sender" equal-to="{{myaccountName}}" data="{{announcements}}"></firebase-query>
-
+                            
                             <iron-list items="[[_descending(announcements)]]" as="item" scroll-target="document">
                                 <template>
                                     <div>

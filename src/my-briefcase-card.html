@@ -44,8 +44,9 @@
                 </paper-menu-button> -->
 
                 <div id="lotName" style="margin-top: 24px; color: white; font-weight: 400; font-size: 22px; text-transform:capitalize;">
-                    <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
-                    <span id="level" style="display: none;">&nbsp;- Level {{item.lotdetails.level}}</span>
+                    <!-- <span id="block">Block {{item.lotdetails.block}} - Lot {{item.lotdetails.lot}}</span>
+                    <span id="level" style="display: none;">&nbsp;- Level {{item.lotdetails.level}}</span> -->
+                    <span>{{_lot(item.lotdetails.block,item.lotdetails.lot,item.lotdetails.level)}}</span>
                 </div>
 
                 <div id="lotdetails" style="margin-top: -.3em; font-size: 12px; color: white;">{{lotsubdetail}}</div>
@@ -181,17 +182,26 @@
                             Polymer.dom(this.root).querySelector("#expiryPartSpan").setAttribute("style", "display: none; color: black; font-size: 12px;");
                         }
 
-                        if (this.item.level) {
-                            Polymer.dom(this.root).querySelector("#level").setAttribute("style", "display: block;");
-                        }
-                        else {
-                            Polymer.dom(this.root).querySelector("#level").setAttribute("style", "display: none;");
-                        }
+                        // if (this.item.level) {
+                        //     Polymer.dom(this.root).querySelector("#level").setAttribute("style", "display: block;");
+                        // }
+                        // else {
+                        //     Polymer.dom(this.root).querySelector("#level").setAttribute("style", "display: none;");
+                        // }
 
                         // Polymer.dom(this.root).querySelector("#openDetailButton").setAttribute("style", "display:inline-block;position: absolute;  right: 8px; top:8px; color: " + this.item.lotdetails.maprenderdetails.type_fore_color + ";");
 
 
                     }
+                }
+            },
+
+            _lot(e, f, g) {
+                if (g) {
+                    return 'Block ' + e + ' - Lot ' + f + ' - Level ' + g;
+                }
+                else {
+                    return 'Block ' + e + ' - Lot ' + f;
                 }
             },
 

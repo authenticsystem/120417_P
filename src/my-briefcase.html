@@ -280,9 +280,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 <template is="dom-if" if="{{access}}">
 
-                  <iron-list items="[[_descending(briefcasedraft)]]" as="item" scroll-target="threshold">
-                    <div style="text-align:center">{{msg}}</div>
-                    <paper-toast id="toast" text="" duration="0"></paper-toast>
+                  <iron-list items="[[briefcasedraft2]]" as="item" scroll-target="threshold">
+                    <!-- <div style="text-align:center">{{msg}}</div>
+                    <paper-toast id="toast" text="" duration="0"></paper-toast> -->
                     <template id=itemcount>
                       <div class="divSeparator">
                         <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
@@ -290,20 +290,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                           <my-briefcase-card item="{{item}}"></my-briefcase-card>
 
                           <div tabindex="0">
-                            <a tabindex="-1" style="text-decoration:none; display:inline-block;position: absolute;  right: 10px; color: black; top:253px;">
-                              <paper-icon-button id="{{item.$key}}" on-tap="_openSendBriefcasedraft" data-args="{{item.$key}}" icon="my-icons:send" alt="{{item}}"
-                                title="Send request"></paper-icon-button>
-                              <!-- <span alt="{{item}}">Send</span> -->
-                            </a>
-                            <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1" style="text-decoration:none; display:inline-block;position: absolute; color: black; top:253px; right:100px">
+                            <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1" style="text-decoration:none; display:inline-block; position: absolute; color: black; top:253px; right:80px">
                               <paper-icon-button style="color:black" id="{{item.$key}}" on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit"
                                 alt="{{item.$key}}" title="Edit briefcase draft"></paper-icon-button>
-                              <!-- <span alt="{{item.$key}}">Edit</span> -->
                             </a>
-                            <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1" style="text-decoration:none; display:inline-block;position: absolute; color: black; top:253px; right:55px">
+                            <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1" style="text-decoration:none; display:inline-block; position: absolute; color: black; top:253px; right:45px">
                               <paper-icon-button style="color:black" id="openDetailButton" on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:my-icons:open-in-new"
                                 alt="{{item.$key}}" title="View briefcase details"></paper-icon-button>
-                              <!-- <span alt="{{item.$key}}">View</span> -->
+                            </a>
+                            <a tabindex="-1" style="text-decoration:none; display:inline-block; position: absolute; color: black; top:253px; right:10px">
+                              <paper-icon-button id="{{item.$key}}" on-tap="_openSendBriefcasedraft" data-args="{{item.$key}}" icon="my-icons:send" alt="{{item}}"
+                                title="Send request"></paper-icon-button>
                             </a>
                           </div>
 
@@ -313,7 +310,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </template>
                     <div class="loader" id="loader">{{loadingMessage}}</div>
                   </iron-list>
-
                 </template>
 
                 <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold"></iron-scroll-threshold>
@@ -359,9 +355,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 <template is="dom-if" if="{{access}}">
 
-                  <iron-list items="[[_descending(briefcase)]]" as="item" scroll-target="threshold">
-                    <div style="text-align:center">{{msg}}</div>
-                    <paper-toast id="toast" text="" duration="0"></paper-toast>
+                  <iron-list items="[[briefcase2]]" as="item" scroll-target="threshold">
+                    <!-- <div style="text-align:center">{{msg}}</div>
+                    <paper-toast id="toast" text="" duration="0"></paper-toast> -->
                     <template id=itemcount>
                       <div class="divSeparator">
                         <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
@@ -369,21 +365,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                           <my-briefcase-card item="{{item}}"></my-briefcase-card>
 
                           <div tabindex="0">
-                            <a href$="{{_getAppliedEditLink(item.$key)}}" tabindex="-1">
+                            <a href$="{{_getAppliedEditLink(item.$key)}}" tabindex="-1" style="display:inline-block;position: absolute;  right: 38px; color: white; top:8px;">
                               <paper-icon-button title="Edit" hidden$="{{item.isapproved}}" id="{{item.$key}}" noink on-tap="editApplied" data-args="{{item.$key}}"
-                                icon="my-icons:edit" alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                                icon="my-icons:edit" alt="{{item.$key}}"></paper-icon-button>
                             </a>
-                            <a href$="{{_getAppliedDetailsLink(item.$key)}}" tabindex="-1">
+                            <a href$="{{_getAppliedDetailsLink(item.$key)}}" tabindex="-1" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
                               <paper-icon-button title="View" hidden$="{{item.isapproved}}" id="openDetailButton" noink on-tap="appliedDetails" data-args="{{item.$key}}"
-                                icon="my-icons:my-icons:open-in-new" alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
+                                icon="my-icons:my-icons:open-in-new" alt="{{item.$key}}"></paper-icon-button>
                               <paper-tooltip position="left">view details</paper-tooltip>
                             </a>
                           </div>
 
                           <div tabindex="1">
-                            <a href$="{{_getAppliedDetailsLink(item.$key)}}" tabindex="-1">
+                            <a href$="{{_getAppliedDetailsLink(item.$key)}}" tabindex="-1" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
                               <paper-icon-button title="View" hidden$="{{!item.isapproved}}" id="openDetailButton" noink on-tap="appliedDetails" data-args="{{item.$key}}"
-                                icon="my-icons:my-icons:open-in-new" alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
+                                icon="my-icons:my-icons:open-in-new" alt="{{item.$key}}"></paper-icon-button>
                             </a>
                           </div>
 
@@ -550,6 +546,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.msg = '';
           }
         }
+
+        var briefcasedraft2 = [];
+        e.base.forEach(element => {
+          briefcasedraft2.push(element);
+        });
+        this.briefcasedraft2 = this._descending(briefcasedraft2);
+
       },
 
       briefcaseChanged(e) {
@@ -562,6 +565,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.msg = '';
           }
         }
+
+        var briefcase2 = [];
+        e.base.forEach(element => {
+          briefcase2.push(element);
+        });
+        this.briefcase2 = this._descending(briefcase2);
       },
       briefcaseApprovedChanged(e) {
         this.countapproved = e.base.length;
@@ -586,6 +595,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.entryanimation = "slide-from-right-animation";
           this.exitanimation = "slide-left-animation";
         }
+        this.loadMoreData();
       },
       toggleSearch() {
         this.openSearch = true;
@@ -812,6 +822,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           updates['/applicationsNew/' + newPostKey] = postData;
           updates['/briefcase/' + data.agent + '/' + newPostKey] = postData;
           this.notification(data.lot, newPostKey);
+          window.location = "/briefcase";
           return firebase.database().ref().update(updates);
         })
       },

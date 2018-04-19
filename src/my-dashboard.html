@@ -494,6 +494,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <div class="typewriter">
                 <h1>Coming soon......</h1>
               </div>
+              <!-- <firebase-query path="/lots" order-by-child="reservationdetails/agent" equal-to="{{myaccountcode}}" data="{{agentReport}}"></firebase-query>
+              <template is="dom-repeat" items="[[agentReport]]" as="item">
+                <div>
+                  <table>
+                    <tr>
+                      <th>Type</th>
+                      <th>Block</th>
+                      <th>Lot</th>
+                    </tr>
+                    <td>[[item.type]]</td>
+                    <td>[[item.block]]</td>
+                    <td>[[item.lot]]</td>
+                  </table>
+                </div>
+              </template> -->
             </div>
             <!-- end of agent report -->
             <div hidden$="{{staff}}">
@@ -836,37 +851,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <div>
                 <div class="card" hidden$="{{hideOverAll}}">
 
-                  <span class="typeSelection" style="display:flex">
-                    <paper-dropdown-menu class="month" label="Lot type" vertical-align="top" horizontal-align="left">
-                      <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{lotTypeFilter}}">
-                        <paper-item value="all" id="compPaper-item">All</paper-item>
-                        <paper-item value="lawnlots" id="compPaper-item">Lawn Lots</paper-item>
-                        <paper-item value="bonechamber" id="compPaper-item">Bone Chamber</paper-item>
-                        <paper-item value="wallniche" id="compPaper-item">Wall Niche</paper-item>
-                        <paper-item value="cinerarium" id="compPaper-item">Cinerarium</paper-item>
-                        <paper-item value="familylots1" id="compPaper-item">Family Lots 1 (53.27m²)</paper-item>
-                        <paper-item value="familylots2" id="compPaper-item">Family Lots 1 (52.83m²)</paper-item>
-                        <paper-item value="familylots3" id="compPaper-item">Family Lots 1 (Irregular lots)</paper-item>
-                        <paper-item value="familylots4" id="compPaper-item">Family Lots 2 (37.45m²)</paper-item>
-                        <paper-item value="familylots5" id="compPaper-item">Family Lots 2 (Irregular lots)</paper-item>
-                        <paper-item value="gardenlots1" id="compPaper-item">Garden Lots 1 (Area=12.52m²)</paper-item>
-                        <paper-item value="gardenlots2" id="compPaper-item">Garden Lots 1 (Area=12.43m²)</paper-item>
-                        <paper-item value="gardenlots3" id="compPaper-item">Garden Lots 1 (Irregular Lots)</paper-item>
-                        <paper-item value="gardenlots4" id="compPaper-item">Garden Lots 2 (Area=20.00m²)</paper-item>
-                        <paper-item value="gardenlots5" id="compPaper-item">Garden Lots 2 (Irregular Lots)</paper-item>
-                      </paper-listbox>
-                    </paper-dropdown-menu>
-                    <paper-input value={{overAllDate}} type="date" label="As of" style="width:150px;margin-left:5px;">
+                  <div class="typeSelection">
+                    <paper-input value={{overAllDate}} type="date" label="As of" style="width:150px;">
                       <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
                     </paper-input>
-                  </span>
+                  </div>
 
-                  <span style="float:right;" hidden$="{{hideToggleOverall}}">
-                    <paper-toggle-button checked="{{showSummaryTable}}" on-tap="_showSummary" style="font-size:12px">Data Table</paper-toggle-button>
-                  </span>
+                  <div>
+                    <paper-dropdown-menu class="selectedSHRAN" label="Filter" vertical-align="top" horizontal-align="left">
+                      <paper-listbox slot="dropdown-content" class="selectedSHRAN" attr-for-selected="value" selected="{{filterSHRAN}}">
+                        <paper-item value="sold">Sold</paper-item>
+                        <paper-item value="reserved">Reserved</paper-item>
+                        <paper-item value="hold">Hold</paper-item>
+                        <paper-item value="available">Available</paper-item>
+                        <paper-item value="notyetavailable">Not yet available</paper-item>
+                      </paper-listbox>
+                    </paper-dropdown-menu>
+                  </div>
+
+                  <div style="font-size:12px; float:right">
+                    <paper-toggle-button hidden$="{{hideToggleOverall}}" checked="{{showSummaryTable}}" on-tap="_showSummary"
+                      style="font-size:12px">Data Table</paper-toggle-button>
+                  </div>
 
                   <div class="chart-container" hidden$="{{overallchart}}">
-                    <canvas id="overAllChart" height="500"></canvas>
+                    <canvas id="overallchart2" height="500"></canvas>
                   </div>
 
                   </br>
@@ -876,7 +885,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <iron-icon icon="my-icons:description"></iron-icon>Export to CSV</paper-button>
                     <table id="overAllReportTable">
                       <tr>
-                        <td colspan="7">Over all report {{overAllDate}}</td>
+                        <td colspan="7">Over all report As of {{overAllDate}}</td>
                       </tr>
                       <tr>
                         <th style="text-align: left;">Type</th>
@@ -907,21 +916,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                 <div class="card" hidden$="{{hideOverAll}}">
                   <div>
-                    <paper-dropdown-menu class="selectedSHRAN" label="Filter" style="float:right" vertical-align="top" horizontal-align="right">
-                      <paper-listbox slot="dropdown-content" class="selectedSHRAN" attr-for-selected="value" selected="{{filterSHRAN}}">
-                        <paper-item value="sold">Sold</paper-item>
-                        <paper-item value="reserved">Reserved</paper-item>
-                        <paper-item value="hold">Hold</paper-item>
-                        <paper-item value="available">Available</paper-item>
-                        <paper-item value="notyetavailable">Not yet available</paper-item>
+                    <paper-dropdown-menu class="month" label="Lot type" vertical-align="top" horizontal-align="left">
+                      <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{lotTypeFilter}}">
+                        <paper-item value="all" id="compPaper-item">Choose Lot type</paper-item>
+                        <paper-item value="lawnlots" id="compPaper-item">Lawn Lots</paper-item>
+                        <paper-item value="bonechamber" id="compPaper-item">Bone Chamber</paper-item>
+                        <paper-item value="wallniche" id="compPaper-item">Wall Niche</paper-item>
+                        <paper-item value="cinerarium" id="compPaper-item">Cinerarium</paper-item>
+                        <paper-item value="familylots1" id="compPaper-item">Family Lots 1 (53.27m²)</paper-item>
+                        <paper-item value="familylots2" id="compPaper-item">Family Lots 1 (52.83m²)</paper-item>
+                        <paper-item value="familylots3" id="compPaper-item">Family Lots 1 (Irregular lots)</paper-item>
+                        <paper-item value="familylots4" id="compPaper-item">Family Lots 2 (37.45m²)</paper-item>
+                        <paper-item value="familylots5" id="compPaper-item">Family Lots 2 (Irregular lots)</paper-item>
+                        <paper-item value="gardenlots1" id="compPaper-item">Garden Lots 1 (Area=12.52m²)</paper-item>
+                        <paper-item value="gardenlots2" id="compPaper-item">Garden Lots 1 (Area=12.43m²)</paper-item>
+                        <paper-item value="gardenlots3" id="compPaper-item">Garden Lots 1 (Irregular Lots)</paper-item>
+                        <paper-item value="gardenlots4" id="compPaper-item">Garden Lots 2 (Area=20.00m²)</paper-item>
+                        <paper-item value="gardenlots5" id="compPaper-item">Garden Lots 2 (Irregular Lots)</paper-item>
                       </paper-listbox>
                     </paper-dropdown-menu>
                   </div>
                   <div class="chart-container">
-                    <canvas id="overallchart2" height="500"></canvas>
+                    <canvas id="overAllChart" height="500"></canvas>
                   </div>
                 </div>
-
               </div>
               <!--end OverAll Report -->
 
@@ -950,7 +968,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
                       </div>
                       <div class="secondary dim">
-                        [[item.title]]
+                        "[[item.title]]"
                       </div>
                     </div>
                     <paper-icon-button icon="my-icons:open-in-new" title="View notifications" on-tap="_notificationLink" alt="{{item}}"></paper-icon-button>
@@ -1135,6 +1153,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: true
         },
         announcements: Object,
+        agentReport: Object
       },
 
       ready() {
@@ -1170,15 +1189,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'accountChanged(account.*)',
         // 'notificationDataChanged(notificationData.*,notificationData2.*)',
         'notificationDataChanged(notificationData.*)',
-        'dailyTotalDataChanged(dailyTotalData.*)',
+        'dailyTotalDataChanged(dailyTotalData.*)'
       ],
 
       _download() {
-        var data = [];
+        var data = [], date = this.downloadDate;
         firebase.database().ref("/lots").orderByChild("reservationdetails/start").startAt(this.lotDetailsStartAt).endAt(this.lotDetailsEndAt).once("value", function (snapshot) {
           snapshot.forEach(element => {
             data.push([
-              this._formatType(element.val().type),
+              element.val().type,
               element.val().block,
               element.val().lot,
               element.val().level,
@@ -1192,7 +1211,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               element.val().reservationdetails.start,
             ]);
           });
-          var csv = 'Lot type,Block,Lot,Level,Status,Agent firstname,Agent middlename,Agent lastname,Buyer firstname,Buyer middlename,Buyer lastname,Date\n';
+          var csv = date + '\nLot type,Block,Lot,Level,Status,Agent firstname,Agent middlename,Agent lastname,Buyer firstname,Buyer middlename,Buyer lastname,Date\n';
           data.forEach(function (row) {
             csv += row.join(',');
             csv += "\n";
@@ -2051,9 +2070,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (this.Chart) {
 
           if (selectedDMY == 0) {
-            // this.totalHold = 0;
-            // this.totalReserved = 0;
-            // this.totalSold = 0;
             this.hideDailyInputDate = false;
 
             this.hideWeekly = true;
@@ -2073,13 +2089,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.lotDetailsDate = dailyAct;
             this.lotDetailsStartAt = dailyAct + "T00:00";
             this.lotDetailsEndAt = dailyAct + "T23:59";
+            this.downloadDate = this.reportTitle;
           }
 
           else if (selectedDMY == 1) {
             this.hideWeekly = false;
-            // this.totalHold = 0;
-            // this.totalReserved = 0;
-            // this.totalSold = 0;
             this.hideDailyInputDate = true;
             this.hideMonthSelection = true;
             this.hideYearly = true;
@@ -2108,13 +2122,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             query = 'weekly/' + yearWeek;
             this.changeQry = query;
             this.reportTitle = 'Weekly Report ' + this.weekDates;
+            this.downloadDate = this.reportTitle;
           }
 
           else if (selectedDMY == 2) {
             this.hideMonthSelection = false;
-            // this.totalHold = 0;
-            // this.totalReserved = 0;
-            // this.totalSold = 0;
             this.hideWeekly = true;
             this.hideDailyInputDate = true;
             this.hideYearly = true;
@@ -2130,15 +2142,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.reportTitle = 'Monthly Report ' + year + '-' + month;
 
             this.lotDetailsDate = year + '-' + month;
-            this.lotDetailsStartAt = year + '-' + month + '-01T00:00';
-            this.lotDetailsEndAt = year + '-' + month + '-31T23:59';
+            this.lotDetailsStartAt = this.lotDetailsDate + '-01T00:00';
+            this.lotDetailsEndAt = this.lotDetailsDate + '-31T23:59';
+            this.downloadDate = this.reportTitle;
           }
 
           else if (selectedDMY == 3) {
             this.hideYearly = false;
-            // this.totalHold = 0;
-            // this.totalReserved = 0;
-            // this.totalSold = 0;
             this.hideWeekly = true;
             this.hideMonthSelection = true;
             this.hideDailyInputDate = true;
@@ -2156,6 +2166,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.lotDetailsDate = yearly;
             this.lotDetailsStartAt = yearly + '-01' + '-01T00:00';
             this.lotDetailsEndAt = yearly + '-12' + '-31T23:59';
+            this.downloadDate = this.reportTitle;
           }
 
           this.query(query, dailyChart, dailyChart2, filterSHR);
@@ -2384,247 +2395,247 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var allChart = this.allChart;
         var allchart22 = this.allchart2;
 
-        if (lotTypeFilter == 'all') {
-          que = '/overall';
-          this.hideToggleOverall = false;
+        // if (lotTypeFilter == 'all') {
+        //   que = '/overall';
+        //   this.hideToggleOverall = false;
 
-          firebase.database().ref('/reports/overAll/' + overAllDate + '/lotType').on('value', function (snap) {
-            var itemHold = [];
-            var itemSold = [];
-            var itemReserved = [];
-            var itemAvailable = [];
-            var itemNotyetavailable = [];
-            var itemKey = [];
-            var colors = [];
-            if (snap.exists()) {
-              snap.forEach(function (ele) {
-                var itemhold = ele.val().hold;
-                var itemsold = ele.val().sold;
-                var itemreserved = ele.val().reserved;
-                var itemavailable = ele.val().available;
-                var itemnotyetavailable = ele.val().notyetavailable;
+        firebase.database().ref('/reports/overAll/' + overAllDate + '/lotType').on('value', function (snap) {
+          var itemHold = [];
+          var itemSold = [];
+          var itemReserved = [];
+          var itemAvailable = [];
+          var itemNotyetavailable = [];
+          var itemKey = [];
+          var colors = [];
+          if (snap.exists()) {
+            snap.forEach(function (ele) {
+              var itemhold = ele.val().hold;
+              var itemsold = ele.val().sold;
+              var itemreserved = ele.val().reserved;
+              var itemavailable = ele.val().available;
+              var itemnotyetavailable = ele.val().notyetavailable;
 
-                if (ele.key == 'lawnlots') { itemkey = 'Lawn Lots'; bgColor = '#2196F3'; }
-                else if (ele.key == 'wallniche') { itemkey = 'Wall Niche'; bgColor = '#E91E63'; }
-                else if (ele.key == 'bonechamber') { itemkey = 'Bone Chamber'; bgColor = '#3F51B5'; }
-                else if (ele.key == 'cinerarium') { itemkey = 'Cinerarium'; bgColor = '#795548'; }
-                else if (ele.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m²)'; bgColor = '#BA68C8'; }
-                else if (ele.key == 'familylots5') { itemkey = 'Family Lots 1 (Irregular)'; bgColor = '#E1BEE7'; }
-                else if (ele.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m²)'; bgColor = '#4A148C'; }
-                else if (ele.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m²)'; bgColor = '#7B1FA2'; }
-                else if (ele.key == 'familylots3') { itemkey = 'Family Lots 2 (Irregular)'; bgColor = '#9C27B0'; }
-                else if (ele.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m²)'; bgColor = '#DCEDC8'; }
-                else if (ele.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m²)'; bgColor = '#AED581'; }
-                else if (ele.key == 'gardenlots3') { itemkey = 'Garden Lots 1 (Irregular)'; bgColor = '#8BC34A'; }
-                else if (ele.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m²)'; bgColor = '#689F38'; }
-                else if (ele.key == 'gardenlots5') { itemkey = 'Garden Lots 2 (Irregular)'; bgColor = '#33691E'; }
+              if (ele.key == 'lawnlots') { itemkey = 'Lawn Lots'; bgColor = '#2196F3'; }
+              else if (ele.key == 'wallniche') { itemkey = 'Wall Niche'; bgColor = '#E91E63'; }
+              else if (ele.key == 'bonechamber') { itemkey = 'Bone Chamber'; bgColor = '#3F51B5'; }
+              else if (ele.key == 'cinerarium') { itemkey = 'Cinerarium'; bgColor = '#795548'; }
+              else if (ele.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m²)'; bgColor = '#BA68C8'; }
+              else if (ele.key == 'familylots5') { itemkey = 'Family Lots 1 (Irregular)'; bgColor = '#E1BEE7'; }
+              else if (ele.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m²)'; bgColor = '#4A148C'; }
+              else if (ele.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m²)'; bgColor = '#7B1FA2'; }
+              else if (ele.key == 'familylots3') { itemkey = 'Family Lots 2 (Irregular)'; bgColor = '#9C27B0'; }
+              else if (ele.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m²)'; bgColor = '#DCEDC8'; }
+              else if (ele.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m²)'; bgColor = '#AED581'; }
+              else if (ele.key == 'gardenlots3') { itemkey = 'Garden Lots 1 (Irregular)'; bgColor = '#8BC34A'; }
+              else if (ele.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m²)'; bgColor = '#689F38'; }
+              else if (ele.key == 'gardenlots5') { itemkey = 'Garden Lots 2 (Irregular)'; bgColor = '#33691E'; }
 
-                itemHold.push(itemhold);
-                itemSold.push(itemsold);
-                itemReserved.push(itemreserved);
-                itemAvailable.push(itemavailable);
-                itemNotyetavailable.push(itemnotyetavailable);
+              itemHold.push(itemhold);
+              itemSold.push(itemsold);
+              itemReserved.push(itemreserved);
+              itemAvailable.push(itemavailable);
+              itemNotyetavailable.push(itemnotyetavailable);
 
-                itemKey.push(itemkey);
-                colors.push(bgColor);
+              itemKey.push(itemkey);
+              colors.push(bgColor);
 
-              });
+            });
 
-              if (filterSHRAN == 'sold') {
-                var data2 = {
-                  datasets: [{
-                    data: itemSold,
-                    backgroundColor: colors,
-                  }],
-                  labels: itemKey,
-
-                }
-
-                allchart22.data = data2;
-                allchart22.update();
-              }
-              else if (filterSHRAN == 'hold') {
-                var data2 = {
-                  datasets: [{
-                    data: itemHold,
-                    backgroundColor: colors,
-                  }],
-                  labels: itemKey,
-
-                }
-
-                allchart22.data = data2;
-                allchart22.update();
-              }
-              else if (filterSHRAN == 'reserved') {
-                var data2 = {
-                  datasets: [{
-                    data: itemReserved,
-                    backgroundColor: colors,
-                  }],
-                  labels: itemKey,
-
-                }
-
-                allchart22.data = data2;
-                allchart22.update();
-              }
-              else if (filterSHRAN == 'available') {
-                var data2 = {
-                  datasets: [{
-                    data: itemAvailable,
-                    backgroundColor: colors,
-                  }],
-                  labels: itemKey,
-
-                }
-
-                allchart22.data = data2;
-                allchart22.update();
-              }
-              else if (filterSHRAN == 'notyetavailable') {
-                var data2 = {
-                  datasets: [{
-                    data: itemNotyetavailable,
-                    backgroundColor: colors,
-                  }],
-                  labels: itemKey,
-
-                }
-
-                allchart22.data = data2;
-                allchart22.update();
-              }
-            }
-            else {
+            if (filterSHRAN == 'sold') {
               var data2 = {
                 datasets: [{
-                  data: [],
-                  backgroundColor: [
-                    'black'
-                  ]
+                  data: itemSold,
+                  backgroundColor: colors,
                 }],
-                labels: ['No data found'],
+                labels: itemKey,
+
               }
 
               allchart22.data = data2;
               allchart22.update();
             }
-          });
-
-          firebase.database().ref('/reports/overAll/' + overAllDate + que).on('value', function (snapshot) {
-            if (snapshot.exists()) {
-
-              var datas = [];
-              var labels = [];
-              var colors = [];
-
-              snapshot.forEach(function (element) {
-                if (element.key == 'totalHold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
-                else if (element.key == 'totalSold') { itemkey = 'Sold'; bgColor = 'red'; }
-                else if (element.key == 'totalReserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
-                else if (element.key == 'totalAvailable') { itemkey = 'Available'; bgColor = 'green'; }
-                else if (element.key == 'totalNotyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
-
-                datas.push(element.val());
-                labels.push(itemkey);
-                colors.push(bgColor);
-              });
-
-              var data = {
+            else if (filterSHRAN == 'hold') {
+              var data2 = {
                 datasets: [{
-                  data: datas,
+                  data: itemHold,
                   backgroundColor: colors,
                 }],
-                labels: labels,
+                labels: itemKey,
+
               }
 
-              allChart.data = data;
-              allChart.update();
+              allchart22.data = data2;
+              allchart22.update();
             }
-            else {
-              var data = {
+            else if (filterSHRAN == 'reserved') {
+              var data2 = {
                 datasets: [{
-                  data: [],
-                  backgroundColor: [
-                    'black'
-                  ]
+                  data: itemReserved,
+                  backgroundColor: colors,
                 }],
-                labels: ['No data found'],
+                labels: itemKey,
+
               }
 
-              allChart.data = data;
-              allChart.update();
-              // console.log('No Data')
+              allchart22.data = data2;
+              allchart22.update();
             }
-          });
+            else if (filterSHRAN == 'available') {
+              var data2 = {
+                datasets: [{
+                  data: itemAvailable,
+                  backgroundColor: colors,
+                }],
+                labels: itemKey,
 
+              }
 
-        }
-        else {
-          que = '/lotType/' + lotTypeFilter;
-          this.hideToggleOverall = true;
+              allchart22.data = data2;
+              allchart22.update();
+            }
+            else if (filterSHRAN == 'notyetavailable') {
+              var data2 = {
+                datasets: [{
+                  data: itemNotyetavailable,
+                  backgroundColor: colors,
+                }],
+                labels: itemKey,
 
-          var data2 = {
-            datasets: [{
-              data: [],
-              backgroundColor: [
-                'black'
-              ]
-            }],
-            labels: ['No data found'],
+              }
+
+              allchart22.data = data2;
+              allchart22.update();
+            }
           }
-
-          allchart22.data = data2;
-          allchart22.update();
-
-          firebase.database().ref('/reports/overAll/' + overAllDate + que).on('value', function (snapshot) {
-            if (snapshot.exists()) {
-
-              var datas = [];
-              var labels = [];
-              var colors = [];
-
-              snapshot.forEach(function (element) {
-                if (element.key == 'hold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
-                else if (element.key == 'sold') { itemkey = 'Sold'; bgColor = 'red'; }
-                else if (element.key == 'reserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
-                else if (element.key == 'available') { itemkey = 'Available'; bgColor = 'green'; }
-                else if (element.key == 'notyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
-
-                datas.push(element.val());
-                labels.push(itemkey);
-                colors.push(bgColor);
-              });
-
-              var data = {
-                datasets: [{
-                  data: datas,
-                  backgroundColor: colors,
-                }],
-                labels: labels,
-              }
-
-              allChart.data = data;
-              allChart.update();
-
+          else {
+            var data2 = {
+              datasets: [{
+                data: [],
+                backgroundColor: [
+                  'black'
+                ]
+              }],
+              labels: ['No data found'],
             }
-            else {
-              var data = {
-                datasets: [{
-                  data: [],
-                  backgroundColor: [
-                    'black'
-                  ]
-                }],
-                labels: ['No data found'],
-              }
 
-              allChart.data = data;
-              allChart.update();
+            allchart22.data = data2;
+            allchart22.update();
+          }
+        });
+
+        firebase.database().ref('/reports/overAll/' + overAllDate + que).on('value', function (snapshot) {
+          if (snapshot.exists()) {
+
+            var datas = [];
+            var labels = [];
+            var colors = [];
+
+            snapshot.forEach(function (element) {
+              if (element.key == 'totalHold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
+              else if (element.key == 'totalSold') { itemkey = 'Sold'; bgColor = 'red'; }
+              else if (element.key == 'totalReserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
+              else if (element.key == 'totalAvailable') { itemkey = 'Available'; bgColor = 'green'; }
+              else if (element.key == 'totalNotyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
+
+              datas.push(element.val());
+              labels.push(itemkey);
+              colors.push(bgColor);
+            });
+
+            var data = {
+              datasets: [{
+                data: datas,
+                backgroundColor: colors,
+              }],
+              labels: labels,
             }
-          });
-        }
+
+            allChart.data = data;
+            allChart.update();
+          }
+          else {
+            var data = {
+              datasets: [{
+                data: [],
+                backgroundColor: [
+                  'black'
+                ]
+              }],
+              labels: ['No data found'],
+            }
+
+            allChart.data = data;
+            allChart.update();
+            // console.log('No Data')
+          }
+        });
+
+
+        // }
+        // else {
+        //   que = '/lotType/' + lotTypeFilter;
+        //   this.hideToggleOverall = true;
+
+        // var data2 = {
+        //   datasets: [{
+        //     data: [],
+        //     backgroundColor: [
+        //       'black'
+        //     ]
+        //   }],
+        //   labels: ['No data found'],
+        // }
+
+        // allchart22.data = data2;
+        // allchart22.update();
+
+        firebase.database().ref('/reports/overAll/' + overAllDate + '/lotType/' + lotTypeFilter).on('value', function (snapshot) {
+          if (snapshot.exists()) {
+
+            var datas = [];
+            var labels = [];
+            var colors = [];
+
+            snapshot.forEach(function (element) {
+              if (element.key == 'hold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
+              else if (element.key == 'sold') { itemkey = 'Sold'; bgColor = 'red'; }
+              else if (element.key == 'reserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
+              else if (element.key == 'available') { itemkey = 'Available'; bgColor = 'green'; }
+              else if (element.key == 'notyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
+
+              datas.push(element.val());
+              labels.push(itemkey);
+              colors.push(bgColor);
+            });
+
+            var data = {
+              datasets: [{
+                data: datas,
+                backgroundColor: colors,
+              }],
+              labels: labels,
+            }
+
+            allChart.data = data;
+            allChart.update();
+
+          }
+          else {
+            var data = {
+              datasets: [{
+                data: [],
+                backgroundColor: [
+                  'black'
+                ]
+              }],
+              labels: ['No data found'],
+            }
+
+            allChart.data = data;
+            allChart.update();
+          }
+        });
+        // }
       },
 
       _showSummary() {

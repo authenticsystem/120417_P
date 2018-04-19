@@ -12,6 +12,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="shared-styles.html">
 
@@ -30,8 +32,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 background-color: #388E3C;
             }
 
-            .action{
-                padding-top:16px;
+            .action {
+                padding-top: 16px;
             }
 
             paper-button {
@@ -72,10 +74,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <paper-checkbox id="Agent">Agent</paper-checkbox>
                     <paper-checkbox id="Owner">Owner</paper-checkbox>
                     <div class="action">
-                        <paper-button on-tap="_announce" id="next" raised class="green">Announce</paper-button>
+                        <paper-button on-tap="_openSavingDialog" id="next" raised class="green">Publish</paper-button>
                     </div>
                 </div>
             </div>
+            <paper-dialog id="savingDialog">
+                <p>Publish new announcement?</p>
+                <div class="buttons">
+                    <paper-button dialog-dismiss>Cancel</paper-button>
+                    <paper-button dialog-confirm autofocus on-tap="_announce">OK</paper-button>
+                </div>
+            </paper-dialog>
 
         </app-header-layout>
     </template>
@@ -98,6 +107,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.$.narrow = !this.$.narrow;
             },
 
+            _openSavingDialog() {
+                if (!this.title || !this.message) {
+                    this.msg = 'Please fill-up the required field.';
+                }
+                else {
+                    this.$.savingDialog.open();
+                }
+            },
+
             _announce() {
                 var boxStaff = Polymer.dom(this.root).querySelector("#Staff");
                 var boxManager = Polymer.dom(this.root).querySelector("#Manager");
@@ -108,44 +126,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 var agent = false;
                 var owner = false;
 
-                if (!this.title || !this.message) {
-                    this.msg = 'Please fill-up the required field.';
+                if (boxStaff.checked == true) {
+                    staff = true;
                 }
-                else {
-                    if (boxStaff.checked == true) {
-                        staff = true;
-                    }
-                    if (boxManager.checked == true) {
-                        manager = true;
-                    }
-                    if (boxAgent.checked == true) {
-                        agent = true;
-                    }
-                    if (boxOwner.checked == true) {
-                        owner = true;
-                    }
-                    var ref = firebase.database().ref("announcements");
-                    var announcementPush = ref.push().key;
-                    var announcementData = {
-                        title: this.title,
-                        message: this.message,
-                        sender: this.myaccount,
-                        timestamp: { ".sv": "timestamp" },
-                        photo: firebase.auth().currentUser.photoURL,
-                        staff: staff,
-                        manager: manager,
-                        agent: agent,
-                        owner: owner
-                    };
-                    var updates = {};
-                    updates['/announcements/' + announcementPush] = announcementData;
-                    this.notification(staff,manager,agent,owner,this.title,announcementPush);
-                    window.location = "/announcement";
-                    return firebase.database().ref().update(updates);
+                if (boxManager.checked == true) {
+                    manager = true;
                 }
+                if (boxAgent.checked == true) {
+                    agent = true;
+                }
+                if (boxOwner.checked == true) {
+                    owner = true;
+                }
+                
+                var ref = firebase.database().ref("announcements");
+                var announcementPush = ref.push().key;
+                var announcementData = {
+                    title: this.title,
+                    message: this.message,
+                    sender: this.myaccount,
+                    timestamp: { ".sv": "timestamp" },
+                    photo: firebase.auth().currentUser.photoURL,
+                    staff: staff,
+                    manager: manager,
+                    agent: agent,
+                    owner: owner
+                };
+                var updates = {};
+                updates['/announcements/' + announcementPush] = announcementData;
+                this.notification(staff, manager, agent, owner, this.title, announcementPush);
+                window.location = "/announcement";
+                return firebase.database().ref().update(updates);
             },
 
-            notification(staff,manager,agent,owner,announcementTitle,announcementPush){
+            notification(staff, manager, agent, owner, announcementTitle, announcementPush) {
                 var ref = firebase.database().ref("notifications");
                 ref.push({
                     title: announcementTitle,
@@ -153,12 +167,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     message: "publish new announcement",
                     photo: firebase.auth().currentUser.photoURL,
                     isread: false,
-                    recipient:{
+                    recipient: {
                         staff: staff,
                         manager: manager,
                         agent: agent,
                         owner: owner,
-                        recipient_accountCode:''
+                        recipient_accountCode: ''
                     },
                     sender: this.myaccount,
                     timestamp: { ".sv": "timestamp" },

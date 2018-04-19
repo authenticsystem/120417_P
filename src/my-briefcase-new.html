@@ -302,52 +302,44 @@
 
                         <div class="docu">
                             <div class="docu-header">3. Finalize</div>
-                            <div>Please review the following details:</div>
-                            <br>
                             <div class="details">
-                                <paper-card style="width:100%">
-                                    <div class="card-content">
-                                        <div>Block:
-                                            <b>{{block}}</b> - Lot:
-                                            <b>{{lot}}</b> - Level:
-                                            <b>{{level}}</b>
-                                        </div>
-                                        <div>Type:
-                                            <b>{{fullLotData.maprenderdetails.type_name}}</b> -- Area:
-                                            <b>{{fullLotData.area}}</b> -- Designation:
-                                            <b>{{fullLotData.maprenderdetails.designation_name}}</b>
-                                        </div>
-                                        <br>
-                                        <div>Transaction:
-                                            <b>{{draftdata_type}}</b>
-                                        </div>
-                                        <div>Start:
-                                            <b>{{startDateTimeValue}}</b>
-                                        </div>
-                                        <div>Expires:</div>
-                                        <hr style="margin-top:10px; margin-bottom:10px">
-                                        <div>Buyer's Fullname:
-                                            <b>{{draftdata_buyerdetails_firstname}}&nbsp;{{draftdata_buyerdetails_middlename}}&nbsp;{{draftdata_buyerdetails_lastname}}&nbsp;{{draftdata_buyerdetails_suffix}}</b>
-                                        </div>
-                                        <div>Buyer's Cellphone:
-                                            <b>{{draftdata_buyerdetails_cellphone}}</b>
-                                        </div>
-                                        <div>Buyer's Email:
-                                            <b>{{draftdata_buyerdetails_email}}</b>
-                                        </div>
-                                        <hr style="margin-top:10px; margin-bottom:10px">
-                                        <div>Agent's Fullname:
-                                            <b>{{agentdetails_firstname}}&nbsp;{{agentdetails_middlename}}&nbsp;{{agentdetails_lastname}}&nbsp;{{agentdetails_suffix}}</b>
-                                        </div>
-                                        <div>Agent's Cellphone:
-                                            <b>{{agentdetails_cellphone}}</b>
-                                        </div>
-                                        <div>Agent's Email:
-                                            <b>{{agentdetails_email}}</b>
-                                        </div>
+                                <div>Please review the following details:</div>
+                                <div>
+                                    <div style="background-color: dimgrey; color:white; padding:5px">
+                                        Lot Details
                                     </div>
-                                </paper-card>
-
+                                    <div>Block: {{block}}</div>
+                                    <div>Lot: {{lot}}</div>
+                                    <div>Level: {{level}}</div>
+                                    <div>Area: {{fullLotData.area}}</div>
+                                    <div>Designation: {{fullLotData.maprenderdetails.designation_name}}</div>
+                                    <div>Type: {{fullLotData.maprenderdetails.type_name}}</div>
+                                    <div>Transaction: {{draftdata_type}}</div>
+                                    <div>Start: {{startDateTimeValue}}</div>
+                                    <div>Expires: {{expiryDate}}</div>
+                                </div>
+                                <div>
+                                    <div style="background-color: dimgrey; color:white; padding:5px">
+                                        Buyer Information
+                                    </div>
+                                    <div>First Name: {{draftdata_buyerdetails_firstname}}</div>
+                                    <div>Middle Name: {{draftdata_buyerdetails_middlename}}</div>
+                                    <div>Last Name: {{draftdata_buyerdetails_lastname}}</div>
+                                    <div>Suffix: {{draftdata_buyerdetails_suffix}}</div>
+                                    <div>Cellphone: {{draftdata_buyerdetails_cellphone}}</div>
+                                    <div>Email: {{draftdata_buyerdetails_email}}</div>
+                                </div>
+                                <div>
+                                    <div style="background-color: dimgrey; color:white; padding:5px">
+                                        Agent Information
+                                    </div>
+                                    <div>First Name: {{agentdetails_firstname}}</div>
+                                    <div>Middle Name: {{agentdetails_middlename}}</div>
+                                    <div>Last Name: {{agentdetails_lastname}}</div>
+                                    <div>Suffix: {{agentdetails_suffix}}</div>
+                                    <div>Cellphone: {{agentdetails_cellphone}}</div>
+                                    <div>Email: {{agentdetails_email}}</div>
+                                </div>
                             </div>
                         </div>
                     </neon-animatable>
@@ -1014,10 +1006,6 @@
                 var uid = new ShortUniqueId();
                 return uid.randomUUID(8);
             },
-
-            // _back() {
-            //     window.location = "/briefcase";
-            // }
         })
     </script>
 </dom-module>

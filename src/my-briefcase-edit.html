@@ -190,7 +190,7 @@
                 <app-header fixed slot="header">
                     <app-toolbar>
                         <a href="/briefcase">
-                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="_back"></paper-icon-button>
+                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{applicationKey}}</div>
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
@@ -325,51 +325,42 @@
                             <div class="docu-header">3. Finalize</div>
                             <div class="details">
                                 <div>Please review the following details:</div>
-                                <br>
-                                <paper-card style="width:100%">
-                                    <div class="card-content">
-                                        <div>Block:
-                                            <b>{{block}}</b> - Lot:
-                                            <b>{{lot}}</b> - Level:
-                                            <b>{{level}}</b>
-                                        </div>
-                                        <div>Type:
-                                            <b>{{fullLotData.maprenderdetails.type_name}}</b> -- Area:
-                                            <b>{{fullLotData.area}}</b> -- Designation:
-                                            <b>{{fullLotData.maprenderdetails.designation_name}}</b>
-                                        </div>
-                                        <br>
-                                        <div>Transaction:
-                                            <b>{{draftdata_type}}</b>
-                                        </div>
-                                        <div>Start:
-                                            <b>{{startDateTimeValue}}</b>
-                                        </div>
-                                        <div>Expires:
-                                            <b>{{expiryDate}}</b>
-                                        </div>
-                                        <hr style="margin-top:10px; margin-bottom:10px">
-                                        <div>Buyer's Fullname:
-                                            <b>{{draftdata_buyerdetails_firstname}}&nbsp;{{draftdata_buyerdetails_middlename}}&nbsp;{{draftdata_buyerdetails_lastname}}&nbsp;{{draftdata_buyerdetails_suffix}}</b>
-                                        </div>
-                                        <div>Buyer's Cellphone:
-                                            <b>{{draftdata_buyerdetails_cellphone}}</b>
-                                        </div>
-                                        <div>Buyer's Email:
-                                            <b>{{draftdata_buyerdetails_email}}</b>
-                                        </div>
-                                        <hr style="margin-top:10px; margin-bottom:10px">
-                                        <div>Agent's Fullname:
-                                            <b>{{draftdata_agentdetails_firstname}}&nbsp;{{draftdata_agentdetails_middlename}}&nbsp;{{draftdata_agentdetails_lastname}}&nbsp;{{draftdata_agentdetails_suffix}}</b>
-                                        </div>
-                                        <div>Agent's Cellphone:
-                                            <b>{{draftdata_agentdetails_cellphone}}</b>
-                                        </div>
-                                        <div>Agent's Email:
-                                            <b>{{draftdata_agentdetails_email}}</b>
-                                        </div>
+                                <div>
+                                    <div style="background-color: dimgrey; color:white; padding:5px">
+                                        Lot Details
                                     </div>
-                                </paper-card>
+                                    <div>Block: {{block}}</div>
+                                    <div>Lot: {{lot}}</div>
+                                    <div>Level: {{level}}</div>
+                                    <div>Area: {{fullLotData.area}}</div>
+                                    <div>Designation: {{fullLotData.maprenderdetails.designation_name}}</div>
+                                    <div>Type: {{fullLotData.maprenderdetails.type_name}}</div>
+                                    <div>Transaction: {{draftdata_type}}</div>
+                                    <div>Start: {{startDateTimeValue}}</div>
+                                    <div>Expires: {{expiryDate}}</div>
+                                </div>
+                                <div>
+                                    <div style="background-color: dimgrey; color:white; padding:5px">
+                                        Buyer Information
+                                    </div>
+                                    <div>First Name: {{draftdata_buyerdetails_firstname}}</div>
+                                    <div>Middle Name: {{draftdata_buyerdetails_middlename}}</div>
+                                    <div>Last Name: {{draftdata_buyerdetails_lastname}}</div>
+                                    <div>Suffix: {{draftdata_buyerdetails_suffix}}</div>
+                                    <div>Cellphone: {{draftdata_buyerdetails_cellphone}}</div>
+                                    <div>Email: {{draftdata_buyerdetails_email}}</div>
+                                </div>
+                                <div>
+                                    <div style="background-color: dimgrey; color:white; padding:5px">
+                                        Agent Information
+                                    </div>
+                                    <div>First Name: {{draftdata_agentdetails_firstname}}</div>
+                                    <div>Middle Name: {{draftdata_agentdetails_middlename}}</div>
+                                    <div>Last Name: {{draftdata_agentdetails_lastname}}</div>
+                                    <div>Suffix: {{draftdata_agentdetails_suffix}}</div>
+                                    <div>Cellphone: {{draftdata_agentdetails_cellphone}}</div>
+                                    <div>Email: {{draftdata_agentdetails_email}}</div>
+                                </div>
                             </div>
                         </div>
                     </neon-animatable>
@@ -1386,10 +1377,6 @@
                 var uid = new ShortUniqueId();
                 return uid.randomUUID(8);
             },
-
-            // _back() {
-            //     window.location = "/briefcase";
-            // }
         })
     </script>
 </dom-module>

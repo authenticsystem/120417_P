@@ -279,11 +279,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </template>
 
                 <template is="dom-if" if="{{access}}">
-                  <iron-list items="[[_descending(applicationsNew)]]" as="item" scroll-target="threshold">
-                    <div style="text-align:center">{{msg}}</div>
-                    <paper-toast id="toast" text="" duration="0"></paper-toast>
+                  <iron-list items="[[applicationsNew2]]" as="item" scroll-target="threshold">
+                    <!-- <div style="text-align:center">{{msg}}</div>
+                    <paper-toast id="toast" text="" duration="0"></paper-toast> -->
                     <template>
-
                       <div class="divSeparator">
                         <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
 
@@ -297,14 +296,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             </a>
                           </div>
                         </div>
-
                       </div>
-
                     </template>
+
                     <div class="loader" id="loader">{{loadingMessage}}</div>
                   </iron-list>
                 </template>
-
                 <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold"></iron-scroll-threshold>
 
                 <paper-dialog id="approvedApp">
@@ -346,9 +343,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </template>
 
                 <template is="dom-if" if="{{access}}">
-                  <iron-list items="[[_descending(applications)]]" as="item" scroll-target="threshold">
-                    <div style="text-align:center">{{msg}}</div>
-                    <paper-toast id="toast" text="" duration="0"></paper-toast>
+                  <iron-list items="[[applications2]]" as="item" scroll-target="threshold">
+                    <!-- <div style="text-align:center">{{msg}}</div>
+                    <paper-toast id="toast" text="" duration="0"></paper-toast> -->
                     <template>
 
                       <div class="divSeparator">
@@ -378,7 +375,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <div class="loader" id="loader">{{loadingMessage}}</div>
                   </iron-list>
                 </template>
-
                 <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold"></iron-scroll-threshold>
 
                 <template is="dom-if" if="{{access}}">
@@ -495,6 +491,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         route: Object,
         routeData: Object,
         account: Object,
+        // limit: {
+        //   type: Number,
+        //   value: 50
+        // }
       },
       observers: [
         '_searchChanged(filterBy, search)',
@@ -524,6 +524,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.entryanimation = "slide-from-right-animation";
           this.exitanimation = "slide-left-animation";
         }
+        this.loadMoreData();
       },
       _applicationChanged(e) {
         this.countApp = e.base.length;
@@ -535,6 +536,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.msg = '';
           }
         }
+
+        var applications2 = [];
+        e.base.forEach(element => {
+          applications2.push(element);
+        });
+        this.applications2 = this._descending(applications2);
       },
       _applicationsNewChanged(e) {
         this.countAppNew = e.base.length;
@@ -546,12 +553,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.msg = '';
           }
         }
+        var applicationsNew2 = [];
+        e.base.forEach(element => {
+          applicationsNew2.push(element);
+        });
+        this.applicationsNew2 = this._descending(applicationsNew2);
       },
       toggleSearch() {
         this.openSearch = true;
+        // this.limit = 0;
       },
       toggleReturn() {
         this.openSearch = false;
+        // this.limit = 50;
         this.search = '';
       },
       toggleClear() {
@@ -980,13 +994,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return e.reverse();
       },
 
-     loadMoreData() {
+      loadMoreData() {
         this.loadingMessage = 'Loading....';
         setTimeout((e) => {
           this.loadingMessage = 'No record..';
           this.$.threshold.clearTriggers();
         }, 3000);
-      }
+      },
     })
   </script>
 </dom-module>

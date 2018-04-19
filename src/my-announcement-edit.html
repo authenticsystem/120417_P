@@ -14,6 +14,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="shared-styles.html">
 
 
@@ -68,10 +70,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <paper-checkbox id="Agent">Agent</paper-checkbox>
                     <paper-checkbox id="Owner">Owner</paper-checkbox>
                     <div class="action">
-                        <paper-button on-tap="_announce" id="next" raised class="green">Save</paper-button>
+                        <paper-button on-tap="_openSavingDialog" id="next" raised class="green">Save</paper-button>
                     </div>
                 </div>
             </div>
+            <paper-dialog id="savingDialog">
+                <p>Update announcement?</p>
+                <div class="buttons">
+                    <paper-button dialog-dismiss>Cancel</paper-button>
+                    <paper-button dialog-confirm autofocus on-tap="_announce">OK</paper-button>
+                </div>
+            </paper-dialog>
 
         </app-header-layout>
     </template>
@@ -132,6 +141,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             },
 
+            _openSavingDialog() {
+                if (!this.title || !this.message) {
+                    this.msg = 'Please fill-up the required field.';
+                }
+                else {
+                    this.$.savingDialog.open();
+                }
+            },
+
             _announce() {
                 var boxStaff = Polymer.dom(this.root).querySelector("#Staff");
                 var boxManager = Polymer.dom(this.root).querySelector("#Manager");
@@ -142,37 +160,33 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 var agent = false;
                 var owner = false;
 
-                if (!this.title || !this.message) {
-                    this.msg = 'Please fill-up the required field.';
+                if (boxStaff.checked == true) {
+                    staff = true;
                 }
-                else {
-                    if (boxStaff.checked == true) {
-                        staff = true;
-                    }
-                    if (boxManager.checked == true) {
-                        manager = true;
-                    }
-                    if (boxAgent.checked == true) {
-                        agent = true;
-                    }
-                    if (boxOwner.checked == true) {
-                        owner = true;
-                    }
-                    var ref = firebase.database().ref("/announcements");
-                    ref.child(this.transactionKey).update({
-                        staff: staff,
-                        manager: manager,
-                        agent: agent,
-                        owner: owner,
-                        title: this.title,
-                        message: this.message,
-                        photo: firebase.auth().currentUser.photoURL,
-                        timestamp: { ".sv": "timestamp" },
-                        sender: this.myaccount,
-                        isupdated: true
-                    });
-                    this.notification(staff, manager, agent, owner, this.title,);
+                if (boxManager.checked == true) {
+                    manager = true;
                 }
+                if (boxAgent.checked == true) {
+                    agent = true;
+                }
+                if (boxOwner.checked == true) {
+                    owner = true;
+                }
+                
+                var ref = firebase.database().ref("/announcements");
+                ref.child(this.transactionKey).update({
+                    staff: staff,
+                    manager: manager,
+                    agent: agent,
+                    owner: owner,
+                    title: this.title,
+                    message: this.message,
+                    photo: firebase.auth().currentUser.photoURL,
+                    timestamp: { ".sv": "timestamp" },
+                    sender: this.myaccount,
+                    isupdated: true
+                });
+                this.notification(staff, manager, agent, owner, this.title, );
                 window.location = "/announcement";
             },
 
