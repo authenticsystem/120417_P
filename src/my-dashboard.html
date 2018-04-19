@@ -710,6 +710,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <div class="chart-container" hidden$="{{hideDailyChart2}}">
                     <canvas id="dailyChart2" height="500"></canvas>
                   </div>
+                  <br>
+                  <div hidden$="{{hidelotDetailsTable}}" style="font-size: 12px; overflow-x:auto;">
+                    <table id="lotDetailsTable">
+                      <tr>
+                        <td colspan="6">
+                          <iron-icon icon="my-icons:event"></iron-icon>{{lotDetailsDate}}</td>
+                      </tr>
+                      <tr>
+                        <th style="text-align: left;">Lot type</th>
+                        <th style="text-align: left;">Lot</th>
+                        <th style="text-align: left;">Status</th>
+                        <th style="text-align: left;">Agent</th>
+                        <th style="text-align: left;">Buyer</th>
+                        <th style="text-align: left;">Date</th>
+                      </tr>
+                      <template is="dom-repeat" items="{{lotDetails}}">
+                        <tr>
+                          <td style="text-align: left;">{{_formatType(item.type)}}</td>
+                          <td style="text-align: left;">Block {{item.block}} Lot {{item.lot}} Level{{item.level}}</td>
+                          <td style="text-align: left;">{{item.status}}</td>
+                          <td style="text-align: left;">{{item.reservationdetails.agentdetails.firstname}} {{item.reservationdetails.agentdetails.middlename}}
+                            {{item.reservationdetails.agentdetails.lastname}}
+                          </td>
+                          <td style="text-align: left;">{{item.reservationdetails.buyerdetails.firstname}} {{item.reservationdetails.buyerdetails.middlename}}
+                            {{item.reservationdetails.buyerdetails.lastname}}
+                          </td>
+                          <td style="text-align: left;">{{item.reservationdetails.start}}</td>
+                        </tr>
+                      </template>
+                    </table>
+                  </div>
                 </div>
 
               </div>
@@ -1157,6 +1188,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       ready() {
+        // this.changePage(1);
+
         var date = new Date();
         this.startMonthYear = date.getFullYear().toString();
         this.endMonthYear = date.getFullYear().toString();
