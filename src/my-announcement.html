@@ -167,9 +167,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                             <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
                                             <div class="pad">
                                                 <div class="primary">[[item.title]]</div>
-                                                <div class="secondary dim">[[dateTimeFormat(item.timestamp)]]
-                                                    <span style="margin-left:16px; color: red; font-size:12px">[[_updated(item.isupdated)]]</span>
-                                                </div>
+                                                <div class="secondary dim">[[dateTimeFormat(item.timestamp,item.isupdated)]]</div>
                                             </div>
                                             <a href$="{{_getViewEditLink(item.$key)}}">
                                                 <paper-icon-button icon="my-icons:edit" on-tap="editAnnouncement" data-args="{{item.$key}}" alt="{{item.$key}}"></paper-icon-button>
@@ -196,7 +194,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <template is="dom-if" if="{{access}}">
                     <div name="/new">
                         <div id="announcementNew"></div>
-                        <my-announcement-new id="d23" path="" prev-route="{{route.prefix}}" myaccount="{{myaccountName}}"></my-announcement-new>
+                        <my-announcement-new id="d23" path="" prev-route="{{route.prefix}}" myaccount="{{myaccountName}}" myrole="{{myaccountRole}}"></my-announcement-new>
                     </div>
                 </template>
 
@@ -231,7 +229,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             accountChanged(e) {
                 this.myaccountName = e[0].name.firstname + ' ' + e[0].name.middlename + ' ' + e[0].name.lastname;
-                // console.log(this.myaccountName);
+                this.myaccountRole = e[0].role;
+                // console.log(e[0].role);
             },
 
             _photo(e) {
@@ -242,7 +241,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             },
 
-            dateTimeFormat(e) {
+            dateTimeFormat(e,f) {
                 // var event = new Date(e);
                 // return event.toString();
 
@@ -255,7 +254,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 var min = a.getMinutes();
                 var sec = a.getSeconds();
                 var time = month + ' ' + date + ',' + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
-                return time;
+                
+                if(f == true){
+                    return 'Last Updated ' + time;
+                }
+                else{ return time; }
             },
 
             toggleDrawer() {
@@ -278,6 +281,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     newDiv.setAttribute("id", "d23");
                     newDiv.setAttribute("prev-route", this.route.prefix);
                     newDiv.setAttribute("myaccount", this.myaccountName);
+                    newDiv.setAttribute("myrole", this.myaccountRole);
                     var currentDiv = document.getElementById("announcementNew");
                     Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
                 }

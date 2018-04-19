@@ -95,6 +95,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             properties: {
                 myaccount: {
                     type: String
+                },
+                myrole: String
+            },
+
+            ready() {
+                if (this.myrole == 'Owner') {
+                   Polymer.dom(this.root).querySelector("#Owner").checked = true;
+                }
+                else if (this.myrole == 'Manager') {
+                   Polymer.dom(this.root).querySelector("#Manager").checked = true;
+                }
+                else if (this.myrole == 'Staff') {
+                   Polymer.dom(this.root).querySelector("#Staff").checked = true;
+                }
+                else if (this.myrole == 'Sales Agent') {
+                   Polymer.dom(this.root).querySelector("#Agent").checked = true;
                 }
             },
 
@@ -138,7 +154,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 if (boxOwner.checked == true) {
                     owner = true;
                 }
-                
+
                 var ref = firebase.database().ref("announcements");
                 var announcementPush = ref.push().key;
                 var announcementData = {

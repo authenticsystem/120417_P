@@ -210,14 +210,13 @@
                             </div>
                         </paper-dialog>
 
-                        <paper-dialog id="successApprove">
-                            <div id="expiry" style="position: relative; padding-top: 16px;">
-                                Successfully approved / disapproved.
+                        <paper-dialog id="openDisapproved">
+                            <div>
+                                Disapproved application request?
                             </div>
                             <div class="buttons">
-                                <a href="/applications">
-                                    <paper-button autofocus>Ok</paper-button>
-                                </a>
+                                <paper-button dialog-dismiss>Cancel</paper-button>
+                                <paper-button autofocus on-tap="_disApproved">Disapprove</paper-button>
                             </div>
                         </paper-dialog>
 
@@ -230,7 +229,7 @@
                 <div hidden$="{{hideDisapproveBtn}}" style="font-size:12px; padding:14px;" class="danger">
                     <iron-icon icon="my-icons:info-outline"></iron-icon>
                     This lot is already on [[fullLotData.maprenderdetails.status_name]]
-                    <a href="" on-tap="_disApproved">disapproved?</a>
+                    <paper-button on-tap="_openDisapproved">disapproved ?</paper-button>
                 </div>
 
                 <div hidden$="{{hideNoDataFound}}" style="font-size:12px; padding:14px;" class="danger">
@@ -1114,8 +1113,13 @@
                     this.favrighthide = false;
                 }
             },
-            oPenApproved(message) {
+
+            oPenApproved() {
                 this.$.ApprovedApplication.open();
+            },
+
+            _openDisapproved(){
+                this.$.openDisapproved.open();
             },
 
             // notifications() {
@@ -1421,7 +1425,7 @@
                         reference: this.applicationKey
                     };
 
-                    firebaseUpdate['/notifications/' + notifPostKey] = notificationData;
+                    // firebaseUpdate['/notifications/' + notifPostKey] = notificationData;
                     firebaseUpdate["/briefcase/" + this.agentKey + "/" + this.transactionKey] = draftdata;
                     // this.$.successApprove.open();
                     firebase.database().ref().update(firebaseUpdate);

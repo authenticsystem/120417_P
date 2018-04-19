@@ -389,6 +389,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-size: 14px;
         color: gray;
       }
+
+      .loader {
+        background-color: #ddffdd;
+        border-left: 6px solid #4CAF50;
+        text-align: center;
+        max-width: 800px;
+        margin: 16px auto 0 auto;
+        padding: 10px;
+      }
     </style>
 
     <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" on-error="showError"></firebase-auth>
@@ -455,18 +464,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </div>
           </div> -->
           <div>
-            <firebase-query path="/announcements" order-by-child="{{myaccountrole}}" equal-to="true" data="{{announcements}}"></firebase-query>
-
-            <iron-list items="[[_descending(announcements)]]" as="item" scroll-target="document">
+            <firebase-query path="/announcements" order-by-child="{{myaccountrole}}" equal-to="true" data="{{announcements}}" limit-to-last="50"></firebase-query>
+            <div hidden$="{{loader_announcements2}}" class="loader" id="loader">{{loadingMessage}}</div>
+            <iron-list items="[[announcements2]]" as="item" scroll-target="document">
               <template>
                 <div>
                   <div class="item" tabindex$="[[tabIndex]]">
                     <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
                     <div class="pad">
                       <div class="primary">[[item.title]]</div>
-                      <div class="secondary dim">[[dateTimeFormat(item.timestamp)]]
-                        <span style="margin-left:16px; color: red; font-size:12px">[[_updated(item.isupdated)]]</span>
-                      </div>
+                      <div class="secondary dim">[[dateTimeFormat(item.timestamp,item.isupdated)]]</div>
                       <br>
                       <div class="secondary">
                         [[item.message]]
@@ -952,8 +959,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <firebase-query path="/notifications" order-by-child="recipient/{{myaccountrole}}" equal-to="true" limit-to-last="50" data="{{notificationData}}"></firebase-query>
             <firebase-query path="/notifications" order-by-child="recipient/recipient_accountCode" equal-to="{{myaccountcode}}" limit-to-last="50"
               data="{{notificationData}}"></firebase-query>
-
-            <iron-list items="[[_descending(notificationdata_merge)]]" as="item" scroll-target="document">
+            <div hidden$="{{loader_notificationData}}" class="loader" id="loader">{{loadingMessage}}</div>
+            <iron-list items="[[notificationdata_merge]]" as="item" scroll-target="document">
               <template>
                 <div>
                   <div class="item" tabindex$="[[tabIndex]]">
@@ -1150,7 +1157,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: true
         },
         announcements: Object,
-        agentReport: Object
+        agentReport: Object,
+        loadingMessage: {
+          type: String,
+          value: 'Loading...'
+        }
       },
 
       ready() {
@@ -1186,8 +1197,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'accountChanged(account.*)',
         // 'notificationDataChanged(notificationData.*,notificationData2.*)',
         'notificationDataChanged(notificationData.*)',
-        'dailyTotalDataChanged(dailyTotalData.*)'
+        'dailyTotalDataChanged(dailyTotalData.*)',
+        'announcementsChanged(announcements.*)'
       ],
+
+      announcementsChanged(e) {
+        if (e.base.length > 0) {
+          var announcements2 = [];
+          e.base.forEach(element => {
+            announcements2.push(element);
+          });
+          this.announcements2 = this._descending(announcements2);
+          this.loader_announcements2 = true;
+        } else {
+          this._fetch();
+          this.loader_announcements2 = false;
+        }
+      },
+
+      _fetch() {
+        this.loadingMessage = 'Loading..';
+        setTimeout((e) => {
+          this.loadingMessage = 'No record found..';
+        }, 3000);
+      },
 
       _download() {
         var data = [], date = this.downloadDate;
@@ -1270,7 +1303,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       notificationDataChanged(e) {
-        if (e.base) {
+        if (e.base.length > 0) {
           var notifications = [];
           var countn = 0;
           e.base.forEach(element => {
@@ -1279,8 +1312,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               countn++;
             }
           });
-          this.notificationdata_merge = notifications;
+          this.notificationdata_merge = this._descending(notifications);
           this.countNotification = countn;
+          this.loader_notificationData = true;
+        } else {
+          this.countNotification = 0;
+          this._fetch();
+          this.loader_notificationData = false;
         }
       },
 
@@ -2032,7 +2070,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           var d = new Date();
           datestring = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
-          this.overAllDate = datestring;
+          var yesterday = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + (d.getDate() - 1)).slice(-2);
+          this.overAllDate = yesterday;
           this.lotTypeFilter = 'all';
           this.filterSHRAN = 'sold';
         }
@@ -2392,247 +2431,247 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var allChart = this.allChart;
         var allchart22 = this.allchart2;
 
-        // if (lotTypeFilter == 'all') {
-        //   que = '/overall';
-        //   this.hideToggleOverall = false;
+        if (lotTypeFilter == 'all') {
+          que = '/overall';
+          this.hideToggleOverall = false;
 
-        firebase.database().ref('/reports/overAll/' + overAllDate + '/lotType').on('value', function (snap) {
-          var itemHold = [];
-          var itemSold = [];
-          var itemReserved = [];
-          var itemAvailable = [];
-          var itemNotyetavailable = [];
-          var itemKey = [];
-          var colors = [];
-          if (snap.exists()) {
-            snap.forEach(function (ele) {
-              var itemhold = ele.val().hold;
-              var itemsold = ele.val().sold;
-              var itemreserved = ele.val().reserved;
-              var itemavailable = ele.val().available;
-              var itemnotyetavailable = ele.val().notyetavailable;
-
-              if (ele.key == 'lawnlots') { itemkey = 'Lawn Lots'; bgColor = '#2196F3'; }
-              else if (ele.key == 'wallniche') { itemkey = 'Wall Niche'; bgColor = '#E91E63'; }
-              else if (ele.key == 'bonechamber') { itemkey = 'Bone Chamber'; bgColor = '#3F51B5'; }
-              else if (ele.key == 'cinerarium') { itemkey = 'Cinerarium'; bgColor = '#795548'; }
-              else if (ele.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m²)'; bgColor = '#BA68C8'; }
-              else if (ele.key == 'familylots5') { itemkey = 'Family Lots 1 (Irregular)'; bgColor = '#E1BEE7'; }
-              else if (ele.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m²)'; bgColor = '#4A148C'; }
-              else if (ele.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m²)'; bgColor = '#7B1FA2'; }
-              else if (ele.key == 'familylots3') { itemkey = 'Family Lots 2 (Irregular)'; bgColor = '#9C27B0'; }
-              else if (ele.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m²)'; bgColor = '#DCEDC8'; }
-              else if (ele.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m²)'; bgColor = '#AED581'; }
-              else if (ele.key == 'gardenlots3') { itemkey = 'Garden Lots 1 (Irregular)'; bgColor = '#8BC34A'; }
-              else if (ele.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m²)'; bgColor = '#689F38'; }
-              else if (ele.key == 'gardenlots5') { itemkey = 'Garden Lots 2 (Irregular)'; bgColor = '#33691E'; }
-
-              itemHold.push(itemhold);
-              itemSold.push(itemsold);
-              itemReserved.push(itemreserved);
-              itemAvailable.push(itemavailable);
-              itemNotyetavailable.push(itemnotyetavailable);
-
-              itemKey.push(itemkey);
-              colors.push(bgColor);
-
-            });
-
-            if (filterSHRAN == 'sold') {
-              var data2 = {
-                datasets: [{
-                  data: itemSold,
-                  backgroundColor: colors,
-                }],
-                labels: itemKey,
-
-              }
-
-              allchart22.data = data2;
-              allchart22.update();
-            }
-            else if (filterSHRAN == 'hold') {
-              var data2 = {
-                datasets: [{
-                  data: itemHold,
-                  backgroundColor: colors,
-                }],
-                labels: itemKey,
-
-              }
-
-              allchart22.data = data2;
-              allchart22.update();
-            }
-            else if (filterSHRAN == 'reserved') {
-              var data2 = {
-                datasets: [{
-                  data: itemReserved,
-                  backgroundColor: colors,
-                }],
-                labels: itemKey,
-
-              }
-
-              allchart22.data = data2;
-              allchart22.update();
-            }
-            else if (filterSHRAN == 'available') {
-              var data2 = {
-                datasets: [{
-                  data: itemAvailable,
-                  backgroundColor: colors,
-                }],
-                labels: itemKey,
-
-              }
-
-              allchart22.data = data2;
-              allchart22.update();
-            }
-            else if (filterSHRAN == 'notyetavailable') {
-              var data2 = {
-                datasets: [{
-                  data: itemNotyetavailable,
-                  backgroundColor: colors,
-                }],
-                labels: itemKey,
-
-              }
-
-              allchart22.data = data2;
-              allchart22.update();
-            }
-          }
-          else {
-            var data2 = {
-              datasets: [{
-                data: [],
-                backgroundColor: [
-                  'black'
-                ]
-              }],
-              labels: ['No data found'],
-            }
-
-            allchart22.data = data2;
-            allchart22.update();
-          }
-        });
-
-        firebase.database().ref('/reports/overAll/' + overAllDate + que).on('value', function (snapshot) {
-          if (snapshot.exists()) {
-
-            var datas = [];
-            var labels = [];
+          firebase.database().ref('/reports/overAll/' + overAllDate + '/lotType').on('value', function (snap) {
+            var itemHold = [];
+            var itemSold = [];
+            var itemReserved = [];
+            var itemAvailable = [];
+            var itemNotyetavailable = [];
+            var itemKey = [];
             var colors = [];
+            if (snap.exists()) {
+              snap.forEach(function (ele) {
+                var itemhold = ele.val().hold;
+                var itemsold = ele.val().sold;
+                var itemreserved = ele.val().reserved;
+                var itemavailable = ele.val().available;
+                var itemnotyetavailable = ele.val().notyetavailable;
 
-            snapshot.forEach(function (element) {
-              if (element.key == 'totalHold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
-              else if (element.key == 'totalSold') { itemkey = 'Sold'; bgColor = 'red'; }
-              else if (element.key == 'totalReserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
-              else if (element.key == 'totalAvailable') { itemkey = 'Available'; bgColor = 'green'; }
-              else if (element.key == 'totalNotyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
+                if (ele.key == 'lawnlots') { itemkey = 'Lawn Lots'; bgColor = '#2196F3'; }
+                else if (ele.key == 'wallniche') { itemkey = 'Wall Niche'; bgColor = '#E91E63'; }
+                else if (ele.key == 'bonechamber') { itemkey = 'Bone Chamber'; bgColor = '#3F51B5'; }
+                else if (ele.key == 'cinerarium') { itemkey = 'Cinerarium'; bgColor = '#795548'; }
+                else if (ele.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m²)'; bgColor = '#BA68C8'; }
+                else if (ele.key == 'familylots5') { itemkey = 'Family Lots 1 (Irregular)'; bgColor = '#E1BEE7'; }
+                else if (ele.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m²)'; bgColor = '#4A148C'; }
+                else if (ele.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m²)'; bgColor = '#7B1FA2'; }
+                else if (ele.key == 'familylots3') { itemkey = 'Family Lots 2 (Irregular)'; bgColor = '#9C27B0'; }
+                else if (ele.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m²)'; bgColor = '#DCEDC8'; }
+                else if (ele.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m²)'; bgColor = '#AED581'; }
+                else if (ele.key == 'gardenlots3') { itemkey = 'Garden Lots 1 (Irregular)'; bgColor = '#8BC34A'; }
+                else if (ele.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m²)'; bgColor = '#689F38'; }
+                else if (ele.key == 'gardenlots5') { itemkey = 'Garden Lots 2 (Irregular)'; bgColor = '#33691E'; }
 
-              datas.push(element.val());
-              labels.push(itemkey);
-              colors.push(bgColor);
-            });
+                itemHold.push(itemhold);
+                itemSold.push(itemsold);
+                itemReserved.push(itemreserved);
+                itemAvailable.push(itemavailable);
+                itemNotyetavailable.push(itemnotyetavailable);
 
-            var data = {
-              datasets: [{
-                data: datas,
-                backgroundColor: colors,
-              }],
-              labels: labels,
+                itemKey.push(itemkey);
+                colors.push(bgColor);
+
+              });
+
+              if (filterSHRAN == 'sold') {
+                var data2 = {
+                  datasets: [{
+                    data: itemSold,
+                    backgroundColor: colors,
+                  }],
+                  labels: itemKey,
+
+                }
+
+                allchart22.data = data2;
+                allchart22.update();
+              }
+              else if (filterSHRAN == 'hold') {
+                var data2 = {
+                  datasets: [{
+                    data: itemHold,
+                    backgroundColor: colors,
+                  }],
+                  labels: itemKey,
+
+                }
+
+                allchart22.data = data2;
+                allchart22.update();
+              }
+              else if (filterSHRAN == 'reserved') {
+                var data2 = {
+                  datasets: [{
+                    data: itemReserved,
+                    backgroundColor: colors,
+                  }],
+                  labels: itemKey,
+
+                }
+
+                allchart22.data = data2;
+                allchart22.update();
+              }
+              else if (filterSHRAN == 'available') {
+                var data2 = {
+                  datasets: [{
+                    data: itemAvailable,
+                    backgroundColor: colors,
+                  }],
+                  labels: itemKey,
+
+                }
+
+                allchart22.data = data2;
+                allchart22.update();
+              }
+              else if (filterSHRAN == 'notyetavailable') {
+                var data2 = {
+                  datasets: [{
+                    data: itemNotyetavailable,
+                    backgroundColor: colors,
+                  }],
+                  labels: itemKey,
+
+                }
+
+                allchart22.data = data2;
+                allchart22.update();
+              }
             }
+            else {
+              var data2 = {
+                datasets: [{
+                  data: [],
+                  backgroundColor: [
+                    'black'
+                  ]
+                }],
+                labels: ['No data found'],
+              }
 
-            allChart.data = data;
-            allChart.update();
-          }
-          else {
-            var data = {
-              datasets: [{
-                data: [],
-                backgroundColor: [
-                  'black'
-                ]
-              }],
-              labels: ['No data found'],
+              allchart22.data = data2;
+              allchart22.update();
             }
+          });
 
-            allChart.data = data;
-            allChart.update();
-            // console.log('No Data')
-          }
-        });
+          firebase.database().ref('/reports/overAll/' + overAllDate + que).on('value', function (snapshot) {
+            if (snapshot.exists()) {
 
+              var datas = [];
+              var labels = [];
+              var colors = [];
 
-        // }
-        // else {
-        //   que = '/lotType/' + lotTypeFilter;
-        //   this.hideToggleOverall = true;
+              snapshot.forEach(function (element) {
+                if (element.key == 'totalHold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
+                else if (element.key == 'totalSold') { itemkey = 'Sold'; bgColor = 'red'; }
+                else if (element.key == 'totalReserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
+                else if (element.key == 'totalAvailable') { itemkey = 'Available'; bgColor = 'green'; }
+                else if (element.key == 'totalNotyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
 
-        // var data2 = {
-        //   datasets: [{
-        //     data: [],
-        //     backgroundColor: [
-        //       'black'
-        //     ]
-        //   }],
-        //   labels: ['No data found'],
-        // }
+                datas.push(element.val());
+                labels.push(itemkey);
+                colors.push(bgColor);
+              });
 
-        // allchart22.data = data2;
-        // allchart22.update();
+              var data = {
+                datasets: [{
+                  data: datas,
+                  backgroundColor: colors,
+                }],
+                labels: labels,
+              }
 
-        firebase.database().ref('/reports/overAll/' + overAllDate + '/lotType/' + lotTypeFilter).on('value', function (snapshot) {
-          if (snapshot.exists()) {
-
-            var datas = [];
-            var labels = [];
-            var colors = [];
-
-            snapshot.forEach(function (element) {
-              if (element.key == 'hold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
-              else if (element.key == 'sold') { itemkey = 'Sold'; bgColor = 'red'; }
-              else if (element.key == 'reserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
-              else if (element.key == 'available') { itemkey = 'Available'; bgColor = 'green'; }
-              else if (element.key == 'notyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
-
-              datas.push(element.val());
-              labels.push(itemkey);
-              colors.push(bgColor);
-            });
-
-            var data = {
-              datasets: [{
-                data: datas,
-                backgroundColor: colors,
-              }],
-              labels: labels,
+              allChart.data = data;
+              allChart.update();
             }
+            else {
+              var data = {
+                datasets: [{
+                  data: [],
+                  backgroundColor: [
+                    'black'
+                  ]
+                }],
+                labels: ['No data found'],
+              }
 
-            allChart.data = data;
-            allChart.update();
-
-          }
-          else {
-            var data = {
-              datasets: [{
-                data: [],
-                backgroundColor: [
-                  'black'
-                ]
-              }],
-              labels: ['No data found'],
+              allChart.data = data;
+              allChart.update();
+              // console.log('No Data')
             }
+          });
 
-            allChart.data = data;
-            allChart.update();
+
+        }
+        else {
+          que = '/lotType/' + lotTypeFilter;
+          this.hideToggleOverall = true;
+
+          var data2 = {
+            datasets: [{
+              data: [],
+              backgroundColor: [
+                'black'
+              ]
+            }],
+            labels: ['No data found'],
           }
-        });
-        // }
+
+          allchart22.data = data2;
+          allchart22.update();
+
+          firebase.database().ref('/reports/overAll/' + overAllDate + '/lotType/' + lotTypeFilter).on('value', function (snapshot) {
+            if (snapshot.exists()) {
+
+              var datas = [];
+              var labels = [];
+              var colors = [];
+
+              snapshot.forEach(function (element) {
+                if (element.key == 'hold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
+                else if (element.key == 'sold') { itemkey = 'Sold'; bgColor = 'red'; }
+                else if (element.key == 'reserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
+                else if (element.key == 'available') { itemkey = 'Available'; bgColor = 'green'; }
+                else if (element.key == 'notyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
+
+                datas.push(element.val());
+                labels.push(itemkey);
+                colors.push(bgColor);
+              });
+
+              var data = {
+                datasets: [{
+                  data: datas,
+                  backgroundColor: colors,
+                }],
+                labels: labels,
+              }
+
+              allChart.data = data;
+              allChart.update();
+
+            }
+            else {
+              var data = {
+                datasets: [{
+                  data: [],
+                  backgroundColor: [
+                    'black'
+                  ]
+                }],
+                labels: ['No data found'],
+              }
+
+              allChart.data = data;
+              allChart.update();
+            }
+          });
+        }
       },
 
       _showSummary() {
@@ -2684,7 +2723,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return selected ? 'item expanded' : 'item';
       },
 
-      dateTimeFormat(e) {
+      dateTimeFormat(e, f) {
         // var event = new Date(e);
         // return event.toString();
 
@@ -2697,7 +2736,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var min = a.getMinutes();
         var sec = a.getSeconds();
         var time = month + ' ' + date + ',' + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
-        return time;
+
+        if (f == true) {
+          return 'Last Updated ' + time;
+        }
+        else { return time; }
       },
 
       _photo(e) {
