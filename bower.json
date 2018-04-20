@@ -68,7 +68,8 @@
     "paper-datatable-api": "RoXuS/paper-datatable-api#^2.0.13",
     "paper-datatable": "^0.9.8",
     "paper-styles": "PolymerElements/paper-styles#^2.1.0",
-    "iron-form": "PolymerElements/iron-form#^2.3.0"
+    "iron-form": "PolymerElements/iron-form#^2.3.0",
+    "sl-gallery": "jsilvermist/sl-gallery#^1.0.1"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"

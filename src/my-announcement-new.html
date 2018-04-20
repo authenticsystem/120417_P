@@ -81,6 +81,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <form action="/foo" method="get">
                             <paper-input type="text" label="Title" value="{{title}}" required></paper-input>
                             <paper-textarea label="Message" value="{{message}}" required></paper-textarea>
+                            <div style="margin:5px">
+                                <input on-change="_changeAttach" type="file" id="myFile" accept="image/*" multiple="multiple" />
+                                <output style="font-size:14px;" id="fileList"></output>
+                            </div>
+                            <br>
                             <paper-checkbox id="Owner">Owner</paper-checkbox>
                             <br>
                             <paper-checkbox id="Staff">Admin staff</paper-checkbox>
@@ -151,7 +156,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             },
 
+            _changeAttach(e) {
+                var list = Polymer.dom(this.root).querySelector("#fileList");
+                if (e.target.files.length > 0) {
+
+                    var files = e.target.files;
+                    this.attachment = files;
+
+                    if (e.target.files.length > 1) {
+                        var output = [];
+                        for (var i = 0, f; f = files[i]; i++) {
+                            output.push('<li>', escape(f.name), '</li>');
+                        }
+                        list.innerHTML = '<ul>' + output.join('') + '</ul>';
+                    }
+                    else {
+                        list.innerHTML = '';
+                    }
+                }
+                else {
+                    list.innerHTML = '';
+                }
+            },
+
             _publishAnnouncement() {
+                var attachment = this.attachment;
+
                 var boxStaff = Polymer.dom(this.root).querySelector("#Staff");
                 var boxManager = Polymer.dom(this.root).querySelector("#Manager");
                 var boxAgent = Polymer.dom(this.root).querySelector("#Agent");
@@ -190,6 +220,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 var updates = {};
                 updates['/announcements/' + announcementPush] = announcementData;
 
+                this._uploadAttachment(attachment,announcementPush);
+
                 this.notification(staff, manager, agent, owner, this.title, announcementPush);
                 window.location = "/announcement";
                 return firebase.database().ref().update(updates);
@@ -214,6 +246,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     timestamp: { ".sv": "timestamp" },
                     source: 'announcement',
                 });
+            },
+
+            _uploadAttachment(myAttachment,pushKey) {
+                for (var i = 0; i < myAttachment.length; i++) {
+                    var attachFile = myAttachment[i];
+                    var storageRef = firebase.storage().ref('attachments/' + attachFile.name);
+                    storageRef.put(attachFile).then(function (snapshot) {
+                        var pushRef = firebase.database().ref('announcements/'+pushKey+'/attachments/');
+                        pushRef.push({
+                            url: snapshot.downloadURL
+                        });
+                    });
+                }
             },
         })
     </script>

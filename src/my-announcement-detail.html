@@ -12,6 +12,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/sl-gallery/sl-gallery.html">
+<link rel="import" href="../bower_components/sl-gallery/sl-gallery-image.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-announcement-detail">
@@ -30,6 +32,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
 
         <firebase-document path="{{path}}" data="{{newdata}}"></firebase-document>
+        <firebase-query path="announcements/{{transactionKey}}/attachments" data="{{attachment}}"></firebase-query>
         <app-header-layout fullbleed has-scrolling-region>
             <app-header fixed slot="header">
                 <app-toolbar primary>
@@ -57,9 +60,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <strong>[[newdata.title]]</strong>
                     </div>
                     <div style="font-size: 12px">[[dateTimeFormat(newdata.timestamp)]]</div>
+                    <br>
+                    <div>
+                        <sl-gallery>
+                            <template is="dom-repeat" items="[[attachment]]" as="file">
+                                <sl-gallery-image src="[[file.url]]" small="[[file.url]]" title="Example Title 01"></sl-gallery-image>
+                            </template>
+                        </sl-gallery>
+                    </div>
+                    <br>
                     <div>
                         <p>[[newdata.message]]</p>
                     </div>
+                    <br>
+                    <br>
                     <div>
                         Sincerely,
                         <br> [[newdata.sender]]
@@ -131,8 +145,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             deleteAnnouncementOpen() {
                 this.$.deleteAnnouncementPD.open();
             },
-            
-            deleteAnnouncement(){
+
+            deleteAnnouncement() {
                 firebase.database().ref(this.path).remove();
                 window.location = "/announcement";
             }

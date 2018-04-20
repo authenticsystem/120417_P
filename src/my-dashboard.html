@@ -32,6 +32,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../bower_components/sl-gallery/sl-gallery.html">
+<link rel="import" href="../bower_components/sl-gallery/sl-gallery-image.html">
 
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
@@ -465,31 +467,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div> -->
           <div>
             <firebase-query path="/announcements" order-by-child="{{myaccountrole}}" equal-to="true" data="{{announcements}}" limit-to-last="50"></firebase-query>
+
             <div hidden$="{{loader_announcements2}}" class="loader" id="loader">{{loadingMessage}}</div>
-            <iron-list items="[[announcements2]]" as="item" scroll-target="document">
-              <template>
-                <div>
-                  <div class="item" tabindex$="[[tabIndex]]">
-                    <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
-                    <div class="pad">
-                      <div class="primary">[[item.title]]</div>
-                      <div class="secondary dim">[[dateTimeFormat(item.timestamp,item.isupdated)]]</div>
-                      <br>
-                      <div class="secondary">
-                        [[item.message]]
-                        <div>
-                          <br> Sincerely,
-                        </div>
-                        <div>
-                          [[item.sender]]
-                        </div>
-                      </div>
+
+            <template is="dom-repeat" items="[[announcements2]]" as="item">
+              <firebase-query path="announcements/[[item.$key]]/attachments" data="{{attachment}}"></firebase-query>
+              <div class="item">
+                <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
+                <div class="pad">
+                  <div class="primary">[[item.title]]</div>
+                  <div class="secondary dim">[[dateTimeFormat(item.timestamp,item.isupdated)]]</div>
+                  <br>
+                  <div class="galleryHolder">
+                    <sl-gallery id="gallery">
+                    </sl-gallery>
+                  </div>
+                  <br>
+                  <div class="secondary">
+                    <div>
+                      [[item.message]]
+                    </div>
+                    <br>
+                    <br>
+                    <div>
+                      Sincerely,
+                    </div>
+                    <div>
+                      [[item.sender]]
                     </div>
                   </div>
                 </div>
-              </template>
-            </iron-list>
-
+              </div>
+            </template>
           </div>
           <!-- End of Announcements -->
 
@@ -1161,7 +1170,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         loadingMessage: {
           type: String,
           value: 'Loading...'
-        }
+        },
+        attachment: Object
       },
 
       ready() {
@@ -1198,8 +1208,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // 'notificationDataChanged(notificationData.*,notificationData2.*)',
         'notificationDataChanged(notificationData.*)',
         'dailyTotalDataChanged(dailyTotalData.*)',
-        'announcementsChanged(announcements.*)'
+        'announcementsChanged(announcements.*)',
+        'attachmentChanged(attachment)'
       ],
+
+      attachmentChanged(e) {
+        if (e) {
+          const gallery = Polymer.dom(this.root).querySelector('#gallery');
+          if (gallery) {
+            e.forEach(img => {
+              const el = document.createElement('sl-gallery-image');
+              el.setAttribute('src', img.url);
+              el.setAttribute('small', img.url);
+              el.setAttribute('id', 'gallery-image');
+              gallery.appendChild(el);
+            });
+          }
+        }
+      },
 
       announcementsChanged(e) {
         if (e.base.length > 0) {
@@ -2738,9 +2764,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var time = month + ' ' + date + ',' + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
 
         if (f == true) {
-          return 'Last Updated ' + time;
+          return 'Updated: ' + time;
+        } else {
+          return 'Created: ' + time;
         }
-        else { return time; }
       },
 
       _photo(e) {

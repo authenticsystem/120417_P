@@ -159,7 +159,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 </div>
                             </div> -->
                             <firebase-query path="/announcements" order-by-child="sender" equal-to="{{myaccountName}}" data="{{announcements}}"></firebase-query>
-                            
+
                             <iron-list items="[[_descending(announcements)]]" as="item" scroll-target="document">
                                 <template>
                                     <div>
@@ -241,7 +241,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             },
 
-            dateTimeFormat(e,f) {
+            dateTimeFormat(e, f) {
                 // var event = new Date(e);
                 // return event.toString();
 
@@ -254,11 +254,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 var min = a.getMinutes();
                 var sec = a.getSeconds();
                 var time = month + ' ' + date + ',' + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
-                
-                if(f == true){
-                    return 'Last Updated ' + time;
+
+                if (f == true) {
+                    return 'Updated: ' + time;
+                } else {
+                    return 'Created: ' + time;
                 }
-                else{ return time; }
             },
 
             toggleDrawer() {
