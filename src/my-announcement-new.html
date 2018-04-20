@@ -15,6 +15,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="shared-styles.html">
 
 
@@ -32,20 +33,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 background-color: #388E3C;
             }
 
-            .action {
-                padding-top: 16px;
-            }
-
             paper-button {
+                margin-top: 20px;
                 height: 32px;
                 font-size: 12px;
                 font-weight: 400;
                 width: 80px;
             }
 
-            paper-button.green {
-                background-color: var(--paper-green-500);
+            paper-button.submit {
+                background-color: var(--paper-indigo-500);
                 color: white;
+            }
+
+            .alertDanger {
+                background-color: #ffdddd;
+                border-left: 6px solid #f44336;
+                padding: 4px 8px;
+                display: none;
+                font-size: 12px;
             }
         </style>
 
@@ -64,25 +70,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <h1>Coming soon......</h1>
                 </div>
             </div> -->
-            <div style="padding:16px">
-                <div class="card">
-                    <span style="color:red; font-size:13px; float:right">{{msg}}</span>
-                    <paper-input required auto-validate label="Title" value="{{title}}"></paper-input>
-                    <paper-textarea required auto-validate label="Message" value="{{message}}"></paper-textarea>
-                    <paper-checkbox id="Staff">Admin staff</paper-checkbox>
-                    <paper-checkbox id="Manager">Manager</paper-checkbox>
-                    <paper-checkbox id="Agent">Agent</paper-checkbox>
-                    <paper-checkbox id="Owner">Owner</paper-checkbox>
-                    <div class="action">
-                        <paper-button on-tap="_openSavingDialog" id="next" raised class="green">Publish</paper-button>
-                    </div>
+            <div class="card">
+                <div class="alertDanger" id="alert">
+                    <p>
+                        {{alertMsg}}
+                    </p>
+                </div>
+                <div>
+                    <iron-form id="form1">
+                        <form action="/foo" method="get">
+                            <paper-input type="text" label="Title" value="{{title}}" required></paper-input>
+                            <paper-textarea label="Message" value="{{message}}" required></paper-textarea>
+                            <paper-checkbox id="Owner">Owner</paper-checkbox>
+                            <br>
+                            <paper-checkbox id="Staff">Admin staff</paper-checkbox>
+                            <br>
+                            <paper-checkbox id="Manager">Manager</paper-checkbox>
+                            <br>
+                            <paper-checkbox id="Agent">Agent</paper-checkbox>
+                            <br>
+                            <paper-button raised class="submit" on-tap="_openSavingDialog">Publish</paper-button>
+                        </form>
+                    </iron-form>
                 </div>
             </div>
+
             <paper-dialog id="savingDialog">
-                <p>Publish new announcement?</p>
+                <h3>Publish new announcement?</h3>
                 <div class="buttons">
+                    <paper-button dialog-confirm autofocus on-tap="_publishAnnouncement">OK</paper-button>
                     <paper-button dialog-dismiss>Cancel</paper-button>
-                    <paper-button dialog-confirm autofocus on-tap="_announce">OK</paper-button>
                 </div>
             </paper-dialog>
 
@@ -101,16 +118,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             ready() {
                 if (this.myrole == 'Owner') {
-                   Polymer.dom(this.root).querySelector("#Owner").checked = true;
+                    Polymer.dom(this.root).querySelector("#Owner").checked = true;
                 }
                 else if (this.myrole == 'Manager') {
-                   Polymer.dom(this.root).querySelector("#Manager").checked = true;
+                    Polymer.dom(this.root).querySelector("#Manager").checked = true;
                 }
                 else if (this.myrole == 'Staff') {
-                   Polymer.dom(this.root).querySelector("#Staff").checked = true;
+                    Polymer.dom(this.root).querySelector("#Staff").checked = true;
                 }
                 else if (this.myrole == 'Sales Agent') {
-                   Polymer.dom(this.root).querySelector("#Agent").checked = true;
+                    Polymer.dom(this.root).querySelector("#Agent").checked = true;
                 }
             },
 
@@ -125,14 +142,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _openSavingDialog() {
                 if (!this.title || !this.message) {
-                    this.msg = 'Please fill-up the required field.';
+                    this.$.form1.submit();
+                    Polymer.dom(this.root).querySelector("#alert").style.display = 'block';
+                    this.alertMsg = 'Please fill-up the required field.';
                 }
                 else {
                     this.$.savingDialog.open();
                 }
             },
 
-            _announce() {
+            _publishAnnouncement() {
                 var boxStaff = Polymer.dom(this.root).querySelector("#Staff");
                 var boxManager = Polymer.dom(this.root).querySelector("#Manager");
                 var boxAgent = Polymer.dom(this.root).querySelector("#Agent");
@@ -170,6 +189,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 };
                 var updates = {};
                 updates['/announcements/' + announcementPush] = announcementData;
+
                 this.notification(staff, manager, agent, owner, this.title, announcementPush);
                 window.location = "/announcement";
                 return firebase.database().ref().update(updates);
@@ -194,7 +214,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     timestamp: { ".sv": "timestamp" },
                     source: 'announcement',
                 });
-            }
+            },
         })
     </script>
 </dom-module>

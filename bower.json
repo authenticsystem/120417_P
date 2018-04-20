@@ -67,7 +67,8 @@
     "Chart.PieceLabel.js": "^0.8.2",
     "paper-datatable-api": "RoXuS/paper-datatable-api#^2.0.13",
     "paper-datatable": "^0.9.8",
-    "paper-styles": "PolymerElements/paper-styles#^2.1.0"
+    "paper-styles": "PolymerElements/paper-styles#^2.1.0",
+    "iron-form": "PolymerElements/iron-form#^2.3.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"
