@@ -1223,6 +1223,7 @@
                         //save to /applications/{id}
                         firebaseUpdate["/applications/" + this.transactionPush] = draftdata;
                         firebaseUpdate["/briefcase/" + this.agentKey + "/" + this.transactionKey] = draftdata;
+                        
                         this.notification(this.transactionKey,this.agentKey,this.fullLot,this.myname,'approved');
                         //this.path
                         if (this.buyerKey) {
@@ -1429,6 +1430,7 @@
                     firebaseUpdate["/briefcase/" + this.agentKey + "/" + this.transactionKey] = draftdata;
                     // this.$.successApprove.open();
                     firebase.database().ref().update(firebaseUpdate);
+
                     this.notification(this.transactionKey,this.agentKey,this.fullLot,this.myname,'disapproved');
                     var personRef = firebase.database().ref().child("applicationsNew/" + this.transactionKey).remove();
                     window.location = "/applications";

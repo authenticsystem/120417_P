@@ -142,6 +142,7 @@
                 --datetime-background: #071533;
                 --datetime-color: #eeeeee;
             }
+
             .danger {
                 background-color: #ffdddd;
                 border-left: 6px solid #f44336;
@@ -190,14 +191,14 @@
                             <paper-icon-button class="menu" noink style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{newdata.reference}}</div>
-                        <paper-icon-button hidden$="{{newdata.isapproved}}"icon="my-icons:delete-forever" on-tap="deleteBriefcaseOpen" title="Delete briefcase draft"></paper-icon-button>
+                        <paper-icon-button hidden$="{{newdata.isapproved}}" icon="my-icons:delete-forever" on-tap="deleteBriefcaseOpen" title="Delete briefcase draft"></paper-icon-button>
 
                         <paper-dialog id="deleteBriefcasePD">
                             <h2>Delete applied briefcase?</h2>
                             <!-- <p>Continue delete the current application?</p> -->
                             <div class="buttons">
-                                <paper-button dialog-dismiss >No</paper-button>
                                 <paper-button dialog-confirm autofocus on-tap="deleteBriefcasePD">Yes</paper-button>
+                                <paper-button dialog-dismiss>No</paper-button>
                             </div>
                         </paper-dialog>
 

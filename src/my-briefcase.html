@@ -821,6 +821,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var updates = {};
           updates['/applicationsNew/' + newPostKey] = postData;
           updates['/briefcase/' + data.agent + '/' + newPostKey] = postData;
+          
           this.notification(data.lot, newPostKey);
           window.location = "/briefcase";
           return firebase.database().ref().update(updates);
