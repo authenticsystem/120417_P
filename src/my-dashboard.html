@@ -479,9 +479,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <div class="secondary dim">[[dateTimeFormat(item.timestamp,item.isupdated)]]</div>
                   <br>
                   <div class="galleryHolder">
-                    <sl-gallery id="gallery">
-                    </sl-gallery>
+                    <sl-gallery id="gallery"></sl-gallery>
                   </div>
+                  <!-- <div>
+                    <sl-gallery>
+                      <template is="dom-repeat" items="[[attachment]]" as="file">
+                        <sl-gallery-image src="[[file.url]]" small="[[file.url]]" title="Example Title 01"></sl-gallery-image>
+                      </template>
+                    </sl-gallery>
+                  </div> -->
                   <br>
                   <div class="secondary">
                     <div>

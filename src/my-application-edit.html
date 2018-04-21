@@ -340,27 +340,18 @@
                     </neon-animatable>
 
                     <neon-animatable>
-                        <firebase-query path="/agents" order-by-key equal-to='{{agentKey}}' limit-to-first=1 data="{{agentsList}}"></firebase-query>
+                        <!-- <firebase-query path="/agents" order-by-key equal-to='{{agentKey}}' limit-to-first=1 data="{{agentsList}}"></firebase-query> -->
+                        <firebase-query path="/agents" order-by-child="cellphone" equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1 data="{{agentsList}}"></firebase-query>
 
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
-                            <!-- <div class="detais">
+                            <div class="detais">
                                 <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
                                 <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}"></paper-input>
                                 <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"></paper-input>
                                 <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_agentdetails_lastname}}"></paper-input>
                                 <paper-input always-float-label="true" label="Suffix" value="{{draftdata_agentdetails_suffix}}"></paper-input>
                                 <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
-                            </div> -->
-                            <div class="detais">
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Account Key" value="{{agentKey}}"></paper-input>
-                                <paper-input readonly always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No."
-                                    value="{{draftdata_agentdetails_cellphone}}"></paper-input>
-                                <paper-input readonly always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}"></paper-input>
-                                <paper-input readonly always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"></paper-input>
-                                <paper-input readonly always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_agentdetails_lastname}}"></paper-input>
-                                <paper-input readonly always-float-label="true" label="Suffix" value="{{draftdata_agentdetails_suffix}}"></paper-input>
-                                <paper-input readonly always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
                             </div>
                         </div>
                     </neon-animatable>
@@ -953,32 +944,19 @@
             agentsListChanged(e) {
                 if (e) {
                     if (e.length > 0) {
-                        // this.agentKey = e[0].$key;
+                        this.agentKey = e[0].$key;
                         this.draftdata_agentdetails_firstname = e[0].firstname;
                         this.draftdata_agentdetails_middlename = e[0].middlename;
                         this.draftdata_agentdetails_lastname = e[0].lastname;
                         this.draftdata_agentdetails_suffix = e[0].suffix;
                         this.draftdata_agentdetails_email = e[0].email;
-                        this.draftdata_agentdetails_cellphone = e[0].phone;
                     }
                     else {
-                        // this.agentKey = '';
-                        this.draftdata_agentdetails_firstname = '';
-                        this.draftdata_agentdetails_middlename = '';
-                        this.draftdata_agentdetails_lastname = '';
-                        this.draftdata_agentdetails_suffix = '';
-                        this.draftdata_agentdetails_email = '';
-                        this.draftdata_agentdetails_cellphone = '';
+                        this.agentKey = '';
                     }
                 }
                 else {
-                    // this.agentKey = '';
-                    this.draftdata_agentdetails_firstname = '';
-                    this.draftdata_agentdetails_middlename = '';
-                    this.draftdata_agentdetails_lastname = '';
-                    this.draftdata_agentdetails_suffix = '';
-                    this.draftdata_agentdetails_email = '';
-                    this.draftdata_agentdetails_cellphone = '';
+                    this.agentKey = '';
                 }
             },
 
@@ -1331,7 +1309,6 @@
                 this.draftdata_agentdetails_suffix = '';
                 this.draftdata_agentdetails_email = '';
                 this.draftdata_agentdetails_cellphone = '';
-                this.draftdata_agentdetails_accountkey = '';
 
                 this.minStartDateTime = '';
                 this.saveErrorDetails = '...';
@@ -1457,15 +1434,15 @@
                                     cellphone: this.draftdata_agentdetails_cellphone
                                 };
 
-                                // if (this.agentKey) {
-                                //     //save to /agents/{new id}
-                                //     firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
-                                // }
-                                // else {
-                                //     this.saveErrorDetails = "Agent Key is empty.";
-                                //     saveSuccess.setAttribute("style", "display: none; color: green;");
-                                //     saveFailed.setAttribute("style", "display: block; color: red;");
-                                // }
+                                if (this.agentKey) {
+                                    //save to /agents/{new id}
+                                    firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
+                                }
+                                else {
+                                    this.saveErrorDetails = "Agent Key is empty.";
+                                    saveSuccess.setAttribute("style", "display: none; color: green;");
+                                    saveFailed.setAttribute("style", "display: block; color: red;");
+                                }
 
                                 var sdate;
                                 var serverdatetime = firebase.database().ref("info/serverdatetime");

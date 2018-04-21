@@ -194,7 +194,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <template is="dom-if" if="{{access}}">
                     <div name="/new">
                         <div id="announcementNew"></div>
-                        <my-announcement-new id="d23" path="" prev-route="{{route.prefix}}" myaccount="{{myaccountName}}" myrole="{{myaccountRole}}"></my-announcement-new>
+                        <my-announcement-new id="d23" path="" prev-route="{{route.prefix}}" myaccount="{{myaccountName}}" myrole="{{myaccountRole}}" myaccountkey="{{myaccountKey}}"></my-announcement-new>
                     </div>
                 </template>
 
@@ -230,6 +230,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             accountChanged(e) {
                 this.myaccountName = e[0].name.firstname + ' ' + e[0].name.middlename + ' ' + e[0].name.lastname;
                 this.myaccountRole = e[0].role;
+                this.myaccountKey = e[0].accountkey;
                 // console.log(e[0].role);
             },
 
@@ -283,6 +284,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     newDiv.setAttribute("prev-route", this.route.prefix);
                     newDiv.setAttribute("myaccount", this.myaccountName);
                     newDiv.setAttribute("myrole", this.myaccountRole);
+                    newDiv.setAttribute("myaccountkey", this.myaccountKey);
                     var currentDiv = document.getElementById("announcementNew");
                     Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
                 }

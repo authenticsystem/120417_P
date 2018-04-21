@@ -108,6 +108,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </div>
             </paper-dialog>
 
+            <paper-dialog id="successDialog">
+                <h3>Successfully published.</h3>
+                <div class="buttons">
+                    <paper-button dialog-confirm autofocus on-tap="_success">OK</paper-button>
+                </div>
+            </paper-dialog>
+
         </app-header-layout>
     </template>
 
@@ -118,7 +125,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 myaccount: {
                     type: String
                 },
-                myrole: String
+                myrole: String,
+                myaccountkey: String
             },
 
             ready() {
@@ -181,6 +189,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _publishAnnouncement() {
                 var attachment = this.attachment;
+                var accountkey = this.myaccountkey;
 
                 var boxStaff = Polymer.dom(this.root).querySelector("#Staff");
                 var boxManager = Polymer.dom(this.root).querySelector("#Manager");
@@ -220,10 +229,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 var updates = {};
                 updates['/announcements/' + announcementPush] = announcementData;
 
-                this._uploadAttachment(attachment,announcementPush);
+                if (attachment) {
+                    this._uploadAttachment(attachment, announcementPush);
+                }
 
                 this.notification(staff, manager, agent, owner, this.title, announcementPush);
-                window.location = "/announcement";
+                // window.location = "/announcement";
                 return firebase.database().ref().update(updates);
             },
 
@@ -246,20 +257,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     timestamp: { ".sv": "timestamp" },
                     source: 'announcement',
                 });
+                this.$.successDialog.open();
             },
 
-            _uploadAttachment(myAttachment,pushKey) {
+            _uploadAttachment(myAttachment, pushkey) {
                 for (var i = 0; i < myAttachment.length; i++) {
                     var attachFile = myAttachment[i];
-                    var storageRef = firebase.storage().ref('attachments/' + attachFile.name);
-                    storageRef.put(attachFile).then(function (snapshot) {
-                        var pushRef = firebase.database().ref('announcements/'+pushKey+'/attachments/');
-                        pushRef.push({
-                            url: snapshot.downloadURL
+                    var storageRef = firebase.storage().ref('attachments/' + attachFile.name).put(attachFile).then(function (metadatas) {
+                        // Get an array of file metadata
+                        var pushref = firebase.database().ref("/announcements/" + pushkey + "/attachments");
+                        pushref.push({
+                            url: metadatas.downloadURL
                         });
+                    }).catch(function (error) {
+                        // If any task fails, handle this
                     });
                 }
             },
+
+            _success() {
+                window.location = '/announcement';
+            }
         })
     </script>
 </dom-module>

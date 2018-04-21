@@ -55,7 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div class="logo" style="text-align: center">
                     <iron-image src="../images/manifest/icon-48x48.png"></iron-image>
                 </div>
-                <div style="font-size: 14px">
+                <div style="font-size: 14px; margin: 10px">
                     <div>
                         <strong>[[newdata.title]]</strong>
                     </div>
@@ -109,14 +109,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }));
                 this.$.narrow = !this.$.narrow;
             },
-
-            // newdataChanged(){
-            //     if (Object.keys(this.newdata).length > 0) {
-            //         this.title = this.newdata.title;
-            //         console.log(this.title);
-            //     }
-            //     console.log(this.newdata);
-            // },
 
             transactionKeyChanged() {
                 this.getpath();
