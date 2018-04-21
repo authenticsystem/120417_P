@@ -158,37 +158,21 @@
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
                 <div class="mnu" role="listbox">
-                    <!-- <iron-selector attr-for-selected="value" class="drawer-list"> -->
 
-                    <!-- on-tap="_selectPage" data-args="0" -->
                     <paper-item id="lotdetails">
                         <div class="circle-mini-first">1</div>
                         <span>Lot Details</span>
                     </paper-item>
 
-                    <!-- on-tap="_selectPage" data-args="1" -->
                     <paper-item id="buyersinformation">
                         <div class="circle-mini">2</div>
                         <span>Buyer's Information</span>
                     </paper-item>
 
-                    <!-- on-tap="_selectPage" data-args="2" -->
-                    <!-- <paper-item id="samplecomputation">
-                        <div class="circle-mini">3</div>
-                        <span>Agent's Information</span>
-                    </paper-item> -->
-
-                    <!-- on-tap="_selectPage" data-args="3" -->
                     <paper-item id="finalize">
                         <div class="circle-mini-last">3</div>
                         <span>Agent's Information</span>
                     </paper-item>
-
-                    <!-- on-tap="_selectPage" data-args="4" -->
-                    <!-- <paper-item id="complete">
-                        <div class="circle-mini-last">4</div>
-                        <span>Complete</span>
-                    </paper-item> -->
 
                     <!-- </iron-selector> -->
                 </div>
@@ -202,10 +186,10 @@
                         </a>
                         <div main-title>{{referenceLabel}} {{applicationKey}}</div>
 
-                        <a style="font-size:13px; text-decoration:none" on-tap="_disApproved" hidden$="{{!hideApproveBtn}}">
+                        <!-- <a style="font-size:13px; text-decoration:none" on-tap="_disApproved" hidden$="{{!hideApproveBtn}}">
                             Disapproved
                             <paper-icon-button icon="my-icons:close" on-tap="_disApproved"></paper-icon-button>
-                        </a>
+                        </a> -->
 
                         <paper-icon-button id="approval" title="Approve new application" hidden$="{{hideApproveBtn}}" icon="my-icons:assignment-turned-in"
                             on-tap="oPenApproved"></paper-icon-button>
@@ -226,43 +210,31 @@
                             </div>
                         </paper-dialog>
 
-                        <!-- <paper-alert-dialog id="successApprove">
-                            <paper-alert-dialog-icon-header icon="icons:done"></paper-alert-dialog-icon-header>
-                            Successfully approved.
-                            <a href="/applications" confirm-button="ok">
-                                
-                            </a>
-                        </paper-alert-dialog> -->
-
-                        <paper-dialog id="successApprove">
-                            <div id="expiry" style="position: relative; padding-top: 16px;">
-                                Successfully approved / disapproved.
+                        <paper-dialog id="openDisapproved">
+                            <div>
+                                Disapproved application request?
                             </div>
                             <div class="buttons">
-                                <a href="/applications">
-                                    <paper-button autofocus>Ok</paper-button>
-                                </a>
+                                <paper-button dialog-dismiss>Cancel</paper-button>
+                                <paper-button autofocus on-tap="_disApproved">Disapprove</paper-button>
                             </div>
                         </paper-dialog>
 
-                        <!-- <paper-icon-button icon="my-icons:delete-forever" on-tap="deleteApplicationOpen"></paper-icon-button>
-                        <paper-dialog id="deleteApplicationPD">
-                            <h2>Delete Application?</h2>
-                             <p>Continue delete the current application?</p> 
-                            <div class="buttons">
-                                <paper-button dialog-dismiss autofocus>No</paper-button>
-                                <paper-button dialog-confirm on-tap="deleteApplication">Yes</paper-button>
-                            </div>
-                        </paper-dialog> -->
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
 
                 </app-header>
 
-                <div hidden$="{{!hideApproveBtn}}" style="font-size:12px; padding:14px;" class="danger">
+                <div hidden$="{{hideDisapproveBtn}}" style="font-size:12px; padding:14px;" class="danger">
                     <iron-icon icon="my-icons:info-outline"></iron-icon>
                     This lot is already on [[fullLotData.maprenderdetails.status_name]]
+                    <paper-button on-tap="_openDisapproved">disapproved ?</paper-button>
+                </div>
+
+                <div hidden$="{{hideNoDataFound}}" style="font-size:12px; padding:14px;" class="danger">
+                    <iron-icon icon="my-icons:info-outline"></iron-icon>
+                    No Data Found.
                 </div>
 
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
@@ -554,7 +526,7 @@
                 },
                 accountkey: String,
                 myname: String
-               
+
             },
             observers: [
                 'fulllotDataChanged(fullLotData.*)',
@@ -931,9 +903,18 @@
                 if (this.fullLotData) {
                     if (this.fullLotData.status == 'available') {
                         this.hideApproveBtn = false;
+                        this.hideDisapproveBtn = true;
+                        this.hideNoDataFound = true;
+                    }
+                    else if (this.fullLotData.status == 'hold') {
+                        this.hideApproveBtn = true;
+                        this.hideDisapproveBtn = false;
+                        this.hideNoDataFound = true;
                     }
                     else {
                         this.hideApproveBtn = true;
+                        this.hideDisapproveBtn = true;
+                        this.hideNoDataFound = false;
                     }
                     if (this.fullLotData.inventoriable == "yes") {
                         if (this.fullLotData.lot) {
@@ -1113,119 +1094,6 @@
                         this.favrighthide = true;
                         this.favlefthide = false;
                         //complete
-                        //     if (this.isStartDateTimeInvalidGlobal == true) {
-                        //         var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                        //         this.saveErrorDetails = "Start date conflict, please change the start date accordingly.";
-                        //         saveFailed.setAttribute("style", "display: block; color: red;");
-                        //     }
-                        //     else {
-                        //         var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
-                        //         var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                        //         // var favRightVar = Polymer.dom(this.root).querySelector("#favright");
-                        //         if (this.transactionKey) {
-                        //             var firebaseDb = this.$.idd.db;
-                        //             var firebaseDbRef = firebaseDb.ref();
-                        //             var firebaseUpdate = {};
-                        //             //get agent and buyer key, use 
-                        //             this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
-                        //             this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
-                        //             var draftdata = {
-                        //                 agent: this.agentKey,
-                        //                 agentdetails: {
-                        //                     firstname: this.draftdata_agentdetails_firstname,
-                        //                     middlename: this.draftdata_agentdetails_middlename,
-                        //                     lastname: this.draftdata_agentdetails_lastname,
-                        //                     suffix: this.draftdata_agentdetails_suffix,
-                        //                     email: this.draftdata_agentdetails_email,
-                        //                     cellphone: this.draftdata_agentdetails_cellphone
-                        //                 },
-                        //                 buyer: this.buyerKey,
-                        //                 buyerdetails: {
-                        //                     firstname: this.draftdata_buyerdetails_firstname,
-                        //                     middlename: this.draftdata_buyerdetails_middlename,
-                        //                     lastname: this.draftdata_buyerdetails_lastname,
-                        //                     suffix: this.draftdata_buyerdetails_suffix,
-                        //                     cellphone: this.draftdata_buyerdetails_cellphone,
-                        //                     email: this.draftdata_buyerdetails_email
-                        //                 },
-                        //                 expiry: '',
-                        //                 isdraft: true,
-                        //                 lot: this.fullLot,
-                        //                 lotdetails: this.fullLotData,
-                        //                 start: this.startDateTimeValue,
-                        //                 timestamp: { ".sv": "timestamp" },
-                        //                 type: '',
-                        //                 reference: this.applicationKey
-                        //             };
-
-                        //             //save to /applications/{id}
-                        //             firebaseUpdate["/briefcasedraft/" + this.transactionKey] = draftdata;
-
-                        //             var draftBuyer = {
-                        //                 firstname: this.draftdata_buyerdetails_firstname,
-                        //                 middlename: this.draftdata_buyerdetails_middlename,
-                        //                 lastname: this.draftdata_buyerdetails_lastname,
-                        //                 suffix: this.draftdata_buyerdetails_suffix,
-                        //                 cellphone: this.draftdata_buyerdetails_cellphone,
-                        //                 email: this.draftdata_buyerdetails_email
-                        //             };
-                        //             if (this.buyerKey) {
-                        //                 //save to /buyers/{new id}
-                        //                 firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
-                        //             }
-                        //             else {
-                        //                 this.saveErrorDetails = "Buyer Key is empty.";
-                        //                 saveSuccess.setAttribute("style", "display: none; color: green;");
-                        //                 saveFailed.setAttribute("style", "display: block; color: red;");
-                        //                 return;
-                        //             }
-                        //             var draftAgent = {
-                        //                 firstname: this.draftdata_agentdetails_firstname,
-                        //                 middlename: this.draftdata_agentdetails_middlename,
-                        //                 lastname: this.draftdata_agentdetails_lastname,
-                        //                 suffix: this.draftdata_agentdetails_suffix,
-                        //                 email: this.draftdata_agentdetails_email,
-                        //                 cellphone: this.draftdata_agentdetails_cellphone
-                        //             };
-                        //             if (this.agentKey) {
-                        //                 //save to /agents/{new id}
-                        //                 firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
-                        //             }
-                        //             else {
-                        //                 this.saveErrorDetails = "Agent Key is empty.";
-                        //                 saveSuccess.setAttribute("style", "display: none; color: green;");
-                        //                 saveFailed.setAttribute("style", "display: block; color: red;");
-                        //             }
-                        //             var sdate;
-                        //             var serverdatetime = firebase.database().ref("info/serverdatetime");
-                        //             serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
-                        //             serverdatetime.once('value').then(snapshot => {
-                        //                 var sdate = new Date(snapshot.val());
-                        //             });
-                        //         }
-                        //         else {
-                        //             //transactionKey is missing
-                        //             var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                        //             this.saveErrorDetails = "Transaction Key is missing.";
-                        //             saveFailed.setAttribute("style", "display: block; color: red;");
-                        //         }
-                        //         //verification first
-                        //         //get colors
-                        //         //get map_lot
-                        //         //get reservations
-                        //     }
-                        // }
-                        // else {
-                        //     // console.log('xx ' + this.selectedPage);
-                        //     this.favlefthide = false;
-                        //     this.favrighthide = false;
-                        //     if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname
-                        //         && this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
-                        //         this.favrighthide = false;
-                        //     }
-                        //     else {
-                        //         this.favrighthide = true;
-                        //     }
                     }
                     if (parseInt(this.selectedPage) !== 3) {
                         this.selectedPage = (parseInt(this.selectedPage) + 1);
@@ -1245,8 +1113,13 @@
                     this.favrighthide = false;
                 }
             },
-            oPenApproved(message) {
+
+            oPenApproved() {
                 this.$.ApprovedApplication.open();
+            },
+
+            _openDisapproved(){
+                this.$.openDisapproved.open();
             },
 
             // notifications() {
@@ -1278,8 +1151,6 @@
             // },
 
             approveApp() {
-                // this.notifications();
-                //get color
                 var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/hold');
                 transTypeCorrespondingColorRef.on('value', snapshot => {
                     if (snapshot.exists()) {
@@ -1287,13 +1158,6 @@
                     }
                 });
                 if (this.transTypeCorrespondingColor) {
-                    // if (this.isStartDateTimeInvalidGlobal == true) {
-                    //     var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                    //     this.saveErrorDetails = "Start date conflict, please change the start date accordingly.";
-                    //     saveFailed.setAttribute("style", "display: block; color: red;");
-                    // }
-                    // else {
-                    // this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
                     this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
                     var firebaseDb = this.$.idd.db;
                     var firebaseDbRef = firebaseDb.ref();
@@ -1335,20 +1199,6 @@
                         // type_status_inventoriable:this.draftdata_type+,
                         reference: this.applicationKey
                     };
-
-                    var notifPostKey = firebaseDbRef.child('notifications').push().key;
-
-                    var notificationData = {
-                        click: 'briefcase/applied/detail/'+ this.transactionKey,
-                        message: "approved your application request.",
-                        photo: firebase.auth().currentUser.photoURL,
-                        read: false,
-                        recipient_role: 'Sales Agent',
-                        recipient_role_code: 'Sales Agent_'+this.agentKey,
-                        sender: this.myname,
-                        timestamp: { ".sv": "timestamp" },
-                        title: 'Application approved',
-                    };
                     var draftBuyer = {
                         firstname: this.draftdata_buyerdetails_firstname,
                         middlename: this.draftdata_buyerdetails_middlename,
@@ -1365,15 +1215,16 @@
                         email: this.draftdata_agentdetails_email,
                         cellphone: this.draftdata_agentdetails_cellphone
                     };
-                    
-                    var transactionPush = firebaseDbRef.child('applications').push();
-                   
+
+                    var transactionPush = firebaseDbRef.child('applications').push().key;
+
                     // this.transactionKey = transactionPush.key;
                     if (this.transactionKey) {
                         //save to /applications/{id}
-                        firebaseUpdate["/applications/" + this.transactionKey] = draftdata;
+                        firebaseUpdate["/applications/" + this.transactionPush] = draftdata;
                         firebaseUpdate["/briefcase/" + this.agentKey + "/" + this.transactionKey] = draftdata;
-                        firebaseUpdate['/notifications/' + notifPostKey] = notificationData;
+                        
+                        this.notification(this.transactionKey,this.agentKey,this.fullLot,this.myname,'approved');
                         //this.path
                         if (this.buyerKey) {
                             //save to /buyers/{new id}
@@ -1393,17 +1244,6 @@
                             saveSuccess.setAttribute("style", "display: none; color: green;");
                             saveFailed.setAttribute("style", "display: block; color: red;");
                         }
-                        //how to get last two reservation with iscurrent and not iscurrent
-                        //what if there is no iscurrent but there is a reservation???
-                        //--- no need to get the current iscurrent=true, we just need the last-reservation to check if we can set the current reservation as iscurrent
-                        // applications filter
-                        // edit
-                        // save to application and conditionally to Reservations & Lot Details Reservation
-                        // ---check for applications in-line and determine the start date and time
-                        // ---save to reservation will be after checking of docs approval
-                        // midnight update
-                        //will be transferred later, when docs checking and approval are up
-                        //save to /reservations/{new id}
                         var isCurrentReservation = false;
                         if (this.lastReservation) {
                             if (this.lastReservation.length > 0) {
@@ -1520,18 +1360,9 @@
                                     this.saveErrorDetails = error;
                                     saveSuccess.setAttribute("style", "display: none; color: green;");
                                     saveFailed.setAttribute("style", "display: block; color: red;");
-                                    // this.favlefthide = false;
-                                    // this.favrighthide = true;
-                                    // console.log('1');
                                 }
                                 else {
                                     this.saveErrorDetails = "";
-                                    // saveSuccess.setAttribute("style", "display: block; color: green;");
-                                    // saveFailed.setAttribute("style", "display: none; color: red;");
-                                    // this.favlefthide = true;
-                                    // this.favrighthide = true;
-                                    // favRightVar.setAttribute("style", "display: none; background: #1976d2;");
-                                    // console.log('2');
                                 }
                             });
                         }
@@ -1547,17 +1378,13 @@
                     Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "display:none");
 
                     var applicationsNew = firebase.database().ref().child("applicationsNew").child(this.transactionKey).remove();
-                    // this.$.successApprove.open();
-                    // this.favlefthide = true;
-                    // this.favrighthide = true;
                     window.location = "/applications";
                 }
             },
 
             _disApproved() {
                 if (this.transactionKey) {
-                    
-                    // this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
+
                     var firebaseDb = this.$.idd.db;
                     var firebaseDbRef = firebaseDb.ref();
                     var firebaseUpdate = {};
@@ -1598,62 +1425,45 @@
                         // type_status_inventoriable:this.draftdata_type+,
                         reference: this.applicationKey
                     };
-                    // var draftBuyer = {
-                    //     firstname: this.draftdata_buyerdetails_firstname,
-                    //     middlename: this.draftdata_buyerdetails_middlename,
-                    //     lastname: this.draftdata_buyerdetails_lastname,
-                    //     suffix: this.draftdata_buyerdetails_suffix,
-                    //     cellphone: this.draftdata_buyerdetails_cellphone,
-                    //     email: this.draftdata_buyerdetails_email
-                    // };
-                    // var draftAgent = {
-                    //     firstname: this.draftdata_agentdetails_firstname,
-                    //     middlename: this.draftdata_agentdetails_middlename,
-                    //     lastname: this.draftdata_agentdetails_lastname,
-                    //     suffix: this.draftdata_agentdetails_suffix,
-                    //     email: this.draftdata_agentdetails_email,
-                    //     cellphone: this.draftdata_agentdetails_cellphone
-                    // };
 
-                    var notifPostKey = firebaseDbRef.child('notifications').push().key;
-
-                    var notificationData = {
-                        click: 'briefcase/applied/detail/'+ this.transactionKey,
-                        message: "disapproved your application request.",
-                        photo: firebase.auth().currentUser.photoURL,
-                        read: false,
-                        recipient_role: 'Sales Agent',
-                        recipient_role_code: 'Sales Agent_' + this.agentKey,
-                        sender: this.myname,
-                        timestamp: { ".sv": "timestamp" },
-                        title: 'Application disapproved',
-                    };
-
-                   
-
-                    firebaseUpdate['/notifications/' + notifPostKey] = notificationData;
+                    // firebaseUpdate['/notifications/' + notifPostKey] = notificationData;
                     firebaseUpdate["/briefcase/" + this.agentKey + "/" + this.transactionKey] = draftdata;
                     // this.$.successApprove.open();
                     firebase.database().ref().update(firebaseUpdate);
-                    var personRef = firebase.database().ref().child("applicationsNew/"+this.transactionKey).remove();
+
+                    this.notification(this.transactionKey,this.agentKey,this.fullLot,this.myname,'disapproved');
+                    var personRef = firebase.database().ref().child("applicationsNew/" + this.transactionKey).remove();
                     window.location = "/applications";
 
                 }
             },
 
+            notification(pushKey,agentKey,lot,sender,action) {
+                var ref = firebase.database().ref("notifications");
+                ref.push({
+                    title: lot,
+                    click: 'briefcase/applied/detail/' + pushKey,
+                    message: action + " your application request.",
+                    photo: firebase.auth().currentUser.photoURL,
+                    isread: false,
+                    recipient: {
+                        staff: false,
+                        manager: false,
+                        agent: true,
+                        owner: false,
+                        recipient_accountCode: agentKey
+                    },
+                    sender: sender,
+                    timestamp: { ".sv": "timestamp" },
+                    source: 'briefcase',
+                });
+            },
+
             _rdChanged(newData, oldData) {
                 this.fromRD = true;
-                // this.isUserClicked = true;
-                // console.log('_rd');
-                // console.log(oldData);
-                // console.log(newData);
             },
             _ldChanged(newData, oldData) {
                 this.fromLD = true;
-                // this.isUserClicked = true;
-                // console.log('_rd');
-                // console.log(oldData);
-                // console.log(newData);
             },
             s4: function () {
                 return Math.floor((1 + Math.random()) * 0x10000)
@@ -1661,11 +1471,7 @@
                     .substring(1);
             },
             guid: function () {
-                // return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
-                //     this.s4() + '-' + this.s4() + this.s4() + this.s4();
                 var uid = new ShortUniqueId();
-                // console.log(uid.randomUUID(8));
-                // var shortid = new shortid();
                 return uid.randomUUID(8);
             },
         })

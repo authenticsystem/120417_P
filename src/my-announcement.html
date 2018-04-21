@@ -10,10 +10,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="shared-styles.html">
 
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="my-announcement-new.html">
+<link rel="import" href="my-announcement-detail.html">
+<link rel="import" href="my-announcement-edit.html">
+<link rel="import" href="my-view404.html">
 
 <dom-module id="my-announcement">
     <template>
@@ -65,9 +73,65 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     border-color: black
                 }
             }
+
+            iron-list {
+                padding-top: 16px;
+                margin-top: 16px;
+                padding-bottom: 16px;
+            }
+
+            .item {
+                @apply --layout-horizontal;
+                padding: 20px;
+                border-radius: 8px;
+                background-color: white;
+                border: 1px solid #ddd;
+                max-width: 800px;
+                margin: 16px auto 0 auto;
+            }
+
+            .item:focus {
+                outline: 0;
+                border-color: #333;
+            }
+
+            .avatar {
+                height: 40px;
+                width: 40px;
+                border-radius: 20px;
+                box-sizing: border-box;
+                background-color: #DDD;
+            }
+
+            .pad {
+                padding: 0 16px;
+                @apply --layout-flex;
+                @apply --layout-vertical;
+            }
+
+            .primary {
+                font-size: 16px;
+            }
+
+            .primary_bold {
+                font-size: 16px;
+                font-weight: bold;
+            }
+
+            .secondary {
+                font-size: 12px;
+                color: black
+            }
+
+            .dim {
+                font-size: 14px;
+                color: gray;
+            }
         </style>
 
         <app-route route="{{route}}" pattern="" active="{{announcementActive}}"></app-route>
+        <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
+        <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
         <div hidden$="{{!announcementActive}}">
             <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
                 <div name="">
@@ -89,11 +153,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         </template>
 
                         <template is="dom-if" if="{{access}}">
-                            <div class="card">
+                            <!-- <div class="card">
                                 <div class="typewriter">
                                     <h1>Coming soon......</h1>
                                 </div>
-                            </div>
+                            </div> -->
+                            <firebase-query path="/announcements" order-by-child="sender" equal-to="{{myaccountName}}" data="{{announcements}}"></firebase-query>
+
+                            <iron-list items="[[_descending(announcements)]]" as="item" scroll-target="document">
+                                <template>
+                                    <div>
+                                        <div class="item" tabindex$="[[tabIndex]]">
+                                            <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
+                                            <div class="pad">
+                                                <div class="primary">[[item.title]]</div>
+                                                <div class="secondary dim">[[dateTimeFormat(item.timestamp,item.isupdated)]]</div>
+                                            </div>
+                                            <a href$="{{_getViewEditLink(item.$key)}}">
+                                                <paper-icon-button icon="my-icons:edit" on-tap="editAnnouncement" data-args="{{item.$key}}" alt="{{item.$key}}"></paper-icon-button>
+                                            </a>
+                                            <a href$="{{_getViewDetailsLink(item.$key)}}">
+                                                <paper-icon-button icon="my-icons:open-in-new" on-tap="viewAnnouncement" data-args="{{item.$key}}" alt="{{item.$key}}"></paper-icon-button>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </template>
+                            </iron-list>
                         </template>
 
                         <template is="dom-if" if="{{access}}">
@@ -109,18 +194,73 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <template is="dom-if" if="{{access}}">
                     <div name="/new">
                         <div id="announcementNew"></div>
-                        <my-announcement-new id="d23" path="" prev-route="{{route.prefix}}"></my-announcement-new>
+                        <my-announcement-new id="d23" path="" prev-route="{{route.prefix}}" myaccount="{{myaccountName}}" myrole="{{myaccountRole}}"></my-announcement-new>
                     </div>
                 </template>
 
                 <div name="view404">Not found.</div>
             </iron-pages>
         </div>
+        <!-- end of announcement active -->
+        <template is="dom-if" if="{{access}}">
+            <div hidden$="{{!detailActive}}">
+                <div id="announcementDetail"></div>
+                <my-announcement-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"></my-announcement-detail>
+            </div>
+        </template>
+        <template is="dom-if" if="{{access}}">
+            <div hidden$="{{!editActive}}">
+                <div id="announcementEdit"></div>
+                <my-announcement-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}" myaccount="{{myaccountName}}"></my-announcement-edit>
+            </div>
+        </template>
     </template>
 
     <script>
         Polymer({
             is: 'my-announcement',
+
+            properties: {
+                account: {
+                    type: Object,
+                    observer: 'accountChanged'
+                }
+            },
+
+            accountChanged(e) {
+                this.myaccountName = e[0].name.firstname + ' ' + e[0].name.middlename + ' ' + e[0].name.lastname;
+                this.myaccountRole = e[0].role;
+                // console.log(e[0].role);
+            },
+
+            _photo(e) {
+                if (e) {
+                    return e;
+                } else {
+                    return '../images/user.png';
+                }
+            },
+
+            dateTimeFormat(e, f) {
+                // var event = new Date(e);
+                // return event.toString();
+
+                var a = new Date(e);
+                var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                var year = a.getFullYear();
+                var month = months[a.getMonth()];
+                var date = a.getDate();
+                var hour = a.getHours();
+                var min = a.getMinutes();
+                var sec = a.getSeconds();
+                var time = month + ' ' + date + ',' + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+
+                if (f == true) {
+                    return 'Updated: ' + time;
+                } else {
+                    return 'Created: ' + time;
+                }
+            },
 
             toggleDrawer() {
                 this.dispatchEvent(new CustomEvent('toggleDrawer', {
@@ -141,9 +281,73 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     var newDiv = document.createElement("my-announcement-new");
                     newDiv.setAttribute("id", "d23");
                     newDiv.setAttribute("prev-route", this.route.prefix);
+                    newDiv.setAttribute("myaccount", this.myaccountName);
+                    newDiv.setAttribute("myrole", this.myaccountRole);
                     var currentDiv = document.getElementById("announcementNew");
                     Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
                 }
+            },
+
+            viewAnnouncement(e) {
+                var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+                var node = Polymer.dom(this.root).querySelector("#announcementDetail");
+                if (node) {
+                    var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
+                    if (oldDiv) {
+                        Polymer.dom(node.parentNode).removeChild(oldDiv);
+                    }
+                    var newDiv = document.createElement("my-announcement-detail");
+                    newDiv.setAttribute("id", "d24")
+                    newDiv.setAttribute("transaction-key", data_args)
+                    newDiv.setAttribute("prev-route", this.route.prefix);
+                    //if open existing
+                    var currentDiv = document.getElementById("announcementDetail");
+                    Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+                }
+            },
+
+            editAnnouncement(e) {
+                var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+                var node = Polymer.dom(this.root).querySelector("#announcementEdit");
+                if (node) {
+                    var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
+                    if (oldDiv) {
+                        Polymer.dom(node.parentNode).removeChild(oldDiv);
+                    }
+                    var newDiv = document.createElement("my-announcement-edit");
+                    newDiv.setAttribute("id", "d25")
+                    newDiv.setAttribute("transaction-key", data_args)
+                    newDiv.setAttribute("prev-route", this.route.prefix);
+                    newDiv.setAttribute("myaccount", this.myaccountName);
+                    //if open existing
+                    var currentDiv = document.getElementById("announcementEdit");
+                    Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+                }
+            },
+
+            _getViewDetailsLink(e) {
+                return '/announcement/detail/' + e.toString();
+            },
+
+            _getViewEditLink(e) {
+                return '/announcement/edit/' + e.toString();
+            },
+
+            getClassForItem: function (item, selected) {
+                return selected ? 'item expanded' : 'item';
+            },
+
+            _updated(e) {
+                if (e == true) {
+                    return 'Updated';
+                }
+                else {
+                    return '';
+                }
+            },
+
+            _descending(e) {
+                return e.reverse();
             },
 
         })

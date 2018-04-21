@@ -32,6 +32,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../bower_components/sl-gallery/sl-gallery.html">
+<link rel="import" href="../bower_components/sl-gallery/sl-gallery-image.html">
 
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
@@ -330,9 +332,73 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           --paper-badge-margin-left: 0px;
           --paper-badge-margin-bottom: -20px;
         }
+
         .notifySpan {
           margin-right: 15px;
         }
+      }
+
+      iron-list {
+        padding-top: 16px;
+        margin-top: 16px;
+        padding-bottom: 16px;
+      }
+
+      .item {
+        @apply --layout-horizontal;
+        padding: 20px;
+        border-radius: 8px;
+        background-color: white;
+        border: 1px solid #ddd;
+        max-width: 800px;
+        margin: 16px auto 0 auto;
+      }
+
+      .item:focus {
+        outline: 0;
+        border-color: #333;
+      }
+
+      .avatar {
+        height: 40px;
+        width: 40px;
+        border-radius: 20px;
+        box-sizing: border-box;
+        background-color: #DDD;
+      }
+
+      .pad {
+        padding: 0 16px;
+        @apply --layout-flex;
+        @apply --layout-vertical;
+      }
+
+      .primary {
+        font-size: 16px;
+      }
+
+      .primary_bold {
+        font-size: 16px;
+        font-weight: bold;
+      }
+
+      .secondary {
+        font-size: 12px;
+        color: black
+      }
+
+      .dim {
+        font-size: 14px;
+        color: gray;
+      }
+
+      .loader {
+        background-color: #ddffdd;
+        border-left: 6px solid #4CAF50;
+        text-align: center;
+        max-width: 800px;
+        margin: 16px auto 0 auto;
+        padding: 10px;
       }
     </style>
 
@@ -351,23 +417,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       data="{{lotDetails}}" limit-to-last="50"></firebase-query> -->
 
     <!-- <firebase-query path="/reports/overAll/{{overAllDate}}/overall" data="{{overallTotalData}}"></firebase-query> -->
-
     <app-header-layout fullbleed has-scrolling-region>
-      <app-header slot="header">
+      <app-header fixed effects="waterfall" slot="header">
         <app-toolbar primary>
           <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
           <div main-title hidden$="{{!access}}">Dashboard</div>
           <div main-title hidden$="{{access}}">Opps!</div>
-          <!-- <div>
-            <paper-menu-button vertical-align="top" horizontal-align="right">
-              <paper-icon-button slot="dropdown-trigger" icon="my-icons:notifications"></paper-icon-button>
-              <paper-listbox slot="dropdown-content">
-                <paper-item>
-                  the quick brown fox jumps over the lazy dog
-                </paper-item>
-              </paper-listbox>
-            </paper-menu-button>
-          </div> -->
         </app-toolbar>
         <paper-tabs selected="{{selectedTab}}" scrollable>
           <paper-tab>
@@ -405,10 +460,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         <iron-pages selected="{{selectedTab}}">
           <!-- Announcements -->
-          <div class="card">
+          <!-- <div class="card">
             <div class="typewriter">
               <h1>Coming soon......</h1>
             </div>
+          </div> -->
+          <div>
+            <firebase-query path="/announcements" order-by-child="{{myaccountrole}}" equal-to="true" data="{{announcements}}" limit-to-last="50"></firebase-query>
+
+            <div hidden$="{{loader_announcements2}}" class="loader" id="loader">{{loadingMessage}}</div>
+
+            <template is="dom-repeat" items="[[announcements2]]" as="item">
+              <firebase-query path="announcements/[[item.$key]]/attachments" data="{{attachment}}"></firebase-query>
+              <div class="item">
+                <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
+                <div class="pad">
+                  <div class="primary">[[item.title]]</div>
+                  <div class="secondary dim">[[dateTimeFormat(item.timestamp,item.isupdated)]]</div>
+                  <br>
+                  <div class="galleryHolder">
+                    <sl-gallery id="gallery">
+                    </sl-gallery>
+                  </div>
+                  <br>
+                  <div class="secondary">
+                    <div>
+                      [[item.message]]
+                    </div>
+                    <br>
+                    <br>
+                    <div>
+                      Sincerely,
+                    </div>
+                    <div>
+                      [[item.sender]]
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
           </div>
           <!-- End of Announcements -->
 
@@ -420,6 +510,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <div class="typewriter">
                 <h1>Coming soon......</h1>
               </div>
+              <!-- <firebase-query path="/lots" order-by-child="reservationdetails/agent" equal-to="{{myaccountcode}}" data="{{agentReport}}"></firebase-query>
+              <template is="dom-repeat" items="[[agentReport]]" as="item">
+                <div>
+                  <table>
+                    <tr>
+                      <th>Type</th>
+                      <th>Block</th>
+                      <th>Lot</th>
+                    </tr>
+                    <td>[[item.type]]</td>
+                    <td>[[item.block]]</td>
+                    <td>[[item.lot]]</td>
+                  </table>
+                </div>
+              </template> -->
             </div>
             <!-- end of agent report -->
             <div hidden$="{{staff}}">
@@ -464,7 +569,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <template is="dom-repeat" items="{{todayLotDetails}}">
                     <tr>
                       <td style="text-align: left;">{{_formatType(item.type)}}</td>
-                      <td style="text-align: left;">Block {{item.block}} Lot {{item.lot}} Level {{item.level}}</td>
+                      <td style="text-align: left;">Block {{item.block}} Lot {{item.lot}} {{_formatLot(item.level)}}</td>
                       <td style="text-align: left;">{{item.status}}</td>
                       <td style="text-align: left;">{{item.reservationdetails.agentdetails.firstname}} {{item.reservationdetails.agentdetails.middlename}}
                         {{item.reservationdetails.agentdetails.lastname}}
@@ -481,10 +586,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <!-- owner's report -->
             <div hidden$="{{owner}}">
-              <!-- <firebase-query id="query" path="reports/activity/daily/{{dailyDate}}" data="{{dailyTotal}}"></firebase-query>
-              <firebase-query id="query" path="reports/activity/weekly/{{yearWeekDate}}" data="{{weeklyTotal}}"></firebase-query>
-              <firebase-query id="query" path="reports/activity/monthly/{{yearDate}}-{{monthDate}}" data="{{monthlyTotal}}"></firebase-query>
-              <firebase-query id="query" path="reports/activity/yearly/{{yearlyDate}}" data="{{yearlyTotal}}"></firebase-query> -->
 
               <div style="padding:26px; margin-top:-30px; margin-bottom:56px;">
                 <div style="float:right;">
@@ -616,44 +717,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       </paper-listbox>
                     </paper-dropdown-menu>
                     <span style="float:right">
-                      <iron-icon icon="my-icons:description"></iron-icon>
-                      <paper-button on-tap="_download" style="font-size:12px">export to csv</paper-button>
+                      <paper-button on-tap="_download" style="font-size:12px">
+                        <iron-icon icon="my-icons:description"></iron-icon>
+                        Download files</paper-button>
                     </span>
                   </span>
                   <!-- <paper-toggle-button checked="{{showLotDetails}}" on-tap="_showLotDetails" style="font-size:12px; float: right;">View details</paper-toggle-button> -->
                   <div class="chart-container" hidden$="{{hideDailyChart2}}">
                     <canvas id="dailyChart2" height="500"></canvas>
-                  </div>
-                  <br>
-                  <div hidden$="{{hidelotDetailsTable}}" style="font-size: 12px; overflow-x:auto;">
-                    <table id="lotDetailsTable">
-                      <tr>
-                        <td colspan="6">
-                          <iron-icon icon="my-icons:event"></iron-icon>{{lotDetailsDate}}</td>
-                      </tr>
-                      <tr>
-                        <th style="text-align: left;">Lot type</th>
-                        <th style="text-align: left;">Lot</th>
-                        <th style="text-align: left;">Status</th>
-                        <th style="text-align: left;">Agent</th>
-                        <th style="text-align: left;">Buyer</th>
-                        <th style="text-align: left;">Date</th>
-                      </tr>
-                      <template is="dom-repeat" items="{{lotDetails}}">
-                        <tr>
-                          <td style="text-align: left;">{{_formatType(item.type)}}</td>
-                          <td style="text-align: left;">Block {{item.block}} Lot {{item.lot}} Level{{item.level}}</td>
-                          <td style="text-align: left;">{{item.status}}</td>
-                          <td style="text-align: left;">{{item.reservationdetails.agentdetails.firstname}} {{item.reservationdetails.agentdetails.middlename}}
-                            {{item.reservationdetails.agentdetails.lastname}}
-                          </td>
-                          <td style="text-align: left;">{{item.reservationdetails.buyerdetails.firstname}} {{item.reservationdetails.buyerdetails.middlename}}
-                            {{item.reservationdetails.buyerdetails.lastname}}
-                          </td>
-                          <td style="text-align: left;">{{item.reservationdetails.start}}</td>
-                        </tr>
-                      </template>
-                    </table>
                   </div>
                 </div>
 
@@ -892,34 +963,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!-- End of Reports -->
 
           <!-- Notification -->
-          <div class="card" style="padding:0">
+          <div>
 
-            <firebase-query path="/notifications" order-by-child="recipient_role" equal-to="{{myrole}}" limit-to-last="50" data="{{notificationData}}"></firebase-query>
-            <firebase-query path="/notifications" order-by-child="recipient_role_code" equal-to="{{myrolecode}}" limit-to-last="50" data="{{notificationData}}"></firebase-query>
-
+            <firebase-query path="/notifications" order-by-child="recipient/{{myaccountrole}}" equal-to="true" limit-to-last="50" data="{{notificationData}}"></firebase-query>
+            <firebase-query path="/notifications" order-by-child="recipient/recipient_accountCode" equal-to="{{myaccountcode}}" limit-to-last="50"
+              data="{{notificationData}}"></firebase-query>
+            <div hidden$="{{loader_notificationData}}" class="loader" id="loader">{{loadingMessage}}</div>
             <iron-list items="[[notificationdata_merge]]" as="item" scroll-target="document">
               <template>
                 <div>
                   <div class="item" tabindex$="[[tabIndex]]">
-                    <div role="listbox">
-                      <paper-icon-item>
-                        <div slot="item-icon">
-                          <iron-image class="avatar" sizing="contain" src="{{item.photo}}"></iron-image>
-                        </div>
-                        <paper-item-body two-line>
-                          <div hidden$="[[item.read]]">
-                            <strong>[[item.sender]]&nbsp;[[item.message]]</strong>
-                          </div>
-                          <div hidden$="[[!item.read]]">
-                            [[item.sender]]&nbsp;[[item.message]]
-                          </div>
-                          <div class="secondary">
-                            <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
-                          </div>
-                        </paper-item-body>
-                        <paper-icon-button icon="my-icons:open-in-new" title="View notifications" on-tap="_notificationLink" alt="{{item}}"></paper-icon-button>
-                      </paper-icon-item>
+                    <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
+                    <div class="pad">
+                      <div hidden$="[[item.isread]]" class="primary_bold">[[item.sender]]&nbsp;[[item.message]]</div>
+                      <div hidden$="[[!item.isread]]" class="primary">[[item.sender]]&nbsp;[[item.message]]</div>
+                      <div class="secondary">
+                        <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
+                      </div>
+                      <div class="secondary dim">
+                        "[[item.title]]"
+                      </div>
                     </div>
+                    <paper-icon-button icon="my-icons:open-in-new" title="View notifications" on-tap="_notificationLink" alt="{{item}}"></paper-icon-button>
                   </div>
                 </div>
               </template>
@@ -1100,11 +1165,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Boolean,
           value: true
         },
+        announcements: Object,
+        agentReport: Object,
+        loadingMessage: {
+          type: String,
+          value: 'Loading...'
+        },
+        attachment: Object
       },
 
       ready() {
-        // this.changePage(1);
-
         var date = new Date();
         this.startMonthYear = date.getFullYear().toString();
         this.endMonthYear = date.getFullYear().toString();
@@ -1137,12 +1207,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'accountChanged(account.*)',
         // 'notificationDataChanged(notificationData.*,notificationData2.*)',
         'notificationDataChanged(notificationData.*)',
-        'dailyTotalDataChanged(dailyTotalData.*)'
+        'dailyTotalDataChanged(dailyTotalData.*)',
+        'announcementsChanged(announcements.*)',
+        'attachmentChanged(attachment)'
       ],
 
+      attachmentChanged(e) {
+        if (e) {
+          const gallery = Polymer.dom(this.root).querySelector('#gallery');
+          if (gallery) {
+            e.forEach(img => {
+              const el = document.createElement('sl-gallery-image');
+              el.setAttribute('src', img.url);
+              el.setAttribute('small', img.url);
+              el.setAttribute('id', 'gallery-image');
+              gallery.appendChild(el);
+            });
+          }
+        }
+      },
+
+      announcementsChanged(e) {
+        if (e.base.length > 0) {
+          var announcements2 = [];
+          e.base.forEach(element => {
+            announcements2.push(element);
+          });
+          this.announcements2 = this._descending(announcements2);
+          this.loader_announcements2 = true;
+        } else {
+          this._fetch();
+          this.loader_announcements2 = false;
+        }
+      },
+
+      _fetch() {
+        this.loadingMessage = 'Loading..';
+        setTimeout((e) => {
+          this.loadingMessage = 'No record found..';
+        }, 3000);
+      },
+
       _download() {
-        var data = [];
-        firebase.database().ref("/lots").orderByChild("reservationdetails/start").startAt(this.lotDetailsStartAt).endAt(this.lotDetailsEndAt).on("value", function (snapshot) {
+        var data = [], date = this.downloadDate;
+        firebase.database().ref("/lots").orderByChild("reservationdetails/start").startAt(this.lotDetailsStartAt).endAt(this.lotDetailsEndAt).once("value", function (snapshot) {
           snapshot.forEach(element => {
             data.push([
               element.val().type,
@@ -1159,7 +1267,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               element.val().reservationdetails.start,
             ]);
           });
-          var csv = 'Lot type,Block,Lot,Level,Status,Agent firstname,Agent middlename,Agent lastname,Buyer firstname,Buyer middlename,Buyer lastname,Date\n';
+          var csv = date + '\nLot type,Block,Lot,Level,Status,Agent firstname,Agent middlename,Agent lastname,Buyer firstname,Buyer middlename,Buyer lastname,Date\n';
           data.forEach(function (row) {
             csv += row.join(',');
             csv += "\n";
@@ -1220,16 +1328,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         downloadLink.click();
       },
 
-
-
       notificationDataChanged(e) {
-        this.countNotification = e.base.length;
-        if (e.base) {
+        if (e.base.length > 0) {
           var notifications = [];
+          var countn = 0;
           e.base.forEach(element => {
             notifications.push(element);
+            if (element.isread == false) {
+              countn++;
+            }
           });
-          this.notificationdata_merge = notifications;
+          this.notificationdata_merge = this._descending(notifications);
+          this.countNotification = countn;
+          this.loader_notificationData = true;
+        } else {
+          this.countNotification = 0;
+          this._fetch();
+          this.loader_notificationData = false;
         }
       },
 
@@ -1243,15 +1358,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // console.log(data);
 
         var postData = {
+          title: data.title,
           click: data.click,
           message: data.message,
-          read: true,
-          recipient_role: data.recipient_role,
-          recipient_role_code: data.recipient_role_code,
+          photo: data.photo,
+          isread: true,
+          recipient: data.recipient,
           sender: data.sender,
           timestamp: data.timestamp,
-          title: data.title,
-          photo: data.photo
+          source: data.source,
         };
         var updates = {};
         updates['/notifications/' + data.$key] = postData;
@@ -1264,16 +1379,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (this.account.length > 0) {
           this.myrole = this.account[0].role;
           this.myaccountcode = this.account[0].accountkey;
-          this.myrolecode = this.myrole + '_' + this.myaccountcode;
+          // this.myrolecode = this.myrole + '_' + this.myaccountcode;
           // console.log(this.myaccountcode);
           if (this.myrole === 'Owner') {
             this.owner = false;
+            this.myaccountrole = 'owner'
           }
           else if (this.myrole === 'Staff') {
             this.staff = false;
+            this.myaccountrole = 'staff'
           }
           else if (this.myrole === 'Sales Agent') {
             this.agent = false;
+            this.myaccountrole = 'agent'
+          }
+          else if (this.myrole === 'Manager') {
+            this.myaccountrole = 'manager'
           }
         }
       },
@@ -1645,6 +1766,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         else if (e == 'gardenlots5') return 'Garden Lots 2 (Irregular Lots)';
       },
 
+      _formatLot(e) {
+        if (e == '') {
+          return '';
+        }
+        else {
+          return 'Level ' + e.toUpperCase();
+        }
+      },
+
       _formatNumber(e) {
         if (e == 0) return '-'
         else return e;
@@ -1966,7 +2096,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           var d = new Date();
           datestring = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
-          this.overAllDate = datestring;
+          var yesterday = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + (d.getDate() - 1)).slice(-2);
+          this.overAllDate = yesterday;
           this.lotTypeFilter = 'all';
           this.filterSHRAN = 'sold';
         }
@@ -2001,9 +2132,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (this.Chart) {
 
           if (selectedDMY == 0) {
-            // this.totalHold = 0;
-            // this.totalReserved = 0;
-            // this.totalSold = 0;
             this.hideDailyInputDate = false;
 
             this.hideWeekly = true;
@@ -2023,13 +2151,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.lotDetailsDate = dailyAct;
             this.lotDetailsStartAt = dailyAct + "T00:00";
             this.lotDetailsEndAt = dailyAct + "T23:59";
+            this.downloadDate = this.reportTitle;
           }
 
           else if (selectedDMY == 1) {
             this.hideWeekly = false;
-            // this.totalHold = 0;
-            // this.totalReserved = 0;
-            // this.totalSold = 0;
             this.hideDailyInputDate = true;
             this.hideMonthSelection = true;
             this.hideYearly = true;
@@ -2058,13 +2184,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             query = 'weekly/' + yearWeek;
             this.changeQry = query;
             this.reportTitle = 'Weekly Report ' + this.weekDates;
+            this.downloadDate = this.reportTitle;
           }
 
           else if (selectedDMY == 2) {
             this.hideMonthSelection = false;
-            // this.totalHold = 0;
-            // this.totalReserved = 0;
-            // this.totalSold = 0;
             this.hideWeekly = true;
             this.hideDailyInputDate = true;
             this.hideYearly = true;
@@ -2080,15 +2204,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.reportTitle = 'Monthly Report ' + year + '-' + month;
 
             this.lotDetailsDate = year + '-' + month;
-            this.lotDetailsStartAt = year + '-' + month + '-01T00:00';
-            this.lotDetailsEndAt = year + '-' + month + '-31T23:59';
+            this.lotDetailsStartAt = this.lotDetailsDate + '-01T00:00';
+            this.lotDetailsEndAt = this.lotDetailsDate + '-31T23:59';
+            this.downloadDate = this.reportTitle;
           }
 
           else if (selectedDMY == 3) {
             this.hideYearly = false;
-            // this.totalHold = 0;
-            // this.totalReserved = 0;
-            // this.totalSold = 0;
             this.hideWeekly = true;
             this.hideMonthSelection = true;
             this.hideDailyInputDate = true;
@@ -2106,6 +2228,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.lotDetailsDate = yearly;
             this.lotDetailsStartAt = yearly + '-01' + '-01T00:00';
             this.lotDetailsEndAt = yearly + '-12' + '-31T23:59';
+            this.downloadDate = this.reportTitle;
           }
 
           this.query(query, dailyChart, dailyChart2, filterSHR);
@@ -2528,7 +2651,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           allchart22.data = data2;
           allchart22.update();
 
-          firebase.database().ref('/reports/overAll/' + overAllDate + que).on('value', function (snapshot) {
+          firebase.database().ref('/reports/overAll/' + overAllDate + '/lotType/' + lotTypeFilter).on('value', function (snapshot) {
             if (snapshot.exists()) {
 
               var datas = [];
@@ -2619,6 +2742,52 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
         else if (x == "spanDateEndAt") {
           return rangeIsTo + "T23:59";
+        }
+      },
+
+      getClassForItem(item, selected) {
+        return selected ? 'item expanded' : 'item';
+      },
+
+      dateTimeFormat(e, f) {
+        // var event = new Date(e);
+        // return event.toString();
+
+        var a = new Date(e);
+        var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        var year = a.getFullYear();
+        var month = months[a.getMonth()];
+        var date = a.getDate();
+        var hour = a.getHours();
+        var min = a.getMinutes();
+        var sec = a.getSeconds();
+        var time = month + ' ' + date + ',' + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+
+        if (f == true) {
+          return 'Updated: ' + time;
+        } else {
+          return 'Created: ' + time;
+        }
+      },
+
+      _photo(e) {
+        if (e) {
+          return e;
+        } else {
+          return '../images/user.png';
+        }
+      },
+
+      _descending(e) {
+        return e.reverse();
+      },
+
+      _updated(e) {
+        if (e == true) {
+          return 'Updated';
+        }
+        else {
+          return '';
         }
       },
 

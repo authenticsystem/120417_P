@@ -12,14 +12,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="shared-styles.html">
 
 
-<dom-module id="my-announcement-new">
+<dom-module id="my-announcement-edit">
     <template>
         <style include="shared-styles">
             :host {
@@ -55,21 +55,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         </style>
 
+        <firebase-document path="{{path}}" data="{{newdata}}"></firebase-document>
         <app-header-layout fullbleed has-scrolling-region>
             <app-header fixed slot="header">
                 <app-toolbar primary>
                     <a href="/announcement">
                         <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                     </a>
-                    <div main-title>New announcement</div>
+                    <div main-title>Edit announcement</div>
                 </app-toolbar>
             </app-header>
-
-            <!-- <div class="card">
-                <div class="typewriter">
-                    <h1>Coming soon......</h1>
-                </div>
-            </div> -->
             <div class="card">
                 <div class="alertDanger" id="alert">
                     <p>
@@ -81,11 +76,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <form action="/foo" method="get">
                             <paper-input type="text" label="Title" value="{{title}}" required></paper-input>
                             <paper-textarea label="Message" value="{{message}}" required></paper-textarea>
-                            <div style="margin:5px">
-                                <input on-change="_changeAttach" type="file" id="myFile" accept="image/*" multiple="multiple" />
-                                <output style="font-size:14px;" id="fileList"></output>
-                            </div>
-                            <br>
                             <paper-checkbox id="Owner">Owner</paper-checkbox>
                             <br>
                             <paper-checkbox id="Staff">Admin staff</paper-checkbox>
@@ -94,16 +84,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <br>
                             <paper-checkbox id="Agent">Agent</paper-checkbox>
                             <br>
-                            <paper-button raised class="submit" on-tap="_openSavingDialog">Publish</paper-button>
+                            <paper-button raised class="submit" on-tap="_openSavingDialog">Update</paper-button>
                         </form>
                     </iron-form>
                 </div>
             </div>
 
             <paper-dialog id="savingDialog">
-                <h3>Publish new announcement?</h3>
+                <h2>Update announcement?</h2>
                 <div class="buttons">
-                    <paper-button dialog-confirm autofocus on-tap="_publishAnnouncement">OK</paper-button>
+                    <paper-button dialog-confirm autofocus on-tap="_updateAnnouncement">OK</paper-button>
                     <paper-button dialog-dismiss>Cancel</paper-button>
                 </div>
             </paper-dialog>
@@ -113,27 +103,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <script>
         Polymer({
-            is: 'my-announcement-new',
+            is: 'my-announcement-edit',
             properties: {
                 myaccount: {
                     type: String
                 },
-                myrole: String
-            },
-
-            ready() {
-                if (this.myrole == 'Owner') {
-                    Polymer.dom(this.root).querySelector("#Owner").checked = true;
-                }
-                else if (this.myrole == 'Manager') {
-                    Polymer.dom(this.root).querySelector("#Manager").checked = true;
-                }
-                else if (this.myrole == 'Staff') {
-                    Polymer.dom(this.root).querySelector("#Staff").checked = true;
-                }
-                else if (this.myrole == 'Sales Agent') {
-                    Polymer.dom(this.root).querySelector("#Agent").checked = true;
-                }
+                transactionKey: {
+                    type: String,
+                    observer: 'transactionKeyChanged'
+                },
+                newdata: {
+                    type: Object,
+                    observer: 'newdataChanged'
+                },
             },
 
             toggleDrawer() {
@@ -143,6 +125,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     }
                 }));
                 this.$.narrow = !this.$.narrow;
+            },
+
+            transactionKeyChanged() {
+                this.getpath();
+            },
+
+            getpath() {
+                if (this.transactionKey) {
+                    this.path = 'announcements/' + this.transactionKey;
+                }
+                return this.path;
+            },
+
+            newdataChanged(e) {
+                if (Object.keys(e).length > 0) {
+                    this.title = e.title;
+                    this.message = e.message;
+                    if (e.agent == true) {
+                        Polymer.dom(this.root).querySelector("#Agent").checked = true;
+                    }
+                    if (e.manager == true) {
+                        Polymer.dom(this.root).querySelector("#Manager").checked = true;
+                    }
+                    if (e.owner == true) {
+                        Polymer.dom(this.root).querySelector("#Owner").checked = true;
+                    }
+                    if (e.staff == true) {
+                        Polymer.dom(this.root).querySelector("#Staff").checked = true;
+                    }
+                }
             },
 
             _openSavingDialog() {
@@ -156,32 +168,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             },
 
-            _changeAttach(e) {
-                var list = Polymer.dom(this.root).querySelector("#fileList");
-                if (e.target.files.length > 0) {
-
-                    var files = e.target.files;
-                    this.attachment = files;
-
-                    if (e.target.files.length > 1) {
-                        var output = [];
-                        for (var i = 0, f; f = files[i]; i++) {
-                            output.push('<li>', escape(f.name), '</li>');
-                        }
-                        list.innerHTML = '<ul>' + output.join('') + '</ul>';
-                    }
-                    else {
-                        list.innerHTML = '';
-                    }
-                }
-                else {
-                    list.innerHTML = '';
-                }
-            },
-
-            _publishAnnouncement() {
-                var attachment = this.attachment;
-
+            _updateAnnouncement() {
                 var boxStaff = Polymer.dom(this.root).querySelector("#Staff");
                 var boxManager = Polymer.dom(this.root).querySelector("#Manager");
                 var boxAgent = Polymer.dom(this.root).querySelector("#Agent");
@@ -204,35 +191,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     owner = true;
                 }
 
-                var ref = firebase.database().ref("announcements");
-                var announcementPush = ref.push().key;
-                var announcementData = {
-                    title: this.title,
-                    message: this.message,
-                    sender: this.myaccount,
-                    timestamp: { ".sv": "timestamp" },
-                    photo: firebase.auth().currentUser.photoURL,
+                var ref = firebase.database().ref("/announcements");
+                ref.child(this.transactionKey).update({
                     staff: staff,
                     manager: manager,
                     agent: agent,
-                    owner: owner
-                };
-                var updates = {};
-                updates['/announcements/' + announcementPush] = announcementData;
+                    owner: owner,
+                    title: this.title,
+                    message: this.message,
+                    photo: firebase.auth().currentUser.photoURL,
+                    timestamp: { ".sv": "timestamp" },
+                    sender: this.myaccount,
+                    isupdated: true
+                });
 
-                this._uploadAttachment(attachment,announcementPush);
-
-                this.notification(staff, manager, agent, owner, this.title, announcementPush);
+                this.notification(staff, manager, agent, owner, this.title, );
                 window.location = "/announcement";
-                return firebase.database().ref().update(updates);
             },
 
-            notification(staff, manager, agent, owner, announcementTitle, announcementPush) {
+            notification(staff, manager, agent, owner, announcementTitle) {
                 var ref = firebase.database().ref("notifications");
                 ref.push({
                     title: announcementTitle,
                     click: "/dashboard",
-                    message: "publish new announcement",
+                    message: "updating announcement",
                     photo: firebase.auth().currentUser.photoURL,
                     isread: false,
                     recipient: {
@@ -246,20 +228,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     timestamp: { ".sv": "timestamp" },
                     source: 'announcement',
                 });
-            },
-
-            _uploadAttachment(myAttachment,pushKey) {
-                for (var i = 0; i < myAttachment.length; i++) {
-                    var attachFile = myAttachment[i];
-                    var storageRef = firebase.storage().ref('attachments/' + attachFile.name);
-                    storageRef.put(attachFile).then(function (snapshot) {
-                        var pushRef = firebase.database().ref('announcements/'+pushKey+'/attachments/');
-                        pushRef.push({
-                            url: snapshot.downloadURL
-                        });
-                    });
-                }
-            },
+            }
         })
     </script>
 </dom-module>

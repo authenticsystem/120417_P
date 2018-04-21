@@ -7,14 +7,14 @@
   "dependencies": {
     "app-layout": "PolymerElements/app-layout#^2.0.0",
     "app-route": "PolymerElements/app-route#^2.0.0",
-    "iron-flex-layout": "PolymerElements/iron-flex-layout#^2.0.0",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#^2.0.3",
     "iron-iconset-svg": "PolymerElements/iron-iconset-svg#^2.0.0",
     "iron-media-query": "PolymerElements/iron-media-query#^2.0.0",
     "iron-pages": "PolymerElements/iron-pages#^2.0.0",
     "iron-selector": "PolymerElements/iron-selector#^2.0.0",
     "iron-image": "PolymerElements/iron-image#^2.1.2",
     "iron-ajax": "PolymerElements/iron-ajax#^2.1.0",
-    "iron-icons": "PolymerElements/iron-icons#^2.0.0",
+    "iron-icons": "PolymerElements/iron-icons#^2.1.1",
     "iron-scroll-target-behavior": "PolymerElements/iron-scroll-target-behavior#^2.0.0",
     "iron-scroll-threshold": "PolymerElements/iron-scroll-threshold#^2.0.0",
     "iron-list": "PolymerElements/iron-list#2.0.10",
@@ -25,7 +25,7 @@
     "paper-toast": "PolymerElements/paper-toast#^2.0.0",
     "paper-menu-button": "PolymerElements/paper-menu-button#^2.0.0",
     "paper-listbox": "PolymerElements/paper-listbox#^2.0.0",
-    "paper-item": "PolymerElements/paper-item#^2.0.0",
+    "paper-item": "PolymerElements/paper-item#^2.1.1",
     "paper-dialog": "PolymerElements/paper-dialog#^2.0.1",
     "paper-fab": "PolymerElements/paper-fab#^2.0.0",
     "paper-card": "PolymerElements/paper-card#2.0.0",
@@ -66,7 +66,10 @@
     "app-media": "PolymerElements/app-media#^0.8.1",
     "Chart.PieceLabel.js": "^0.8.2",
     "paper-datatable-api": "RoXuS/paper-datatable-api#^2.0.13",
-    "paper-datatable": "^0.9.8"
+    "paper-datatable": "^0.9.8",
+    "paper-styles": "PolymerElements/paper-styles#^2.1.0",
+    "iron-form": "PolymerElements/iron-form#^2.3.0",
+    "sl-gallery": "jsilvermist/sl-gallery#^1.0.1"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"

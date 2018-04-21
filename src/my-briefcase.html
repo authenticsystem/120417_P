@@ -1,7 +1,3 @@
-Skip to content This repository Search Pull requests Issues Marketplace Explore @justsimplepedro Sign out Watch 0 Star 0
-Fork 0 authenticsystem/120417_P Code Issues 7 Pull requests 0 Projects 2 Wiki Insights Tree: 4ab25674e9 Find file Copy path120417_P/src/my-applications.html
-4ab2567 29 minutes ago @justsimplepedro justsimplepedro sasdsasd 4 contributors @tigerlegab @arethey @hectorsantillan @justsimplepedro
-RawBlameHistory 645 lines (561 sloc) 23.2 KB
 <!--
 @license
 Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
@@ -196,6 +192,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --paper-badge-margin-left: -23px;
         --paper-badge-margin-bottom: -30px;
       }
+
+      .loader {
+        background-color: #ddffdd;
+        border-left: 6px solid #4CAF50;
+        text-align: center;
+        max-width: 800px; 
+        margin: 16px auto 0 auto; 
+        padding: 10px;
+      }
     </style>
 
     <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
@@ -211,7 +216,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
         <div name="">
           <app-header-layout fullbleed has-scrolling-region>
-            <app-header fixed slot="header">
+            <app-header fixed effects="waterfall" slot="header">
               <template is="dom-if" if="{{openSearch}}">
                 <app-toolbar primary id="tool2">
                   <paper-icon-button id="btn-arrow" icon="my-icons:arrow-back" drawer-toggle on-tap="toggleReturn"></paper-icon-button>
@@ -257,68 +262,57 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </template>
             </app-header>
 
-            <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
-
-              <neon-animatable>
+            <!-- <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}"> -->
+            <iron-pages selected="{{selectedPage}}">
+              <!-- <neon-animatable> -->
+              <div>
 
                 <firebase-query id="query" path="/briefcasedraft/{{_getKey(account)}}" data="{{briefcasedraft}}" order-by-child="{{selectedType}}"
                   start-at="{{typeValue}}" end-at="{{typeValue}}" limit-to-last="50">
                 </firebase-query>
 
-                <iron-scroll-document id="threshold">
+                <template is="dom-if" if="{{!access}}">
+                  <div class="card">
+                    <h3>Sorry!</h3>
+                    <div>You're not allowed to access this content.</div>
+                  </div>
+                </template>
 
-                  <template is="dom-if" if="{{!access}}">
-                    <div class="card">
-                      <h3>Sorry!</h3>
-                      <div>You're not allowed to access this content.</div>
-                    </div>
-                  </template>
+                <template is="dom-if" if="{{access}}">
 
-                  <template is="dom-if" if="{{access}}">
-                    <iron-list items="[[briefcasedraft]]" as="item" selection-enabled multi-selection scroll-target="threshold">
-                      <div style="text-align:center">{{msg}}</div>
-                      <paper-toast id="toast" text="" duration="0"></paper-toast>
-                      <template id=itemcount>
-                        <div class="divSeparator">
-                          <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
+                  <iron-list items="[[briefcasedraft2]]" as="item" scroll-target="threshold">
+                    <!-- <div style="text-align:center">{{msg}}</div>
+                    <paper-toast id="toast" text="" duration="0"></paper-toast> -->
+                    <template id=itemcount>
+                      <div class="divSeparator">
+                        <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
 
-                            <!-- <firebase-query path="/lots/{{item.lot}}" data="{{lotStatus}}"></firebase-query> -->
+                          <my-briefcase-card item="{{item}}"></my-briefcase-card>
 
-                            <my-briefcase-card item="{{item}}"></my-briefcase-card>
-
-                            <div tabindex="0">
-                              <a tabindex="-1" style="text-decoration:none; display:inline-block;position: absolute;  right: 10px; color: black; top:253px;">
-                                <paper-icon-button id="{{item.$key}}" on-tap="_openSendBriefcasedraft" data-args="{{item.$key}}" icon="my-icons:send" alt="{{item}}"
-                                  title="Send request"></paper-icon-button>
-                                <!-- <span alt="{{item}}">Send</span> -->
-                              </a>
-                              <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1" style="text-decoration:none; display:inline-block;position: absolute; color: black; top:253px; right:100px">
-                                <paper-icon-button style="color:black" id="{{item.$key}}" on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit"
-                                  alt="{{item.$key}}" title="Edit briefcase draft"></paper-icon-button>
-                                <!-- <span alt="{{item.$key}}">Edit</span> -->
-                              </a>
-                              <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1" style="text-decoration:none; display:inline-block;position: absolute; color: black; top:253px; right:55px">
-                                <paper-icon-button style="color:black" id="openDetailButton" on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:my-icons:open-in-new"
-                                  alt="{{item.$key}}" title="View briefcase details"></paper-icon-button>
-                                <!-- <span alt="{{item.$key}}">View</span> -->
-                              </a>
-                            </div>
-                            <!-- <div tabindex="1">
-                              <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
-                                <paper-icon-button id="openDetailButton" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:my-icons:open-in-new"
-                                  alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
-                                <paper-tooltip position="left">view details</paper-tooltip>
-                              </a>
-                            </div> -->
-
+                          <div tabindex="0">
+                            <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1" style="text-decoration:none; display:inline-block; position: absolute; color: black; top:253px; right:80px">
+                              <paper-icon-button style="color:black" id="{{item.$key}}" on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit"
+                                alt="{{item.$key}}" title="Edit briefcase draft"></paper-icon-button>
+                            </a>
+                            <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1" style="text-decoration:none; display:inline-block; position: absolute; color: black; top:253px; right:45px">
+                              <paper-icon-button style="color:black" id="openDetailButton" on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:my-icons:open-in-new"
+                                alt="{{item.$key}}" title="View briefcase details"></paper-icon-button>
+                            </a>
+                            <a tabindex="-1" style="text-decoration:none; display:inline-block; position: absolute; color: black; top:253px; right:10px">
+                              <paper-icon-button id="{{item.$key}}" on-tap="_openSendBriefcasedraft" data-args="{{item.$key}}" icon="my-icons:send" alt="{{item}}"
+                                title="Send request"></paper-icon-button>
+                            </a>
                           </div>
 
                         </div>
-                      </template>
-                    </iron-list>
-                  </template>
 
-                </iron-scroll-document>
+                      </div>
+                    </template>
+                    <div class="loader" id="loader">{{loadingMessage}}</div>
+                  </iron-list>
+                </template>
+
+                <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold"></iron-scroll-threshold>
 
                 <template is="dom-if" if="{{access}}">
                   <a href="/briefcase/new" style="text-decoration: none;">
@@ -334,85 +328,77 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </div>
                 </paper-dialog>
 
-                <!-- <paper-alert-dialog id="modal" confirm-button="Got it">
-                    <paper-alert-dialog-icon-header icon="icons:done">Well done!</paper-alert-dialog-icon-header>
-                    Excellent, you can move on.
-                  </paper-alert-dialog> -->
-
                 <paper-dialog id="modal">
                   <p style="padding: 16px; margin:0px; color: red; background-color: #ffdddd; border-left: 6px solid #f44336;">
-                    <iron-icon icon="my-icons:info-outline"></iron-icon> 
+                    <iron-icon icon="my-icons:info-outline"></iron-icon>
                     Your request can't be process this lot was already on hold.
                     <paper-icon-button style="color: black" dialog-confirm autofocus icon="my-icons:close"></paper-icon-button>
                   </p>
                 </paper-dialog>
 
-              </neon-animatable>
+                <!-- </neon-animatable> -->
+              </div>
 
-              <neon-animatable>
-
-                <!-- <firebase-query id="query" path="/briefcase/{{_getKey(account)}}" data="{{briefcase}}" order-by-child="approved" equal-to='false'
-                  limit-to-last="50">
-                </firebase-query> -->
+              <!-- <neon-animatable> -->
+              <div>
 
                 <firebase-query id="query" path="/briefcase/{{_getKey(account)}}" data="{{briefcase}}" order-by-child="{{selectedType}}"
                   start-at="{{typeValue}}" end-at="{{typeValue}}" limit-to-last="50">
                 </firebase-query>
 
-                <iron-scroll-document id="threshold">
+                <template is="dom-if" if="{{!access}}">
+                  <div class="card">
+                    <h3>Sorry!</h3>
+                    <div>You're not allowed to access this content.</div>
+                  </div>
+                </template>
 
-                  <template is="dom-if" if="{{!access}}">
-                    <div class="card">
-                      <h3>Sorry!</h3>
-                      <div>You're not allowed to access this content.</div>
-                    </div>
-                  </template>
+                <template is="dom-if" if="{{access}}">
 
-                  <template is="dom-if" if="{{access}}">
-                    <iron-list items="[[briefcase]]" as="item" selection-enabled multi-selection scroll-target="threshold">
-                      <div style="text-align:center">{{msg}}</div>
-                      <paper-toast id="toast" text="" duration="0"></paper-toast>
-                      <template id=itemcount>
-                        <div class="divSeparator">
-                          <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
+                  <iron-list items="[[briefcase2]]" as="item" scroll-target="threshold">
+                    <!-- <div style="text-align:center">{{msg}}</div>
+                    <paper-toast id="toast" text="" duration="0"></paper-toast> -->
+                    <template id=itemcount>
+                      <div class="divSeparator">
+                        <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
 
-                            <my-briefcase-card item="{{item}}"></my-briefcase-card>
+                          <my-briefcase-card item="{{item}}"></my-briefcase-card>
 
-                            <div tabindex="0">
-                              <a href$="{{_getAppliedEditLink(item.$key)}}" tabindex="-1">
-                                <paper-icon-button title="Edit" hidden$="{{item.isapproved}}" id="{{item.$key}}" noink on-tap="editApplied" data-args="{{item.$key}}"
-                                  icon="my-icons:edit" alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
-                              </a>
-                              <a href$="{{_getAppliedDetailsLink(item.$key)}}" tabindex="-1">
-                                <paper-icon-button title="View" hidden$="{{item.isapproved}}" id="openDetailButton" noink on-tap="appliedDetails" data-args="{{item.$key}}"
-                                  icon="my-icons:my-icons:open-in-new" alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
-                                <paper-tooltip position="left">view details</paper-tooltip>
-                              </a>
-                              <!-- <a tabindex="-1" style="position: absolute;  right: 720px; color: black; top:257px;">
-                                <paper-icon-button id="statusIcon" icon="{{iconName}}"></paper-icon-button>
-                              </a> -->
-                            </div>
+                          <div tabindex="0">
+                            <a href$="{{_getAppliedEditLink(item.$key)}}" tabindex="-1" style="display:inline-block;position: absolute;  right: 38px; color: white; top:8px;">
+                              <paper-icon-button title="Edit" hidden$="{{item.isapproved}}" id="{{item.$key}}" noink on-tap="editApplied" data-args="{{item.$key}}"
+                                icon="my-icons:edit" alt="{{item.$key}}"></paper-icon-button>
+                            </a>
+                            <a href$="{{_getAppliedDetailsLink(item.$key)}}" tabindex="-1" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
+                              <paper-icon-button title="View" hidden$="{{item.isapproved}}" id="openDetailButton" noink on-tap="appliedDetails" data-args="{{item.$key}}"
+                                icon="my-icons:my-icons:open-in-new" alt="{{item.$key}}"></paper-icon-button>
+                              <paper-tooltip position="left">view details</paper-tooltip>
+                            </a>
+                          </div>
 
-                            <div tabindex="1">
-                              <a href$="{{_getAppliedDetailsLink(item.$key)}}" tabindex="-1">
-                                <paper-icon-button title="View" hidden$="{{!item.isapproved}}" id="openDetailButton" noink on-tap="appliedDetails" data-args="{{item.$key}}"
-                                  icon="my-icons:my-icons:open-in-new" alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
-                              </a>
-                            </div>
-
+                          <div tabindex="1">
+                            <a href$="{{_getAppliedDetailsLink(item.$key)}}" tabindex="-1" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;">
+                              <paper-icon-button title="View" hidden$="{{!item.isapproved}}" id="openDetailButton" noink on-tap="appliedDetails" data-args="{{item.$key}}"
+                                icon="my-icons:my-icons:open-in-new" alt="{{item.$key}}"></paper-icon-button>
+                            </a>
                           </div>
 
                         </div>
 
-                      </template>
-                    </iron-list>
-                  </template>
+                      </div>
 
-                </iron-scroll-document>
+                    </template>
+                    <div class="loader" id="loader">{{loadingMessage}}</div>
+                  </iron-list>
+                </template>
 
-              </neon-animatable>
+                <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold"></iron-scroll-threshold>
 
-            </neon-animated-pages>
+                <!-- </neon-animatable> -->
+              </div>
+
+              <!-- </neon-animated-pages> -->
+            </iron-pages>
 
           </app-header-layout>
 
@@ -450,7 +436,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       <div hidden$="{{!appliedEditActive}}">
         <div id="appliededit"></div>
-        <my-briefcaseapplied-edit id="d27" transaction-key='{{appliedEditData.key}}' prev-route="{{route.prefix}}" account-key='{{accountkey}}' myname="{{myname}}"></my-briefcaseapplied-edit>
+        <my-briefcaseapplied-edit id="d27" transaction-key='{{appliedEditData.key}}' prev-route="{{route.prefix}}" account-key='{{accountkey}}'
+          myname="{{myname}}"></my-briefcaseapplied-edit>
       </div>
 
     </template>
@@ -519,10 +506,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         key: {
           type: String
         },
-        // selectedLabel: {
-        //   type: String,
-        //   value: 'By Lot'
-        // },
+        size: {
+          type: Number,
+          value: 10
+        },
         search: {
           type: String,
           value: '',
@@ -559,6 +546,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.msg = '';
           }
         }
+
+        var briefcasedraft2 = [];
+        e.base.forEach(element => {
+          briefcasedraft2.push(element);
+        });
+        this.briefcasedraft2 = this._descending(briefcasedraft2);
+
       },
 
       briefcaseChanged(e) {
@@ -571,6 +565,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.msg = '';
           }
         }
+
+        var briefcase2 = [];
+        e.base.forEach(element => {
+          briefcase2.push(element);
+        });
+        this.briefcase2 = this._descending(briefcase2);
       },
       briefcaseApprovedChanged(e) {
         this.countapproved = e.base.length;
@@ -595,6 +595,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.entryanimation = "slide-from-right-animation";
           this.exitanimation = "slide-left-animation";
         }
+        this.loadMoreData();
       },
       toggleSearch() {
         this.openSearch = true;
@@ -667,16 +668,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }));
         this.$.narrow = !this.$.narrow;
       },
-      loadMoreDat() {
-        var self = this;
-        var people = e.detail.response.results;
-        people.forEach(function (element) {
-          self.push('items', element);
-        });
-        asyncStuff(function done() {
-          ironScrollTheshold.clearTriggers();
-        });
-      },
+
       _appsnew() {
         var node = Polymer.dom(this.root).querySelector("#briefcasenew");
         if (node) {
@@ -801,7 +793,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
 
           var personRef = firebase.database().ref().child("briefcasedraft").child(data.agent).child(data.$key).remove();
-          
+
           var postData = {
             agent: data.agent,
             agentdetails: data.agentdetails,
@@ -825,27 +817,36 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           };
 
           var newPostKey = firebase.database().ref().child('briefcase').push().key;
-          var notifPostKey = firebase.database().ref().child('notifications').push().key;
-          
-          var notificationData = {
-            click: '/applications/view/'+newPostKey,
-            message: 'request a new application.',
-            photo: firebase.auth().currentUser.photoURL,
-            read: false,
-            recipient_role: 'Staff',
-            recipient_role_code: '',
-            sender: this.fname + ' ' + this.mname + ' ' + this.lname,
-            timestamp: { ".sv": "timestamp" },
-            title: 'New application request',
-          };
-          
+
           var updates = {};
           updates['/applicationsNew/' + newPostKey] = postData;
           updates['/briefcase/' + data.agent + '/' + newPostKey] = postData;
-          updates['/notifications/' + notifPostKey] = notificationData;
-
+          
+          this.notification(data.lot, newPostKey);
+          window.location = "/briefcase";
           return firebase.database().ref().update(updates);
         })
+      },
+
+      notification(lot, pushKey) {
+        var ref = firebase.database().ref("notifications");
+        ref.push({
+          title: lot,
+          click: '/applications/view/' + pushKey,
+          message: "request a new application.",
+          photo: firebase.auth().currentUser.photoURL,
+          isread: false,
+          recipient: {
+            staff: true,
+            manager: false,
+            agent: false,
+            owner: false,
+            recipient_accountCode: ''
+          },
+          sender: this.fname + ' ' + this.mname + ' ' + this.lname,
+          timestamp: { ".sv": "timestamp" },
+          source: 'briefcase',
+        });
       },
 
       _openSendBriefcasedraft(e) {
@@ -853,12 +854,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var data = JSON.parse(transkey);
         var stat;
         this.datas = data;
-        var successOpen =  Polymer.dom(this.root).querySelector("#sendBriefcasedraft");
-        var failedOpen =  Polymer.dom(this.root).querySelector("#modal");
+        var successOpen = Polymer.dom(this.root).querySelector("#sendBriefcasedraft");
+        var failedOpen = Polymer.dom(this.root).querySelector("#modal");
         firebase.database().ref('lots/' + data.lot).once('value', function (data) {
           if (data.exists()) {
             stat = data.val().status;
-            // console.log(stat);
             if (stat == 'available') {
               successOpen.open();
             } else {
@@ -866,12 +866,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
           }
         });
-
-
       },
-      // _deleteBriefcaseDraft() {
-      //   firebase.database().ref('briefcasedraft').child(this.accountkey).child(this.transkey).remove();
-      // },
+
+      _descending(e) {
+        return e.reverse();
+      },
+
+      loadMoreData() {
+        this.loadingMessage = 'Loading....';
+        setTimeout((e) => {
+          this.loadingMessage = 'No record..';
+          this.$.threshold.clearTriggers();
+        }, 3000);
+      }
     })
   </script>
 </dom-module>

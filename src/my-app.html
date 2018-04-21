@@ -270,6 +270,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         top: 0;
         opacity: 0;
       }
+
+      footer {
+        height: 50px;
+        line-height: 10px;
+        text-align: center;
+        /* background-color: white; */
+        font-size: 12px;
+        color: gray;
+      }
     </style>
 
     <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
@@ -343,8 +352,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
               <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
 
-                <div style="height: 100%; overflow: auto;">
-                  <!-- <app-header fixed>
+                <!-- <div style="height: 100%; overflow: auto;"> -->
+                <!-- <app-header fixed>
                     <app-toolbar>
                       <div hidden$="{{!user.photoURL}}">
                         <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
@@ -360,11 +369,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       </div>
                     </app-toolbar>
                   </app-header> -->
+                <app-header-layout has-scrolling-region>
                   <app-header fixed slot="header">
                     <div class="avatar-container">
                       <div class="image">
-                        <img hidden$="{{user.photoURL}}" class="image" src="../images/user.png" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></img>
-                        <img hidden$="{{!user.photoURL}}" class="image" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></img>
+                        <img class="image" src="[[_photo(user.photoURL)]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></img>
                       </div>
                     </div>
                     <div class="contact-info">
@@ -451,14 +460,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>Sign-out</span>
                       </paper-icon-item>
                     </a>
-                    <p style="font-size:12px; margin-left: 16px; color: gray;">v0.1.0 Beta</p>
                   </iron-selector>
-
-                </div>
+                  <footer>
+                    <p>HOPE inventory & reservation system</p>
+                    <p>v0.1.0 Beta</p>
+                  </footer>
+                  <!-- </div> -->
+                </app-header-layout>
               </app-drawer>
 
               <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-                <my-dashboard name="dashboard" access="{{dashAccess}}" account="{{myaccount}}"></my-dashboard>
+                <my-dashboard name="dashboard" access="{{dashAccess}}"  route="[[subroute]]" account="{{myaccount}}"></my-dashboard>
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
                 <my-galleries name="galleries"></my-galleries>
                 <my-announcement name="announcement" access="{{annAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-announcement>
@@ -960,6 +972,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.validationMessage = '';
           Polymer.dom(this.root).querySelector("#changeEmail").close();
           Polymer.dom(this.root).querySelector("#reAuthE").open();
+        }
+      }
+
+      _photo(e) {
+        if (e) {
+          return e;
+        } else {
+          return '../images/user.png';
         }
       }
 
