@@ -53,9 +53,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 display: none;
                 font-size: 12px;
             }
+
+            .row {
+                display: -ms-flexbox;
+                display: flex;
+                -ms-flex-wrap: wrap;
+                flex-wrap: wrap;
+                padding: 0 4px;
+            }
+
+            .column {
+                -ms-flex: 25%;
+                /* IE10 */
+                flex: 25%;
+                max-width: 25%;
+                padding: 0 4px;
+            }
+
+            .column img {
+                margin-top: 8px;
+                vertical-align: middle;
+            }
+
+            @media screen and (max-width: 800px) {
+                .column {
+                    -ms-flex: 50%;
+                    flex: 50%;
+                    max-width: 50%;
+                }
+            }
+
+            @media screen and (max-width: 600px) {
+                .column {
+                    -ms-flex: 100%;
+                    flex: 100%;
+                    max-width: 100%;
+                }
+            }
         </style>
 
         <firebase-document path="{{path}}" data="{{newdata}}"></firebase-document>
+        <firebase-query path="announcements/{{transactionKey}}/attachments" data="{{attachment}}"></firebase-query>
         <app-header-layout fullbleed has-scrolling-region>
             <app-header fixed slot="header">
                 <app-toolbar primary>
@@ -76,6 +114,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <form action="/foo" method="get">
                             <paper-input type="text" label="Title" value="{{title}}" required></paper-input>
                             <paper-textarea label="Message" value="{{message}}" required></paper-textarea>
+                            <br>
+                            <span>Attachments</span>
+                            <br>
+                            <div>
+                                <div class="row">
+                                    <template is="dom-repeat" items="[[attachment]]" as="file">
+                                        <div class="column">
+                                            <img src="[[file.url]]" style="width:100%"></img>
+                                            <paper-button raised class="submit" alt="{{item}}" on-tap="_openDeleteDialog">delete</paper-button>
+                                        </div>
+                                    </template>
+                                </div>
+                            </div>
+                            <br>
                             <paper-checkbox id="Owner">Owner</paper-checkbox>
                             <br>
                             <paper-checkbox id="Staff">Admin staff</paper-checkbox>
@@ -94,6 +146,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <h2>Update announcement?</h2>
                 <div class="buttons">
                     <paper-button dialog-confirm autofocus on-tap="_updateAnnouncement">OK</paper-button>
+                    <paper-button dialog-dismiss>Cancel</paper-button>
+                </div>
+            </paper-dialog>
+
+            <paper-dialog id="deleteDialog">
+                <h2>Delete this photo?</h2>
+                <div class="buttons">
+                    <paper-button dialog-confirm autofocus on-tap="_deletePhoto">OK</paper-button>
                     <paper-button dialog-dismiss>Cancel</paper-button>
                 </div>
             </paper-dialog>
@@ -227,6 +287,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     sender: this.myaccount,
                     timestamp: { ".sv": "timestamp" },
                     source: 'announcement',
+                });
+            },
+
+            _openDeleteDialog(e) {
+                var transkey = Polymer.dom(e).rootTarget.getAttribute("alt");
+                // var photoKey = Polymer.dom(e).rootTarget.getAttribute("photokey");
+                var data = JSON.parse(transkey);
+                this.$.deleteDialog.open();
+                // this.photoKey = photoKey;
+                console.log(data);
+            },
+
+            _deletePhoto() {
+                var desertRef = firebase.storage().ref('attachments/' + this.urlPhoto);
+                // Delete the file
+                desertRef.delete().then(function () {
+                    // File deleted successfully
+                    var ref = firebase.database().ref("announcements/" + this.transactionKey + "/attachments" + this.photoKey).remove();
+                    window.location = "announcement/edit/" + this.transactionKey;
+                }).catch(function (error) {
+                    // Uh-oh, an error occurred!
                 });
             }
         })

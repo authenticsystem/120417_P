@@ -64,7 +64,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <div main-title>New announcement</div>
                 </app-toolbar>
             </app-header>
-
             <!-- <div class="card">
                 <div class="typewriter">
                     <h1>Coming soon......</h1>
@@ -263,12 +262,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             _uploadAttachment(myAttachment, pushkey) {
                 for (var i = 0; i < myAttachment.length; i++) {
                     var attachFile = myAttachment[i];
-                    var storageRef = firebase.storage().ref('attachments/' + attachFile.name).put(attachFile).then(function (metadatas) {
+                    var photoName= attachFile.name;
+                    var storageRef = firebase.storage().ref('attachments/' + photoName).put(attachFile).then(function (metadatas) {
                         // Get an array of file metadata
                         var pushref = firebase.database().ref("/announcements/" + pushkey + "/attachments");
                         pushref.push({
-                            url: metadatas.downloadURL
-                        });
+                            url: metadatas.downloadURL,
+                            name: metadatas.photoName
+                        }); 
                     }).catch(function (error) {
                         // If any task fails, handle this
                     });
