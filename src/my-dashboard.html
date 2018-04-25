@@ -42,6 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/paper-badge/paper-badge.html">
+<link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 
 
 <link rel="import" href="time-element.html">
@@ -400,6 +401,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         margin: 16px auto 0 auto;
         padding: 10px;
       }
+
+      .leftcolumn {
+        float: left;
+        width: 45%;
+      }
+
+      .rightcolumn {
+        float: left;
+        width: 45%;
+      }
+
+      @media screen and (max-width: 800px) {
+        .leftcolumn,
+        .rightcolumn {
+          width: 100%;
+        }
+      }
     </style>
 
     <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" on-error="showError"></firebase-auth>
@@ -417,6 +435,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       data="{{lotDetails}}" limit-to-last="50"></firebase-query> -->
 
     <!-- <firebase-query path="/reports/overAll/{{overAllDate}}/overall" data="{{overallTotalData}}"></firebase-query> -->
+
     <app-header-layout fullbleed has-scrolling-region>
       <app-header fixed effects="waterfall" slot="header">
         <app-toolbar primary>
@@ -509,92 +528,76 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </template>
           </div>
           <!-- End of Announcements -->
-
           <!-- Reports -->
           <div>
-
-            <!-- agent report (hidden$="{{staff}}")-->
-            <div hidden$="{{agent}}">
-              <!-- <div class="typewriter">
-                <h1>Coming soon......</h1>
-              </div> -->
-              <div style="padding:26px; margin-top:-30px; margin-bottom:56px;">
-                <div style="float:right;">
-                  <div style="display:flex;">
-                    <paper-dropdown-menu style="cursor:pointer;width:120px">
-                      <paper-listbox slot="dropdown-content" selected="{{selectedReport}}">
-                        <paper-item>Activity</paper-item>
-                        <paper-item>Comparative</paper-item>
-                        <paper-item>Overall</paper-item>
-                      </paper-listbox>
-                    </paper-dropdown-menu>
-                  </div>
-                </div>
-              </div>
+            <!-- agent report -->
+            <template is="dom-if" if="{{agentReport}}">
               <div class="card">
                 <div>
-                  <center>
-                    <paper-buttons-group selected="{{selectedDMY}}" id="customGroup">
-                      <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
-                      <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Weekly</paper-button>
-                      <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Monthly</paper-button>
-                      <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
-                    </paper-buttons-group>
-                  </center>
+                  <paper-input label="Date" type="date" value="{{dailyAct}}" style="width:150px;">
+                    <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                  </paper-input>
+                  <paper-dropdown-menu label="Filter" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                    <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{agentSHRfilter}}">
+                      <paper-item value="sold">Sold</paper-item>
+                      <paper-item value="hold">Reserved</paper-item>
+                      <paper-item value="reserved">Hold</paper-item>
+                    </paper-listbox>
+                  </paper-dropdown-menu>
                 </div>
-                <iron-pages selected="{{selectedDMY}}">
-
-                  <div>
-                    <paper-input prefix="" id="myDate" label="Date" type="date" value="{{dailyAct}}" style="display:inline-block;width:150px;">
-                      <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                    </paper-input>
-                  </div>
-
-                  <div>
-                    <paper-input value={{wyear}} style="width:70px;display:inline-block" type="number" label="Year">
-                    </paper-input>
-                    <paper-input value={{week}} style="width:70px;display:inline-block" type="number" label="Week">
-                    </paper-input>
-                    <span style="font-size:12px">
-                      {{weekDates}}
-                    </span>
-                  </div>
-
-                  <div>
-                    <paper-dropdown-menu class="month" label="Month" style="width:100px; display:inline-block">
-                      <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{month}}">
-                        <paper-item value="01">January</paper-item>
-                        <paper-item value="02">February</paper-item>
-                        <paper-item value="03">March</paper-item>
-                        <paper-item value="04">April</paper-item>
-                        <paper-item value="05">May</paper-item>
-                        <paper-item value="06">June</paper-item>
-                        <paper-item value="07">July</paper-item>
-                        <paper-item value="08">August</paper-item>
-                        <paper-item value="09">September</paper-item>
-                        <paper-item value="10">October</paper-item>
-                        <paper-item value="11">November</paper-item>
-                        <paper-item value="12">December</paper-item>
-                      </paper-listbox>
-                    </paper-dropdown-menu>
-
-                    <paper-input value={{year}} style="width:70px;display:inline-block" type="number" label="Year"></paper-input>
-                  </div>
-
-                  <div>
-                    <paper-input value={{yearly}} type="number" style="width:100px; display:inline-block" label="Year">
-                      <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                    </paper-input>
-                  </div>
-
-                </iron-pages>
                 <div class="chart-container">
-                  <canvas id="dailyAgentChart"></canvas>
+                  <canvas id="agentDailyChart"></canvas>
                 </div>
               </div>
-            </div>
+
+              <div style="float: right">
+                <div style="display: flex">
+                  <iron-icon icon="my-icons:event" slot="prefix" style="margin-top: 40px; margin-right: 10px"></iron-icon>
+                  <paper-dropdown-menu class="date" label="Date range" style="width:150px; margin-right: 24px" vertical-offset="60" vertical-align="top"
+                    horizontal-align="right">
+                    <paper-listbox slot="dropdown-content" class="date" attr-for-selected="value" selected="{{agentFilter}}">
+                      <paper-item value="7">Last 7 days</paper-item>
+                      <paper-item value="15">Last 15 days</paper-item>
+                      <paper-item value="30">Last 30 days</paper-item>
+                    </paper-listbox>
+                  </paper-dropdown-menu>
+                </div>
+                <div>
+                  <span style="font-size:12px; margin-left:35px">{{weekDays}}</span>
+                </div>
+              </div>
+              <br>
+              <br>
+              <br>
+              <div class="card">
+                <div id="container">
+                  <canvas id="agentChart"></canvas>
+                </div>
+                <div>
+                  <h3>My Team</h3>
+                  <hr>
+                  <div class="item">
+                    <iron-image class="avatar" sizing="contain" src="../images/user.png"></iron-image>
+                    <div class="pad">
+                      <div class="primary">
+                        Ardie C. Derrayal
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item">
+                    <iron-image class="avatar" sizing="contain" src="../images/user.png"></iron-image>
+                    <div class="pad">
+                      <div class="primary">
+                        Ardie C. Derrayal
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </template>
             <!-- end of agent report -->
-            <div hidden$="{{staff}}">
+            <!-- staff report -->
+            <template is="dom-if" if="{{staffReport}}">
               <div class="card" style="font-size: 12px; overflow-x:auto;">
                 <h3>
                   Activity Report: Today
@@ -649,11 +652,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </template>
                 </table>
               </div>
-            </div>
-
+            </template>
+            <!-- end of staff report -->
             <!-- owner's report -->
-            <div hidden$="{{owner}}">
-
+            <!-- <div hidden$="{{owner}}"> -->
+            <template is="dom-if" if="{{ownerReport}}">
               <div style="padding:26px; margin-top:-30px; margin-bottom:56px;">
                 <div style="float:right;">
                   <div style="display:flex;">
@@ -1022,16 +1025,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
               </div>
               <!--end OverAll Report -->
-
-            </div>
+            </template>
+            <!-- </div> -->
             <!-- owner's report -->
-
           </div>
           <!-- End of Reports -->
-
           <!-- Notification -->
           <div>
-
             <firebase-query path="/notifications" order-by-child="recipient/{{myaccountrole}}" equal-to="true" limit-to-last="50" data="{{notificationData}}"></firebase-query>
             <firebase-query path="/notifications" order-by-child="recipient/recipient_accountCode" equal-to="{{myaccountcode}}" limit-to-last="50"
               data="{{notificationData}}"></firebase-query>
@@ -1059,7 +1059,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           </div>
           <!-- end Notification -->
-
         </iron-pages>
 
       </template>
@@ -1204,18 +1203,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         notificationData: Object,
         account: Object,
         accountlistData: Object,
-        owner: {
-          type: Boolean,
-          value: true
-        },
-        staff: {
-          type: Boolean,
-          value: true
-        },
-        agent: {
-          type: Boolean,
-          value: true
-        },
+        ownerReport: Boolean,
+        staffReport: Boolean,
+        agentReport: Boolean,
         filterSHR: {
           type: String,
           value: 'sold'
@@ -1247,7 +1237,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Number,
           value: 0
         },
-        dailyAgentCharts: Object
+        dailyAgentCharts: Object,
+        agentFilter: Number,
+        agentChart: Object,
+        agentDailyChart: Object,
+        agentSHRfilter: String
       },
 
       ready() {
@@ -1270,25 +1264,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         var datee = new Date();
         this.todayDate = datee.getFullYear() + "-" + ("0" + (datee.getMonth() + 1)).slice(-2) + "-" + ("0" + datee.getDate()).slice(-2);
+
+        //agent report
+        this.agentFilter = 7;
+        this.agentSHRfilter = 'sold';
       },
 
       observers: [
-        'onAgentChangedAll(selectedDMY,dailyAct)',
         'onChangedAll(selectedDMY,dailyAct,wyear,week,month,year,yearly, filterSHR)',
-        // 'dailyTotalChanged(dailyTotal.*)',
-        // 'weeklyTotalChanged(weeklyTotal.*)',
-        // 'monthlyTotalChanged(monthlyTotal.*)',
         'yearlyTotalChanged(yearlyTotal.*)',
         'selectedTabChanged(selectedTab)',
         'selectedReportChanged(selectedReport)',
         'overAllChanged(lotTypeFilter,overAllDate, filterSHRAN)',
         '_onChanged(selectedDaily,DailyfilterBy,startDate,endDate,startRange,endRange,startYear,endYear,startMonthYear,endMonthYear)',
         'accountChanged(account.*)',
-        // 'notificationDataChanged(notificationData.*,notificationData2.*)',
         'notificationDataChanged(notificationData.*)',
         'dailyTotalDataChanged(dailyTotalData.*)',
         'announcementsChanged(announcements.*)',
-        'attachmentChanged(attachment)'
+        'attachmentChanged(attachment)',
+        'agentFilterChanged(agentFilter)'
       ],
 
       attachmentChanged(e) {
@@ -1461,15 +1455,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // this.myrolecode = this.myrole + '_' + this.myaccountcode;
           // console.log(this.myaccountcode);
           if (this.myrole === 'Owner') {
-            this.owner = false;
+            this.ownerReport = true;
             this.myaccountrole = 'owner'
           }
           else if (this.myrole === 'Staff') {
-            this.staff = false;
+            this.staffReport = true;
             this.myaccountrole = 'staff'
           }
           else if (this.myrole === 'Sales Agent') {
-            this.agent = false;
+            this.agentReport = true;
             this.myaccountrole = 'agent'
           }
           else if (this.myrole === 'Manager') {
@@ -1882,113 +1876,189 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // this.selectedReport = 0;
           // this.selectedDMY = 0;
           //create chart
-          if (!this.Chart) {
-            var ctx = Polymer.dom(this.root).querySelector("#dailyChart");
-            var dailyChart = new Chart(ctx, {
-              type: 'horizontalBar',
-              data: {},
-              options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                legend: {
-                  position: 'bottom',
-                },
-                plugins: {
-                  datalabels: {
-                    color: 'white',
-                    font: {
-                      weight: 'bold'
-                    },
+          if (this.ownerReport == true) {
+            if (!this.Chart) {
+              var ctx = Polymer.dom(this.root).querySelector("#dailyChart");
+              var dailyChart = new Chart(ctx, {
+                type: 'horizontalBar',
+                data: {},
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  legend: {
+                    position: 'bottom',
+                  },
+                  plugins: {
+                    datalabels: {
+                      color: 'white',
+                      font: {
+                        weight: 'bold'
+                      },
+                    }
+                  },
+                  scales: {
+                    yAxes: [{
+                      stacked: true,
+                      ticks: {
+                        beginAtZero: true
+                      },
+                      ticks: {
+                        fontSize: 11
+                      }
+                    }],
+                    xAxes: [{
+                      stacked: true,
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }]
                   }
-                },
-                scales: {
-                  yAxes: [{
-                    stacked: true,
-                    ticks: {
-                      beginAtZero: true
-                    },
-                    ticks: {
-                      fontSize: 11
-                    }
-                  }],
-                  xAxes: [{
-                    stacked: true,
-                    ticks: {
-                      beginAtZero: true
-                    }
-                  }]
                 }
-              }
-            });
-            this.Chart = dailyChart;
+              });
+              this.Chart = dailyChart;
+            }
+
+            if (!this.Chart2) {
+              var ctx = Polymer.dom(this.root).querySelector("#dailyChart2").getContext('2d');
+              var dailyChart2 = new Chart(ctx, {
+                type: 'pie',
+                options: {
+                  pieceLabel: {
+                    render: 'percentage',
+                    position: 'outside',
+                    // fontColor: ['black', 'black', 'black'],
+                    precision: 2,
+                  },
+                  legend: {
+                    display: true,
+                    position: 'bottom',
+
+                  },
+                  plugins: {
+                    datalabels: {
+                      color: 'black',
+                      font: {
+                        weight: 'bold'
+                      },
+                    }
+                  },
+                  responsive: true,
+                  maintainAspectRatio: false
+                }
+              });
+              this.Chart2 = dailyChart2;
+            }
           }
 
-          if (!this.Chart2) {
-            var ctx = Polymer.dom(this.root).querySelector("#dailyChart2").getContext('2d');
-            var dailyChart2 = new Chart(ctx, {
-              type: 'pie',
-              options: {
-                pieceLabel: {
-                  render: 'percentage',
-                  position: 'outside',
-                  // fontColor: ['black', 'black', 'black'],
-                  precision: 2,
-                },
-                legend: {
-                  display: true,
-                  position: 'bottom',
-
-                },
-                plugins: {
-                  datalabels: {
-                    color: 'black',
-                    font: {
-                      weight: 'bold'
-                    },
-                  }
-                },
-                responsive: true,
-                maintainAspectRatio: false
-                // title: {
-                //   display: true,
-                //   text: 'Overall Report'
-                // }
-              }
-            });
-            this.Chart2 = dailyChart2;
-          }
-
-          if (!this.dailyAgentCharts) {
-            var ctx = Polymer.dom(this.root).querySelector("#dailyAgentChart").getContext('2d');
-            var dailyAgentChart = new Chart(ctx, {
-              type: 'bar',
-              options: {
-                responsive: true,
-                legend: {
-                  position: 'bottom',
-                },
-                plugins: {
-                  datalabels: {
-                    color: 'white',
-                    font: {
-                      weight: 'bold'
-                    },
-                  }
-                },
-                scales: {
-                  yAxes: [{
-                    stacked: true,
-                    ticks: {
-                      beginAtZero: true
+          if (this.agentReport == true) {
+            if (!this.agentChart) {
+              var ctx = Polymer.dom(this.root).querySelector("#agentChart");
+              var agentCharts = new Chart(ctx, {
+                type: 'line',
+                data: {
+                  labels: ["23", "24", "25", "26", "27", "28", "29"],
+                  datasets: [{
+                    label: "Sold",
+                    backgroundColor: 'transparent',
+                    borderColor: 'red',
+                    borderWidth: 1,
+                    data: [0, 10, 5, 2, 20, 30, 45],
+                    datalabels: {
+                      align: 'end',
+                      anchor: 'end',
+                      display: true,
+                      backgroundColor: 'red',
+                      borderRadius: 4,
+                      color: '#ddd',
+                      font: {
+                        weight: 'bold'
+                      }
                     }
-                  }],
-                  xAxes: [{
-                    stacked: true
-                  }]
+                  },
+                  {
+                    label: "Hold",
+                    backgroundColor: 'transparent',
+                    borderColor: 'orange',
+                    borderWidth: 1,
+                    hidden: true,
+                    data: [1, 8, 3, 2, 22, 32, 41],
+                    datalabels: {
+                      align: 'end',
+                      anchor: 'end',
+                      display: true,
+                      backgroundColor: 'orange',
+                      borderRadius: 4,
+                      color: 'black',
+                      font: {
+                        weight: 'bold'
+                      }
+                    }
+                  },
+                  {
+                    label: "Reserved",
+                    backgroundColor: 'transparent',
+                    borderColor: 'yellow',
+                    borderWidth: 1,
+                    hidden: true,
+                    data: [5, 7, 13, 22, 2, 2, 11],
+                    datalabels: {
+                      align: 'end',
+                      anchor: 'end',
+                      display: true,
+                      backgroundColor: 'yellow',
+                      borderRadius: 4,
+                      color: 'black',
+                      font: {
+                        weight: 'bold'
+                      }
+                    }
+                  }
+                  ]
+                },
+                options: {
+                  plugins: {
+                    datalabels: {
+                      display: false
+                    }
+                  },
+                  responsive: true,
+                  maintainAspectRatio: false
                 }
-              }
-            });
-            this.dailyAgentCharts = dailyAgentChart;
+              });
+              this.agentChart = agentCharts;
+            }
+            if (!this.agentDailyChart) {
+              var ctx = Polymer.dom(this.root).querySelector("#agentDailyChart");
+              var agentDailyCharts = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                  labels: ["Lawnlots", "Bonechamber"],
+                  datasets: [{
+                    label: 'sold',
+                    data: [12, 19],
+                    backgroundColor: [
+                      'rgba(255, 99, 132, 0.2)',
+                      'rgba(255, 99, 132, 0.2)'
+                    ],
+                    borderColor: [
+                      'rgba(255,99,132,1)',
+                      'rgba(255,99,132,1)'
+                    ],
+                    borderWidth: 1
+                  }]
+                },
+                options: {
+                  scales: {
+                    yAxes: [{
+                      ticks: {
+                        beginAtZero: true
+                      }
+                    }]
+                  }
+                }
+              });
+              this.agentDailyChart = agentDailyCharts;
+            }
           }
 
           var d = new Date();
@@ -2159,10 +2229,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 },
                 responsive: true,
                 maintainAspectRatio: false
-                // title: {
-                //   display: true,
-                //   text: 'Overall Report'
-                // }
               }
             });
             this.allChart = overAllChart;
@@ -2176,7 +2242,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 pieceLabel: {
                   render: 'percentage',
                   position: 'outside',
-                  // fontColor: ['black', 'black', 'black', 'black', 'black'],
                   precision: 2,
                 },
                 legend: {
@@ -2193,10 +2258,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 },
                 responsive: true,
                 maintainAspectRatio: false
-                // title: {
-                //   display: true,
-                //   text: 'Overall Report'
-                // }
               }
             });
             this.allchart2 = overallchart22;
@@ -2857,9 +2918,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       dateTimeFormat(e, f) {
-        // var event = new Date(e);
-        // return event.toString();
-
         var a = new Date(e);
         var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
         var year = a.getFullYear();
@@ -2898,134 +2956,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      onAgentChangedAll(selectedDMY, dailyAct) {
-        if (this.dailyAgentCharts) {
-          if (selectedDMY == 0) {
-            var q = 'daily/' + dailyAct;
-          }
-          this.agentQuery(q, this.dailyAgentCharts);
+      agentFilterChanged(e) {
+        var date = new Date();
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        if (month < 10) { month = '0' + month };
+        var year = date.getFullYear();
+        if (day < 10) { day = '0' + day };
+
+        if (e == 7) {
+          var yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+          var week = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+
+          this.weekDays = this.getDateRangeOfWeek(week, year, 'spanDate');
         }
-      },
+        else if (e == 15) {
+          var endDate = new Date();
+          endDate.setDate(date.getDate() + 15);
+          var days = endDate.getDate();
+          var months = endDate.getMonth();
+          var years = endDate.getFullYear();
+          if (months < 10) { months = '0' + months; }
+          if (years < 10) { years = '0' + years; }
 
-      agentQuery(q, dailyAgents) {
-        firebase.database().ref('/agentReport/activity/' + q + '/' + this.mykey).on('value', function (snapshot) {
-          if (snapshot.exists()) {
-            var itemHold = [];
-            var itemSold = [];
-            var itemReserved = [];
-            var itemKey = [];
-            var colors = [];
+          this.weekDays = years + '-' + months + '-' + days + ' to ' + year + '-' + month + '-' + day;
+        }
+        else if (e == 30) {
+          date.setDate(date.getDate() - 30);
+          var dateString = date.toISOString().split('T')[0];
 
-            snapshot.forEach(function (element) {
-              var itemhold = element.val().hold;
-              var itemsold = element.val().sold;
-              var itemreserved = element.val().reserved;
-
-              if (element.key == 'lawnlots') { itemkey = 'Lawn Lots'; bgColor = '#2196F3'; }
-              else if (element.key == 'wallniche') { itemkey = 'Wall Niche'; bgColor = '#E91E63'; }
-              else if (element.key == 'bonechamber') { itemkey = 'Bone Chamber'; bgColor = '#3F51B5'; }
-              else if (element.key == 'cinerarium') { itemkey = 'Cinerarium'; bgColor = '#795548'; }
-              else if (element.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m²)'; bgColor = '#BA68C8'; }
-              else if (element.key == 'familylots5') { itemkey = 'Family Lots 1 (Irregular)'; bgColor = '#E1BEE7'; }
-              else if (element.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m²)'; bgColor = '#4A148C'; }
-              else if (element.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m²)'; bgColor = '#7B1FA2'; }
-              else if (element.key == 'familylots3') { itemkey = 'Family Lots 2 (Irregular)'; bgColor = '#9C27B0'; }
-              else if (element.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m²)'; bgColor = '#DCEDC8'; }
-              else if (element.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m²)'; bgColor = '#AED581'; }
-              else if (element.key == 'gardenlots3') { itemkey = 'Garden Lots 1 (Irregular)'; bgColor = '#8BC34A'; }
-              else if (element.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m²)'; bgColor = '#689F38'; }
-              else if (element.key == 'gardenlots5') { itemkey = 'Garden Lots 2 (Irregular)'; bgColor = '#33691E'; }
-
-              itemHold.push(itemhold);
-              itemSold.push(itemsold);
-              itemReserved.push(itemreserved);
-              itemKey.push(itemkey);
-              colors.push(bgColor);
-
-            });
-            var soldColor = [];
-            var holdColor = [];
-            var reservedColor = [];
-            for (var i = 0; i < itemKey.length; i++) {
-              soldColor.push('rgb(245,0,0)');
-              holdColor.push('rgb(145, 145, 0)');
-              reservedColor.push('orange');
-            }
-
-            var data = {
-              labels: itemKey,
-              datasets: [
-                {
-                  label: 'Sold',
-                  data: itemSold,
-                  backgroundColor: soldColor,
-                  borderColor: [
-                    'rgb(245,0,0)'
-                  ],
-                  borderWidth: 1
-                },
-                {
-                  label: 'Reserved',
-                  data: itemReserved,
-                  backgroundColor: reservedColor,
-                  borderColor: [
-                    'orange'
-                  ],
-                  borderWidth: 1
-                },
-                {
-                  label: 'Hold',
-                  data: itemHold,
-                  backgroundColor: holdColor,
-                  borderColor: [
-                    'rgb(145, 145, 0)'
-                  ],
-                  borderWidth: 1
-                }
-              ]
-            }
-
-            dailyAgents.data = data;
-            dailyAgents.update();
-          } else {
-            var data = {
-              labels: [],
-              datasets: [
-                {
-                  label: 'Sold',
-                  data: [],
-                  backgroundColor: [],
-                  borderColor: [
-                    'rgb(245,0,0)'
-                  ],
-                  borderWidth: 1
-                },
-                {
-                  label: 'Reserved',
-                  data: [],
-                  backgroundColor: [],
-                  borderColor: [
-                    'orange'
-                  ],
-                  borderWidth: 1
-                },
-                {
-                  label: 'Hold',
-                  data: [],
-                  backgroundColor: [],
-                  borderColor: [
-                    'rgb(145, 145, 0)'
-                  ],
-                  borderWidth: 1
-                }
-              ]
-            }
-
-            dailyAgents.data = data;
-            dailyAgents.update();
-          }
-
-        });
+          this.weekDays = dateString + ' to ' + year + '-' + month + '-' + day;
+        }
       },
 
     })
