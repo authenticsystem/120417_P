@@ -544,6 +544,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </div>
                   </div>
                 </div>
+                <span class="dim">
+                  <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
+                </span>
               </div>
             </template>
           </div>
@@ -3059,7 +3062,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (f == true) {
           return 'Updated: ' + time;
         } else {
-          return 'Created: ' + time;
+          return time;
         }
       },
 

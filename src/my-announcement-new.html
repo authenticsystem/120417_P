@@ -84,7 +84,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             <br>
                             <paper-checkbox id="Agent">Agent</paper-checkbox>
                             <br>
-                            <paper-button raised class="submit" on-tap="_publishAnnouncement">Publish</paper-button>
+                            <paper-button raised class="submit" on-tap="_openSavingDialog">Publish</paper-button>
                         </form>
                     </iron-form>
                 </div>
@@ -202,9 +202,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 if (boxOwner.checked == true) {
                     owner = true;
                 }
-
-                var ref = firebase.database().ref("announcements");
-                var announcementPush = ref.push().key;
+                var announcementPush = firebase.database().ref().child('announcements').push().key;
                 var announcementData = {
                     title: this.title,
                     message: this.message,
@@ -218,15 +216,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 };
                 var updates = {};
                 updates['/announcements/' + announcementPush] = announcementData;
-                this.notification(staff, manager, agent, owner, this.title, announcementPush);
-                if (attachment) {
-                    this._uploadAttachment(attachment, announcementPush);
-                }
-                // window.location = "/announcement";
+                updates['/user-announcements/' + accountkey + '/' + announcementPush] = announcementData;
+                this.notification(staff, manager, agent, owner, this.title);
+                this._uploadAttachment(attachment, announcementPush);
                 return firebase.database().ref().update(updates);
             },
 
-            notification(staff, manager, agent, owner, announcementTitle, announcementPush) {
+            notification(staff, manager, agent, owner, announcementTitle) {
                 var ref = firebase.database().ref("notifications");
                 ref.push({
                     title: announcementTitle,
@@ -248,22 +244,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
 
             _uploadAttachment(myAttachment, pushkey) {
+                console.log(myAttachment);
+                console.log(pushkey);
                 for (var i = 0; i < myAttachment.length; i++) {
                     var attachFile = myAttachment[i];
                     var photoName = attachFile.name;
-                    var storageRef = firebase.storage().ref('attachments/' + photoName).put(attachFile).then(function (metadatas) {
-                        // Get an array of file metadata
-                        var pushref = firebase.database().ref("/announcements/" + pushkey + "/attachments");
-                        pushref.push({
+                    var storageRef = firebase.storage().ref('attachments/' + photoName);
+                    storageRef.put(attachFile).then(function (metadatas) {
+                        var newPostKey = firebase.database().ref().child('announcements').push().key;
+                        var postData = {
                             url: metadatas.downloadURL,
                             name: metadatas.photoName
-                        });
-                        
+                        };
+                        var updates = {};
+                        updates['/announcements/' + pushkey + "/attachments/" + newPostKey] = postData;
+
+                        return firebase.database().ref().update(updates);
                     }).catch(function (error) {
                         // If any task fails, handle this
                     });
                 }
-               this.$.successDialog.open();
+                // this.$.successDialog.open();
             },
 
             _success() {
