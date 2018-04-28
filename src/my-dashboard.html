@@ -44,6 +44,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-badge/paper-badge.html">
 <link rel="import" href="../bower_components/iron-collapse/iron-collapse.html">
 
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+
 
 <link rel="import" href="time-element.html">
 
@@ -339,10 +341,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       }
 
-      iron-list {
+      /* iron-list {
         padding-top: 16px;
         margin-top: 16px;
         padding-bottom: 16px;
+      } */
+
+      .teamList {
+        @apply --layout-horizontal;
+        margin-top: 16px;
       }
 
       .item {
@@ -417,6 +424,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         .rightcolumn {
           width: 100%;
         }
+      }
+
+      #myProgress {
+        width: 100%;
+        background-color: #ddd;
+      }
+
+      #myBar {
+        height: 20px;
+        background-color: #4CAF50;
+        text-align: center;
+        line-height: 20px;
+        color: white;
       }
     </style>
 
@@ -532,24 +552,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <div>
             <!-- agent report -->
             <template is="dom-if" if="{{agentReport}}">
+              <!-- first card -->
+              <div style="float:right; margin-right:26px; display: flex">
+                <paper-input label="Date" type="date" value="{{dailyAct}}" style="width:150px; margin-right: 26px">
+                  <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                </paper-input>
+                <paper-dropdown-menu label="Filter" vertical-align="top" horizontal-align="left" vertical-offset="60" style="margin-top:2px">
+                  <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{agentSHRfilter}}">
+                    <paper-item value="sold">Sold</paper-item>
+                    <paper-item value="hold">Reserved</paper-item>
+                    <paper-item value="reserved">Hold</paper-item>
+                  </paper-listbox>
+                </paper-dropdown-menu>
+              </div>
+              <br>
+              <br>
               <div class="card">
-                <div>
-                  <paper-input label="Date" type="date" value="{{dailyAct}}" style="width:150px;">
-                    <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                  </paper-input>
-                  <paper-dropdown-menu label="Filter" vertical-align="top" horizontal-align="left" vertical-offset="60">
-                    <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{agentSHRfilter}}">
-                      <paper-item value="sold">Sold</paper-item>
-                      <paper-item value="hold">Reserved</paper-item>
-                      <paper-item value="reserved">Hold</paper-item>
-                    </paper-listbox>
-                  </paper-dropdown-menu>
-                </div>
                 <div class="chart-container">
                   <canvas id="agentDailyChart"></canvas>
                 </div>
               </div>
 
+              <!-- second card -->
               <div style="float: right">
                 <div style="display: flex">
                   <iron-icon icon="my-icons:event" slot="prefix" style="margin-top: 40px; margin-right: 10px"></iron-icon>
@@ -563,7 +587,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </paper-dropdown-menu>
                 </div>
                 <div>
-                  <span style="font-size:12px; margin-left:35px">{{weekDays}}</span>
+                  <span style="font-size:12px; margin-left:35px">{{dateLabel}}</span>
                 </div>
               </div>
               <br>
@@ -573,26 +597,113 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div id="container">
                   <canvas id="agentChart"></canvas>
                 </div>
-                <div>
-                  <h3>My Team</h3>
+              </div>
+
+              <!-- third card -->
+              <div class="card">
+
+                <div id="managersArea">
+                  <h3>List of teams</h3>
                   <hr>
-                  <div class="item">
+                  <paper-dropdown-menu label="Filter" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                    <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{managerFilter}}">
+                      <paper-item value="sold">Sold</paper-item>
+                      <paper-item value="hold">Reserved</paper-item>
+                      <paper-item value="reserved">Hold</paper-item>
+                    </paper-listbox>
+                  </paper-dropdown-menu>
+                  <div class="teamList">
                     <iron-image class="avatar" sizing="contain" src="../images/user.png"></iron-image>
                     <div class="pad">
-                      <div class="primary">
-                        Ardie C. Derrayal
+                      <div class="primary">Team hope</div>
+                      <div class="secondary">
+                        <div id="myProgress">
+                          <div id="myBar" style="width: 10%">10%</div>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div class="item">
-                    <iron-image class="avatar" sizing="contain" src="../images/user.png"></iron-image>
-                    <div class="pad">
-                      <div class="primary">
-                        Ardie C. Derrayal
-                      </div>
-                    </div>
+                    <paper-icon-button icon="my-icons:open-in-new" on-tap="viewTeamLeadersArea"></paper-icon-button>
                   </div>
                 </div>
+
+                <div id="teamLeadersArea" style="display:none">
+                  <paper-icon-button icon="my-icons:arrow-back" on-tap='backManagersArea'></paper-icon-button>
+                  <div>
+                    <center>
+                      <paper-buttons-group id="customGroup" selected="{{teamDWMYbg}}">
+                        <paper-button style="font-size:12px; border-bottom: 1px solid #4CAF50; border-top: 1px solid #4CAF50; border-right: 1px solid #4CAF50; border-left: 1px solid #4CAF50">Daily</paper-button>
+                        <paper-button style="font-size:12px; border-bottom: 1px solid #4CAF50; border-top: 1px solid #4CAF50; border-right: 1px solid #4CAF50">Weekly</paper-button>
+                        <paper-button style="font-size:12px; border-bottom: 1px solid #4CAF50; border-top: 1px solid #4CAF50; border-right: 1px solid #4CAF50">Monthly</paper-button>
+                        <paper-button style="font-size:12px; border-bottom: 1px solid #4CAF50; border-top: 1px solid #4CAF50; border-right: 1px solid #4CAF50">Yearly</paper-button>
+                      </paper-buttons-group>
+                    </center>
+                  </div>
+                  <h3>Team hope</h3>
+                  <hr>
+                  <div>
+                    <span style="display: flex">
+                      <iron-pages selected="{{teamDWMYbg}}">
+                        <div>
+                          <paper-input label="Date" type="date" value="{{teamDay}}" style="width:150px;">
+                            <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                          </paper-input>
+                        </div>
+                        <div>
+                          <span style="display: flex">
+                            <paper-input label="Year" type="number" value="{{teamWeekYear}}" style="width:100px; margin-right: 5px">
+                              <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                            </paper-input>
+                            <paper-input label="Week" type="number" value="{{teamWeek}}" style="width:70px; margin-top: 1px"></paper-input>
+                          </span>
+                          <div>
+                            <span style="font-size: 12px">{{teamDateLabel}}</span>
+                          </div>
+                        </div>
+                        <div>
+                          <span style="display: flex">
+                            <iron-icon icon="my-icons:event" slot="prefix" style="margin-top: 30px"></iron-icon>
+                            <paper-dropdown-menu label="Month" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                              <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{teamMonth}}">
+                                <paper-item value="01">January</paper-item>
+                                <paper-item value="02">February</paper-item>
+                                <paper-item value="03">March</paper-item>
+                                <paper-item value="04">April</paper-item>
+                                <paper-item value="05">May</paper-item>
+                                <paper-item value="06">June</paper-item>
+                                <paper-item value="07">July</paper-item>
+                                <paper-item value="08">August</paper-item>
+                                <paper-item value="09">September</paper-item>
+                                <paper-item value="10">October</paper-item>
+                                <paper-item value="11">November</paper-item>
+                                <paper-item value="12">December</paper-item>
+                              </paper-listbox>
+                            </paper-dropdown-menu>
+                            <paper-input label="Year" value="{{teamMonthYear}}" style="width:80px; margin-left: 5px">
+                            </paper-input>
+                          </span>
+                        </div>
+                        <div>
+                          <paper-input label="Year" type="number" value="{{teamYear}}" style="width:100px;">
+                            <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                          </paper-input>
+                        </div>
+                      </iron-pages>
+                      <div style="margin-left: 10px">
+                        <paper-dropdown-menu label="Filter" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                          <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{agentSHRfilter}}">
+                            <paper-item value="sold">Sold</paper-item>
+                            <paper-item value="hold">Reserved</paper-item>
+                            <paper-item value="reserved">Hold</paper-item>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
+                      </div>
+                    </span>
+                  </div>
+                  <div id="container">
+                    <canvas id="myTeamChart"></canvas>
+                  </div>
+                </div>
+
               </div>
             </template>
             <!-- end of agent report -->
@@ -1241,7 +1352,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         agentFilter: Number,
         agentChart: Object,
         agentDailyChart: Object,
-        agentSHRfilter: String
+        agentSHRfilter: String,
+        teamDWMYbg: Number,
+        teamDay: String,
+        teamWeekYear: Number,
+        teamWeek: Number,
+        teamMonth: Number,
+        teamMonthYear: Number,
+        teamYear: Number,
+        managerFilter: String
       },
 
       ready() {
@@ -1268,6 +1387,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         //agent report
         this.agentFilter = 7;
         this.agentSHRfilter = 'sold';
+        this.teamDWMYbg = 0;
+        this.teamDay = this.teamFullDate('day');
+        this.teamWeekYear = this.teamFullDate('year');
+        this.teamWeek = this.teamFullDate('week');
+        this.teamMonthYear = this.teamFullDate('year');
+        this.teamMonth = 01;
+        this.teamYear = this.teamFullDate('year');
+        this.managerFilter = 'sold';
       },
 
       observers: [
@@ -1282,7 +1409,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'dailyTotalDataChanged(dailyTotalData.*)',
         'announcementsChanged(announcements.*)',
         'attachmentChanged(attachment)',
-        'agentFilterChanged(agentFilter)'
+        'agentFilterChanged(agentFilter)',
+        'teamDataLevelChanged(teamWeekYear, teamWeek)'
       ],
 
       attachmentChanged(e) {
@@ -2968,7 +3096,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
           var week = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
 
-          this.weekDays = this.getDateRangeOfWeek(week, year, 'spanDate');
+          this.dateLabel = this.getDateRangeOfWeek(week, year, 'spanDate');
         }
         else if (e == 15) {
           var endDate = new Date();
@@ -2979,14 +3107,125 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           if (months < 10) { months = '0' + months; }
           if (years < 10) { years = '0' + years; }
 
-          this.weekDays = years + '-' + months + '-' + days + ' to ' + year + '-' + month + '-' + day;
+          this.dateLabel = years + '-' + months + '-' + days + ' to ' + year + '-' + month + '-' + day;
         }
         else if (e == 30) {
           date.setDate(date.getDate() - 30);
           var dateString = date.toISOString().split('T')[0];
 
-          this.weekDays = dateString + ' to ' + year + '-' + month + '-' + day;
+          this.dateLabel = dateString + ' to ' + year + '-' + month + '-' + day;
         }
+      },
+
+      teamFullDate(type) {
+        var x = new Date();
+        var xday = x.getDate();
+        var xmonth = x.getMonth() + 1;
+        var xyear = x.getFullYear();
+        if (xday < 10) {
+          xday = '0' + xday;
+        }
+        if (xmonth < 10) {
+          xmonth = '0' + xmonth;
+        }
+
+        var teamYearStart = new Date(Date.UTC(x.getUTCFullYear(), 0, 1));
+        var teamWeek = Math.ceil((((x - teamYearStart) / 86400000) + 1) / 7);
+
+        if (type == 'day') {
+          return xyear + '-' + xmonth + '-' + xday;
+        } else if (type == 'month') {
+          return xyear + '-' + xmonth;
+        } else if (type == 'year') {
+          return xyear;
+        }
+        else if (type == 'week') {
+          return teamWeek;
+        }
+
+      },
+
+      teamDataLevelChanged(x, y) {
+        this.teamDateLabel = this.getDateRangeOfWeek(y, x, 'spanDate');
+      },
+
+      viewTeamLeadersArea() {
+        var managerArea = Polymer.dom(this.root).querySelector("#managersArea");
+        managerArea.style.display = 'none';
+        var teamLeadersArea = Polymer.dom(this.root).querySelector("#teamLeadersArea");
+        teamLeadersArea.style.display = 'block';
+
+        if (!this.myTeamChart) {
+          var ctx = Polymer.dom(this.root).querySelector("#myTeamChart");
+          var myTeamCharts = new Chart(ctx, {
+            type: 'horizontalBar',
+            data: {
+              labels: ["23", "24"],
+              datasets: [{
+                label: 'Ardie',
+                data: [12, 19],
+                backgroundColor: [
+                  'rgba(255, 99, 132, 0.2)',
+                  'rgba(255, 99, 132, 0.2)'
+                ],
+                borderColor: [
+                  'rgba(255,99,132,1)',
+                  'rgba(255,99,132,1)'
+                ],
+                borderWidth: 1
+              },
+              {
+                label: 'Gabriel',
+                data: [2, 9],
+                datalabels: {
+                  color: 'white'
+                },
+                backgroundColor: [
+                  'green',
+                  'green'
+                ],
+                borderColor: [
+                  'green',
+                  'green'
+                ],
+                borderWidth: 1
+              },
+              {
+                label: 'Peter',
+                data: [1, 1],
+                datalabels: {
+                  color: 'white'
+                },
+                backgroundColor: [
+                  'blue',
+                  'blue'
+                ],
+                borderColor: [
+                  'blue',
+                  'blue'
+                ],
+                borderWidth: 1
+              }]
+            },
+            options: {
+              scales: {
+                yAxes: [{
+                  ticks: {
+                    beginAtZero: true
+                  }
+                }]
+              }
+            }
+          });
+          this.myTeamChart = myTeamCharts;
+        }
+      },
+
+      backManagersArea() {
+        var managerArea = Polymer.dom(this.root).querySelector("#managersArea");
+        managerArea.style.display = 'block';
+        var teamLeadersArea = Polymer.dom(this.root).querySelector("#teamLeadersArea");
+        teamLeadersArea.style.display = 'none';
       },
 
     })

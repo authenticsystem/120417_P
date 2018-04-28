@@ -93,7 +93,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </style>
 
         <firebase-document path="{{path}}" data="{{newdata}}"></firebase-document>
-        <firebase-query path="announcements/{{transactionKey}}/attachments" data="{{attachment}}"></firebase-query>
+        <firebase-query id="query" path="announcements/{{transactionKey}}/attachments" data="{{attachment}}"></firebase-query>
         <app-header-layout fullbleed has-scrolling-region>
             <app-header fixed slot="header">
                 <app-toolbar primary>
@@ -121,8 +121,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <div class="row">
                                     <template is="dom-repeat" items="[[attachment]]" as="file">
                                         <div class="column">
-                                            <img src="[[file.url]]" style="width:100%"></img>
-                                            <paper-button raised class="submit" alt="{{item}}" on-tap="_openDeleteDialog">delete</paper-button>
+                                            <img src="[[photoAttachment(file.url)]]" style="width:100%"></img>
+                                            <paper-button raised class="submit" file="[[file]]" on-tap="_openDeleteDialog">delete</paper-button>
                                         </div>
                                     </template>
                                 </div>
@@ -291,12 +291,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
 
             _openDeleteDialog(e) {
-                var transkey = Polymer.dom(e).rootTarget.getAttribute("alt");
-                // var photoKey = Polymer.dom(e).rootTarget.getAttribute("photokey");
-                var data = JSON.parse(transkey);
-                this.$.deleteDialog.open();
-                // this.photoKey = photoKey;
-                console.log(data);
+                var name = e.currentTarget.file.name;
+                var key = e.currentTarget.file.$key;
+                firebase.storage().ref('attachments/' + name).delete().then(function () {
+                    // File deleted successfully
+                    this.$.query.ref.child(key).remove();
+                    window.location = "announcement/edit/" + this.transactionKey;
+                }).catch(function (error) {
+                    // Uh-oh, an error occurred!
+                });
+            },
+
+            photoAttachment(e){
+                if(e){
+                    return e;
+                }else{
+                    return '../images/user.png';
+                }
             },
 
             _deletePhoto() {
