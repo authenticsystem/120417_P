@@ -22,6 +22,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
 <link rel="import" href="my-view404.html">
@@ -104,7 +106,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <div main-title>Group</div>
                     </app-toolbar>
                 </app-header>
-                <firebase-query path="/account_group" data="{{group}}"></firebase-query>
+                <firebase-query id="query" path="/user_group/{{accountkey}}" data="{{group}}"></firebase-query>
                 <div class="container">
                     <template is="dom-repeat" items="{{group}}">
                         <paper-card heading="[[item.name]]">
@@ -112,16 +114,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <paper-item>
                                     <iron-image class="avatar" sizing="contain" src="../images/user.png"></iron-image>
                                     <paper-item-body two-line>
-                                        <div>Ardie C. Derrayal</div>
-                                        <div secondary>ardiederrayal06@gmail.com</div>
+                                        <div>[[item.members]]</div>
+                                        <!-- <div secondary>ardiederrayal06@gmail.com</div> -->
                                     </paper-item-body>
                                     <paper-icon-button icon="my-icons:remove-circle" style="margin-left:16px" title="remove"></paper-icon-button>
                                 </paper-item>
                             </div>
                             <div class="card-actions">
                                 <div style="float: right; margin-bottom: 6px">
-                                    <paper-icon-button icon="my-icons:person-add" title="add member"></paper-icon-button>
-                                    <paper-icon-button icon="my-icons:delete-forever" title="delete team"></paper-icon-button>
+                                    <paper-icon-button icon="my-icons:person-add" title="add member" item="[[item]]" on-tap="_openaddgroup"></paper-icon-button>
+                                    <paper-icon-button icon="my-icons:edit" title="edit group name" item="[[item]]" on-tap="_openeditgroupname"></paper-icon-button>
+                                    <paper-icon-button icon="my-icons:delete-forever" title="delete team" item="[[item]]" on-tap="_openremovegroup"></paper-icon-button>
                                 </div>
                             </div>
                         </paper-card>
@@ -129,19 +132,60 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </div>
                 <paper-fab noink class="fab-menu" on-tap="_opencreategroup" icon="my-icons:group-add"></paper-fab>
 
+                <paper-dialog id="dialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+                    <paper-dialog-scrollable>
+                        <h2>Create Group</h2>
+                        <paper-input label="Group name" id="inputGroupname"></paper-input>
+                        <div class="buttons">
+                            <paper-button dialog-dismiss>Cancel</paper-button>
+                            <paper-button class="submit" dialog-confirm autofocus on-tap="_creategroup">Create</paper-button>
+                        </div>
+                    </paper-dialog-scrollable>
+                </paper-dialog>
+
+                <paper-dialog id="dialogAddmember" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+                    <paper-dialog-scrollable>
+                        <h2>Add member</h2>
+                        <firebase-query path="/accountlist" order-by-child="role" equal-to="Sales Agent" data="{{salesAgent}}"></firebase-query>
+                        <template is="dom-repeat" items="{{salesAgent}}">
+                            <paper-item>
+                                <paper-checkbox id="memberAdded" value="[[_name(item.name.firstname,item.name.middlename,item.name.lastname)]]" on-change="checkboxChanged"></paper-checkbox>
+                                <iron-image class="avatar" sizing="contain" src="../images/user.png"></iron-image>
+                                <paper-item-body two-line>
+                                    <div>[[item.name.firstname]]</div>
+                                    <!-- <div secondary>ardiederrayal06@gmail.com</div> -->
+                                </paper-item-body>
+                            </paper-item>
+                        </template>
+                        <div class="buttons">
+                            <paper-button dialog-dismiss>Cancel</paper-button>
+                            <paper-button class="submit" dialog-confirm autofocus on-tap="_addmember">Add</paper-button>
+                        </div>
+                    </paper-dialog-scrollable>
+                </paper-dialog>
+
+                <paper-dialog id="dialogEditgroupname" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+                    <paper-dialog-scrollable>
+                        <h2>Create Group</h2>
+                        <paper-input label="Group name" id="inputGroupname" value="{{groupname}}"></paper-input>
+                        <div class="buttons">
+                            <paper-button dialog-dismiss>Cancel</paper-button>
+                            <paper-button class="submit" dialog-confirm autofocus on-tap="_updategroupname">Update</paper-button>
+                        </div>
+                    </paper-dialog-scrollable>
+                </paper-dialog>
+
+                <paper-dialog id="dialogRemoveteam" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
+                    <paper-dialog-scrollable>
+                        <h2>Remove Team?</h2>
+                        <div class="buttons">
+                            <paper-button dialog-dismiss>Cancel</paper-button>
+                            <paper-button dialog-confirm autofocus on-tap="_removegroup">OK</paper-button>
+                        </div>
+                    </paper-dialog-scrollable>
+                </paper-dialog>
+
             </app-header-layout>
-
-            <paper-dialog id="dialog">
-                <paper-dialog-scrollable>
-                    <h2>Create Group</h2>
-                    <paper-input label="Group name" value="{{groupname}}"></paper-input>
-                    <div class="buttons">
-                        <paper-button dialog-dismiss>Cancel</paper-button>
-                        <paper-button class="submit" dialog-confirm autofocus on-tap="_creategroup">Create</paper-button>
-                    </div>
-                </paper-dialog-scrollable>
-            </paper-dialog>
-
         </template>
 
     </template>
@@ -151,9 +195,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             is: 'my-group',
             properties: {
                 account: Object,
+                useraccount: {
+                    type: Array,
+                    value: []
+                },
+                members: Object
             },
             observers: [
+                'accountChanged(account)'
             ],
+
+            accountChanged(e) {
+                if (e) {
+                    this.accountkey = e[0].accountkey;
+                }
+            },
 
             toggleDrawer() {
                 this.dispatchEvent(new CustomEvent('toggleDrawer', {
@@ -169,18 +225,71 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
 
             _creategroup() {
-                var postData = {
-                    name: this.groupname
-                };
-                var newPostKey = firebase.database().ref().child('account_group').push().key;
-                var updates = {};
-                updates['/account_group/' + newPostKey] = postData;
-                return firebase.database().ref().update(updates);
-                window.location = "/group";
+                var query = Polymer.dom(this.root).querySelector("#query");
+                var inputGroupname = Polymer.dom(this.root).querySelector("#inputGroupname");
+                query.ref.push({
+                    name: inputGroupname.value
+                });
+                inputGroupname.value = null;
             },
 
             _name(e, f, g) {
                 return e + " " + f + " " + g;
+            },
+
+            _openaddgroup(e) {
+                Polymer.dom(this.root).querySelector("#dialogAddmember").open();
+                this.groupkey = e.currentTarget.item.$key;
+                this.groupname = e.currentTarget.item.name;
+            },
+
+            _openeditgroupname(e){
+                Polymer.dom(this.root).querySelector("#dialogEditgroupname").open();
+                this.groupkey = e.currentTarget.item.$key;
+                this.groupname = e.currentTarget.item.name;
+                if(e.currentTarget.item.members){
+                    this.members = e.currentTarget.item.members;
+                }
+                else{
+                    this.members = null;
+                }
+                
+            },
+
+            _openremovegroup(e) {
+                Polymer.dom(this.root).querySelector("#dialogRemoveteam").open();
+                this.groupkey = e.currentTarget.item.$key;
+            },
+
+            checkboxChanged(event) {
+                if (event.target.checked) {
+                    this.useraccount.push(event.target.value);
+                }
+            },
+
+            _addmember() {
+                var postData = {
+                    name: this.groupname,
+                    members: this.useraccount
+                };
+                var updates = {};
+                updates['/user_group/' + this.accountkey + '/' + this.groupkey] = postData;
+                return firebase.database().ref().update(updates);
+            },
+
+            _updategroupname(){
+                var postData = {
+                    name: this.groupname,
+                    members: this.members
+                };
+                var updates = {};
+                updates['/user_group/' + this.accountkey + '/' + this.groupkey] = postData;
+                return firebase.database().ref().update(updates);
+            },
+
+            _removegroup() {
+                var removequery = Polymer.dom(this.root).querySelector("#query");
+                removequery.ref.child(this.groupkey).remove();
             },
         })
     </script>
