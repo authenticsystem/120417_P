@@ -1,0 +1,187 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="my-icons.html">
+<link rel="import" href="my-view404.html">
+
+<dom-module id="my-group">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+
+            app-header {
+                color: rgb(255, 255, 255);
+                background-color: #388E3C;
+            }
+
+            paper-button {
+                height: 32px;
+                font-size: 12px;
+                font-weight: 400;
+                width: 80px;
+            }
+
+            paper-button.submit {
+                background-color: var(--paper-indigo-500);
+                color: white;
+            }
+
+            .avatar {
+                display: inline-block;
+                box-sizing: border-box;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: var(--paper-amber-500);
+                margin-right: 16px;
+            }
+
+            paper-fab.fab-menu {
+                position: fixed;
+                right: 32px;
+                bottom: 32px;
+            }
+
+            paper-item {
+                cursor: pointer;
+            }
+
+            .container {
+                padding: 16px
+            }
+
+            paper-card {
+                margin-bottom: 16px
+            }
+        </style>
+
+        <template is="dom-if" if="{{!access}}">
+            <app-header-layout fullbleed has-scrolling-region>
+                <app-header fixed slot="header">
+                    <app-toolbar primary>
+                        <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                        <div main-title>Opps!</div>
+                    </app-toolbar>
+                </app-header>
+                <div class="card">
+                    <h3>Sorry!</h3>
+                    <div>You're not allowed to access this content.</div>
+                </div>
+            </app-header-layout>
+        </template>
+
+        <template is="dom-if" if="{{access}}">
+            <app-header-layout fullbleed has-scrolling-region>
+                <app-header fixed slot="header">
+                    <app-toolbar primary>
+                        <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                        <div main-title>Group</div>
+                    </app-toolbar>
+                </app-header>
+                <firebase-query path="/account_group" data="{{group}}"></firebase-query>
+                <div class="container">
+                    <template is="dom-repeat" items="{{group}}">
+                        <paper-card heading="[[item.name]]">
+                            <div class="card-content">
+                                <paper-item>
+                                    <iron-image class="avatar" sizing="contain" src="../images/user.png"></iron-image>
+                                    <paper-item-body two-line>
+                                        <div>Ardie C. Derrayal</div>
+                                        <div secondary>ardiederrayal06@gmail.com</div>
+                                    </paper-item-body>
+                                    <paper-icon-button icon="my-icons:remove-circle" style="margin-left:16px" title="remove"></paper-icon-button>
+                                </paper-item>
+                            </div>
+                            <div class="card-actions">
+                                <div style="float: right; margin-bottom: 6px">
+                                    <paper-icon-button icon="my-icons:person-add" title="add member"></paper-icon-button>
+                                    <paper-icon-button icon="my-icons:delete-forever" title="delete team"></paper-icon-button>
+                                </div>
+                            </div>
+                        </paper-card>
+                    </template>
+                </div>
+                <paper-fab noink class="fab-menu" on-tap="_opencreategroup" icon="my-icons:group-add"></paper-fab>
+
+            </app-header-layout>
+
+            <paper-dialog id="dialog">
+                <paper-dialog-scrollable>
+                    <h2>Create Group</h2>
+                    <paper-input label="Group name" value="{{groupname}}"></paper-input>
+                    <div class="buttons">
+                        <paper-button dialog-dismiss>Cancel</paper-button>
+                        <paper-button class="submit" dialog-confirm autofocus on-tap="_creategroup">Create</paper-button>
+                    </div>
+                </paper-dialog-scrollable>
+            </paper-dialog>
+
+        </template>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-group',
+            properties: {
+                account: Object,
+            },
+            observers: [
+            ],
+
+            toggleDrawer() {
+                this.dispatchEvent(new CustomEvent('toggleDrawer', {
+                    bubbles: true, composed: true, detail: {
+                        narrow: this.$.narrow
+                    }
+                }));
+                this.$.narrow = !this.$.narrow;
+            },
+
+            _opencreategroup() {
+                Polymer.dom(this.root).querySelector("#dialog").open();
+            },
+
+            _creategroup() {
+                var postData = {
+                    name: this.groupname
+                };
+                var newPostKey = firebase.database().ref().child('account_group').push().key;
+                var updates = {};
+                updates['/account_group/' + newPostKey] = postData;
+                return firebase.database().ref().update(updates);
+                window.location = "/group";
+            },
+
+            _name(e, f, g) {
+                return e + " " + f + " " + g;
+            },
+        })
+    </script>
+</dom-module>

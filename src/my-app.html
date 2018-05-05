@@ -53,6 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-application-detail.html">
 <link rel="lazy-import" href="my-account.html">
 <link rel="lazy-import" href="my-accountlist.html">
+<link rel="lazy-import" href="my-group.html">
 <link rel="lazy-import" href="my-reset-password.html">
 <link rel="lazy-import" href="my-activation.html">
 <link rel="lazy-import" href="my-view3.html">
@@ -440,8 +441,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <hr>
                     <a style$="{{access(accountAccess)}}" name="accountlist" href="[[rootPath]]accountlist">
                       <paper-icon-item toggles="true" class="menuSelected">
-                        <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
+                        <iron-icon icon="my-icons:perm-identity" slot="item-icon"></iron-icon>
                         <span>Accounts
+                          <!-- <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
+                            DRY RUN
+                          </span> -->
+                        </span>
+                      </paper-icon-item>
+                    </a>
+                    <a style$="{{access(groupAccess)}}" name="group" href="[[rootPath]]group">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
+                        <span>Group
                           <!-- <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
                             DRY RUN
                           </span> -->
@@ -470,7 +481,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </app-drawer>
 
               <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-                <my-dashboard name="dashboard" access="{{dashAccess}}"  route="[[subroute]]" account="{{myaccount}}"></my-dashboard>
+                <my-dashboard name="dashboard" access="{{dashAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-dashboard>
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
                 <my-galleries name="galleries"></my-galleries>
                 <my-announcement name="announcement" access="{{annAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-announcement>
@@ -478,6 +489,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <my-briefcase name="briefcase" access="{{briefcaseAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-briefcase>
                 <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
                 <my-accountlist name="accountlist" access="{{accountAccess}}" route="[[subroute]]"></my-accountlist>
+                <my-group name="group" access="{{groupAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-group>
                 <my-view404 name="view404"></my-view404>
               </iron-pages>
 
@@ -604,6 +616,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             type: Boolean,
             value: false
           },
+          groupAccess: {
+            type: Boolean,
+            value: false
+          },
           briefcaseAccess: {
             type: Boolean,
             value: false
@@ -660,6 +676,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               }
               if (this.myaccount[0].access.accountlist == true) {
                 this.accountAccess = true;
+              }
+              if (this.myaccount[0].access.group == true) {
+                this.groupAccess = true;
               }
               if (this.myaccount[0].access.briefcase == true) {
                 this.briefcaseAccess = true;
