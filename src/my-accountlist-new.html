@@ -98,6 +98,11 @@
                 margin-right: 5px;
             }
 
+            .addrole {
+                border: 1px dotted black;
+                padding: 16px
+            }
+
             /* @media print {
                  .ok {
                      visibility: hidden;
@@ -118,10 +123,9 @@
                             <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>New Account</div>
-                        <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
                         <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
-                    
+
                     <!-- <paper-dialog id="modal">
                             <h3>Successfully Added.</h3>
                             <div class="buttons">
@@ -144,7 +148,7 @@
                             label="Cellphone">
                             <div slot="prefix">+63</div>
                         </paper-input>
-                        <paper-dropdown-menu style="cursor:pointer" label="Role">
+                        <paper-dropdown-menu label="Role">
                             <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{roleAdd}}">
                                 <paper-item>Owner</paper-item>
                                 <paper-item>Manager</paper-item>
@@ -152,14 +156,46 @@
                                 <paper-item>Staff</paper-item>
                             </paper-listbox>
                         </paper-dropdown-menu>
-                        <br>
-                        <div style="font-size:12px; margin-top:1em;">Access</div>
+                        <div hidden$="{{managerArea}}" class="addrole">
+                            <paper-dropdown-menu label="Type" vertical-offset="60">
+                                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{typefilter}}">
+                                    <paper-item value="inhouse">Inhouse</paper-item>
+                                    <paper-item value="broker">Broker</paper-item>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+                        </div>
+                        <div hidden$="{{agentArea}}" class="addrole">
+                            <paper-dropdown-menu label="Type" vertical-offset="60">
+                                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{typefilter}}">
+                                    <paper-item value="inhouse">Inhouse</paper-item>
+                                    <paper-item value="broker">Broker</paper-item>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+
+                            <firebase-query path="/accountlist" order-by-child="role_type" equal-to="manager_{{typefilter}}" data="{{accountlistData}}"></firebase-query>
+                            <paper-dropdown-menu label="Manager" vertical-offset="60">
+                                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{managerfilter}}">
+                                    <template is="dom-repeat" items="[[accountlistData]]">
+                                        <paper-item value="[[item.accountkey]]">[[_name(item.name.firstname, item.name.middlename, item.name.lastname)]]</paper-item>
+                                    </template>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+
+                            <firebase-query path="/user_group/{{managerfilter}}" data="{{groupData}}"></firebase-query>
+                            <paper-dropdown-menu label="Group" vertical-offset="60">
+                                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{groupfilter}}">
+                                    <template is="dom-repeat" items="[[groupData]]">
+                                        <paper-item value="[[item.name]]">[[item.name]]</paper-item>
+                                    </template>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+                        </div>
+                        <div style="font-size:12px; margin-top:10px;">Access</div>
                         <paper-checkbox id="dash">Dashboard</paper-checkbox>
                         <paper-checkbox id="app">Applications</paper-checkbox>
                         <paper-checkbox id="acc">Accounts</paper-checkbox>
                         <paper-checkbox id="case">Briefcase</paper-checkbox>
                         <paper-checkbox id="ann">Announcement</paper-checkbox>
-                        <!-- <paper-checkbox noink value="{{checked}}" >Allow Access</paper-checkbox> -->
                     </div>
                     <br>
                     <br>
@@ -172,7 +208,6 @@
                     <a href="/accountlist" style="text-decoration:none">
                         <paper-button id="favright" class="cancel" on-tap="_cancel">Cancel</paper-button>
                     </a>
-                </div>
                 </div>
 
                 <div class="docu" hidden$="[[finalstepHide]]">
@@ -250,20 +285,46 @@
                 role: {
                     type: String,
                     value: ''
-                }
+                },
+                managerArea: {
+                    type: Boolean,
+                    value: true
+                },
+                agentArea: {
+                    type: Boolean,
+                    value: true
+                },
+                typefilter: {
+                    type: String,
+                    value: 'inhouse'
+                },
+                managerfilter: String,
+                groupfilter: String
             },
+
+            observers: [
+            ],
+
             roleAddChanged() {
                 if (this.roleAdd == 0) {
                     this.role = 'Owner';
+                    this.managerArea = true;
+                    this.agentArea = true;
                 }
                 else if (this.roleAdd == 1) {
                     this.role = 'Manager';
+                    this.managerArea = false;
+                    this.agentArea = true;
                 }
                 else if (this.roleAdd == 2) {
                     this.role = 'Sales Agent';
+                    this.managerArea = true;
+                    this.agentArea = false;
                 }
                 else {
                     this.role = 'Staff';
+                    this.managerArea = true;
+                    this.agentArea = true;
                 }
             },
             _print() {
@@ -341,7 +402,8 @@
                             },
                             cellphone: this.cellphone,
                             role: this.role,
-                            uid: ''
+                            uid: '',
+                            type: this.role + "_" + this.typefilter
                         });
                         // Polymer.dom(this.root).querySelector("#toast").open();
                         // this.txt = "Account successfully added.";
@@ -352,8 +414,9 @@
                     }
                 }
             },
-            toggleDrawer() { },
-            _cancel() { }
+            _name(e, f, g) {
+                return e + " " + f + " " + " " + g;
+            }
         })
     </script>
 </dom-module>
