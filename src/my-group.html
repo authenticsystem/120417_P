@@ -78,8 +78,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 padding: 16px
             }
 
-            paper-card {
-                margin-bottom: 16px
+            @media screen and (max-width: 800px) {
+                paper-card {
+                    width: 100%;
+                    margin-bottom: 16px;
+                }
+            }
+
+            @media screen and (min-width: 800px) {
+                paper-card {
+                    margin-bottom: 16px;
+                    width: 33%
+                }
             }
         </style>
 
@@ -227,9 +237,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             _creategroup() {
                 var query = Polymer.dom(this.root).querySelector("#query");
                 var inputGroupname = Polymer.dom(this.root).querySelector("#inputGroupname");
-                query.ref.push({
-                    name: inputGroupname.value
-                });
+                var errormsg = Polymer.dom(this.root).querySelector("#errormsg");
+                if (inputGroupname.value) {
+                    query.ref.push({
+                        name: inputGroupname.value
+                    });
+                }
                 inputGroupname.value = null;
             },
 
@@ -243,17 +256,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.groupname = e.currentTarget.item.name;
             },
 
-            _openeditgroupname(e){
+            _openeditgroupname(e) {
                 Polymer.dom(this.root).querySelector("#dialogEditgroupname").open();
                 this.groupkey = e.currentTarget.item.$key;
                 this.groupname = e.currentTarget.item.name;
-                if(e.currentTarget.item.members){
+                if (e.currentTarget.item.members) {
                     this.members = e.currentTarget.item.members;
                 }
-                else{
+                else {
                     this.members = null;
                 }
-                
+
             },
 
             _openremovegroup(e) {
@@ -261,9 +274,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.groupkey = e.currentTarget.item.$key;
             },
 
-            checkboxChanged(event) {
-                if (event.target.checked) {
-                    this.useraccount.push(event.target.value);
+            checkboxChanged(e) {
+                if (e.target.checked) {
+                    this.useraccount.push(e.target.value);
                 }
             },
 
@@ -277,7 +290,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 return firebase.database().ref().update(updates);
             },
 
-            _updategroupname(){
+            _updategroupname() {
                 var postData = {
                     name: this.groupname,
                     members: this.members

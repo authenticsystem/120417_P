@@ -130,30 +130,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
         </style>
 
-        <app-route route="{{route}}" pattern="" active="{{announcementActive}}"></app-route>
-        <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
-        <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
-        <div hidden$="{{!announcementActive}}">
-            <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
-                <div name="">
-                    <app-header-layout fullbleed has-scrolling-region>
-                        <app-header fixed slot="header">
-                            <app-toolbar primary>
-                                <!-- <paper-icon-button icon="my-icons:close" drawer-toggle on-tap="toggleDrawer"></paper-icon-button> -->
-                                <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-                                <div main-title hidden$="{{!access}}">Announcements</div>
-                                <div main-title hidden$="{{access}}">Opps!</div>
-                            </app-toolbar>
-                        </app-header>
+        <template is="dom-if" if="{{!access}}">
+            <app-header-layout fullbleed has-scrolling-region>
+                <app-header fixed slot="header">
+                    <app-toolbar primary>
+                        <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                        <div main-title>Opps!</div>
+                    </app-toolbar>
+                </app-header>
+                <div class="card">
+                    <h3>Sorry!</h3>
+                    <div>You're not allowed to access this content.</div>
+                </div>
+            </app-header-layout>
+        </template>
 
-                        <template is="dom-if" if="{{!access}}">
-                            <div class="card">
-                                <h3>Sorry!</h3>
-                                <div>You're not allowed to access this content.</div>
-                            </div>
-                        </template>
+        <template is="dom-if" if="{{access}}">
+            <app-route route="{{route}}" pattern="" active="{{announcementActive}}"></app-route>
+            <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
+            <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
+            <div hidden$="{{!announcementActive}}">
+                <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
+                    <div name="">
+                        <app-header-layout fullbleed has-scrolling-region>
+                            <app-header fixed slot="header">
+                                <app-toolbar primary>
+                                    <!-- <paper-icon-button icon="my-icons:close" drawer-toggle on-tap="toggleDrawer"></paper-icon-button> -->
+                                    <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                                    <div main-title>Announcements</div>
+                                </app-toolbar>
+                            </app-header>
 
-                        <template is="dom-if" if="{{access}}">
                             <!-- <div class="card">
                                 <div class="typewriter">
                                     <h1>Coming soon......</h1>
@@ -180,42 +187,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                     </div>
                                 </template>
                             </iron-list>
-                        </template>
 
-                        <template is="dom-if" if="{{access}}">
                             <a href="/announcement/new" style="text-decoration: none;">
                                 <paper-fab noink class="fab-menu" on-tap="_announcementNew" icon="my-icons:add"></paper-fab>
                             </a>
-                        </template>
 
-                    </app-header-layout>
+                        </app-header-layout>
 
-                </div>
+                    </div>
 
-                <template is="dom-if" if="{{access}}">
                     <div name="/new">
                         <div id="announcementNew"></div>
                         <my-announcement-new id="d23" path="" prev-route="{{route.prefix}}" myaccount="{{myaccountName}}" myrole="{{myaccountRole}}"
                             myaccountkey="{{myaccountKey}}"></my-announcement-new>
                     </div>
-                </template>
 
-                <div name="view404">Not found.</div>
-            </iron-pages>
-        </div>
-        <!-- end of announcement active -->
-        <template is="dom-if" if="{{access}}">
+                    <div name="view404">Not found.</div>
+                </iron-pages>
+            </div>
+            <!-- end of announcement active -->
+
             <div hidden$="{{!detailActive}}">
                 <div id="announcementDetail"></div>
-                <my-announcement-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"></my-announcement-detail>
+                <my-announcement-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}" myaccountkey="{{myaccountKey}}"></my-announcement-detail>
             </div>
-        </template>
-        <template is="dom-if" if="{{access}}">
+
             <div hidden$="{{!editActive}}">
                 <div id="announcementEdit"></div>
                 <my-announcement-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}" myaccount="{{myaccountName}}"></my-announcement-edit>
             </div>
+
         </template>
+
     </template>
 
     <script>
@@ -303,6 +306,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     newDiv.setAttribute("id", "d24")
                     newDiv.setAttribute("transaction-key", data_args)
                     newDiv.setAttribute("prev-route", this.route.prefix);
+                    newDiv.setAttribute("myaccountkey", this.myaccountKey);
                     //if open existing
                     var currentDiv = document.getElementById("announcementDetail");
                     Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);

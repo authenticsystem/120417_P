@@ -95,6 +95,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     type: String,
                     observer: 'transactionKeyChanged'
                 },
+                myaccountkey: String
             },
 
             observers: [
@@ -140,6 +141,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             deleteAnnouncement() {
                 firebase.database().ref(this.path).remove();
+                // firebase.database().ref('user-announcements/' + this.myaccountkey + this.transactionKey).remove();
                 window.location = "/announcement";
             },
         })

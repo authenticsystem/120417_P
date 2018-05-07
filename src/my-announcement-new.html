@@ -224,10 +224,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 };
                 var updates = {};
                 updates['/announcements/' + announcementPush] = announcementData;
-                updates['/user-announcements/' + accountkey + '/' + announcementPush] = announcementData;
+                // updates['/user-announcements/' + accountkey + '/' + announcementPush] = announcementData;
                 this.notification(staff, manager, agent, owner, this.title);
-                this._uploadAttachment(attachment, announcementPush);
+                // this._uploadAttachment(attachment, announcementPush);
+                this.$.successDialog.open();
                 return firebase.database().ref().update(updates);
+                
             },
 
             notification(staff, manager, agent, owner, announcementTitle) {
