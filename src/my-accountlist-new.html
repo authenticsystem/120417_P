@@ -157,7 +157,7 @@
                             </paper-listbox>
                         </paper-dropdown-menu>
                         <div hidden$="{{managerArea}}" class="addrole">
-                            <paper-dropdown-menu label="Type" vertical-offset="60">
+                            <paper-dropdown-menu label="Type" vertical-offset="60" style="width:150px">
                                 <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{typefilter}}">
                                     <paper-item value="inhouse">Inhouse</paper-item>
                                     <paper-item value="broker">Broker</paper-item>
@@ -165,7 +165,7 @@
                             </paper-dropdown-menu>
                         </div>
                         <div hidden$="{{agentArea}}" class="addrole">
-                            <paper-dropdown-menu label="Type" vertical-offset="60">
+                            <paper-dropdown-menu label="Type" vertical-offset="60" style="width:150px">
                                 <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{typefilter}}">
                                     <paper-item value="inhouse">Inhouse</paper-item>
                                     <paper-item value="broker">Broker</paper-item>
@@ -176,7 +176,7 @@
                             <paper-dropdown-menu label="Manager" vertical-offset="60">
                                 <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{managerfilter}}">
                                     <template is="dom-repeat" items="[[accountlistData]]">
-                                        <paper-item value="[[item.accountkey]]">[[_name(item.name.firstname, item.name.middlename, item.name.lastname)]]</paper-item>
+                                        <paper-item id="managerfilteritem" value="[[item.accountkey]]">[[_name(item.name.firstname, item.name.middlename, item.name.lastname)]]</paper-item>
                                     </template>
                                 </paper-listbox>
                             </paper-dropdown-menu>
@@ -189,6 +189,13 @@
                                     </template>
                                 </paper-listbox>
                             </paper-dropdown-menu>
+
+                            <paper-dropdown-menu label="Rank" vertical-offset="60" style="width:150px">
+                                <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{rankfilter}}">
+                                    <paper-item value="teamlead">Team leader</paper-item>
+                                    <paper-item value="member">Member</paper-item>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
                         </div>
                         <div style="font-size:12px; margin-top:10px;">Access</div>
                         <paper-checkbox id="dash">Dashboard</paper-checkbox>
@@ -196,6 +203,7 @@
                         <paper-checkbox id="acc">Accounts</paper-checkbox>
                         <paper-checkbox id="case">Briefcase</paper-checkbox>
                         <paper-checkbox id="ann">Announcement</paper-checkbox>
+                        <paper-checkbox id="group">Group</paper-checkbox>
                     </div>
                     <br>
                     <br>
@@ -296,14 +304,39 @@
                 },
                 typefilter: {
                     type: String,
-                    value: 'inhouse'
+                    value: 'none'
                 },
-                managerfilter: String,
-                groupfilter: String
+                managerfilter: {
+                    type: String,
+                    value: 'none'
+                },
+                groupfilter: {
+                    type: String,
+                    value: 'none'
+                },
+                rankfilter: {
+                    type: String,
+                    value: 'none'
+                }
             },
 
             observers: [
+                'typefilterChanged(typefilter)',
+                'managerfilterChanged(managerfilter)',
+                'groupfilterChanged(groupfilter)'
             ],
+
+            typefilterChanged() {
+                this.managerfilter = 'none';
+            },
+
+            managerfilterChanged(e) {
+                this.groupfilter = 'none';
+            },
+
+            groupfilterChanged(e) {
+                this.rankfilter = 'none';
+            },
 
             roleAddChanged() {
                 if (this.roleAdd == 0) {
@@ -349,11 +382,14 @@
                 var box3 = Polymer.dom(this.root).querySelector("#acc");
                 var box4 = Polymer.dom(this.root).querySelector("#case");
                 var box5 = Polymer.dom(this.root).querySelector("#ann");
+                var box6 = Polymer.dom(this.root).querySelector("#group");
+                
                 var dashboard = false;
                 var applications = false;
                 var accounts = false;
                 var briefcase = false;
                 var announcement = false;
+                var group = false;
 
                 if (!this.firstname || !this.middlename || !this.lastname) {
                     this.msg = 'Please fill-up the required field.';
@@ -374,6 +410,9 @@
                     if (box5.checked == true) {
                         announcement = true;
                     }
+                    if (box6.checked == true) {
+                        group = true;
+                    }
                     if (this.cellphone.length != 10) {
                         this.msg = 'Error! Invalid cellphone number.';
                     }
@@ -383,39 +422,77 @@
                             this.suffix = '';
                         }
 
-                        var ref = firebase.database().ref("accountlist");
-                        var push = ref.push({
-                            accountkey: this.accountkey,
-                            access: {
-                                accountlist: accounts,
-                                applications: applications,
-                                dashboard: dashboard,
-                                briefcase: briefcase,
-                                announcement: announcement
-                            },
-                            active: true,
-                            name: {
-                                firstname: this.firstname,
-                                middlename: this.middlename,
-                                lastname: this.lastname,
-                                suffix: this.suffix
-                            },
-                            cellphone: this.cellphone,
-                            role: this.role,
-                            uid: '',
-                            type: this.role + "_" + this.typefilter
-                        });
-                        // Polymer.dom(this.root).querySelector("#toast").open();
-                        // this.txt = "Account successfully added.";
-                        this.finalstepHide = false;
-                        this.firstStep = true;
-                        // window.location = "/accountlist"
-                        // this.$.modal.open();
+                        if (this.role == 'Sales Agent') {
+                            if (this.typefilter == 'none' || this.managerfilter == 'none' || this.groupfilter == 'none' || this.rankfilter == 'none') {
+                                this.msg = 'Error! Please fill up the required field.';
+                            } else {
+                                this._success(dashboard, applications, accounts, briefcase, announcement, group);
+                            }
+                        } else if (this.role == 'Manager') {
+                            if (this.typefilter == 'none') {
+                                this.msg = 'Error! Please fill up the required field.';
+                            } else {
+                                this._success(dashboard, applications, accounts, briefcase, announcement, group);
+                            }
+                        }
+                        else {
+                            this._success(dashboard, applications, accounts, briefcase, announcement, group);
+                        }
                     }
                 }
             },
             _name(e, f, g) {
                 return e + " " + f + " " + " " + g;
+            },
+
+            _success(dashboard, applications, accounts, briefcase, announcement, group) {
+                var ref = firebase.database().ref("accountlist");
+                var push = ref.push({
+                    accountkey: this.accountkey,
+                    access: {
+                        accountlist: accounts,
+                        applications: applications,
+                        dashboard: dashboard,
+                        briefcase: briefcase,
+                        announcement: announcement,
+                        group: group
+                    },
+                    active: true,
+                    name: {
+                        firstname: this.firstname,
+                        middlename: this.middlename,
+                        lastname: this.lastname,
+                        suffix: this.suffix
+                    },
+                    cellphone: this.cellphone,
+                    role: this.role,
+                    uid: '',
+                    type: this.typefilter,
+                    manager: this.managerfilter,
+                    team: this.groupfilter,
+                    rank: this.rankfilter,
+                    role_type: this.role + "_" + this.typefilter,
+                    manager_team: this.managerfilter + "_" + this.groupfilter,
+                });
+
+                // var postData = {
+                //     name: {
+                //         firstname: this.firstname,
+                //         middlename: this.middlename,
+                //         lastname: this.lastname,
+                //         suffix: this.suffix
+                //     }
+                // };
+                // var updates = {};
+                // updates['/user_group/' + this.managerfilter + "/members/" + this.accountkey] = postData;
+                
+
+                // Polymer.dom(this.root).querySelector("#toast").open();
+                // this.txt = "Account successfully added.";
+                this.finalstepHide = false;
+                this.firstStep = true;
+                // window.location = "/accountlist"
+                // this.$.modal.open();
             }
         })
     </script>
