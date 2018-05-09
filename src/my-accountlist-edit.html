@@ -353,6 +353,7 @@
             },
             _editDataChanged() {
                 if (Object.keys(this.editData).length > 0) {
+                    this.uid = this.editData.uid;
                     this.accountkey = this.editData.accountkey;
                     this.firstname = this.editData.name.firstname;
                     this.middlename = this.editData.name.middlename;
@@ -509,7 +510,7 @@
                     },
                     cellphone: this.cellphone,
                     role: this.role,
-                    uid: '',
+                    uid: this.uid,
                     type: this.typefilter,
                     manager: this.managerfilter,
                     team: this.groupfilter,

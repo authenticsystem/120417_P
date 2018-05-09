@@ -229,7 +229,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 // this._uploadAttachment(attachment, announcementPush);
                 this.$.successDialog.open();
                 return firebase.database().ref().update(updates);
-                
+
             },
 
             notification(staff, manager, agent, owner, announcementTitle) {
@@ -259,15 +259,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     var photoName = attachFile.name;
                     var storageRef = firebase.storage().ref('attachments/' + photoName);
                     storageRef.put(attachFile).then(function (metadatas) {
-                        // console.log('uploaded');
-                        var newPostKey = firebase.database().ref('announcements').push().key;
-                        var postData = {
+                        var ref = firebase.database().ref("announcements/" + pushkey + "/attachments/");
+                        var push = ref.push({
                             url: metadatas.downloadURL,
                             name: metadatas.photoName
-                        };
-                        var updates = {};
-                        updates["announcements/" + pushkey + "/attachments/" + newPostKey] = postData;
-                        return firebase.database().ref().update(updates);
+                        });
+                        // var newPostKey = firebase.database().ref('announcements/' + pushkey + "/attachments/").push().key;
+                        // var postData = {
+                        //     url: metadatas.downloadURL,
+                        //     name: metadatas.photoName
+                        // };
+                        // var updates = {};
+                        // updates["announcements/" + pushkey + "/attachments/" + newPostKey] = postData;
+                        // firebase.database().ref().update(updates);
                     }).catch(function (error) {
                         // If any task fails, handle this
                     });
