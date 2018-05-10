@@ -464,12 +464,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!-- Announcements -->
           <div>
             <firebase-query path="/announcements" data="{{announcementsData}}" limit-to-last="50"></firebase-query>
+            <div hidden$="{{loader_notificationData}}" class="loader" id="loader">{{loadingMessage}}</div>
             <template is="dom-repeat" items="[[reverseAnnouncementsData]]">
               <div class="announcementDiv">
                 <div class="item">
                   <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
                   <div class="pad">
-                    <div class="secondary">[[dateTimeFormat(item.timestamp,item.isupdated)]]</div>
+                    <div class="secondary">[[dateTimeFormat(item.timestamp,item.isUpdate)]]</div>
                     <br>
                     <div>
                       <img class="attachmentIMG" src="[[item.attachmentURL]]" alt=" No photo" style="width:50%;">
@@ -1390,10 +1391,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             announcements2.push(element);
           });
           this.reverseAnnouncementsData = this._descending(announcements2);
-          // this.loader_announcements2 = true;
+          this.loader_announcements2 = true;
         } else {
-          // this._fetch();
-          // this.loader_announcements2 = false;
+          this._fetch();
+          this.loader_announcements2 = false;
         }
       },
 
@@ -3012,7 +3013,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var time = month + ' ' + date + ',' + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
 
         if (f == true) {
-          return 'Updated: ' + time;
+          return time + ' updated';
         } else {
           return time;
         }

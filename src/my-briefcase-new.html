@@ -178,20 +178,15 @@
                 </app-header>
 
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
+                    
                     <neon-animatable>
                         <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
-
                         <firebase-query id="query" path="/accountlist" order-by-child="uid" equal-to="{{userid}}" data="{{agentsList}}"></firebase-query>
-
                         <firebase-document id="fdColor"></firebase-document>
-
                         <firebase-query id="query" path="/briefcasedraft" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1 data="{{lastApplication}}"></firebase-query>
-
                         <firebase-query path="/reservations/{{fullLot}}" order-by-child='isexpired' equal-to='false' limit-to-last=1 data="{{lastReservation}}"></firebase-query>
 
-
                         <div class="docu">
-
                             <div class="docu-header">
                                 <span>1. Lot Details</span>
                             </div>
@@ -298,8 +293,6 @@
                     </neon-animatable> -->
 
                     <neon-animatable>
-
-
                         <div class="docu">
                             <div class="docu-header">3. Finalize</div>
                             <div class="details">
@@ -359,6 +352,7 @@
                             </div>
                         </div>
                     </neon-animatable>
+
                 </neon-animated-pages>
 
             </app-header-layout>
@@ -372,12 +366,7 @@
                 </div>
             </div>
 
-
-
         </app-drawer-layout>
-
-
-
 
     </template>
 

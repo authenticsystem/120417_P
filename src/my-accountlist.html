@@ -118,7 +118,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <template is="dom-if" if="{{access}}">
-      <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
+      <app-route route="{{route}}" pattern="" active="{{accountActive}}"></app-route>
       <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
       <div hidden$="{{!accountActive}}">
         <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
@@ -292,23 +292,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      editDetails(e) {
-        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-        var node = Polymer.dom(this.root).querySelector("#appedit");
-        if (node) {
-          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
-          if (oldDiv) {
-            Polymer.dom(node.parentNode).removeChild(oldDiv);
-          }
-          var newDiv = document.createElement("my-accountlist-edit");
-          newDiv.setAttribute("id", "d25")
-          newDiv.setAttribute("transaction-key", data_args)
-          newDiv.setAttribute("prev-route", this.route.prefix);
-          //if open existing
-          var currentDiv = document.getElementById("appedit");
-          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-        }
-      },
+      // editDetails(e) {
+      //   var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+      //   var node = Polymer.dom(this.root).querySelector("#appedit");
+      //   if (node) {
+      //     var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
+      //     if (oldDiv) {
+      //       Polymer.dom(node.parentNode).removeChild(oldDiv);
+      //     }
+      //     var newDiv = document.createElement("my-accountlist-edit");
+      //     newDiv.setAttribute("id", "d25")
+      //     newDiv.setAttribute("transaction-key", data_args)
+      //     newDiv.setAttribute("prev-route", this.route.prefix);
+      //     //if open existing
+      //     var currentDiv = document.getElementById("appedit");
+      //     Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+      //   }
+      // },
 
       // delete() {
       //   if (this.selectedItems.length > 0) {
