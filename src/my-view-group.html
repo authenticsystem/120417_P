@@ -1,0 +1,77 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-view-group">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+
+            app-header {
+                color: rgb(255, 255, 255);
+                background-color: #388E3C;
+            }
+        </style>
+        <firebase-document path="/accountlist/{{transactionKey}}" data="{{myData}}"></firebase-document>
+        <!-- <firebase-query path="/user_group/{{accountkey}}" data="{{groupData}}"></firebase-query> -->
+
+        <app-header-layout fullbleed has-scrolling-region>
+            <app-header fixed slot="header">
+                <app-toolbar primary>
+                    <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                    <div main-title>{{myname}}</div>
+                </app-toolbar>
+            </app-header>
+
+            <div class="card">
+                <h1>ON DEVELOPMENT</h1>
+            </div>
+        </app-header-layout>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-view-group',
+            properties: {
+                transactionKey: String,
+                accountkey: String,
+                myData: Object
+            },
+            observers: [
+                'myDataChanged(myData)'
+            ],
+
+            myDataChanged(){
+                if(Object.keys(this.myData).length > 0){
+                   var fname = this.myData.name.firstname;
+                   var mname = this.myData.name.middlename;
+                   var lname = this.myData.name.lastname;
+                   this.myname = fname + " " + mname + " " + lname;
+                }
+            },
+
+            toggleDrawer() {
+                this.dispatchEvent(new CustomEvent('toggleDrawer', {
+                    bubbles: true, composed: true, detail: {
+                        narrow: this.$.narrow
+                    }
+                }));
+                this.$.narrow = !this.$.narrow;
+            },
+        })
+    </script>
+</dom-module>

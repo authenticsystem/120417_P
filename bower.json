@@ -70,7 +70,8 @@
     "paper-styles": "PolymerElements/paper-styles#^2.1.0",
     "iron-form": "PolymerElements/iron-form#^2.3.0",
     "sl-gallery": "jsilvermist/sl-gallery#^1.0.1",
-    "iron-collapse": "PolymerElements/iron-collapse#^2.2.0"
+    "iron-collapse": "PolymerElements/iron-collapse#^2.2.0",
+    "vaadin-date-picker": "vaadin/vaadin-date-picker#^3.0.0"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"
