@@ -10,6 +10,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-view-group">
@@ -25,20 +27,67 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 color: rgb(255, 255, 255);
                 background-color: #388E3C;
             }
-        </style>
-        <firebase-document path="/accountlist/{{transactionKey}}" data="{{myData}}"></firebase-document>
-        <!-- <firebase-query path="/user_group/{{accountkey}}" data="{{groupData}}"></firebase-query> -->
 
+            @media screen and (max-width: 800px) {
+                paper-icon-item {
+                    background-color: white;
+                    width: 100%;
+                    padding: 6px;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                }
+            }
+
+            @media screen and (min-width: 800px) {
+                paper-icon-item {
+                    background-color: white;
+                    margin: auto;
+                    width: 80%;
+                    padding: 6px;
+                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
+                }
+            }
+
+            .avatar {
+                display: inline-block;
+                box-sizing: border-box;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: var(--paper-amber-500);
+            }
+        </style>
+
+        <firebase-query path="/accountlist" order-by-child="type_group" equal-to="{{type}}_{{groupName}}" data="{{accountlistData}}"></firebase-query>
         <app-header-layout fullbleed has-scrolling-region>
             <app-header fixed slot="header">
                 <app-toolbar primary>
-                    <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-                    <div main-title>{{myname}}</div>
+                    <a href="/group" style="color: white">
+                        <paper-icon-button class="menu" icon="my-icons:arrow-back"></paper-icon-button>
+                    </a>
+                    {{groupName}}
                 </app-toolbar>
             </app-header>
 
-            <div class="card">
-                <h1>ON DEVELOPMENT</h1>
+            <template is="dom-repeat" items="[[accountlistData]]">
+                <div style="margin-top: 16px">
+                    <paper-icon-item>
+                        <div class="avatar" slot="item-icon"></div>
+                        <paper-item-body two-line>
+                            <div>[[item.name.firstname]]</div>
+                            <div secondary>[[_designation(item.designation)]]</div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </div>
+            </template>
+
+            <div style="display: none" id="noDataDiv">
+                <div style="margin-top: 16px;">
+                    <paper-icon-item>
+                        <div>
+                            <p>{{dataMSG}}</p>
+                        </div>
+                    </paper-icon-item>
+                </div>
             </div>
         </app-header-layout>
     </template>
@@ -48,29 +97,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             is: 'my-view-group',
             properties: {
                 transactionKey: String,
-                accountkey: String,
-                myData: Object
+                groupName: String,
+                type: String,
+                accountlistData: Object,
             },
             observers: [
-                'myDataChanged(myData)'
+                'accountlistDataChanged(accountlistData)'
             ],
 
-            myDataChanged(){
-                if(Object.keys(this.myData).length > 0){
-                   var fname = this.myData.name.firstname;
-                   var mname = this.myData.name.middlename;
-                   var lname = this.myData.name.lastname;
-                   this.myname = fname + " " + mname + " " + lname;
+            accountlistDataChanged(e) {
+                if (e.length > 0) {
+                    Polymer.dom(this.root).querySelector("#noDataDiv").style.display = 'none';
+                } else {
+                    Polymer.dom(this.root).querySelector("#noDataDiv").style.display = 'block';
+                    this.dataMSG = 'Loading...';
+                    this.fetch();
                 }
             },
 
-            toggleDrawer() {
-                this.dispatchEvent(new CustomEvent('toggleDrawer', {
-                    bubbles: true, composed: true, detail: {
-                        narrow: this.$.narrow
+            fetch() {
+                setTimeout((e) => {
+                    this.dataMSG = 'No data found...';
+                }, 3000);
+            },
+
+            _designation(e){
+                if(e){
+                    if(e == 'none'){
+                        return 'Manager';
+                    }else{
+                        return e;
                     }
-                }));
-                this.$.narrow = !this.$.narrow;
+                }else{
+                    return 'No designation';
+                }
             },
         })
     </script>

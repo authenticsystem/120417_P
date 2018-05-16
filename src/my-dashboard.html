@@ -223,6 +223,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         .announcementDiv {
           width: 100%;
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         }
         .container {
           padding: 0
@@ -322,7 +323,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         .announcementDiv {
           width: 800px;
-          margin: auto
+          margin: auto;
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         }
         .container {
           padding: 16px
@@ -360,7 +362,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         @apply --layout-horizontal;
         padding: 20px;
         background-color: white;
-        border: 1px solid #ddd;
+        /* border: 1px solid #ddd; */
         cursor: pointer;
         margin-top: 16px;
       }
@@ -401,7 +403,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         --paper-tabs-selection-bar-color: black;
       }
     </style>
-
 
     <template is="dom-if" if="{{!access}}">
       <app-header-layout fullbleed has-scrolling-region>
@@ -462,12 +463,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-header>
 
         <iron-pages selected="{{selectedTab}}">
-          <!-- <div class="card">
-            <div class="typewriter">
-              <h1>Coming soon......</h1>
-            </div>
-          </div> -->
-
           <!-- Announcements -->
           <div>
             <firebase-query path="/announcements" data="{{announcementsData}}" limit-to-last="50"></firebase-query>
@@ -889,15 +884,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <paper-item id="compPaper-item">Lawn Lots</paper-item>
                                 <paper-item id="compPaper-item">Cinerarium</paper-item>
                                 <paper-item id="compPaper-item">Wall Niche</paper-item>
-                                <paper-item id="compPaper-item">Family Lots 1 (53.27m²)</paper-item>
-                                <paper-item id="compPaper-item">Family Lots 1 (52.83m²)</paper-item>
+                                <paper-item id="compPaper-item">Family Lots 1 (53.27m�)</paper-item>
+                                <paper-item id="compPaper-item">Family Lots 1 (52.83m�)</paper-item>
                                 <paper-item id="compPaper-item">Family Lots 1 (Irregular lots)</paper-item>
-                                <paper-item id="compPaper-item">Family Lots 2 (37.45m²)</paper-item>
+                                <paper-item id="compPaper-item">Family Lots 2 (37.45m�)</paper-item>
                                 <paper-item id="compPaper-item">Family Lots 2 (Irregular lots)</paper-item>
-                                <paper-item id="compPaper-item">Garden Lots 1 (Area=12.52m²)</paper-item>
-                                <paper-item id="compPaper-item">Garden Lots 1 (Area=12.43m²)</paper-item>
+                                <paper-item id="compPaper-item">Garden Lots 1 (Area=12.52m�)</paper-item>
+                                <paper-item id="compPaper-item">Garden Lots 1 (Area=12.43m�)</paper-item>
                                 <paper-item id="compPaper-item">Garden Lots 1 (Irregular Lots)</paper-item>
-                                <paper-item id="compPaper-item">Garden Lots 2 (Area=20.00m²)</paper-item>
+                                <paper-item id="compPaper-item">Garden Lots 2 (Area=20.00m�)</paper-item>
                                 <paper-item id="compPaper-item">Garden Lots 2 (Irregular Lots)</paper-item>
                               </paper-listbox>
                             </paper-dropdown-menu>
@@ -1011,15 +1006,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <paper-item value="bonechamber" id="compPaper-item">Bone Chamber</paper-item>
                                 <paper-item value="wallniche" id="compPaper-item">Wall Niche</paper-item>
                                 <paper-item value="cinerarium" id="compPaper-item">Cinerarium</paper-item>
-                                <paper-item value="familylots1" id="compPaper-item">Family Lots 1 (53.27m²)</paper-item>
-                                <paper-item value="familylots2" id="compPaper-item">Family Lots 1 (52.83m²)</paper-item>
+                                <paper-item value="familylots1" id="compPaper-item">Family Lots 1 (53.27m�)</paper-item>
+                                <paper-item value="familylots2" id="compPaper-item">Family Lots 1 (52.83m�)</paper-item>
                                 <paper-item value="familylots3" id="compPaper-item">Family Lots 1 (Irregular lots)</paper-item>
-                                <paper-item value="familylots4" id="compPaper-item">Family Lots 2 (37.45m²)</paper-item>
+                                <paper-item value="familylots4" id="compPaper-item">Family Lots 2 (37.45m�)</paper-item>
                                 <paper-item value="familylots5" id="compPaper-item">Family Lots 2 (Irregular lots)</paper-item>
-                                <paper-item value="gardenlots1" id="compPaper-item">Garden Lots 1 (Area=12.52m²)</paper-item>
-                                <paper-item value="gardenlots2" id="compPaper-item">Garden Lots 1 (Area=12.43m²)</paper-item>
+                                <paper-item value="gardenlots1" id="compPaper-item">Garden Lots 1 (Area=12.52m�)</paper-item>
+                                <paper-item value="gardenlots2" id="compPaper-item">Garden Lots 1 (Area=12.43m�)</paper-item>
                                 <paper-item value="gardenlots3" id="compPaper-item">Garden Lots 1 (Irregular Lots)</paper-item>
-                                <paper-item value="gardenlots4" id="compPaper-item">Garden Lots 2 (Area=20.00m²)</paper-item>
+                                <paper-item value="gardenlots4" id="compPaper-item">Garden Lots 2 (Area=20.00m�)</paper-item>
                                 <paper-item value="gardenlots5" id="compPaper-item">Garden Lots 2 (Irregular Lots)</paper-item>
                               </paper-listbox>
                             </paper-dropdown-menu>
@@ -1099,59 +1094,70 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <vaadin-date-picker label="From" value="{{fromAgentSales}}"></vaadin-date-picker>
                         <vaadin-date-picker label="To" value="{{toAgentSales}}"></vaadin-date-picker>
                       </div>
+                      <!-- CHART 1 -->
+                      <div class="card chart-container">
+                        <div>
+                          <center>
+                            <paper-buttons-group selected="{{selectedDMY}}" id="customGroup">
+                              <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
+                              <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Weekly</paper-button>
+                              <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Monthly</paper-button>
+                              <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
+                            </paper-buttons-group>
+                          </center>
+                        </div>
 
-                      <div class="card">
-                        Inhouse
-                        <div class="chart-container">
-                          <canvas id="inhouseagentSalesChart"></canvas>
-                        </div>
+                        <paper-dropdown-menu label="Type" vertical-offset="60">
+                          <paper-listbox slot="dropdown-content" class="dropdown-content" selected="0">
+                            <paper-item>Sold</paper-item>
+                            <paper-item>Reserved</paper-item>
+                            <paper-item>Hold</paper-item>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
+                        <canvas id="agentSalesReport"></canvas>
                       </div>
-                      <div class="card">
-                        Broker
-                        <div class="chart-container">
-                          <canvas id="brokeragentSalesChart"></canvas>
-                        </div>
-                      </div>
-                    </div>
+                      <!-- CHART 2 -->
+                      <!-- <div class="card chart-container">
+                        <canvas id="agentSalesReport"></canvas>
+                      </div> -->
                   </iron-pages>
 
+                  </div>
                 </div>
-              </div>
 
             </template>
             <!-- </div> -->
             <!-- owner's report -->
-          </div>
-          <!-- End of Reports -->
-          <!-- Notification -->
-          <div>
-            <firebase-query path="/notifications" order-by-child="recipient/{{myaccountrole}}" equal-to="true" limit-to-last="50" data="{{notificationData}}"></firebase-query>
-            <firebase-query path="/notifications" order-by-child="recipient/recipient_accountCode" equal-to="{{myaccountcode}}" limit-to-last="50"
-              data="{{notificationData}}"></firebase-query>
+            </div>
+            <!-- End of Reports -->
+            <!-- Notification -->
+            <div>
+              <firebase-query path="/notifications" order-by-child="recipient/{{myaccountrole}}" equal-to="true" limit-to-last="50" data="{{notificationData}}"></firebase-query>
+              <firebase-query path="/notifications" order-by-child="recipient/recipient_accountCode" equal-to="{{myaccountcode}}" limit-to-last="50"
+                data="{{notificationData}}"></firebase-query>
 
-            <div hidden$="{{loader_notificationData}}" class="loader" id="loader">{{loadingMessage}}</div>
+              <div hidden$="{{loader_notificationData}}" class="loader" id="loader">{{loadingMessage}}</div>
 
-            <template is="dom-repeat" items="[[notificationdata_merge]]">
-              <div class="announcementDiv">
-                <div class="item">
-                  <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
-                  <div class="pad">
-                    <div hidden$="[[item.isread]]" class="primary">[[item.sender]]&nbsp;[[item.message]]</div>
-                    <div hidden$="[[!item.isread]]">[[item.sender]]&nbsp;[[item.message]]</div>
-                    <div class="secondary">
-                      <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
+              <template is="dom-repeat" items="[[notificationdata_merge]]">
+                <div class="announcementDiv">
+                  <div class="item">
+                    <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
+                    <div class="pad">
+                      <div hidden$="[[item.isread]]" class="primary">[[item.sender]]&nbsp;[[item.message]]</div>
+                      <div hidden$="[[!item.isread]]">[[item.sender]]&nbsp;[[item.message]]</div>
+                      <div class="secondary">
+                        <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>
+                      </div>
+                      <div class="secondary">"[[item.title]]"</div>
                     </div>
-                    <div class="secondary">"[[item.title]]"</div>
+                    <paper-icon-button icon="my-icons:open-in-new" title="View notifications" on-tap="_notificationLink" alt="{{item}}"></paper-icon-button>
                   </div>
-                  <paper-icon-button icon="my-icons:open-in-new" title="View notifications" on-tap="_notificationLink" alt="{{item}}"></paper-icon-button>
                 </div>
-              </div>
-            </template>
+              </template>
 
-          </div>
-          <!-- end Notification -->
+            </div>
+            <!-- end Notification -->
         </iron-pages>
-
 
       </app-header-layout>
     </template>
@@ -1359,8 +1365,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         fromAgentSales: String,
         toAgentSales: String,
-        inhouseagentSalesChart: Object,
-        brokeragentSalesChart: Object
+        agentSalesReport: Object,
       },
 
       ready() {
@@ -1397,8 +1402,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.managerFilter = 'sold';
 
         //owner, agent sales report
-        this.fromAgentSales = this._format(datee, 'day');
-        this.toAgentSales = this._format(datee, 'day');
+        var curr = new Date();
+        day = curr.getDay();
+        firstday = new Date(curr.getTime() - 60 * 60 * 24 * day * 1000);
+        lastday = new Date(firstday.getTime() + 60 * 60 * 24 * 6 * 1000);
+
+        this.fromAgentSales = this.formatdate(firstday);
+        this.toAgentSales = this.formatdate(lastday);
       },
 
       observers: [
@@ -1421,14 +1431,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       selectedSalesTabChanged(e) {
         if (e == 1) {
-          if (!this.inhouseagentSalesChart) {
-            var ctx = Polymer.dom(this.root).querySelector("#inhouseagentSalesChart");
-            var inhouseagentSalesCharts = new Chart(ctx, {
+          if (!this.agentSalesReport) {
+            var ctx = Polymer.dom(this.root).querySelector("#agentSalesReport");
+            var agentSalesReports = new Chart(ctx, {
               type: 'line',
               data: {
                 labels: ["23", "24", "25", "26", "27", "28", "29"],
                 datasets: [{
-                  label: "Ardie",
+                  label: "In-house",
                   backgroundColor: 'transparent',
                   borderColor: 'red',
                   borderWidth: 1,
@@ -1446,7 +1456,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   }
                 },
                 {
-                  label: "Gabriel",
+                  label: "Broker",
                   backgroundColor: 'transparent',
                   borderColor: 'orange',
                   borderWidth: 1,
@@ -1463,27 +1473,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       weight: 'bold'
                     }
                   }
-                },
-                {
-                  label: "Peter",
-                  backgroundColor: 'transparent',
-                  borderColor: 'yellow',
-                  borderWidth: 1,
-                  hidden: true,
-                  data: [5, 7, 13, 22, 2, 2, 11],
-                  datalabels: {
-                    align: 'end',
-                    anchor: 'end',
-                    display: true,
-                    backgroundColor: 'yellow',
-                    borderRadius: 4,
-                    color: 'black',
-                    font: {
-                      weight: 'bold'
-                    }
-                  }
-                }
-                ]
+                }]
               },
               options: {
                 plugins: {
@@ -1495,84 +1485,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 maintainAspectRatio: false
               }
             });
-            this.inhouseagentSalesChart = inhouseagentSalesCharts;
-          }
-
-          if (!this.brokeragentSalesChart) {
-            var ctx = Polymer.dom(this.root).querySelector("#brokeragentSalesChart");
-            var brokeragentSalesCharts = new Chart(ctx, {
-              type: 'line',
-              data: {
-                labels: ["23", "24", "25", "26", "27", "28", "29"],
-                datasets: [{
-                  label: "Ardie",
-                  backgroundColor: 'transparent',
-                  borderColor: 'red',
-                  borderWidth: 1,
-                  data: [0, 10, 5, 2, 20, 30, 45],
-                  datalabels: {
-                    align: 'end',
-                    anchor: 'end',
-                    display: true,
-                    backgroundColor: 'red',
-                    borderRadius: 4,
-                    color: '#ddd',
-                    font: {
-                      weight: 'bold'
-                    }
-                  }
-                },
-                {
-                  label: "Gabriel",
-                  backgroundColor: 'transparent',
-                  borderColor: 'orange',
-                  borderWidth: 1,
-                  hidden: true,
-                  data: [1, 8, 3, 2, 22, 32, 41],
-                  datalabels: {
-                    align: 'end',
-                    anchor: 'end',
-                    display: true,
-                    backgroundColor: 'orange',
-                    borderRadius: 4,
-                    color: 'black',
-                    font: {
-                      weight: 'bold'
-                    }
-                  }
-                },
-                {
-                  label: "Peter",
-                  backgroundColor: 'transparent',
-                  borderColor: 'yellow',
-                  borderWidth: 1,
-                  hidden: true,
-                  data: [5, 7, 13, 22, 2, 2, 11],
-                  datalabels: {
-                    align: 'end',
-                    anchor: 'end',
-                    display: true,
-                    backgroundColor: 'yellow',
-                    borderRadius: 4,
-                    color: 'black',
-                    font: {
-                      weight: 'bold'
-                    }
-                  }
-                }
-                ]
-              },
-              options: {
-                plugins: {
-                  datalabels: {
-                    display: false
-                  }
-                },
-                responsive: true,
-                maintainAspectRatio: false
-              }
-            });
-            this.brokeragentSalesChart = brokeragentSalesCharts;
+            this.agentSalesReport = agentSalesReports;
           }
         }
       },
@@ -2119,15 +2032,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         else if (e == 'wallniche') return 'Wall Niche';
         else if (e == 'bonechamber') return 'Bone Chamber';
         else if (e == 'cinerarium') return 'Cinerarium';
-        else if (e == 'familylots4') return 'Family Lots 1 (Area=37.45m²)';
+        else if (e == 'familylots4') return 'Family Lots 1 (Area=37.45m�)';
         else if (e == 'familylots5') return 'Family Lots 1 (Irregular Lots)';
-        else if (e == 'familylots1') return 'Family Lots 2 (Area=53.27m²)';
-        else if (e == 'familylots2') return 'Family Lots 2 (Area=52.83m²)';
+        else if (e == 'familylots1') return 'Family Lots 2 (Area=53.27m�)';
+        else if (e == 'familylots2') return 'Family Lots 2 (Area=52.83m�)';
         else if (e == 'familylots3') return 'Family Lots 2 (Irregular Lots)';
-        else if (e == 'gardenlots1') return 'Garden Lots 1 (Area=12.52m²)';
-        else if (e == 'gardenlots2') return 'Garden Lots 1 (Area=12.43m²)';
+        else if (e == 'gardenlots1') return 'Garden Lots 1 (Area=12.52m�)';
+        else if (e == 'gardenlots2') return 'Garden Lots 1 (Area=12.43m�)';
         else if (e == 'gardenlots3') return 'Garden Lots 1 (Irregular Lots)';
-        else if (e == 'gardenlots4') return 'Garden Lots 2 (Area=20.00m²)';
+        else if (e == 'gardenlots4') return 'Garden Lots 2 (Area=20.00m�)';
         else if (e == 'gardenlots5') return 'Garden Lots 2 (Irregular Lots)';
       },
 
@@ -2717,15 +2630,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               else if (element.key == 'wallniche') { itemkey = 'Wall Niche'; bgColor = '#E91E63'; }
               else if (element.key == 'bonechamber') { itemkey = 'Bone Chamber'; bgColor = '#3F51B5'; }
               else if (element.key == 'cinerarium') { itemkey = 'Cinerarium'; bgColor = '#795548'; }
-              else if (element.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m²)'; bgColor = '#BA68C8'; }
+              else if (element.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m�)'; bgColor = '#BA68C8'; }
               else if (element.key == 'familylots5') { itemkey = 'Family Lots 1 (Irregular)'; bgColor = '#E1BEE7'; }
-              else if (element.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m²)'; bgColor = '#4A148C'; }
-              else if (element.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m²)'; bgColor = '#7B1FA2'; }
+              else if (element.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m�)'; bgColor = '#4A148C'; }
+              else if (element.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m�)'; bgColor = '#7B1FA2'; }
               else if (element.key == 'familylots3') { itemkey = 'Family Lots 2 (Irregular)'; bgColor = '#9C27B0'; }
-              else if (element.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m²)'; bgColor = '#DCEDC8'; }
-              else if (element.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m²)'; bgColor = '#AED581'; }
+              else if (element.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m�)'; bgColor = '#DCEDC8'; }
+              else if (element.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m�)'; bgColor = '#AED581'; }
               else if (element.key == 'gardenlots3') { itemkey = 'Garden Lots 1 (Irregular)'; bgColor = '#8BC34A'; }
-              else if (element.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m²)'; bgColor = '#689F38'; }
+              else if (element.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m�)'; bgColor = '#689F38'; }
               else if (element.key == 'gardenlots5') { itemkey = 'Garden Lots 2 (Irregular)'; bgColor = '#33691E'; }
 
 
@@ -2941,15 +2854,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 else if (ele.key == 'wallniche') { itemkey = 'Wall Niche'; bgColor = '#E91E63'; }
                 else if (ele.key == 'bonechamber') { itemkey = 'Bone Chamber'; bgColor = '#3F51B5'; }
                 else if (ele.key == 'cinerarium') { itemkey = 'Cinerarium'; bgColor = '#795548'; }
-                else if (ele.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m²)'; bgColor = '#BA68C8'; }
+                else if (ele.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m�)'; bgColor = '#BA68C8'; }
                 else if (ele.key == 'familylots5') { itemkey = 'Family Lots 1 (Irregular)'; bgColor = '#E1BEE7'; }
-                else if (ele.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m²)'; bgColor = '#4A148C'; }
-                else if (ele.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m²)'; bgColor = '#7B1FA2'; }
+                else if (ele.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m�)'; bgColor = '#4A148C'; }
+                else if (ele.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m�)'; bgColor = '#7B1FA2'; }
                 else if (ele.key == 'familylots3') { itemkey = 'Family Lots 2 (Irregular)'; bgColor = '#9C27B0'; }
-                else if (ele.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m²)'; bgColor = '#DCEDC8'; }
-                else if (ele.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m²)'; bgColor = '#AED581'; }
+                else if (ele.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m�)'; bgColor = '#DCEDC8'; }
+                else if (ele.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m�)'; bgColor = '#AED581'; }
                 else if (ele.key == 'gardenlots3') { itemkey = 'Garden Lots 1 (Irregular)'; bgColor = '#8BC34A'; }
-                else if (ele.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m²)'; bgColor = '#689F38'; }
+                else if (ele.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m�)'; bgColor = '#689F38'; }
                 else if (ele.key == 'gardenlots5') { itemkey = 'Garden Lots 2 (Irregular)'; bgColor = '#33691E'; }
 
                 itemHold.push(itemhold);
@@ -3383,6 +3296,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           });
           this.myTeamChart = myTeamCharts;
         }
+      },
+
+      formatdate(x) {
+        var y = x.getFullYear().toString();
+        var m = (x.getMonth() + 1).toString();
+        var d = x.getDate().toString();
+        (d.length == 1) && (d = '0' + d);
+        (m.length == 1) && (m = '0' + m);
+        return y + "-" + m + "-" + d;
       },
 
       backManagersArea() {

@@ -218,6 +218,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-button dialog-confirm on-tap="activate">Yes</paper-button>
       </div>
     </paper-dialog>
+    
   </template>
 
   <script> 
@@ -342,6 +343,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       editDetails(e) {
         var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        console.log(data_args);
         var node = Polymer.dom(this.root).querySelector("#appedit");
         if (node) {
           var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
