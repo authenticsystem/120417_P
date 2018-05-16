@@ -32,8 +32,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
 <link rel="import" href="../bower_components/iron-list/iron-list.html">
 <link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
-<link rel="import" href="../bower_components/sl-gallery/sl-gallery.html">
-<link rel="import" href="../bower_components/sl-gallery/sl-gallery-image.html">
 
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
@@ -1968,7 +1966,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.open = true;
 
           if (!this.comparativeChart) {
-            var ctx = Polymer.dom(this.root).querySelector("#myChart");
+            var ctx = Polymer.dom(this.root).querySelector("#myChart").getContext('2d');
             var myChart = new Chart(ctx, {
               type: 'line',
               options: {
@@ -2076,7 +2074,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.hideOverAll = false;
 
           if (!this.allChart) {
-            var ctx = Polymer.dom(this.root).querySelector("#overAllChart");
+            var ctx = Polymer.dom(this.root).querySelector("#overAllChart").getContext('2d');
             var overAllChart = new Chart(ctx, {
               type: 'pie',
 
@@ -2111,7 +2109,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.allChart = overAllChart;
           }
           if (!this.allchart2) {
-            var ctx = Polymer.dom(this.root).querySelector("#overallchart2");
+            var ctx = Polymer.dom(this.root).querySelector("#overallchart2").getContext('2d');
             var overallchart22 = new Chart(ctx, {
               type: 'pie',
 
@@ -2870,7 +2868,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.hideAgentSalesReport = true;
 
         if (!this.Chart) {
-          var ctx = Polymer.dom(this.root).querySelector("#dailyChart");
+          var ctx = Polymer.dom(this.root).querySelector("#dailyChart").getContext('2d');
           var dailyChart = new Chart(ctx, {
             type: 'horizontalBar',
             data: {},
@@ -2955,11 +2953,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.hideSalesReport = true;
         this.hideAgentSalesReport = false;
 
-        console.log(this.agentSalesChart);
-
-        if (this.agentSalesChart) {
+        if (!this.agentSalesChart) {
           var ctx = Polymer.dom(this.root).querySelector("#agentSalesChart").getContext('2d');
-          console.log(ctx);
           var agentSalesCharts = new Chart(ctx, {
             type: 'bar',
             data: {
