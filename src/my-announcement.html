@@ -25,7 +25,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="../bower_components/vaadin-upload/vaadin-upload.html">
 <link rel="import" href="../bower_components/neon-animation/web-animations.html">
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-announcement-edit.html">
@@ -102,7 +101,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             paper-button.submit {
-                background-color: var(--paper-indigo-500);
+                background-color: gray;
                 color: white;
             }
 
@@ -224,7 +223,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                             </div>
                                         </div>
                                         <div class="card-actions">
-                                            <paper-button id="submitbtn" class="submit" on-tap="_postAnnouncement">post</paper-button>
+                                            <paper-button id="submitbtn" class="submit" on-tap="_postAnnouncement" disabled>post</paper-button>
                                         </div>
                                     </paper-card>
                                 </div>
@@ -260,6 +259,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                     </div>
                                 </template>
 
+                                <paper-dialog id="modal" modal>
+                                    <h1>Posting...</h1>
+                                    <!-- <div class="buttons">
+                                        <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
+                                    </div> -->
+                                </paper-dialog>
+
                                 <paper-dialog id="deleteDialog">
                                     <h2>
                                         <p>Delete announcement?</p>
@@ -268,6 +274,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                         <paper-button dialog-dismiss>Cancel</paper-button>
                                         <paper-button dialog-confirm autofocus on-tap="deleteDialog">OK</paper-button>
                                     </div>
+                                </paper-dialog>
+
+                                <paper-dialog id="deletemodal" modal>
+                                    <h1>Deleting data...</h1>
+                                    <!-- <div class="buttons">
+                                        <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
+                                    </div> -->
                                 </paper-dialog>
                             </div>
                         </app-header-layout>
@@ -278,7 +291,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <div hidden$="{{!editActive}}">
                 <div id="annedit"></div>
-                <my-announcement-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}" myaccountkey={{myaccountKey}} myaccountname="{{myaccountName}}"></my-announcement-edit>
+                <my-announcement-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}" myaccountkey={{myaccountKey}}
+                    myaccountname="{{myaccountName}}"></my-announcement-edit>
             </div>
 
             <!-- end of announcement active -->
@@ -297,16 +311,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     observer: 'accountChanged'
                 },
                 myAnnouncement: Object,
-                reverseMyAnnouncement: Object
+                reverseMyAnnouncement: Object,
+                announcement: String,
+                fileImg: Object
             },
 
             observers: [
-                'myAnnouncementChanged(myAnnouncement.*)'
+                'myAnnouncementChanged(myAnnouncement.*)',
+                'submitChanged(announcement, fileImg)'
             ],
             accountChanged(e) {
                 this.myaccountName = e[0].name.firstname + ' ' + e[0].name.middlename + ' ' + e[0].name.lastname;
                 this.myaccountRole = e[0].role;
                 this.myaccountKey = e[0].accountkey;
+            },
+
+            submitChanged(e, f) {
+                var btn = Polymer.dom(this.root).querySelector("#submitbtn");
+                if (e || f) {
+                    btn.disabled = false;
+                    btn.style.backgroundColor = 'var(--paper-indigo-500)';
+                } else {
+                    btn.disabled = true;
+                    btn.style.backgroundColor = 'gray';
+                }
             },
 
             myAnnouncementChanged(e) {
@@ -375,10 +403,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
 
             _postAnnouncement() {
-                if (this.announcement == null || this.announcement == "") {
-                    Polymer.dom(this.root).querySelector("#errMsg").style.display = 'block';
-                    this.msg = 'Please fillup  the required field..';
-                } else {
+                if (this.announcement || this.fileImg) {
+                    if (!this.announcement) {
+                        this.announcement = "";
+                    }
                     var postData = {
                         announcement: this.announcement,
                         postedBy: this.myaccountName,
@@ -397,11 +425,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         Polymer.dom(this.root).querySelector("#errMsg").style.display = 'block';
                         this.msg = 'Posting..';
                         Polymer.dom(this.root).querySelector("#annInput").disabled = true;
+                        Polymer.dom(this.root).querySelector("#modal").open();
 
                         this.upload(this.fileImg, newPostKey);
                     } else {
                         Polymer.dom(this.root).querySelector("#errMsg").style.display = 'none';
                     }
+                } else {
+                    Polymer.dom(this.root).querySelector("#errMsg").style.display = 'block';
+                    this.msg = 'Please fillup  the required field..';
                 }
             },
 
@@ -458,6 +490,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 updates['/announcements/' + this.announcementKEY] = null;
                 updates['/user-announcements/' + this.myaccountKey + '/' + this.announcementKEY] = null;
                 firebase.database().ref().update(updates);
+                Polymer.dom(this.root).querySelector("#deletemodal").open();
+                window.location = "/announcement";
             },
 
             _getEditAppLink(e) {

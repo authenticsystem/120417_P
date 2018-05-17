@@ -5,6 +5,7 @@
     "src/my-landing-page.html",
     "src/my-signin.html",
     "src/my-register-signin.html",
+    "src/my-reset-password.html",
     "src/my-map.html",
     "src/my-dashboard.html",
     "src/my-lot-details.html",
@@ -16,7 +17,10 @@
     "src/my-application-detail.html",
     "src/my-account.html",
     "src/my-view3.html",
-    "src/my-view404.html"
+    "src/my-view404.html",
+    "src/my-announcement.html",
+    "src/my-group.html",
+    "src/my-galleries.html"
   ],
   "sources": [
     "src/**/*",

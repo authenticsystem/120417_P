@@ -130,6 +130,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </paper-card>
                 </div>
             </div>
+
+            <paper-dialog id="modal" modal>
+                <h1>Posting...</h1>
+                <!-- <div class="buttons">
+                    <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
+                </div> -->
+            </paper-dialog>
         </app-header-layout>
     </template>
 
@@ -142,10 +149,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 myaccountname: String,
                 transactionKey: String,
                 newdata: Object,
+                announcement: String,
+                fileImg: Object
             },
 
             observers: [
-                'newdataChanged(newdata)'
+                'newdataChanged(newdata)',
+                'submitChanged(announcement, fileImg)'
             ],
 
             toggleDrawer() {
@@ -159,9 +169,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             newdataChanged() {
                 if (Object.keys(this.newdata).length > 0) {
-                    this.announcement = this.newdata.announcement;
-                    this.attachmentURL = this.newdata.attachmentURL;
-                    this.attachmentNAME = this.newdata.attachmentNAME;
+                    if (this.newdata.announcement == null) {
+                        this.announcement = '';
+                    } else {
+                        this.announcement = this.newdata.announcement;
+                    }
+
+                    if (this.newdata.attachmentURL == null) {
+                        this.attachmentURL = '';
+                    } else {
+                        this.attachmentURL = this.newdata.attachmentURL;
+                    }
+
+                    if (this.newdata.attachmentNAME == null) {
+                        this.attachmentNAME = '';
+                    } else {
+                        this.attachmentNAME = this.newdata.attachmentNAME;
+                    }
+                }
+            },
+
+            submitChanged(e, f) {
+                var btn = Polymer.dom(this.root).querySelector("#submitbtn");
+                if (e || f) {
+                    btn.disabled = false;
+                    btn.style.backgroundColor = 'var(--paper-indigo-500)';
+                } else {
+                    btn.disabled = true;
+                    btn.style.backgroundColor = 'gray';
                 }
             },
 
@@ -178,10 +213,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
 
             _postAnnouncement() {
-                if (this.announcement == null || this.announcement == "") {
-                    Polymer.dom(this.root).querySelector("#errMsg").style.display = 'block';
-                    this.msg = 'Please fillup  the required field..';
-                } else {
+                if (this.announcement || this.fileImg) {
                     var postData = {
                         announcement: this.announcement,
                         postedBy: this.myaccountname,
@@ -198,17 +230,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     firebase.database().ref().update(updates);
                     this.announcement = null;
                     this.notification();
-                    
+
                     if (this.fileImg) {
                         Polymer.dom(this.root).querySelector("#errMsg").style.display = 'block';
                         this.msg = 'Posting..';
                         Polymer.dom(this.root).querySelector("#annInput").disabled = true;
+                        Polymer.dom(this.root).querySelector("#modal").open();
 
                         this.upload(this.fileImg, this.transactionKey, this.myaccountkey);
                     } else {
                         Polymer.dom(this.root).querySelector("#errMsg").style.display = 'none';
                         window.location = '/announcement'
                     }
+
+                } else {
+                    Polymer.dom(this.root).querySelector("#errMsg").style.display = 'block';
+                    this.msg = 'Please fillup  the required field..';
                 }
             },
 

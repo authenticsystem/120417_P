@@ -12,7 +12,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-messaging.html">
+<!-- <link rel="import" href="../bower_components/polymerfire/firebase-messaging.html"> -->
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
@@ -2506,246 +2506,248 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         var allChart = this.allChart;
         var allchart22 = this.allchart2;
 
-        if (lotTypeFilter == 'all') {
-          que = '/overall';
-          this.hideToggleOverall = false;
+        if (allChart && allchart22) {
+          if (lotTypeFilter == 'all') {
+            que = '/overall';
+            this.hideToggleOverall = false;
 
-          firebase.database().ref('/reports/overAll/' + overAllDate + '/lotType').on('value', function (snap) {
-            var itemHold = [];
-            var itemSold = [];
-            var itemReserved = [];
-            var itemAvailable = [];
-            var itemNotyetavailable = [];
-            var itemKey = [];
-            var colors = [];
-            if (snap.exists()) {
-              snap.forEach(function (ele) {
-                var itemhold = ele.val().hold;
-                var itemsold = ele.val().sold;
-                var itemreserved = ele.val().reserved;
-                var itemavailable = ele.val().available;
-                var itemnotyetavailable = ele.val().notyetavailable;
-
-                if (ele.key == 'lawnlots') { itemkey = 'Lawn Lots'; bgColor = '#2196F3'; }
-                else if (ele.key == 'wallniche') { itemkey = 'Wall Niche'; bgColor = '#E91E63'; }
-                else if (ele.key == 'bonechamber') { itemkey = 'Bone Chamber'; bgColor = '#3F51B5'; }
-                else if (ele.key == 'cinerarium') { itemkey = 'Cinerarium'; bgColor = '#795548'; }
-                else if (ele.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m²)'; bgColor = '#BA68C8'; }
-                else if (ele.key == 'familylots5') { itemkey = 'Family Lots 1 (Irregular)'; bgColor = '#E1BEE7'; }
-                else if (ele.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m²)'; bgColor = '#4A148C'; }
-                else if (ele.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m²)'; bgColor = '#7B1FA2'; }
-                else if (ele.key == 'familylots3') { itemkey = 'Family Lots 2 (Irregular)'; bgColor = '#9C27B0'; }
-                else if (ele.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m²)'; bgColor = '#DCEDC8'; }
-                else if (ele.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m²)'; bgColor = '#AED581'; }
-                else if (ele.key == 'gardenlots3') { itemkey = 'Garden Lots 1 (Irregular)'; bgColor = '#8BC34A'; }
-                else if (ele.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m²)'; bgColor = '#689F38'; }
-                else if (ele.key == 'gardenlots5') { itemkey = 'Garden Lots 2 (Irregular)'; bgColor = '#33691E'; }
-
-                itemHold.push(itemhold);
-                itemSold.push(itemsold);
-                itemReserved.push(itemreserved);
-                itemAvailable.push(itemavailable);
-                itemNotyetavailable.push(itemnotyetavailable);
-
-                itemKey.push(itemkey);
-                colors.push(bgColor);
-
-              });
-
-              if (filterSHRAN == 'sold') {
-                var data2 = {
-                  datasets: [{
-                    data: itemSold,
-                    backgroundColor: colors,
-                  }],
-                  labels: itemKey,
-
-                }
-
-                allchart22.data = data2;
-                allchart22.update();
-              }
-              else if (filterSHRAN == 'hold') {
-                var data2 = {
-                  datasets: [{
-                    data: itemHold,
-                    backgroundColor: colors,
-                  }],
-                  labels: itemKey,
-
-                }
-
-                allchart22.data = data2;
-                allchart22.update();
-              }
-              else if (filterSHRAN == 'reserved') {
-                var data2 = {
-                  datasets: [{
-                    data: itemReserved,
-                    backgroundColor: colors,
-                  }],
-                  labels: itemKey,
-
-                }
-
-                allchart22.data = data2;
-                allchart22.update();
-              }
-              else if (filterSHRAN == 'available') {
-                var data2 = {
-                  datasets: [{
-                    data: itemAvailable,
-                    backgroundColor: colors,
-                  }],
-                  labels: itemKey,
-
-                }
-
-                allchart22.data = data2;
-                allchart22.update();
-              }
-              else if (filterSHRAN == 'notyetavailable') {
-                var data2 = {
-                  datasets: [{
-                    data: itemNotyetavailable,
-                    backgroundColor: colors,
-                  }],
-                  labels: itemKey,
-
-                }
-
-                allchart22.data = data2;
-                allchart22.update();
-              }
-            }
-            else {
-              var data2 = {
-                datasets: [{
-                  data: [],
-                  backgroundColor: [
-                    'black'
-                  ]
-                }],
-                labels: ['No data found'],
-              }
-
-              allchart22.data = data2;
-              allchart22.update();
-            }
-          });
-
-          firebase.database().ref('/reports/overAll/' + overAllDate + que).on('value', function (snapshot) {
-            if (snapshot.exists()) {
-
-              var datas = [];
-              var labels = [];
+            firebase.database().ref('/reports/overAll/' + overAllDate + '/lotType').on('value', function (snap) {
+              var itemHold = [];
+              var itemSold = [];
+              var itemReserved = [];
+              var itemAvailable = [];
+              var itemNotyetavailable = [];
+              var itemKey = [];
               var colors = [];
+              if (snap.exists()) {
+                snap.forEach(function (ele) {
+                  var itemhold = ele.val().hold;
+                  var itemsold = ele.val().sold;
+                  var itemreserved = ele.val().reserved;
+                  var itemavailable = ele.val().available;
+                  var itemnotyetavailable = ele.val().notyetavailable;
 
-              snapshot.forEach(function (element) {
-                if (element.key == 'totalHold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
-                else if (element.key == 'totalSold') { itemkey = 'Sold'; bgColor = 'red'; }
-                else if (element.key == 'totalReserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
-                else if (element.key == 'totalAvailable') { itemkey = 'Available'; bgColor = 'green'; }
-                else if (element.key == 'totalNotyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
+                  if (ele.key == 'lawnlots') { itemkey = 'Lawn Lots'; bgColor = '#2196F3'; }
+                  else if (ele.key == 'wallniche') { itemkey = 'Wall Niche'; bgColor = '#E91E63'; }
+                  else if (ele.key == 'bonechamber') { itemkey = 'Bone Chamber'; bgColor = '#3F51B5'; }
+                  else if (ele.key == 'cinerarium') { itemkey = 'Cinerarium'; bgColor = '#795548'; }
+                  else if (ele.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m²)'; bgColor = '#BA68C8'; }
+                  else if (ele.key == 'familylots5') { itemkey = 'Family Lots 1 (Irregular)'; bgColor = '#E1BEE7'; }
+                  else if (ele.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m²)'; bgColor = '#4A148C'; }
+                  else if (ele.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m²)'; bgColor = '#7B1FA2'; }
+                  else if (ele.key == 'familylots3') { itemkey = 'Family Lots 2 (Irregular)'; bgColor = '#9C27B0'; }
+                  else if (ele.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m²)'; bgColor = '#DCEDC8'; }
+                  else if (ele.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m²)'; bgColor = '#AED581'; }
+                  else if (ele.key == 'gardenlots3') { itemkey = 'Garden Lots 1 (Irregular)'; bgColor = '#8BC34A'; }
+                  else if (ele.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m²)'; bgColor = '#689F38'; }
+                  else if (ele.key == 'gardenlots5') { itemkey = 'Garden Lots 2 (Irregular)'; bgColor = '#33691E'; }
 
-                datas.push(element.val());
-                labels.push(itemkey);
-                colors.push(bgColor);
-              });
+                  itemHold.push(itemhold);
+                  itemSold.push(itemsold);
+                  itemReserved.push(itemreserved);
+                  itemAvailable.push(itemavailable);
+                  itemNotyetavailable.push(itemnotyetavailable);
 
-              var data = {
-                datasets: [{
-                  data: datas,
-                  backgroundColor: colors,
-                }],
-                labels: labels,
+                  itemKey.push(itemkey);
+                  colors.push(bgColor);
+
+                });
+
+                if (filterSHRAN == 'sold') {
+                  var data2 = {
+                    datasets: [{
+                      data: itemSold,
+                      backgroundColor: colors,
+                    }],
+                    labels: itemKey,
+
+                  }
+
+                  allchart22.data = data2;
+                  allchart22.update();
+                }
+                else if (filterSHRAN == 'hold') {
+                  var data2 = {
+                    datasets: [{
+                      data: itemHold,
+                      backgroundColor: colors,
+                    }],
+                    labels: itemKey,
+
+                  }
+
+                  allchart22.data = data2;
+                  allchart22.update();
+                }
+                else if (filterSHRAN == 'reserved') {
+                  var data2 = {
+                    datasets: [{
+                      data: itemReserved,
+                      backgroundColor: colors,
+                    }],
+                    labels: itemKey,
+
+                  }
+
+                  allchart22.data = data2;
+                  allchart22.update();
+                }
+                else if (filterSHRAN == 'available') {
+                  var data2 = {
+                    datasets: [{
+                      data: itemAvailable,
+                      backgroundColor: colors,
+                    }],
+                    labels: itemKey,
+
+                  }
+
+                  allchart22.data = data2;
+                  allchart22.update();
+                }
+                else if (filterSHRAN == 'notyetavailable') {
+                  var data2 = {
+                    datasets: [{
+                      data: itemNotyetavailable,
+                      backgroundColor: colors,
+                    }],
+                    labels: itemKey,
+
+                  }
+
+                  allchart22.data = data2;
+                  allchart22.update();
+                }
               }
+              else {
+                var data2 = {
+                  datasets: [{
+                    data: [],
+                    backgroundColor: [
+                      'black'
+                    ]
+                  }],
+                  labels: ['No data found'],
+                }
 
-              allChart.data = data;
-              allChart.update();
-            }
-            else {
-              var data = {
-                datasets: [{
-                  data: [],
-                  backgroundColor: [
-                    'black'
-                  ]
-                }],
-                labels: ['No data found'],
+                allchart22.data = data2;
+                allchart22.update();
               }
+            });
 
-              allChart.data = data;
-              allChart.update();
-              // console.log('No Data')
-            }
-          });
+            firebase.database().ref('/reports/overAll/' + overAllDate + que).on('value', function (snapshot) {
+              if (snapshot.exists()) {
+
+                var datas = [];
+                var labels = [];
+                var colors = [];
+
+                snapshot.forEach(function (element) {
+                  if (element.key == 'totalHold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
+                  else if (element.key == 'totalSold') { itemkey = 'Sold'; bgColor = 'red'; }
+                  else if (element.key == 'totalReserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
+                  else if (element.key == 'totalAvailable') { itemkey = 'Available'; bgColor = 'green'; }
+                  else if (element.key == 'totalNotyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
+
+                  datas.push(element.val());
+                  labels.push(itemkey);
+                  colors.push(bgColor);
+                });
+
+                var data = {
+                  datasets: [{
+                    data: datas,
+                    backgroundColor: colors,
+                  }],
+                  labels: labels,
+                }
+
+                allChart.data = data;
+                allChart.update();
+              }
+              else {
+                var data = {
+                  datasets: [{
+                    data: [],
+                    backgroundColor: [
+                      'black'
+                    ]
+                  }],
+                  labels: ['No data found'],
+                }
+
+                allChart.data = data;
+                allChart.update();
+                // console.log('No Data')
+              }
+            });
 
 
-        }
-        else {
-          que = '/lotType/' + lotTypeFilter;
-          this.hideToggleOverall = true;
-
-          var data2 = {
-            datasets: [{
-              data: [],
-              backgroundColor: [
-                'black'
-              ]
-            }],
-            labels: ['No data found'],
           }
+          else {
+            que = '/lotType/' + lotTypeFilter;
+            this.hideToggleOverall = true;
 
-          allchart22.data = data2;
-          allchart22.update();
-
-          firebase.database().ref('/reports/overAll/' + overAllDate + '/lotType/' + lotTypeFilter).on('value', function (snapshot) {
-            if (snapshot.exists()) {
-
-              var datas = [];
-              var labels = [];
-              var colors = [];
-
-              snapshot.forEach(function (element) {
-                if (element.key == 'hold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
-                else if (element.key == 'sold') { itemkey = 'Sold'; bgColor = 'red'; }
-                else if (element.key == 'reserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
-                else if (element.key == 'available') { itemkey = 'Available'; bgColor = 'green'; }
-                else if (element.key == 'notyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
-
-                datas.push(element.val());
-                labels.push(itemkey);
-                colors.push(bgColor);
-              });
-
-              var data = {
-                datasets: [{
-                  data: datas,
-                  backgroundColor: colors,
-                }],
-                labels: labels,
-              }
-
-              allChart.data = data;
-              allChart.update();
-
+            var data2 = {
+              datasets: [{
+                data: [],
+                backgroundColor: [
+                  'black'
+                ]
+              }],
+              labels: ['No data found'],
             }
-            else {
-              var data = {
-                datasets: [{
-                  data: [],
-                  backgroundColor: [
-                    'black'
-                  ]
-                }],
-                labels: ['No data found'],
-              }
 
-              allChart.data = data;
-              allChart.update();
-            }
-          });
+            allchart22.data = data2;
+            allchart22.update();
+
+            firebase.database().ref('/reports/overAll/' + overAllDate + '/lotType/' + lotTypeFilter).on('value', function (snapshot) {
+              if (snapshot.exists()) {
+
+                var datas = [];
+                var labels = [];
+                var colors = [];
+
+                snapshot.forEach(function (element) {
+                  if (element.key == 'hold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
+                  else if (element.key == 'sold') { itemkey = 'Sold'; bgColor = 'red'; }
+                  else if (element.key == 'reserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
+                  else if (element.key == 'available') { itemkey = 'Available'; bgColor = 'green'; }
+                  else if (element.key == 'notyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
+
+                  datas.push(element.val());
+                  labels.push(itemkey);
+                  colors.push(bgColor);
+                });
+
+                var data = {
+                  datasets: [{
+                    data: datas,
+                    backgroundColor: colors,
+                  }],
+                  labels: labels,
+                }
+
+                allChart.data = data;
+                allChart.update();
+
+              }
+              else {
+                var data = {
+                  datasets: [{
+                    data: [],
+                    backgroundColor: [
+                      'black'
+                    ]
+                  }],
+                  labels: ['No data found'],
+                }
+
+                allChart.data = data;
+                allChart.update();
+              }
+            });
+          }
         }
       },
 
