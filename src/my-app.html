@@ -55,7 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="lazy-import" href="my-group.html">
 <link rel="lazy-import" href="my-reset-password.html">
 <link rel="lazy-import" href="my-activation.html">
-<!-- <link rel="lazy-import" href="my-view3.html"> -->
+<link rel="lazy-import" href="my-view3.html">
 <link rel="lazy-import" href="my-view404.html">
 <link rel="lazy-import" href="my-galleries.html">
 
@@ -413,20 +413,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>Applications</span>
                       </paper-icon-item>
                     </a>
-                    <!-- <paper-collapse-item icon="my-icons:work" header="Briefcase">
-                      <a style$="{{access(appAccess)}}" name="briefcase-draft" href="[[rootPath]]briefcase-draft">
-                        <paper-icon-item toggles="true" class="menuSelected">
-                          <iron-icon icon="my-icons:" slot="item-icon"></iron-icon>
-                          <span>Draft</span>
-                        </paper-icon-item>
-                      </a>
-                    </paper-collapse-item> -->
-                    <!-- <a style$="{{access(appAccess)}}" name="view3" href="[[rootPath]]view3">
-                      <paper-icon-item toggles="true" class="menuSelected">
-                        <iron-icon icon="my-icons:work" slot="item-icon"></iron-icon>
-                        <span>Briefcase</span>
-                      </paper-icon-item>
-                    </a> -->
                     <a style$="{{access(briefcaseAccess)}}" name="briefcase" href="[[rootPath]]briefcase">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:work" slot="item-icon"></iron-icon>
@@ -442,9 +428,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:perm-identity" slot="item-icon"></iron-icon>
                         <span>Accounts
-                          <!-- <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
-                            DRY RUN
-                          </span> -->
                         </span>
                       </paper-icon-item>
                     </a>
@@ -452,9 +435,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:supervisor-account" slot="item-icon"></iron-icon>
                         <span>Group
-                          <!-- <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
-                            DRY RUN
-                          </span> -->
                         </span>
                       </paper-icon-item>
                     </a>
@@ -471,11 +451,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                       </paper-icon-item>
                     </a>
                   </iron-selector>
+
                   <footer>
                     <p>HOPE inventory & reservation system</p>
                     <p>v0.1.0 Beta</p>
                   </footer>
-                  <!-- </div> -->
+
                 </app-header-layout>
               </app-drawer>
 
@@ -493,7 +474,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               </iron-pages>
 
             </app-drawer-layout>
-
           </template>
 
         </template>
@@ -521,6 +501,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </div>
       </paper-dialog>
+
       <!-- alert dialog email-->
       <paper-dialog id="changeEmail" confirm-button="Done">
         <h3 style="margin-bottom:-1em;">Update Email &nbsp;or
@@ -535,6 +516,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </div>
       </paper-dialog>
+
       <!-- alert dialog changePass-->
       <paper-dialog id="changePass" confirm-button="Done">
         <h3 style="margin-bottom:-1em;">Update Password &nbsp;or
@@ -549,6 +531,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </div>
       </paper-dialog>
+
       <!-- alert dialog reAuthE-->
       <paper-dialog id="reAuthE" confirm-button="Done">
         <h3 style="margin-bottom:-1em;">Provide Email and Password to continue.</h3>
@@ -562,6 +545,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </div>
       </paper-dialog>
+      
       <!-- alert dialog reAuthP-->
       <paper-dialog id="reAuthP" confirm-button="Done">
         <h3 style="margin-bottom:-1em;">Provide Email and Password to continue.</h3>
