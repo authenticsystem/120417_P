@@ -184,7 +184,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             roleChanged(e) {
                 if (e == 'Manager') {
                     this.typeHide = false;
-                    this.groupHide = false;
+                    this.groupHide = true;
                     this.designationHide = true;
                 } else if (e == 'Sales Agent') {
                     this.typeHide = false;
@@ -257,12 +257,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     }
 
                     if (this.role == 'Manager') {
-                        if (!this.type || !this.group || this.type == '' || this.group == '') {
-                            this.msg = 'Please fill-up the required field.';
-                        } else {
+                        if (this.type) {
                             this.msg = '';
+                            this.group = '';
                             this.designation = '';
                             this._accountSave(dashboard, applications, accountlist, briefcase, announcement, group);
+                        } else {
+                            this.msg = 'Please fill-up the required field.';
                         }
                     } else if (this.role == 'Owner' || this.role == 'Staff') {
                         this.msg = '';
@@ -271,11 +272,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         this.designation = '';
                         this._accountSave(dashboard, applications, accountlist, briefcase, announcement, group);
                     } else {
-                        if (!this.type || !this.group || !this.designation || this.type == '' || this.group == '' || this.designation == '') {
-                            this.msg = 'Please fill-up the required field.';
-                        } else {
+                        if (this.type || this.group || this.designation) {
                             this.msg = '';
                             this._accountSave(dashboard, applications, accountlist, briefcase, announcement, group);
+                        } else {
+                            this.msg = 'Please fill-up the required field.';
                         }
                     }
                 }

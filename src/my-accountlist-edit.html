@@ -76,7 +76,7 @@
                         <a href="/accountlist">
                             <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="cancelPrintPreview"></paper-icon-button>
                         </a>
-                        <div main-title >Edit Account</div>
+                        <div main-title>Edit Account</div>
                         <paper-icon-button hidden$="{{acctFirstStep}}" icon="my-icons:print" on-tap="print_preview"></paper-icon-button>
                     </app-toolbar>
                 </app-header>
@@ -206,7 +206,7 @@
             roleChanged(e) {
                 if (e == 'Manager') {
                     this.typeHide = false;
-                    this.groupHide = false;
+                    this.groupHide = true;
                     this.designationHide = true;
                 } else if (e == 'Sales Agent') {
                     this.typeHide = false;
@@ -305,20 +305,25 @@
                     }
 
                     if (this.role == 'Manager') {
-                        if (!this.type || !this.group) {
+                        if (!this.type) {
+                            this.msg = 'Please fill-up the required field.';
+                        } else if (this.type == "") {
                             this.msg = 'Please fill-up the required field.';
                         } else {
-                            this.designation = 'none';
+                            this.group = '';
+                            this.designation = '';
                             this._accountSave(dashboard, applications, accountlist, briefcase, announcement, group);
                         }
                     } else if (this.role == 'Owner' || this.role == 'Staff') {
                         this.msg = '';
-                        this.type = 'none';
-                        this.group = 'none';
-                        this.designation = 'none';
+                        this.type = '';
+                        this.group = '';
+                        this.designation = '';
                         this._accountSave(dashboard, applications, accountlist, briefcase, announcement, group);
                     } else {
                         if (!this.type || !this.group || !this.designation) {
+                            this.msg = 'Please fill-up the required field.';
+                        } else if (this.type == '' || this.group == '' || this.designation == '') {
                             this.msg = 'Please fill-up the required field.';
                         } else {
                             this.msg = '';

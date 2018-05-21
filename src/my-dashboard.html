@@ -233,6 +233,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           width: 100%;
           margin-bottom: 16px;
         }
+
+        .salesReportDIV {
+          padding: 0
+        }
       }
 
       @media (min-width: 768px) {
@@ -338,6 +342,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         paper-card {
           width: 30%;
         }
+
+        .salesReportDIV {
+          padding: 16px
+        }
       }
 
       .teamList {
@@ -434,7 +442,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
     <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}" on-error="showError"></firebase-auth>
-    <firebase-query path="/reports/activity/{{changeQry}}" data="{{dailyTotalData}}"></firebase-query>
+
 
     <firebase-query path="/lots" order-by-child="reservationdetails/start" start-at="{{todayDate}}T00:00" data="{{todayLotDetails}}"></firebase-query>
     <!-- <firebase-query path="/lots" order-by-child="reservationdetails/start" start-at="{{lotDetailsStartAt}}" end-at="{{lotDetailsEndAt}}"
@@ -474,12 +482,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </app-header>
 
         <iron-pages selected="{{selectedTab}}">
-          <!-- <div class="card">
-            <div class="typewriter">
-              <h1>Coming soon......</h1>
-            </div>
-          </div> -->
-
           <!-- Announcements -->
           <div>
             <firebase-query path="/announcements" data="{{announcementsData}}" limit-to-last="50"></firebase-query>
@@ -584,7 +586,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <!-- <div class="card typewriter">
                 <h1>Coming soon......</h1>
               </div> -->
-              <div style="padding: 16px">
+              <div class="salesReportDIV">
                 <div style="background-color: white">
                   <div style="background-color: #E0E0E0;">
                     <paper-tabs selected="{{selectedManagerSalesReport}}" class="selectedTGA">
@@ -593,9 +595,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </paper-tabs>
                   </div>
 
-                  <div style="padding: 16px">
+                  <div>
                     <!-- DAILY WEEKLY MONTHLY YEARLY BUTTON -->
-                    <div>
+                    <div style="margin-top: 16px">
                       <center>
                         <paper-buttons-group selected="{{selectedDMY}}" id="customGroup">
                           <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
@@ -608,19 +610,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                     <iron-pages selected="{{selectedDMY}}">
                       <!-- DAILY -->
-                      <div>
+                      <div style="padding: 16px">
                         <paper-input prefix="" id="myDate" label="Date" type="date" value="{{dailyAct}}" style="display:inline-block;width:150px;">
                           <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
                         </paper-input>
                       </div>
                       <!-- WEEKLY -->
-                      <div>
+                      <div style="padding: 16px">
                         <paper-input value={{wyear}} style="width:70px;display:inline-block" type="number" label="Year"></paper-input>
                         <paper-input value={{week}} style="width:70px;display:inline-block" type="number" label="Week"></paper-input>
                         <span style="font-size:12px">{{weekDates}}</span>
                       </div>
                       <!-- MONTHLY -->
-                      <div>
+                      <div style="padding: 16px">
                         <paper-dropdown-menu class="month" label="Month" style="width:100px; display:inline-block">
                           <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{month}}">
                             <paper-item value="01">January</paper-item>
@@ -640,7 +642,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <paper-input value={{year}} style="width:70px;display:inline-block" type="number" label="Year"></paper-input>
                       </div>
                       <!-- YEARLY -->
-                      <div>
+                      <div style="padding: 16px">
                         <paper-input value={{yearly}} type="number" style="width:100px; display:inline-block" label="Year">
                           <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
                         </paper-input>
@@ -701,110 +703,115 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 </paper-card>
               </div>
 
-              <div hidden$="{{hideSalesReport}}" style="padding: 16px">
+              <div hidden$="{{hideSalesReport}}" class="salesReportDIV">
                 <div style="background-color: white">
                   <div style="background-color: #E0E0E0; padding: 16px">
                     <paper-icon-button class="menu" icon="my-icons:arrow-back" on-tap="_backToMainReport"></paper-icon-button>
                     Sales Report
                   </div>
-                  <div style="padding: 16px">
-                    <div style="padding:26px; margin-top:-30px; margin-bottom:56px;">
-                      <div style="float:right;">
-                        <div style="display:flex;">
-                          <paper-dropdown-menu style="cursor:pointer;width:120px">
-                            <paper-listbox slot="dropdown-content" selected="{{selectedReport}}">
-                              <paper-item>Activity</paper-item>
-                              <paper-item>Comparative</paper-item>
-                              <paper-item>Overall</paper-item>
-                            </paper-listbox>
-                          </paper-dropdown-menu>
-                        </div>
+                  <div style="padding:16px; margin-top:-30px; margin-bottom:56px;">
+                    <div style="float:right;">
+                      <div style="display:flex;">
+                        <paper-dropdown-menu style="cursor:pointer;width:120px">
+                          <paper-listbox slot="dropdown-content" selected="{{selectedReport}}">
+                            <paper-item>Activity</paper-item>
+                            <paper-item>Comparative</paper-item>
+                            <paper-item>Overall</paper-item>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
                       </div>
                     </div>
-                    <!-- Activity Report -->
-                    <div>
-                      <div hidden$="{{hideActivity}}">
-                        <!-- DAILY WEEKLY MONTHLY YEARLY BUTTON -->
+                  </div>
+                  <!-- Activity Report -->
+                  <div>
+                    <div hidden$="{{hideActivity}}">
+                      <!-- DAILY WEEKLY MONTHLY YEARLY BUTTON -->
+                      <div>
+                        <center>
+                          <paper-buttons-group selected="{{selectedDMY}}" id="customGroup">
+                            <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
+                            <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Weekly</paper-button>
+                            <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Monthly</paper-button>
+                            <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
+                          </paper-buttons-group>
+                        </center>
+                      </div>
+
+                      <iron-pages selected="{{selectedDMY}}">
+                        <!-- DAILY -->
+                        <div style="padding: 16px">
+                          <paper-input prefix="" id="myDate" label="Date" type="date" value="{{dailyAct}}" style="display:inline-block;width:150px;">
+                            <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                          </paper-input>
+                        </div>
+                        <!-- WEEKLY -->
+                        <div style="padding: 16px">
+                          <paper-input value={{wyear}} style="width:70px;display:inline-block" type="number" label="Year"></paper-input>
+                          <paper-input value={{week}} style="width:70px;display:inline-block" type="number" label="Week"></paper-input>
+                          <span style="font-size:12px">{{weekDates}}</span>
+                        </div>
+                        <!-- MONTHLY -->
+                        <div style="padding: 16px">
+                          <paper-dropdown-menu class="month" label="Month" style="width:100px; display:inline-block">
+                            <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{month}}">
+                              <paper-item value="01">January</paper-item>
+                              <paper-item value="02">February</paper-item>
+                              <paper-item value="03">March</paper-item>
+                              <paper-item value="04">April</paper-item>
+                              <paper-item value="05">May</paper-item>
+                              <paper-item value="06">June</paper-item>
+                              <paper-item value="07">July</paper-item>
+                              <paper-item value="08">August</paper-item>
+                              <paper-item value="09">September</paper-item>
+                              <paper-item value="10">October</paper-item>
+                              <paper-item value="11">November</paper-item>
+                              <paper-item value="12">December</paper-item>
+                            </paper-listbox>
+                          </paper-dropdown-menu>
+                          <paper-input value={{year}} style="width:70px;display:inline-block" type="number" label="Year"></paper-input>
+                        </div>
+                        <!-- YEARLY -->
+                        <div style="padding: 16px">
+                          <paper-input value={{yearly}} type="number" style="width:100px; display:inline-block" label="Year">
+                            <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                          </paper-input>
+                        </div>
+                      </iron-pages>
+
+                      <span style="float:right; margin-top:10px; margin-right: 16px">
+                        <paper-toggle-button checked="{{showDailyTable}}" on-tap="_showDailyTable" style="font-size:12px;margin-left:10px;">Data Table</paper-toggle-button>
+                      </span>
+
+                      <div style="text-align:center; margin-bottom:20px; margin-top:35px">
+                        <firebase-query path="/reports/activity/{{changeQry}}" data="{{dailyTotalData}}"></firebase-query>
+                        <div class="totalSRH_Sold">
+                          <div style="background-color:red; font-size:12px">Sold</div>
+                          <span id="totalTxt" style="color:red;">{{totalSold}}</span>
+                        </div>
+                        <div class="totalSRH_Reserved">
+                          <div style="background-color:orange; font-size:12px">Reserved</div>
+                          <span id="totalTxt" style="color:orange;">{{totalReserved}}</span>
+                        </div>
+                        <div class="totalSRH_Hold">
+                          <div style="background-color:rgb(145, 145, 0); font-size:12px">Hold</div>
+                          <span id="totalTxt" style="color:rgb(145, 145, 0);">{{totalHold}}</span>
+                        </div>
+                      </div>
+
+                      <!-- DAILY SALES REPORT CHART -->
+                      <div style="margin: 16px" hidden$="{{hideDailyChart}}">
+                        <canvas id="dailyChart"></canvas>
+                      </div>
+
+                      <!-- SHOW TABLE -->
+                      <div hidden$="{{hideDailyTableData}}" style="padding: 16px">
                         <div>
-                          <center>
-                            <paper-buttons-group selected="{{selectedDMY}}" id="customGroup">
-                              <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
-                              <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Weekly</paper-button>
-                              <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Monthly</paper-button>
-                              <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
-                            </paper-buttons-group>
-                          </center>
+                          <paper-button on-tap="_exportTableToCSV">
+                            <iron-icon icon="my-icons:description"></iron-icon>
+                            Export to CSV
+                          </paper-button>
                         </div>
-
-                        <iron-pages selected="{{selectedDMY}}">
-                          <!-- DAILY -->
-                          <div>
-                            <paper-input prefix="" id="myDate" label="Date" type="date" value="{{dailyAct}}" style="display:inline-block;width:150px;">
-                              <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                            </paper-input>
-                          </div>
-                          <!-- WEEKLY -->
-                          <div>
-                            <paper-input value={{wyear}} style="width:70px;display:inline-block" type="number" label="Year"></paper-input>
-                            <paper-input value={{week}} style="width:70px;display:inline-block" type="number" label="Week"></paper-input>
-                            <span style="font-size:12px">{{weekDates}}</span>
-                          </div>
-                          <!-- MONTHLY -->
-                          <div>
-                            <paper-dropdown-menu class="month" label="Month" style="width:100px; display:inline-block">
-                              <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{month}}">
-                                <paper-item value="01">January</paper-item>
-                                <paper-item value="02">February</paper-item>
-                                <paper-item value="03">March</paper-item>
-                                <paper-item value="04">April</paper-item>
-                                <paper-item value="05">May</paper-item>
-                                <paper-item value="06">June</paper-item>
-                                <paper-item value="07">July</paper-item>
-                                <paper-item value="08">August</paper-item>
-                                <paper-item value="09">September</paper-item>
-                                <paper-item value="10">October</paper-item>
-                                <paper-item value="11">November</paper-item>
-                                <paper-item value="12">December</paper-item>
-                              </paper-listbox>
-                            </paper-dropdown-menu>
-                            <paper-input value={{year}} style="width:70px;display:inline-block" type="number" label="Year"></paper-input>
-                          </div>
-                          <!-- YEARLY -->
-                          <div>
-                            <paper-input value={{yearly}} type="number" style="width:100px; display:inline-block" label="Year">
-                              <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                            </paper-input>
-                          </div>
-                        </iron-pages>
-
-                        <span style="float:right; margin-top:10px">
-                          <paper-toggle-button checked="{{showDailyTable}}" on-tap="_showDailyTable" style="font-size:12px;margin-left:10px;">Data Table</paper-toggle-button>
-                        </span>
-
-                        <div style="text-align:center; margin-bottom:20px; margin-top:35px">
-                          <div class="totalSRH_Sold">
-                            <div style="background-color:red; font-size:12px">Sold</div>
-                            <span id="totalTxt" style="color:red;">{{totalSold}}</span>
-                          </div>
-                          <div class="totalSRH_Reserved">
-                            <div style="background-color:orange; font-size:12px">Reserved</div>
-                            <span id="totalTxt" style="color:orange;">{{totalReserved}}</span>
-                          </div>
-                          <div class="totalSRH_Hold">
-                            <div style="background-color:rgb(145, 145, 0); font-size:12px">Hold</div>
-                            <span id="totalTxt" style="color:rgb(145, 145, 0);">{{totalHold}}</span>
-                          </div>
-                        </div>
-
-                        <!-- DAILY SALES REPORT CHART -->
-                        <div class="chart-container" hidden$="{{hideDailyChart}}">
-                          <canvas id="dailyChart"></canvas>
-                        </div>
-
-                        <!-- SHOW TABLE -->
-                        <div style="margin-top: 10px; font-size: 12px; overflow-x:auto;" hidden$="{{hideDailyTableData}}">
-                          <paper-button style="margin:5px;float:right" on-tap="_exportTableToCSV">
-                            <iron-icon icon="my-icons:description"></iron-icon>Export to CSV</paper-button>
+                        <div style="margin-top: 10px; font-size: 12px; overflow-x:auto;">
                           <firebase-query path="/reports/activity/{{changeQry}}/lotType" data="{{dailyData}}"></firebase-query>
                           <table id="reportTable">
                             <tr>
@@ -826,11 +833,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                             </template>
                           </table>
                         </div>
-
                       </div>
-                      <!-- second Card -->
-                      <div hidden$="{{hideActivity}}">
-                        <span hidden$="{{hideDailyChart2}}">
+
+                    </div>
+                    <!-- second Card -->
+                    <div hidden$="{{hideActivity}}">
+                      <div hidden$="{{hideDailyChart2}}">
+                        <span style="float:left; margin-left: 16px">
                           <paper-dropdown-menu class="selectedSHR" label="Filter" vertical-align="top" horizontal-align="right">
                             <paper-listbox slot="dropdown-content" class="selectedSHR" attr-for-selected="value" selected="{{filterSHR}}">
                               <paper-item value="sold">Sold</paper-item>
@@ -838,245 +847,248 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                               <paper-item value="hold">Hold</paper-item>
                             </paper-listbox>
                           </paper-dropdown-menu>
-                          <span style="float:right">
-                            <paper-button on-tap="_download" style="font-size:12px">
-                              <iron-icon icon="my-icons:description"></iron-icon>
-                              Download files</paper-button>
-                          </span>
                         </span>
-                        <!-- <paper-toggle-button checked="{{showLotDetails}}" on-tap="_showLotDetails" style="font-size:12px; float: right;">View details</paper-toggle-button> -->
-                        <div class="chart-container" hidden$="{{hideDailyChart2}}">
-                          <canvas id="dailyChart2" height="500"></canvas>
-                        </div>
+                        <span style="float:right; margin-right: 16px">
+                          <iron-icon icon="my-icons:description"></iron-icon>
+                          <paper-button on-tap="_download" style="font-size:12px">
+                            Download files
+                          </paper-button>
+                        </span>
+                      </div>
+                      <!-- <paper-toggle-button checked="{{showLotDetails}}" on-tap="_showLotDetails" style="font-size:12px; float: right;">View details</paper-toggle-button> -->
+                      <div style="margin: 16px" hidden$="{{hideDailyChart2}}">
+                        <canvas id="dailyChart2" height="500"></canvas>
                       </div>
                     </div>
-                    <!-- Activity Report -->
+                  </div>
+                  <!-- Activity Report -->
 
-                    <!-- comparative report -->
-                    <div id="comparative" hidden$="{{hideComparative}}">
-                      <!-- DAILY WEEKLY MONTHLY YEARLY BUTTON -->
-                      <div>
-                        <center>
-                          <paper-buttons-group selected="{{selectedDaily}}" id="customGroup">
-                            <paper-button style="font-size: 13px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; width:80px; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
-                            <paper-button style="font-size: 13px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; width:80px; height:33px">Monthly</paper-button>
-                            <paper-button style="font-size: 13px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; width:80px; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
-                          </paper-buttons-group>
-                        </center>
-                      </div>
+                  <!-- comparative report -->
+                  <div id="comparative" hidden$="{{hideComparative}}">
+                    <!-- DAILY WEEKLY MONTHLY YEARLY BUTTON -->
+                    <div>
+                      <center>
+                        <paper-buttons-group selected="{{selectedDaily}}" id="customGroup">
+                          <paper-button style="font-size: 13px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; width:80px; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
+                          <paper-button style="font-size: 13px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; width:80px; height:33px">Monthly</paper-button>
+                          <paper-button style="font-size: 13px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; width:80px; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
+                        </paper-buttons-group>
+                      </center>
+                    </div>
 
+                    <div id="flexMain">
+                      <span style="margin-left:16px" style="width:150px">
+                        <paper-dropdown-menu style="cursor:pointer;" id="all" label="Filter" vertical-align="top" horizontal-align="left">
+                          <paper-listbox slot="dropdown-content" selected="{{DailyfilterBy}}">
+                            <paper-item id="compPaper-item">All</paper-item>
+                            <paper-item id="compPaper-item">Bone Chamber</paper-item>
+                            <paper-item id="compPaper-item">Lawn Lots</paper-item>
+                            <paper-item id="compPaper-item">Cinerarium</paper-item>
+                            <paper-item id="compPaper-item">Wall Niche</paper-item>
+                            <paper-item id="compPaper-item">Family Lots 1 (53.27m²)</paper-item>
+                            <paper-item id="compPaper-item">Family Lots 1 (52.83m²)</paper-item>
+                            <paper-item id="compPaper-item">Family Lots 1 (Irregular lots)</paper-item>
+                            <paper-item id="compPaper-item">Family Lots 2 (37.45m²)</paper-item>
+                            <paper-item id="compPaper-item">Family Lots 2 (Irregular lots)</paper-item>
+                            <paper-item id="compPaper-item">Garden Lots 1 (Area=12.52m²)</paper-item>
+                            <paper-item id="compPaper-item">Garden Lots 1 (Area=12.43m²)</paper-item>
+                            <paper-item id="compPaper-item">Garden Lots 1 (Irregular Lots)</paper-item>
+                            <paper-item id="compPaper-item">Garden Lots 2 (Area=20.00m²)</paper-item>
+                            <paper-item id="compPaper-item">Garden Lots 2 (Irregular Lots)</paper-item>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
+                      </span>
+                    </div>
+
+                    <iron-pages selected="{{selectedDaily}}">
+                      <!-- DAILY -->
                       <div id="flexMain">
-                        <span style="margin-right:10px" style="width:150px">
-                          <paper-dropdown-menu style="cursor:pointer;" id="all" label="Filter" vertical-align="top" horizontal-align="left">
-                            <paper-listbox slot="dropdown-content" selected="{{DailyfilterBy}}">
-                              <paper-item id="compPaper-item">All</paper-item>
-                              <paper-item id="compPaper-item">Bone Chamber</paper-item>
-                              <paper-item id="compPaper-item">Lawn Lots</paper-item>
-                              <paper-item id="compPaper-item">Cinerarium</paper-item>
-                              <paper-item id="compPaper-item">Wall Niche</paper-item>
-                              <paper-item id="compPaper-item">Family Lots 1 (53.27m²)</paper-item>
-                              <paper-item id="compPaper-item">Family Lots 1 (52.83m²)</paper-item>
-                              <paper-item id="compPaper-item">Family Lots 1 (Irregular lots)</paper-item>
-                              <paper-item id="compPaper-item">Family Lots 2 (37.45m²)</paper-item>
-                              <paper-item id="compPaper-item">Family Lots 2 (Irregular lots)</paper-item>
-                              <paper-item id="compPaper-item">Garden Lots 1 (Area=12.52m²)</paper-item>
-                              <paper-item id="compPaper-item">Garden Lots 1 (Area=12.43m²)</paper-item>
-                              <paper-item id="compPaper-item">Garden Lots 1 (Irregular Lots)</paper-item>
-                              <paper-item id="compPaper-item">Garden Lots 2 (Area=20.00m²)</paper-item>
-                              <paper-item id="compPaper-item">Garden Lots 2 (Irregular Lots)</paper-item>
-                            </paper-listbox>
-                          </paper-dropdown-menu>
+                        <span id="Daily">
+                          <span id="flex">
+                            <span id="flex" style="margin-left:18px;">
+                              <paper-input label="Start Date" type="date" value="{{startDate}}" id="day" style="width:150px">
+                                <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                              </paper-input>
+                            </span>
+                            <span id="flex">
+                              <paper-input label="End Date" type="date" value="{{endDate}}" id="day" style="width:150px">
+                                <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                              </paper-input>
+                            </span>
+                          </span>
                         </span>
                       </div>
-
-                      <iron-pages selected="{{selectedDaily}}">
-                        <!-- DAILY -->
-                        <div id="flexMain">
-                          <span id="Daily">
-                            <span id="flex">
-                              <span id="flex" style="margin-right:18px;">
-                                <paper-input label="Start Date" type="date" value="{{startDate}}" id="day" style="width:150px">
-                                  <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                                </paper-input>
-                              </span>
-                              <span id="flex">
-                                <paper-input label="End Date" type="date" value="{{endDate}}" id="day" style="width:150px">
-                                  <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                                </paper-input>
-                              </span>
-                            </span>
-                          </span>
-                        </div>
-                        <!-- MONTHLY -->
-                        <div id="Monthly">
+                      <!-- MONTHLY -->
+                      <div id="Monthly">
+                        <span id="flex" style="margin-left:16px">
                           <span id="flex">
-                            <span id="flex">
-                              <iron-icon style="margin-top:30px; margin-right:5px;" icon="my-icons:event" id="date"></iron-icon>
-                              <paper-dropdown-menu style="cursor:pointer" label="Start Month">
-                                <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{startRange}}">
-                                  <paper-item value="01">January</paper-item>
-                                  <paper-item value="02">February</paper-item>
-                                  <paper-item value="03">March</paper-item>
-                                  <paper-item value="04">April</paper-item>
-                                  <paper-item value="05">May</paper-item>
-                                  <paper-item value="06">June</paper-item>
-                                  <paper-item value="07">July</paper-item>
-                                  <paper-item value="08">August</paper-item>
-                                  <paper-item value="09">September</paper-item>
-                                  <paper-item value="010">October</paper-item>
-                                  <paper-item value="011">November</paper-item>
-                                  <paper-item value="012">December</paper-item>
-                                </paper-listbox>
-                              </paper-dropdown-menu>
-                            </span>
-
-                            <span id="flex">
-                              <span id="firstyear">
-                                <paper-input value={{startMonthYear}} type="number" style="width:50px; margin-left:5px; margin-right:5px" label="Year">
-                                </paper-input>
-                              </span>
-                            </span>
-
-                            <span id="flex">
-                              <iron-icon style="margin-top:30px; margin-right:5px;" icon="my-icons:event" id="date"></iron-icon>
-                              <paper-dropdown-menu style="cursor:pointer" label="Start Month">
-                                <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{endRange}}">
-                                  <paper-item value="01">January</paper-item>
-                                  <paper-item value="02">February</paper-item>
-                                  <paper-item value="03">March</paper-item>
-                                  <paper-item value="04">April</paper-item>
-                                  <paper-item value="05">May</paper-item>
-                                  <paper-item value="06">June</paper-item>
-                                  <paper-item value="07">July</paper-item>
-                                  <paper-item value="08">August</paper-item>
-                                  <paper-item value="09">September</paper-item>
-                                  <paper-item value="010">October</paper-item>
-                                  <paper-item value="011">November</paper-item>
-                                  <paper-item value="012">December</paper-item>
-                                </paper-listbox>
-                              </paper-dropdown-menu>
-                            </span>
-                            <span id="flex">
-                              <span id="lastyear">
-                                <paper-input value={{endMonthYear}} type="number" style="margin-left:5px; width:50px" label="Year">
-                                </paper-input>
-                              </span>
+                            <iron-icon style="margin-top:30px; margin-right:5px;" icon="my-icons:event" id="date"></iron-icon>
+                            <paper-dropdown-menu style="cursor:pointer" label="Start Month">
+                              <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{startRange}}">
+                                <paper-item value="01">January</paper-item>
+                                <paper-item value="02">February</paper-item>
+                                <paper-item value="03">March</paper-item>
+                                <paper-item value="04">April</paper-item>
+                                <paper-item value="05">May</paper-item>
+                                <paper-item value="06">June</paper-item>
+                                <paper-item value="07">July</paper-item>
+                                <paper-item value="08">August</paper-item>
+                                <paper-item value="09">September</paper-item>
+                                <paper-item value="010">October</paper-item>
+                                <paper-item value="011">November</paper-item>
+                                <paper-item value="012">December</paper-item>
+                              </paper-listbox>
+                            </paper-dropdown-menu>
+                          </span>
+                          <span id="flex">
+                            <span id="firstyear">
+                              <paper-input value={{startMonthYear}} type="number" style="width:50px; margin-left:5px; margin-right:5px" label="Year">
+                              </paper-input>
                             </span>
                           </span>
-                        </div>
-                        <!-- YEARLY -->
-                        <div id="Yearly">
+                          <span id="flex">
+                            <iron-icon style="margin-top:30px; margin-right:5px;" icon="my-icons:event" id="date"></iron-icon>
+                            <paper-dropdown-menu style="cursor:pointer" label="Start Month">
+                              <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{endRange}}">
+                                <paper-item value="01">January</paper-item>
+                                <paper-item value="02">February</paper-item>
+                                <paper-item value="03">March</paper-item>
+                                <paper-item value="04">April</paper-item>
+                                <paper-item value="05">May</paper-item>
+                                <paper-item value="06">June</paper-item>
+                                <paper-item value="07">July</paper-item>
+                                <paper-item value="08">August</paper-item>
+                                <paper-item value="09">September</paper-item>
+                                <paper-item value="010">October</paper-item>
+                                <paper-item value="011">November</paper-item>
+                                <paper-item value="012">December</paper-item>
+                              </paper-listbox>
+                            </paper-dropdown-menu>
+                          </span>
+                          <span id="flex">
+                            <span id="lastyear">
+                              <paper-input value={{endMonthYear}} type="number" style="margin-left:5px; width:50px" label="Year">
+                              </paper-input>
+                            </span>
+                          </span>
+                        </span>
+                      </div>
+                      <!-- YEARLY -->
+                      <div id="Yearly">
+                        <div id="flex" style="margin-left: 16px">
                           <div id="flex">
-                            <div id="flex">
-                              <paper-input label="Start Year" type="number" value="{{startYear}}" id="day" style="width:100px">
-                                <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                              </paper-input>
-                            </div>
-                            <div id="flex">
-                              <paper-input label="End Year" type="number" value="{{endYear}}" id="day" style="margin-left:10px; width:100px">
-                                <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                              </paper-input>
-                            </div>
+                            <paper-input label="Start Year" type="number" value="{{startYear}}" id="day" style="width:100px">
+                              <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                            </paper-input>
+                          </div>
+                          <div id="flex">
+                            <paper-input label="End Year" type="number" value="{{endYear}}" id="day" style="margin-left:10px; width:100px">
+                              <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                            </paper-input>
                           </div>
                         </div>
-                      </iron-pages>
-
-                      <div class="chart-container">
-                        <canvas id="myChart"></canvas>
                       </div>
+                    </iron-pages>
 
+                    <div style="padding: 16px">
+                      <canvas id="myChart"></canvas>
                     </div>
-                    <!-- end comparative report -->
-                    <!--OverAll Report -->
-                    <div>
-                      <div hidden$="{{hideOverAll}}">
-                        <span class="typeSelection" style="display:flex">
-                          <paper-dropdown-menu class="month" label="Lot type" vertical-align="top" horizontal-align="left">
-                            <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{lotTypeFilter}}">
-                              <paper-item value="all" id="compPaper-item">All</paper-item>
-                              <paper-item value="lawnlots" id="compPaper-item">Lawn Lots</paper-item>
-                              <paper-item value="bonechamber" id="compPaper-item">Bone Chamber</paper-item>
-                              <paper-item value="wallniche" id="compPaper-item">Wall Niche</paper-item>
-                              <paper-item value="cinerarium" id="compPaper-item">Cinerarium</paper-item>
-                              <paper-item value="familylots1" id="compPaper-item">Family Lots 1 (53.27m²)</paper-item>
-                              <paper-item value="familylots2" id="compPaper-item">Family Lots 1 (52.83m²)</paper-item>
-                              <paper-item value="familylots3" id="compPaper-item">Family Lots 1 (Irregular lots)</paper-item>
-                              <paper-item value="familylots4" id="compPaper-item">Family Lots 2 (37.45m²)</paper-item>
-                              <paper-item value="familylots5" id="compPaper-item">Family Lots 2 (Irregular lots)</paper-item>
-                              <paper-item value="gardenlots1" id="compPaper-item">Garden Lots 1 (Area=12.52m²)</paper-item>
-                              <paper-item value="gardenlots2" id="compPaper-item">Garden Lots 1 (Area=12.43m²)</paper-item>
-                              <paper-item value="gardenlots3" id="compPaper-item">Garden Lots 1 (Irregular Lots)</paper-item>
-                              <paper-item value="gardenlots4" id="compPaper-item">Garden Lots 2 (Area=20.00m²)</paper-item>
-                              <paper-item value="gardenlots5" id="compPaper-item">Garden Lots 2 (Irregular Lots)</paper-item>
-                            </paper-listbox>
-                          </paper-dropdown-menu>
-                          <paper-input value={{overAllDate}} type="date" label="As of" style="width:150px;margin-left:5px;">
-                            <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                          </paper-input>
-                        </span>
 
-                        <span style="float:right;" hidden$="{{hideToggleOverall}}">
-                          <paper-toggle-button checked="{{showSummaryTable}}" on-tap="_showSummary" style="font-size:12px">Data Table</paper-toggle-button>
-                        </span>
-
-                        <div class="chart-container" hidden$="{{overallchart}}">
-                          <canvas id="overAllChart" height="500"></canvas>
-                        </div>
-                        </br>
-                        </br>
-
-                        <div style="font-size: 12px; overflow-x:auto;" hidden$="{{hideSummaryTable}}">
-                          <paper-button style="margin:5px;float:right" on-tap="_exportTableToCSVoverAll">
-                            <iron-icon icon="my-icons:description"></iron-icon>Export to CSV</paper-button>
-                          <firebase-query path="/reports/overAll/{{overAllDate}}/lotType" data="{{overallData}}"></firebase-query>
-                          <table id="overAllReportTable">
-                            <tr>
-                              <td colspan="7">Over all report {{overAllDate}}</td>
-                            </tr>
-                            <tr>
-                              <th style="text-align: left;">Type</th>
-                              <th style="color: red;">Sold</th>
-                              <th style="color: orange;">Reserved</th>
-                              <th style="color: rgb(145, 145, 0);">Hold</th>
-                              <th style="color: green;">Available</th>
-                              <th style="color: gray;">Not yet available</th>
-                              <th>Total</th>
-                            </tr>
-                            <template is="dom-repeat" items="{{overallData}}">
-                              <tr>
-                                <td style="text-align: left;">{{_formatType(item.$key)}}</td>
-                                <td style="color: black;">{{_formatAllNumber(item.sold)}}</td>
-                                <td style="color: black;">{{_formatAllNumber(item.reserved)}}</td>
-                                <td style="color: black;">{{_formatAllNumber(item.hold)}}</td>
-                                <td style="color: black;">{{_formatAllNumber(item.available)}}</td>
-                                <td style="color: black;">{{_formatAllNumber(item.notyetavailable)}}</td>
-                                <td style="color: black;font-weight:bold">{{_formatAllTotal(item.available,item.hold,item.notyetavailable,item.reserved,item.sold)}}</td>
-                              </tr>
-                            </template>
-                          </table>
-                        </div>
-                      </div>
-
-                      <div hidden$="{{hideOverAll}}">
-                        <div>
-                          <paper-dropdown-menu class="selectedSHRAN" label="Filter" style="float:right" vertical-align="top" horizontal-align="right">
-                            <paper-listbox slot="dropdown-content" class="selectedSHRAN" attr-for-selected="value" selected="{{filterSHRAN}}">
-                              <paper-item value="sold">Sold</paper-item>
-                              <paper-item value="reserved">Reserved</paper-item>
-                              <paper-item value="hold">Hold</paper-item>
-                              <paper-item value="available">Available</paper-item>
-                              <paper-item value="notyetavailable">Not yet available</paper-item>
-                            </paper-listbox>
-                          </paper-dropdown-menu>
-                        </div>
-
-                        <div class="chart-container">
-                          <canvas id="overallchart2" height="500"></canvas>
-                        </div>
-                      </div>
-                    </div>
-                    <!--end OverAll Report -->
                   </div>
+                  <!-- end comparative report -->
+
+                  <!--OverAll Report -->
+                  <div hidden$="{{hideOverAll}}">
+                    <span class="typeSelection" style="display:flex; margin-left: 16px">
+                      <paper-dropdown-menu class="month" label="Lot type" vertical-align="top" horizontal-align="left">
+                        <paper-listbox slot="dropdown-content" class="month" attr-for-selected="value" selected="{{lotTypeFilter}}">
+                          <paper-item value="all" id="compPaper-item">All</paper-item>
+                          <paper-item value="lawnlots" id="compPaper-item">Lawn Lots</paper-item>
+                          <paper-item value="bonechamber" id="compPaper-item">Bone Chamber</paper-item>
+                          <paper-item value="wallniche" id="compPaper-item">Wall Niche</paper-item>
+                          <paper-item value="cinerarium" id="compPaper-item">Cinerarium</paper-item>
+                          <paper-item value="familylots1" id="compPaper-item">Family Lots 1 (53.27m²)</paper-item>
+                          <paper-item value="familylots2" id="compPaper-item">Family Lots 1 (52.83m²)</paper-item>
+                          <paper-item value="familylots3" id="compPaper-item">Family Lots 1 (Irregular lots)</paper-item>
+                          <paper-item value="familylots4" id="compPaper-item">Family Lots 2 (37.45m²)</paper-item>
+                          <paper-item value="familylots5" id="compPaper-item">Family Lots 2 (Irregular lots)</paper-item>
+                          <paper-item value="gardenlots1" id="compPaper-item">Garden Lots 1 (Area=12.52m²)</paper-item>
+                          <paper-item value="gardenlots2" id="compPaper-item">Garden Lots 1 (Area=12.43m²)</paper-item>
+                          <paper-item value="gardenlots3" id="compPaper-item">Garden Lots 1 (Irregular Lots)</paper-item>
+                          <paper-item value="gardenlots4" id="compPaper-item">Garden Lots 2 (Area=20.00m²)</paper-item>
+                          <paper-item value="gardenlots5" id="compPaper-item">Garden Lots 2 (Irregular Lots)</paper-item>
+                        </paper-listbox>
+                      </paper-dropdown-menu>
+                      <paper-input value={{overAllDate}} type="date" label="As of" style="width:150px;margin-left:5px;">
+                        <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                      </paper-input>
+                    </span>
+
+                    <span style="float:right; margin-right: 16px" hidden$="{{hideToggleOverall}}">
+                      <paper-toggle-button checked="{{showSummaryTable}}" on-tap="_showSummary" style="font-size:12px">Data Table</paper-toggle-button>
+                    </span>
+
+                    <div style="margin: 16px" hidden$="{{overallchart}}">
+                      <canvas id="overAllChart" height="500"></canvas>
+                    </div>
+                    </br>
+                    </br>
+                    <div hidden$="{{hideSummaryTable}}" style="padding: 16px">
+                      <div>
+                        <paper-button on-tap="_exportTableToCSVoverAll">
+                          <iron-icon icon="my-icons:description"></iron-icon>
+                          Export to CSV
+                        </paper-button>
+                      </div>
+                      <div style="margin-top: 10px; font-size: 12px; overflow-x:auto;">
+                        <firebase-query path="/reports/overAll/{{overAllDate}}/lotType" data="{{overallData}}"></firebase-query>
+                        <table id="overAllReportTable">
+                          <tr>
+                            <td colspan="7">Over all report {{overAllDate}}</td>
+                          </tr>
+                          <tr>
+                            <th style="text-align: left;">Type</th>
+                            <th style="color: red;">Sold</th>
+                            <th style="color: orange;">Reserved</th>
+                            <th style="color: rgb(145, 145, 0);">Hold</th>
+                            <th style="color: green;">Available</th>
+                            <th style="color: gray;">Not yet available</th>
+                            <th>Total</th>
+                          </tr>
+                          <template is="dom-repeat" items="{{overallData}}">
+                            <tr>
+                              <td style="text-align: left;">{{_formatType(item.$key)}}</td>
+                              <td style="color: black;">{{_formatAllNumber(item.sold)}}</td>
+                              <td style="color: black;">{{_formatAllNumber(item.reserved)}}</td>
+                              <td style="color: black;">{{_formatAllNumber(item.hold)}}</td>
+                              <td style="color: black;">{{_formatAllNumber(item.available)}}</td>
+                              <td style="color: black;">{{_formatAllNumber(item.notyetavailable)}}</td>
+                              <td style="color: black;font-weight:bold">{{_formatAllTotal(item.available,item.hold,item.notyetavailable,item.reserved,item.sold)}}</td>
+                            </tr>
+                          </template>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- second Card -->
+                  <div hidden$="{{hideOverAll}}">
+                    <div style="margin-right: 16px">
+                      <paper-dropdown-menu class="selectedSHRAN" label="Filter" style="float:right" vertical-align="top" horizontal-align="right">
+                        <paper-listbox slot="dropdown-content" class="selectedSHRAN" attr-for-selected="value" selected="{{filterSHRAN}}">
+                          <paper-item value="sold">Sold</paper-item>
+                          <paper-item value="reserved">Reserved</paper-item>
+                          <paper-item value="hold">Hold</paper-item>
+                          <paper-item value="available">Available</paper-item>
+                          <paper-item value="notyetavailable">Not yet available</paper-item>
+                        </paper-listbox>
+                      </paper-dropdown-menu>
+                    </div>
+
+                    <div class="chart-container">
+                      <canvas id="overallchart2" height="500"></canvas>
+                    </div>
+                  </div>
+                  <!--end OverAll Report -->
                 </div>
               </div>
 
@@ -1094,110 +1106,108 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </paper-tabs>
                   </div>
 
-                  <div style="padding: 16px">
-                    <div>
-                      <center>
-                        <paper-buttons-group selected="{{agentSalesReportDWMY}}" id="customGroup">
-                          <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
-                          <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Weekly</paper-button>
-                          <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Monthly</paper-button>
-                          <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
-                        </paper-buttons-group>
-                      </center>
+                  <div style="margin-top: 16px">
+                    <center>
+                      <paper-buttons-group selected="{{agentSalesReportDWMY}}" id="customGroup">
+                        <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
+                        <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Weekly</paper-button>
+                        <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Monthly</paper-button>
+                        <paper-button style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
+                      </paper-buttons-group>
+                    </center>
+                  </div>
+
+                  <iron-pages selected="{{agentSalesReportDWMY}}">
+                    <div style="padding: 16px">
+                      <paper-input label="Date" value="{{agentSalesReportDailyDate}}" type="date" style="width: 150px">
+                        <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                      </paper-input>
                     </div>
 
-                    <iron-pages selected="{{agentSalesReportDWMY}}">
-                      <div>
-                        <paper-input label="Date" value="{{agentSalesReportDailyDate}}" type="date" style="width: 150px">
+                    <div style="padding: 16px">
+                      <div style="display: flex">
+                        <paper-input label="Year" value="{{agentSalesReportWeeklyYear}}" type="number" style="width: 100px; margin-right: 10px">
+                          <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                        </paper-input>
+                        <paper-input label="Week No." value="{{agentSalesReportWeeklyNo}}" type="number" style="width: 100px">
                           <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
                         </paper-input>
                       </div>
+                    </div>
 
-                      <div>
-                        <div style="display: flex">
-                          <paper-input label="Year" value="{{agentSalesReportWeeklyYear}}" type="number" style="width: 100px; margin-right: 10px">
-                            <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                          </paper-input>
-                          <paper-input label="Week No." value="{{agentSalesReportWeeklyNo}}" type="number" style="width: 100px">
-                            <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                          </paper-input>
-                        </div>
-                      </div>
-
-                      <div>
-                        <div style="display: flex">
-                          <paper-input label="Year" value="{{agentSalesReportMonthlyYear}}" type="number" style="width: 100px; margin-right: 10px">
-                            <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
-                          </paper-input>
-                          <paper-dropdown-menu label="Month" vertical-offset="60" vertical-align="top" horizontal-align="left">
-                            <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{agentSalesReportMonthlyMonth}}">
-                              <paper-item value="01">January</paper-item>
-                              <paper-item value="02">February</paper-item>
-                              <paper-item value="03">March</paper-item>
-                              <paper-item value="04">April</paper-item>
-                              <paper-item value="05">May</paper-item>
-                              <paper-item value="06">June</paper-item>
-                              <paper-item value="07">July</paper-item>
-                              <paper-item value="08">August</paper-item>
-                              <paper-item value="09">September</paper-item>
-                              <paper-item value="10">October</paper-item>
-                              <paper-item value="11">November</paper-item>
-                              <paper-item value="12">December</paper-item>
-                            </paper-listbox>
-                          </paper-dropdown-menu>
-                        </div>
-                      </div>
-
-                      <div>
-                        <paper-input label="Year" value="{{agentSalesReportYearylYear}}" type="number" style="width: 100px; margin-right: 10px">
+                    <div style="padding: 16px">
+                      <div style="display: flex">
+                        <paper-input label="Year" value="{{agentSalesReportMonthlyYear}}" type="number" style="width: 100px; margin-right: 10px">
                           <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
                         </paper-input>
+                        <paper-dropdown-menu label="Month" vertical-offset="60" vertical-align="top" horizontal-align="left">
+                          <paper-listbox slot="dropdown-content" class="dropdown-content" attr-for-selected="value" selected="{{agentSalesReportMonthlyMonth}}">
+                            <paper-item value="01">January</paper-item>
+                            <paper-item value="02">February</paper-item>
+                            <paper-item value="03">March</paper-item>
+                            <paper-item value="04">April</paper-item>
+                            <paper-item value="05">May</paper-item>
+                            <paper-item value="06">June</paper-item>
+                            <paper-item value="07">July</paper-item>
+                            <paper-item value="08">August</paper-item>
+                            <paper-item value="09">September</paper-item>
+                            <paper-item value="10">October</paper-item>
+                            <paper-item value="11">November</paper-item>
+                            <paper-item value="12">December</paper-item>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
                       </div>
-                    </iron-pages>
+                    </div>
 
-                    <iron-pages selected="{{selectedTGA}}">
-                      <!-- TYPE -->
+                    <div style="padding: 16px">
+                      <paper-input label="Year" value="{{agentSalesReportYearylYear}}" type="number" style="width: 100px; margin-right: 10px">
+                        <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                      </paper-input>
+                    </div>
+                  </iron-pages>
+
+                  <iron-pages selected="{{selectedTGA}}">
+                    <!-- TYPE -->
+                    <div style="padding: 16px">
+                      <paper-button>download</paper-button>
+                      <canvas id="agentSalesTypeChart"></canvas>
+                    </div>
+                    <!-- GROUP -->
+                    <div style="padding: 16px">
+                      <paper-dropdown-menu label="Filter" vertical-align="top" horizontal-align="right" style="margin-right: 16px">
+                        <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterAgentSalesType}}">
+                          <paper-item value="inhouse">In-House</paper-item>
+                          <paper-item value="broker">Broker</paper-item>
+                        </paper-listbox>
+                      </paper-dropdown-menu>
+                      <paper-button>download</paper-button>
                       <div>
-                        <paper-button>download</paper-button>
-                        <canvas id="agentSalesTypeChart"></canvas>
+                        <canvas id="agentSalesGroupChart"></canvas>
                       </div>
-                      <!-- GROUP -->
-                      <div>
+                    </div>
+                    <!-- AGENTS -->
+                    <div style="padding: 16px">
+                      <span style="display: flex">
                         <paper-dropdown-menu label="Filter" vertical-align="top" horizontal-align="right" style="margin-right: 16px">
                           <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterAgentSalesType}}">
                             <paper-item value="inhouse">In-House</paper-item>
                             <paper-item value="broker">Broker</paper-item>
                           </paper-listbox>
                         </paper-dropdown-menu>
-                        <paper-button>download</paper-button>
-                        <div>
-                          <canvas id="agentSalesGroupChart"></canvas>
-                        </div>
-                      </div>
-                      <!-- AGENTS -->
+                        <paper-dropdown-menu label="Filter" vertical-align="top" horizontal-align="right" style="margin-right: 16px">
+                          <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterAgentSalesGroup}}">
+                            <paper-item value="inhouse">Group1</paper-item>
+                            <paper-item value="broker">Group2</paper-item>
+                          </paper-listbox>
+                        </paper-dropdown-menu>
+                        <paper-button style="margin-top: 20px">download</paper-button>
+                      </span>
                       <div>
-                        <span style="display: flex">
-                          <paper-dropdown-menu label="Filter" vertical-align="top" horizontal-align="right" style="margin-right: 16px">
-                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterAgentSalesType}}">
-                              <paper-item value="inhouse">In-House</paper-item>
-                              <paper-item value="broker">Broker</paper-item>
-                            </paper-listbox>
-                          </paper-dropdown-menu>
-                          <paper-dropdown-menu label="Filter" vertical-align="top" horizontal-align="right" style="margin-right: 16px">
-                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{filterAgentSalesGroup}}">
-                              <paper-item value="inhouse">Group1</paper-item>
-                              <paper-item value="broker">Group2</paper-item>
-                            </paper-listbox>
-                          </paper-dropdown-menu>
-                          <paper-button style="margin-top: 20px">download</paper-button>
-                        </span>
-                        <div>
-                          <canvas id="agentSalesAgentChart"></canvas>
-                        </div>
+                        <canvas id="agentSalesAgentChart"></canvas>
                       </div>
-                    </iron-pages>
+                    </div>
+                  </iron-pages>
 
-                  </div>
                 </div>
               </div>
             </template>
@@ -1231,7 +1241,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           </div>
           <!-- end Notification -->
-
         </iron-pages>
 
       </app-header-layout>
@@ -1616,6 +1625,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               ]
             },
             options: {
+              legend: {
+                position: 'bottom'
+              },
               scales: {
                 xAxes: [{
                   ticks: {
@@ -1672,6 +1684,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 ]
               },
               options: {
+                legend: {
+                  position: 'bottom'
+                },
                 scales: {
                   xAxes: [{
                     ticks: {
@@ -1724,6 +1739,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 ]
               },
               options: {
+                legend: {
+                  position: 'bottom'
+                },
                 scales: {
                   xAxes: [{
                     ticks: {
@@ -1790,6 +1808,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var myChart = new Chart(ctx, {
               type: 'line',
               options: {
+                legend: {
+                  position: 'bottom'
+                },
                 plugins: {
                   datalabels: {
                     display: false
