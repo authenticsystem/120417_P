@@ -1424,8 +1424,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       observers: [
         'selectedReportChanged(selectedReport)',
-        'activityChanged(selectedDMY,dailyAct,wyear,week,month,year,yearly, filterSHR)',
-        'comparativeChanged(startDate, endDate, startRange, startMonthYear, endRange, endMonthYear, startYear, endYear, selectedDaily, DailyfilterBy)',
+        'activityChanged(selectedDMY,dailyAct,wyear,week,month,year,yearly, filterSHR, Chart, Chart2)',
+        'comparativeChanged(startDate, endDate, startRange, startMonthYear, endRange, endMonthYear, startYear, endYear, selectedDaily, DailyfilterBy, comparativeChart)',
         'overAllChanged(lotTypeFilter,overAllDate, filterSHRAN, allChart, allchart2)',
         'accountChanged(account.*)',
         'notificationDataChanged(notificationData.*)',
@@ -1927,12 +1927,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      activityChanged(selectedDMY, dailyAct, wyear, week, month, year, yearly, filterSHR) {
+      activityChanged(selectedDMY, dailyAct, wyear, week, month, year, yearly, filterSHR, Chart, Chart2) {
         var dailyChart, datestring, query, dailyChart2;
-        dailyChart = this.Chart;
-        dailyChart2 = this.Chart2;
+        dailyChart = Chart;
+        dailyChart2 = Chart2;
 
-        if (this.Chart) {
+        if (dailyChart && dailyChart2) {
 
           if (selectedDMY == 0) {
             query = 'daily/' + dailyAct;
@@ -2173,8 +2173,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      comparativeChanged(startDate, endDate, startRange, startMonthYear, endRange, endMonthYear, startYear, endYear, selectedDaily, DailyfilterBy) {
-        if (this.comparativeChart) {
+      comparativeChanged(startDate, endDate, startRange, startMonthYear, endRange, endMonthYear, startYear, endYear, selectedDaily, DailyfilterBy, comparativeChart) {
+        if (comparativeChart) {
           var selectedType, lotType, text, start, end;
 
           if (selectedDaily == 0) {
