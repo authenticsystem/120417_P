@@ -68,7 +68,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         height: 32px;
         font-size: 12px;
         font-weight: 400;
-        width: 80px;
+        /* width: 80px; */
       }
 
       paper-icon-button.menu {
@@ -864,8 +864,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                           </paper-dropdown-menu>
                         </span>
                         <span style="float:right; margin-right: 16px">
-                          <iron-icon icon="my-icons:description"></iron-icon>
                           <paper-button on-tap="_download" style="font-size:12px">
+                            <iron-icon icon="my-icons:description"></iron-icon>
                             Download files
                           </paper-button>
                         </span>
@@ -1288,7 +1288,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // NOTIFICATION
         notificationData: Object,
         notificationdata_merge: Object,
-        // DAILY SALES REPORT
+        // ACTIVITY SALES REPORT
         selectedDMY: {
           type: Number,
           value: 0
@@ -1313,7 +1313,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
         startDate: String,
         endDate: String,
-        startRange: Number,
+        startRange: String,
         startMonthYear: Number,
         endRange: Number,
         endMonthYear: Number,
@@ -1426,7 +1426,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'selectedReportChanged(selectedReport)',
         'activityChanged(selectedDMY,dailyAct,wyear,week,month,year,yearly, filterSHR)',
         'comparativeChanged(startDate, endDate, startRange, startMonthYear, endRange, endMonthYear, startYear, endYear, selectedDaily, DailyfilterBy)',
-        'overAllChanged(lotTypeFilter,overAllDate, filterSHRAN)',
+        'overAllChanged(lotTypeFilter,overAllDate, filterSHRAN, allChart, allchart2)',
         'accountChanged(account.*)',
         'notificationDataChanged(notificationData.*)',
         'announcementsDataChanged(announcementsData.*)',
@@ -1435,6 +1435,29 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       ],
 
       ready() {
+        // ACTIVITY SALES REPORT
+        var actDate = new Date();
+        this.dailyAct = this._format(actDate, 'day');
+        this.wyear = this._format(actDate, 'year');
+        this.week = this._getWeekNumber(actDate);
+        this.weekDates = this.getDateRangeOfWeek(this.week, this.wyear, 'spanDate');
+        this.month = this._getMonth(actDate);
+        this.year = this._format(actDate, 'year');
+        this.yearly = this._format(actDate, 'year');
+        // COMPARATIVE SALES REPORT
+        var comDate = new Date();
+        this.startDate = this._format(comDate, 'day');
+        this.endDate = this._format(comDate, 'day');
+        this.startRange = '01';
+        this.startMonthYear = this._format(comDate, 'year');
+        this.endRange = this._getMonth(comDate);
+        this.endMonthYear = this._format(comDate, 'year');
+        this.startYear = (this._format(comDate, 'year')) - 1;
+        this.endYear = this._format(comDate, 'year');
+        // OVER ALL SALES REPORT
+        var allDate = new Date();
+        this.overAllDate = this._format(allDate, 'yesterday');
+
         var date = new Date();
         // STAFF REPORT
         this.todayDate = this._format(date, 'day');
@@ -1470,11 +1493,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       _getMonth(d) {
-        var month = d.getMonth() + 1;
-        if (month < 10) {
-          return month;
+        var months = d.getMonth() + 1;
+        if (months < 10) {
+          return "0" + months;
         } else {
-          return "0" + month;
+          return months;
         }
       },
 
@@ -1787,32 +1810,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       selectedReportChanged(e) {
-        var date = new Date();
         if (e == 0) {
-          // ACTIVITY SALES REPORT
-          this.dailyAct = this._format(date, 'day');
-          this.wyear = this._format(date, 'year');
-          this.week = this._getWeekNumber(date);
-          this.weekDates = this.getDateRangeOfWeek(this.week, this.wyear, 'spanDate');
-          this.month = this._getMonth(date);
-          this.year = this._format(date, 'year');
-          this.yearly = this._format(date, 'year');
-
           this.hideActivity = false;
           this.hideComparative = true;
           this.hideOverAll = true;
         }
         else if (e == 1) {
-          // COMPARATIVE SALES REPORT
-          this.startDate = this._format(date, 'day');
-          this.endDate = this._format(date, 'day');
-          this.startRange = 01;
-          this.startMonthYear = this._format(date, 'year');
-          this.endRange = this._getMonth(date);
-          this.endMonthYear = this._format(date, 'year');
-          this.startYear = (this._format(date, 'year')) - 1;
-          this.endYear = this._format(date, 'year');
-
           this.hideActivity = true;
           this.hideComparative = false;
           this.hideOverAll = true;
@@ -1847,8 +1850,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           }
         }
         else {
-          this.overAllDate = this._format(date, 'yesterday');
-
           this.hideActivity = true;
           this.hideComparative = true;
           this.hideOverAll = false;
@@ -1942,6 +1943,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.downloadDate = this.reportTitle;
           }
           else if (selectedDMY == 1) {
+            var weeks;
             if (week < 10) {
               weeks = '0' + week
             } else {
@@ -2432,11 +2434,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      overAllChanged(lotTypeFilter, overAllDate, filterSHRAN) {
+      overAllChanged(lotTypeFilter, overAllDate, filterSHRAN, allChart, allchart2) {
         var que;
-        var allChart = this.allChart;
-        var allchart22 = this.allchart2;
-
+        var allChart = allChart;
+        var allchart22 = allchart2;
         if (allChart && allchart22) {
           if (lotTypeFilter == 'all') {
             que = '/overall';
