@@ -38,6 +38,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="my-icons.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/paper-badge/paper-badge.html">
+<link rel="import" href="../bower_components/sl-gallery/sl-gallery.html">
+<link rel="import" href="../bower_components/sl-gallery/sl-gallery-image.html">
 
 <link rel="import" href="time-element.html">
 
@@ -222,7 +224,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         .announcementDiv {
-          width: 100%;
+          /* width: 100%; */
           box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         }
         .container {
@@ -236,6 +238,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         .salesReportDIV {
           padding: 0
+        }
+
+        .attachmentIMG {
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+          width: 100%;
         }
       }
 
@@ -331,7 +340,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         .announcementDiv {
-          width: 800px;
+          width: 80%;
           margin: auto;
           box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
         }
@@ -345,6 +354,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         .salesReportDIV {
           padding: 16px
+        }
+
+        .attachmentIMG {
+          display: block;
+          margin-left: auto;
+          margin-right: auto;
+          width: 70%;
         }
       }
 
@@ -404,14 +420,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .secondary {
-        font-size: 14px;
+        font-size: 12px;
         color: gray;
-      }
-
-      .attachmentIMG {
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
       }
 
       .salesTab {
@@ -466,10 +476,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <iron-icon icon="my-icons:assessment" id="icons"></iron-icon>
               &nbsp;
               <span id="tabs">Reports</span>
-              &nbsp;
+              <!-- &nbsp;
               <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
                 BETA
-              </span>
+              </span> -->
             </paper-tab>
             <paper-tab>
               <iron-icon icon="my-icons:notifications" id="icons" class="notifyIcon"></iron-icon>
@@ -494,13 +504,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <div class="secondary">[[dateTimeFormat(item.timestamp,item.isUpdate)]]</div>
                     <br>
                     <div>
-                      <img class="attachmentIMG" src="[[item.attachmentURL]]" alt=" No photo" style="width:50%;">
+                      <!-- <sl-gallery>
+                        <sl-gallery-image src="[[item.attachmentURL]]" small="[[item.attachmentURL]]"></sl-gallery-image>
+                      </sl-gallery> -->
+                      <img id="myImg" on-tap="photoModal" item="[[item]]" class="attachmentIMG" src="[[item.attachmentURL]]" alt=" No photo">
                     </div>
                     <div class="primary">
                       <p>[[item.announcement]]</p>
                     </div>
                     <br>
-                    <div class="secondary">Posted by: [[item.postedBy]]</div>
+                    <div class="secondary">
+                      <p>Posted by: [[item.postedBy]]</p>
+                    </div>
                   </div>
                   <span class="secondary">
                     <time-ago datetime$="{{_timeStampToDateTime(item.timestamp)}}">{{_timeStampToDateTime(item.timestamp)}}</time-ago>

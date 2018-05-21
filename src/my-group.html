@@ -33,8 +33,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <style include="shared-styles">
             :host {
                 display: block;
-
-                padding: 10px;
+                /* padding: 10px; */
             }
 
             app-header {
@@ -51,14 +50,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     background-color: white;
                     margin: auto;
                     padding: 16px;
-                    width: 100%;
+                    /* width: 100%; */
                     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
                 }
 
                 .groupItem {
                     background-color: white;
                     margin: auto;
-                    width: 100%;
+                    /* width: 100%; */
                     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
                 }
 
@@ -139,7 +138,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <div hidden$="{{!groupActive}}">
                     <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
                         <div name="">
-
                             <app-header fixed slot="header">
                                 <app-toolbar primary>
                                     <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
@@ -156,7 +154,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <div class="container">
                                     <div class="containerDIV">
                                         <paper-input label="Create Group" placeholder="Group name" value={{inhouseName}}></paper-input>
-                                        <span id="inhouseErrMSG" style="float: right; color: red; font-size: 12px; display: none">{{inhouseErrMSG}}</span>
+                                        <span id="inhouseErrMSG" style="color: red; font-size: 12px; display: none">{{inhouseErrMSG}}</span>
                                         <br>
                                         <paper-button class="submit" on-tap="_inhouseSubmit">Submit</paper-button>
                                     </div>
@@ -170,7 +168,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                                     <div>[[item.name]]</div>
                                                     <!-- <div secondary>Jan 17, 2014</div> -->
                                                 </paper-item-body>
-                                                <paper-menu-button class="menubtn">
+                                                <paper-menu-button>
                                                     <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
                                                     <paper-listbox slot="dropdown-content">
                                                         <paper-item on-tap="_openEditInhouseDialog" item="[[item]]">Edit</paper-item>

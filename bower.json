@@ -70,7 +70,8 @@
     "iron-validatable-behavior": "PolymerElements/iron-validatable-behavior#^2.1.0",
     "paper-styles": "PolymerElements/paper-styles#^2.1.0",
     "iron-icon": "PolymerElements/iron-icon#^2.1.0",
-    "iron-meta": "PolymerElements/iron-meta#^2.1.1"
+    "iron-meta": "PolymerElements/iron-meta#^2.1.1",
+    "sl-gallery": "jsilvermist/sl-gallery#^1.0.2"
   },
   "devDependencies": {
     "web-component-tester": "Polymer/web-component-tester#^6.0.0"
