@@ -138,6 +138,10 @@
                 --datetime-background: #071533;
                 --datetime-color: #eeeeee;
             }
+
+            div[role="listbox"] {
+                border: 1px solid #e5e5e5;
+            }
         </style>
 
         <!-- <app-route route="{{route}}" pattern="/:key" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
@@ -149,7 +153,7 @@
 
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
-                <div class="mnu" role="listbox">
+                <div class="mnu">
                     <!-- <iron-selector attr-for-selected="value" class="drawer-list"> -->
 
                     <!-- on-tap="_selectPage" data-args="0" -->
@@ -321,20 +325,34 @@
                     </neon-animatable>
 
                     <neon-animatable>
-                        <!-- <firebase-query path="/agents" order-by-key equal-to='{{agentKey}}' limit-to-first=1 data="{{agentsList}}"></firebase-query> -->
-                        <firebase-query path="/agents" order-by-child="cellphone" equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1 data="{{agentsList}}"></firebase-query>
+                        <!-- <firebase-query path="/agents" order-by-child="cellphone" equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1
+                            data="{{agentsList}}"></firebase-query> -->
 
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
                             <div class="detais">
-                                <!-- <paper-input always-float-label="true" required="true" auto-validate="true" label="Account Key" value="{{agentKey}}"></paper-input> -->
-                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No."
+                                <firebase-query path="/accountlist" order-by-child="/name/fullname" start-at={{agentName}} limit-to-first="5" data="{{agentDATA}}"></firebase-query>
+                                <paper-input on-keyup="agentfullname" label="Search" placeholder="Search by fullname" value="{{agentName}}">
+                                    <iron-icon icon="my-icons:search" slot="prefix"></iron-icon>
+                                </paper-input>
+                                <div role="listbox" id="agentList" style="display: none">
+                                    <template is="dom-repeat" items="[[agentDATA]]">
+                                        <paper-item style="cursor: pointer;" on-tap="_getagentdetails" item="[[item]]">[[item.name.fullname]]</paper-item>
+                                    </template>
+                                </div>
+                                <paper-input readonly type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
+                                <paper-input readonly label="Firstname" value="{{draftdata_agentdetails_firstname}}"></paper-input>
+                                <paper-input readonly label="Middlename" value="{{draftdata_agentdetails_middlename}}"></paper-input>
+                                <paper-input readonly label="Lastname" value="{{draftdata_agentdetails_lastname}}"></paper-input>
+                                <paper-input readonly label="Suffix" value="{{draftdata_agentdetails_suffix}}"></paper-input>
+                                <paper-input readonly label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
+                                <!-- <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No."
                                     value="{{draftdata_agentdetails_cellphone}}"></paper-input>
                                 <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}"></paper-input>
                                 <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"></paper-input>
                                 <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_agentdetails_lastname}}"></paper-input>
                                 <paper-input always-float-label="true" label="Suffix" value="{{draftdata_agentdetails_suffix}}"></paper-input>
-                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
+                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input> -->
                             </div>
                         </div>
                     </neon-animatable>
@@ -382,7 +400,7 @@
                                     <div>Email: {{draftdata_agentdetails_email}}</div>
                                 </div>
                             </div>
-                            
+
                         </div>
                     </neon-animatable>
 
@@ -426,8 +444,6 @@
         </app-drawer-layout>
 
 
-
-
     </template>
 
     <script>
@@ -435,6 +451,7 @@
             is: 'my-application-new',
 
             properties: {
+                myname: String,
                 blocklot: String,
                 details: Object,
                 narrow: {
@@ -515,8 +532,7 @@
                     type: String,
                     value: ''
                 },
-                transTypeCorrespondingColor: Object
-
+                transTypeCorrespondingColor: Object,
             },
 
             observers: [
@@ -527,7 +543,7 @@
                 // 'draftdata_agentdetails_cellphoneChanged(draftdata_agentdetails_cellphone,draftdata_agentdetails_firstname,draftdata_agentdetails_middlename,draftdata_agentdetails_lastname)',
                 'draftdata_agentdetails_accountkeyChanged(draftdata_agentdetails_cellphone,draftdata_agentdetails_firstname,draftdata_agentdetails_middlename,draftdata_agentdetails_lastname)',
                 'lastApplicationChanged(lastApplication.*)',
-                'isStartDateTimeInvalidChanged(isStartDateTimeInvalid.*)',
+                'isStartDateTimeInvalidChanged(isStartDateTimeInvalid.*)'
             ],
 
             // attached() {
@@ -1058,7 +1074,12 @@
                                         lastname: this.draftdata_agentdetails_lastname,
                                         suffix: this.draftdata_agentdetails_suffix,
                                         email: this.draftdata_agentdetails_email,
-                                        cellphone: this.draftdata_agentdetails_cellphone
+                                        cellphone: this.draftdata_agentdetails_cellphone,
+
+                                        type: this.draftdata_agentdetails_type,
+                                        group: this.draftdata_agentdetails_group,
+                                        designation: this.draftdata_agentdetails_designation,
+                                        type_group: this.draftdata_agentdetails_type_group
                                     },
                                     buyer: this.buyerKey,
                                     buyerdetails: {
@@ -1074,7 +1095,7 @@
                                     isserved: 'false',
                                     lot: this.fullLot,
                                     lotdetails: this.fullLotData,
-                                    processed: '',
+                                    processed: this.myname,
                                     processordetails: '',
                                     served: '',
                                     start: this.startDateTimeValue,
@@ -1090,7 +1111,7 @@
                                     lastname: this.draftdata_buyerdetails_lastname,
                                     suffix: this.draftdata_buyerdetails_suffix,
                                     cellphone: this.draftdata_buyerdetails_cellphone,
-                                    email: this.draftdata_buyerdetails_email
+                                    email: this.draftdata_buyerdetails_email,
                                 };
 
 
@@ -1100,7 +1121,12 @@
                                     lastname: this.draftdata_agentdetails_lastname,
                                     suffix: this.draftdata_agentdetails_suffix,
                                     email: this.draftdata_agentdetails_email,
-                                    cellphone: this.draftdata_agentdetails_cellphone
+                                    cellphone: this.draftdata_agentdetails_cellphone,
+
+                                    type: this.draftdata_agentdetails_type,
+                                    group: this.draftdata_agentdetails_group,
+                                    designation: this.draftdata_agentdetails_designation,
+                                    type_group: this.draftdata_agentdetails_type_group
                                 };
 
                                 var firebaseDb = this.$.idd.db;
@@ -1395,7 +1421,33 @@
                 return uid.randomUUID(8);
 
 
-            }
+            },
+
+            agentfullname() {
+                if (!this.agentName) {
+                    Polymer.dom(this.root).querySelector("#agentList").style.display = 'none';
+                } else {
+                    this.agentName = this.agentName.toUpperCase();
+                    Polymer.dom(this.root).querySelector("#agentList").style.display = 'block';
+                }
+            },
+
+            _getagentdetails(e) {
+                this.agentName = null;
+                Polymer.dom(this.root).querySelector("#agentList").style.display = 'none';
+                var agentdetails = e.currentTarget.item;
+                this.draftdata_agentdetails_cellphone = agentdetails.cellphone;
+                this.draftdata_agentdetails_firstname = agentdetails.name.firstname;
+                this.draftdata_agentdetails_middlename = agentdetails.name.middlename;
+                this.draftdata_agentdetails_lastname = agentdetails.name.lastname;
+                this.draftdata_agentdetails_suffix = agentdetails.name.suffix;
+
+                this.agentKey = agentdetails.accountkey;
+                this.draftdata_agentdetails_type = agentdetails.type;
+                this.draftdata_agentdetails_group = agentdetails.group;
+                this.draftdata_agentdetails_designation = agentdetails.designation;
+                this.draftdata_agentdetails_type_group = agentdetails.type_group;
+            },
 
 
         })

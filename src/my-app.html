@@ -290,13 +290,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <!-- NOTICE!!! -->
 
     <!-- dev server -->
-    <!-- <firebase-app auth-domain="hpmg-56df3.firebaseapp.com" database-url="https://hpmg-56df3.firebaseio.com/" api-key="AIzaSyCKxkkMfRQlhG5vTWh8Y_1yNWtMCTa-YPM"
+    <firebase-app auth-domain="hpmg-56df3.firebaseapp.com" database-url="https://hpmg-56df3.firebaseio.com/" api-key="AIzaSyCKxkkMfRQlhG5vTWh8Y_1yNWtMCTa-YPM"
       storage-bucket="hpmg-56df3.appspot.com" messaging-sender-id="416973601823">
-    </firebase-app> -->
+    </firebase-app>
 
     <!-- LIVE Server -->
-    <firebase-app auth-domain="hope-live-180101.firebaseapp.com" database-url="https://hope-live-180101.firebaseio.com/" api-key="AIzaSyBFcXcEIVgNSQaw6oANEBbYlOk0QOzp_q0" storage-bucket="hope-live-180101.appspot.com">
-    </firebase-app>
+    <!-- <firebase-app auth-domain="hope-live-180101.firebaseapp.com" database-url="https://hope-live-180101.firebaseio.com/" api-key="AIzaSyBFcXcEIVgNSQaw6oANEBbYlOk0QOzp_q0" storage-bucket="hope-live-180101.appspot.com">
+    </firebase-app> -->
 
     <!-- NOTICE!!! -->
 
@@ -545,7 +545,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
         </div>
       </paper-dialog>
-      
+
       <!-- alert dialog reAuthP-->
       <paper-dialog id="reAuthP" confirm-button="Done">
         <h3 style="margin-bottom:-1em;">Provide Email and Password to continue.</h3>
@@ -647,7 +647,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           // this.hasAccount = true;
           if (this.myaccount[0].active == true) {
             this.isActive = true;
-            if (this.myaccount[0].role) {
+            // if (this.myaccount[0].role) {
               if (this.myaccount[0].access.dashboard == true) {
                 this.dashAccess = true;
               }
@@ -666,7 +666,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               if (this.myaccount[0].access.briefcase == true) {
                 this.briefcaseAccess = true;
               }
-            }
+            // }
           }
           else {
             this.isActive = false;
@@ -676,8 +676,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       _roleAcc(e) {
         if (Object.keys(e).length > 0) {
-          if (e[0].role) {
-            return e[0].role;
+          if (e[0].position) {
+            return e[0].position;
           }
           else {
             return 'Role Unknown';

@@ -65,6 +65,10 @@
                 background-color: var(--paper-indigo-500);
                 color: white;
             }
+
+            paper-checkbox {
+                margin-right: 5px;
+            }
         </style>
 
         <firebase-document id="query" path="/accountlist/{{transactionKey}}" data="{{editData}}"></firebase-document>
@@ -93,40 +97,74 @@
                             label="Cellphone num.">
                             <div slot="prefix">+63</div>
                         </paper-input>
-                        <paper-dropdown-menu label="Role" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                        <paper-input label="Position" placeholder="Owner" value="{{position}}"></paper-input>
+                        <!-- <paper-dropdown-menu label="Role" vertical-align="top" horizontal-align="left" vertical-offset="60">
                             <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{role}}">
                                 <paper-item value="Owner">Owner</paper-item>
                                 <paper-item value="Manager">Manager</paper-item>
                                 <paper-item value="Sales Agent">Sales Agent</paper-item>
                                 <paper-item value="Staff">Staff</paper-item>
                             </paper-listbox>
-                        </paper-dropdown-menu>
-                        <span hidden$="{{typeHide}}">
+                        </paper-dropdown-menu> -->
+                        <!-- <span hidden$="{{typeHide}}"> -->
+                        <!-- <paper-dropdown-menu label="Type" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{type}}">
+                                <paper-item value="inhouse">In-House</paper-item>
+                                <paper-item value="broker">Broker</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu> -->
+                        <!-- </span> -->
+                        <!-- <span hidden$="{{groupHide}}"> -->
+                        <!-- <paper-dropdown-menu label="Group" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{group}}">
+                                <firebase-query path="/group/{{type}}" data="{{groupData}}"></firebase-query>
+                                <template is="dom-repeat" items="[[groupData]]">
+                                    <paper-item value="[[item.groupID]]">[[item.name]]</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu> -->
+                        <!-- </span> -->
+                        <!-- <span hidden$="{{designationHide}}"> -->
+                        <!-- <paper-dropdown-menu label="Designation" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{designation}}">
+                                <paper-item value="Team Leader">Team Leader</paper-item>
+                                <paper-item value="Member">Member</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu> -->
+                        <!-- </span> -->
+                        <div>
+                            <div style="font-size:12px; margin-top:10px;">Reports</div>
+                            <paper-checkbox id="sales">Owner</paper-checkbox>
+                            <paper-checkbox id="staff">Staff</paper-checkbox>
+                            <paper-checkbox id="salesAgent" on-tap="_showAgentReports">Agent</paper-checkbox>
+                        </div>
+                        <div hidden$="{{hideAgentReports}}">
                             <paper-dropdown-menu label="Type" vertical-align="top" horizontal-align="left" vertical-offset="60">
                                 <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{type}}">
                                     <paper-item value="inhouse">In-House</paper-item>
                                     <paper-item value="broker">Broker</paper-item>
                                 </paper-listbox>
                             </paper-dropdown-menu>
-                        </span>
-                        <span hidden$="{{groupHide}}">
                             <paper-dropdown-menu label="Group" vertical-align="top" horizontal-align="left" vertical-offset="60">
                                 <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{group}}">
                                     <firebase-query path="/group/{{type}}" data="{{groupData}}"></firebase-query>
                                     <template is="dom-repeat" items="[[groupData]]">
-                                        <paper-item value="[[item.name]]">[[item.name]]</paper-item>
+                                        <paper-item value="[[item.groupID]]">[[item.name]]</paper-item>
                                     </template>
                                 </paper-listbox>
                             </paper-dropdown-menu>
-                        </span>
-                        <span hidden$="{{designationHide}}">
                             <paper-dropdown-menu label="Designation" vertical-align="top" horizontal-align="left" vertical-offset="60">
                                 <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{designation}}">
                                     <paper-item value="Team Leader">Team Leader</paper-item>
                                     <paper-item value="Member">Member</paper-item>
                                 </paper-listbox>
                             </paper-dropdown-menu>
-                        </span>
+                            <br>
+                            <div style="font-size:12px; margin-top:10px;">Agent Reports</div>
+                            <paper-checkbox id="agentstype">Agents Type</paper-checkbox>
+                            <paper-checkbox id="agentsgroup">Agents Group</paper-checkbox>
+                            <paper-checkbox id="agents">All Agents</paper-checkbox>
+                        </div>
                         <div style="font-size:12px; margin-top:10px;">Access</div>
                         <paper-checkbox id="dashboard">Dashboard</paper-checkbox>
                         <paper-checkbox id="applications">Applications</paper-checkbox>
@@ -150,7 +188,7 @@
                             </div>
                             <div>Name: {{firstname}} {{middlename}} {{lastname}} {{suffix}}</div>
                             <div>Contact No. +63{{cellphone}}</div>
-                            <div>Role: {{role}}</div>
+                            <div>Position: {{position}}</div>
                             <div>Type: {{type}}</div>
                             <div>Group: {{group}}</div>
                             <div>Designation: {{designation}}</div>
@@ -182,18 +220,22 @@
                 editData: {
                     type: Object,
                 },
-                role: String,
-                typeHide: Boolean,
+                // role: String,
+                // typeHide: Boolean,
                 transactionKey: {
                     type: String,
                     value: '',
                 },
                 acctFirstStep: Boolean,
-                acctSecondStep: Boolean
+                acctSecondStep: Boolean,
+                hideAgentReports: {
+                    type: Boolean,
+                    value: true
+                },
             },
 
             observers: [
-                'roleChanged(role)',
+                // 'roleChanged(role)',
                 'transactionKeyChanged(transactionKey)',
                 '_editDataChanged(editData)'
             ],
@@ -203,21 +245,21 @@
                 this.acctSecondStep = true;
             },
 
-            roleChanged(e) {
-                if (e == 'Manager') {
-                    this.typeHide = false;
-                    this.groupHide = true;
-                    this.designationHide = true;
-                } else if (e == 'Sales Agent') {
-                    this.typeHide = false;
-                    this.groupHide = false;
-                    this.designationHide = false;
-                } else {
-                    this.typeHide = true;
-                    this.groupHide = true;
-                    this.designationHide = true;
-                }
-            },
+            // roleChanged(e) {
+            //     if (e == 'Manager') {
+            //         this.typeHide = false;
+            //         this.groupHide = true;
+            //         this.designationHide = true;
+            //     } else if (e == 'Sales Agent') {
+            //         this.typeHide = false;
+            //         this.groupHide = false;
+            //         this.designationHide = false;
+            //     } else {
+            //         this.typeHide = true;
+            //         this.groupHide = true;
+            //         this.designationHide = true;
+            //     }
+            // },
 
             _editDataChanged() {
                 if (Object.keys(this.editData).length > 0) {
@@ -228,16 +270,17 @@
                     this.lastname = this.editData.name.lastname;
                     this.suffix = this.editData.name.suffix;
                     this.cellphone = this.editData.cellphone;
-                    this.role = this.editData.role;
+                    this.position = this.editData.position;
+                    this.type = this.editData.type;
+                    this.group = this.editData.group;
+                    this.designation = this.editData.designation;
 
                     if (this.editData.access.accountlist == true) {
                         Polymer.dom(this.root).querySelector("#accountlist").checked = true;
                     }
-
                     if (this.editData.access.applications == true) {
                         Polymer.dom(this.root).querySelector("#applications").checked = true;
                     }
-
                     if (this.editData.access.dashboard == true) {
                         Polymer.dom(this.root).querySelector("#dashboard").checked = true;
                     }
@@ -251,9 +294,25 @@
                         Polymer.dom(this.root).querySelector("#group").checked = true;
                     }
 
-                    this.type = this.editData.type;
-                    this.group = this.editData.group;
-                    this.designation = this.editData.designation;
+                    if (this.editData.reports.staffChart == true) {
+                        Polymer.dom(this.root).querySelector("#staff").checked = true;
+                    }
+                    if (this.editData.reports.salesAgent == true) {
+                        Polymer.dom(this.root).querySelector("#salesAgent").checked = true;
+                        this.hideAgentReports = false;
+                    }
+                    if (this.editData.reports.salesChart == true) {
+                        Polymer.dom(this.root).querySelector("#sales").checked = true;
+                    }
+                    if (this.editData.reports.agentstypeChart == true) {
+                        Polymer.dom(this.root).querySelector("#agentstype").checked = true;
+                    }
+                    if (this.editData.reports.agentsgroupChart == true) {
+                        Polymer.dom(this.root).querySelector("#agentsgroup").checked = true;
+                    }
+                    if (this.editData.reports.agentsChart == true) {
+                        Polymer.dom(this.root).querySelector("#agents").checked = true;
+                    }
                 }
             },
 
@@ -262,79 +321,101 @@
             },
 
             _submit() {
-                if (!this.firstname || !this.middlename || !this.lastname || !this.cellphone || !this.role) {
+                var salesAgents = Polymer.dom(this.root).querySelector("#salesAgent");
+                if (!this.firstname || !this.middlename || !this.lastname || !this.cellphone || !this.position) {
                     this.msg = 'Please fill-up the required field.';
                 } else if (this.cellphone.length != 10) {
                     this.msg = 'Error! Invalid cellphone number...';
-                } else {
-                    this.msg = '';
-                    if (!this.suffix) {
-                        this.suffix = '';
-                    }
-                    var box1 = Polymer.dom(this.root).querySelector("#dashboard");
-                    var box2 = Polymer.dom(this.root).querySelector("#applications");
-                    var box3 = Polymer.dom(this.root).querySelector("#accountlist");
-                    var box4 = Polymer.dom(this.root).querySelector("#briefcase");
-                    var box5 = Polymer.dom(this.root).querySelector("#announcement");
-                    var box6 = Polymer.dom(this.root).querySelector("#group");
-
-                    var dashboard = false;
-                    var applications = false;
-                    var accountlist = false;
-                    var briefcase = false;
-                    var announcement = false;
-                    var group = false;
-
-                    if (box1.checked == true) {
-                        dashboard = true;
-                    }
-                    if (box2.checked == true) {
-                        applications = true;
-                    }
-                    if (box3.checked == true) {
-                        accountlist = true;
-                    }
-                    if (box4.checked == true) {
-                        briefcase = true;
-                    }
-                    if (box5.checked == true) {
-                        announcement = true;
-                    }
-                    if (box6.checked == true) {
-                        group = true;
-                    }
-
-                    if (this.role == 'Manager') {
-                        if (!this.type) {
-                            this.msg = 'Please fill-up the required field.';
-                        } else if (this.type == "") {
-                            this.msg = 'Please fill-up the required field.';
-                        } else {
-                            this.group = '';
-                            this.designation = '';
-                            this._accountSave(dashboard, applications, accountlist, briefcase, announcement, group);
-                        }
-                    } else if (this.role == 'Owner' || this.role == 'Staff') {
-                        this.msg = '';
-                        this.type = '';
-                        this.group = '';
-                        this.designation = '';
-                        this._accountSave(dashboard, applications, accountlist, briefcase, announcement, group);
+                } else if (salesAgents.checked == true) {
+                    if (!this.type || !this.group || !this.designation) {
+                        this.msg = 'Please fill-up the required field.';
                     } else {
-                        if (!this.type || !this.group || !this.designation) {
-                            this.msg = 'Please fill-up the required field.';
-                        } else if (this.type == '' || this.group == '' || this.designation == '') {
-                            this.msg = 'Please fill-up the required field.';
-                        } else {
-                            this.msg = '';
-                            this._accountSave(dashboard, applications, accountlist, briefcase, announcement, group);
-                        }
+                        this._continue();
                     }
+                } else {
+                    this.type = '';
+                    this.group = '';
+                    this.designation = '';
+                    var agentstype = Polymer.dom(this.root).querySelector("#agentstype").checked = false;
+                    var agentsgroup = Polymer.dom(this.root).querySelector("#agentsgroup").checked = false;
+                    var agents = Polymer.dom(this.root).querySelector("#agents").checked = false;
+                    this._continue();
                 }
 
             },
 
-            _accountSave(dashboard, applications, accountlist, briefcase, announcement, group) {
+            _continue() {
+                this.msg = '';
+                if (!this.suffix) {
+                    this.suffix = '';
+                }
+                var box1 = Polymer.dom(this.root).querySelector("#dashboard");
+                var box2 = Polymer.dom(this.root).querySelector("#applications");
+                var box3 = Polymer.dom(this.root).querySelector("#accountlist");
+                var box4 = Polymer.dom(this.root).querySelector("#briefcase");
+                var box5 = Polymer.dom(this.root).querySelector("#announcement");
+                var box6 = Polymer.dom(this.root).querySelector("#group");
+                var dashboard = false;
+                var applications = false;
+                var accountlist = false;
+                var briefcase = false;
+                var announcement = false;
+                var group = false;
+                if (box1.checked == true) {
+                    dashboard = true;
+                }
+                if (box2.checked == true) {
+                    applications = true;
+                }
+                if (box3.checked == true) {
+                    accountlist = true;
+                }
+                if (box4.checked == true) {
+                    briefcase = true;
+                }
+                if (box5.checked == true) {
+                    announcement = true;
+                }
+                if (box6.checked == true) {
+                    group = true;
+                }
+
+                var staff = Polymer.dom(this.root).querySelector("#staff");
+                var salesAgents = Polymer.dom(this.root).querySelector("#salesAgent");
+                var sales = Polymer.dom(this.root).querySelector("#sales");
+
+                var agentstype = Polymer.dom(this.root).querySelector("#agentstype");
+                var agentsgroup = Polymer.dom(this.root).querySelector("#agentsgroup");
+                var agents = Polymer.dom(this.root).querySelector("#agents");
+                var staffChart = false;
+                var salesChart = false;
+                var salesAgent = false;
+
+                var agentstypeChart = false;
+                var agentsgroupChart = false;
+                var agentsChart = false;
+                if (salesAgents.checked == true) {
+                    salesAgent = true;
+                }
+                if (staff.checked == true) {
+                    staffChart = true;
+                }
+                if (sales.checked == true) {
+                    salesChart = true;
+                }
+                if (agentstype.checked == true) {
+                    agentstypeChart = true;
+                }
+                if (agentsgroup.checked == true) {
+                    agentsgroupChart = true;
+                }
+                if (agents.checked == true) {
+                    agentsChart = true;
+                }
+                this._accountSave(dashboard, applications, accountlist, briefcase, announcement, group, salesAgent, staffChart, salesChart, agentstypeChart, agentsgroupChart, agentsChart);
+            },
+
+            _accountSave(dashboard, applications, accountlist, briefcase, announcement, group, salesAgent, staffChart, salesChart, agentstypeChart, agentsgroupChart, agentsChart) {
                 var ref = firebase.database().ref('/accountlist');
                 ref.child(this.transactionKey).update({
                     active: true,
@@ -343,10 +424,11 @@
                         firstname: this.firstname,
                         middlename: this.middlename,
                         lastname: this.lastname,
-                        suffix: this.suffix
+                        suffix: this.suffix,
+                        fullname: this.firstname.toUpperCase() + ' ' + this.middlename.toUpperCase() + ' ' + this.lastname.toUpperCase()
                     },
                     cellphone: this.cellphone,
-                    role: this.role,
+                    position: this.position,
                     type: this.type,
                     group: this.group,
                     type_group: this.type + "_" + this.group,
@@ -359,6 +441,14 @@
                         announcement: announcement,
                         group: group
                     },
+                    reports: {
+                        salesAgent: salesAgent,
+                        staffChart: staffChart,
+                        salesChart: salesChart,
+                        agentstypeChart: agentstypeChart,
+                        agentsgroupChart: agentsgroupChart,
+                        agentsChart: agentsChart
+                    }
                 })
                 window.location = '/accountlist';
             },
@@ -378,6 +468,15 @@
                 var mywindow = window.open('', 'Print', 'height=600,width=800');
                 mywindow.document.write(content);
                 mywindow.print();
+            },
+
+            _showAgentReports() {
+                var salesAgents = Polymer.dom(this.root).querySelector("#salesAgent");
+                if (salesAgents.checked == true) {
+                    this.hideAgentReports = false;
+                } else {
+                    this.hideAgentReports = true;
+                }
             },
         })
     </script>

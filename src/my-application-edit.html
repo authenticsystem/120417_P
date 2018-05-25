@@ -138,6 +138,10 @@
                 --datetime-background: #071533;
                 --datetime-color: #eeeeee;
             }
+
+            div[role="listbox"] {
+                border: 1px solid #e5e5e5;
+            }
         </style>
 
         <!-- to get the record of Transaction Key -->
@@ -145,7 +149,7 @@
 
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
-                <div class="mnu" role="listbox">
+                <div class="mnu">
                     <!-- <iron-selector attr-for-selected="value" class="drawer-list"> -->
 
                     <!-- on-tap="_selectPage" data-args="0" -->
@@ -336,18 +340,33 @@
                     </neon-animatable>
 
                     <neon-animatable>
-                        <!-- <firebase-query path="/agents" order-by-key equal-to='{{agentKey}}' limit-to-first=1 data="{{agentsList}}"></firebase-query> -->
-                        <firebase-query path="/agents" order-by-child="cellphone" equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1 data="{{agentsList}}"></firebase-query>
+                        <!-- <firebase-query path="/agents" order-by-child="cellphone" equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1
+                            data="{{agentsList}}"></firebase-query> -->
 
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
                             <div class="detais">
-                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
+                                <firebase-query path="/accountlist" order-by-child="/name/fullname" start-at={{agentName}} limit-to-first="5" data="{{agentDATA}}"></firebase-query>
+                                <paper-input on-keyup="agentfullname" label="Search" placeholder="Search by fullname" value="{{agentName}}">
+                                    <iron-icon icon="my-icons:search" slot="prefix"></iron-icon>
+                                </paper-input>
+                                <div role="listbox" id="agentList" style="display: none">
+                                    <template is="dom-repeat" items="[[agentDATA]]">
+                                        <paper-item style="cursor: pointer;" on-tap="_getagentdetails" item="[[item]]">[[item.name.fullname]]</paper-item>
+                                    </template>
+                                </div>
+                                <paper-input readonly type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
+                                <paper-input readonly label="Firstname" value="{{draftdata_agentdetails_firstname}}"></paper-input>
+                                <paper-input readonly label="Middlename" value="{{draftdata_agentdetails_middlename}}"></paper-input>
+                                <paper-input readonly label="Lastname" value="{{draftdata_agentdetails_lastname}}"></paper-input>
+                                <paper-input readonly label="Suffix" value="{{draftdata_agentdetails_suffix}}"></paper-input>
+                                <paper-input readonly label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
+                                <!-- <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
                                 <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}"></paper-input>
                                 <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"></paper-input>
                                 <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_agentdetails_lastname}}"></paper-input>
                                 <paper-input always-float-label="true" label="Suffix" value="{{draftdata_agentdetails_suffix}}"></paper-input>
-                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
+                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input> -->
                             </div>
                         </div>
                     </neon-animatable>
@@ -357,44 +376,44 @@
                             <div class="docu-header">4. Finalize</div>
 
                             <div class="details">
-                                    <div>Please review the following details:</div>
-                                    <div>
-                                        <div style="background-color: dimgrey; color:white; padding:5px">
-                                            Lot Details
-                                        </div>
-                                        <div>Block: {{block}}</div>
-                                        <div>Lot: {{lot}}</div>
-                                        <div>Level: {{level}}</div>
-                                        <div>Area: {{fullLotData.area}}</div>
-                                        <div>Designation: {{fullLotData.maprenderdetails.designation_name}}</div>
-                                        <div>Type: {{fullLotData.maprenderdetails.type_name}}</div>
-                                        <div>Transaction: {{draftdata_type}}</div>
-                                        <div>Start: {{startDateTimeValue}}</div>
-                                        <div>Expires: {{expiryDate}}</div>
+                                <div>Please review the following details:</div>
+                                <div>
+                                    <div style="background-color: dimgrey; color:white; padding:5px">
+                                        Lot Details
                                     </div>
-                                    <div>
-                                        <div style="background-color: dimgrey; color:white; padding:5px">
-                                            Buyer Information
-                                        </div>
-                                        <div>First Name: {{draftdata_buyerdetails_firstname}}</div>
-                                        <div>Middle Name: {{draftdata_buyerdetails_middlename}}</div>
-                                        <div>Last Name: {{draftdata_buyerdetails_lastname}}</div>
-                                        <div>Suffix: {{draftdata_buyerdetails_suffix}}</div>
-                                        <div>Cellphone: {{draftdata_buyerdetails_cellphone}}</div>
-                                        <div>Email: {{draftdata_buyerdetails_email}}</div>
-                                    </div>
-                                    <div>
-                                        <div style="background-color: dimgrey; color:white; padding:5px">
-                                            Agent Information
-                                        </div>
-                                        <div>First Name: {{draftdata_agentdetails_firstname}}</div>
-                                        <div>Middle Name: {{draftdata_agentdetails_middlename}}</div>
-                                        <div>Last Name: {{draftdata_agentdetails_lastname}}</div>
-                                        <div>Suffix: {{draftdata_agentdetails_suffix}}</div>
-                                        <div>Cellphone: {{draftdata_agentdetails_cellphone}}</div>
-                                        <div>Email: {{draftdata_agentdetails_email}}</div>
-                                    </div>
+                                    <div>Block: {{block}}</div>
+                                    <div>Lot: {{lot}}</div>
+                                    <div>Level: {{level}}</div>
+                                    <div>Area: {{fullLotData.area}}</div>
+                                    <div>Designation: {{fullLotData.maprenderdetails.designation_name}}</div>
+                                    <div>Type: {{fullLotData.maprenderdetails.type_name}}</div>
+                                    <div>Transaction: {{draftdata_type}}</div>
+                                    <div>Start: {{startDateTimeValue}}</div>
+                                    <div>Expires: {{expiryDate}}</div>
                                 </div>
+                                <div>
+                                    <div style="background-color: dimgrey; color:white; padding:5px">
+                                        Buyer Information
+                                    </div>
+                                    <div>First Name: {{draftdata_buyerdetails_firstname}}</div>
+                                    <div>Middle Name: {{draftdata_buyerdetails_middlename}}</div>
+                                    <div>Last Name: {{draftdata_buyerdetails_lastname}}</div>
+                                    <div>Suffix: {{draftdata_buyerdetails_suffix}}</div>
+                                    <div>Cellphone: {{draftdata_buyerdetails_cellphone}}</div>
+                                    <div>Email: {{draftdata_buyerdetails_email}}</div>
+                                </div>
+                                <div>
+                                    <div style="background-color: dimgrey; color:white; padding:5px">
+                                        Agent Information
+                                    </div>
+                                    <div>First Name: {{draftdata_agentdetails_firstname}}</div>
+                                    <div>Middle Name: {{draftdata_agentdetails_middlename}}</div>
+                                    <div>Last Name: {{draftdata_agentdetails_lastname}}</div>
+                                    <div>Suffix: {{draftdata_agentdetails_suffix}}</div>
+                                    <div>Cellphone: {{draftdata_agentdetails_cellphone}}</div>
+                                    <div>Email: {{draftdata_agentdetails_email}}</div>
+                                </div>
+                            </div>
                         </div>
                     </neon-animatable>
 
@@ -447,6 +466,7 @@
             is: 'my-application-edit',
 
             properties: {
+                myname: String,
                 blocklot: String,
                 details: Object,
                 narrow: {
@@ -689,8 +709,8 @@
             // },
 
             // newdataChanged() {
-            //     if(Object.keys(this.newdata).length > 0){
-            //     console.log(this.newdata);
+            //     if (Object.keys(this.newdata).length > 0) {
+            //         console.log(this.newdata);
             //     }
             // },
 
@@ -742,6 +762,11 @@
                     this.draftdata_agentdetails_lastname = this.transactionData.agentdetails.lastname;
                     this.draftdata_agentdetails_suffix = this.transactionData.agentdetails.suffix;
                     this.draftdata_agentdetails_email = this.transactionData.agentdetails.email;
+
+                    this.draftdata_agentdetails_type = this.transactionData.agentdetails.type;
+                    this.draftdata_agentdetails_group = this.transactionData.agentdetails.group;
+                    this.draftdata_agentdetails_designation = this.transactionData.agentdetails.designation;
+                    this.draftdata_agentdetails_type_group = this.transactionData.agentdetails.type_group;
 
                     if (typeof (this.transTypeCorrespondingColor) == 'undefined') {
                         var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + (this.transactionData.type == 'Reserve' ? 'reserved' : (this.transactionData.type == 'Hold' ? 'hold' : (this.transactionData.type == 'Buy' ? 'sold' : ''))));
@@ -838,7 +863,7 @@
             },
 
             draftdata_agentdetails_cellphoneChanged() {
-                if (this.agentKey,this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
+                if (this.agentKey, this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
                     this.favrighthide = false;
                 }
                 else {
@@ -1374,7 +1399,12 @@
                                         lastname: this.draftdata_agentdetails_lastname,
                                         suffix: this.draftdata_agentdetails_suffix,
                                         email: this.draftdata_agentdetails_email,
-                                        cellphone: this.draftdata_agentdetails_cellphone
+                                        cellphone: this.draftdata_agentdetails_cellphone,
+
+                                        type: this.draftdata_agentdetails_type,
+                                        group: this.draftdata_agentdetails_group,
+                                        designation: this.draftdata_agentdetails_designation,
+                                        group: this.draftdata_agentdetails_type_group
                                     },
                                     buyer: this.buyerKey,
                                     buyerdetails: {
@@ -1390,6 +1420,7 @@
                                     isserved: this.transactionData.isserved, //get value from current
                                     lot: this.fullLot,
                                     lotdetails: this.fullLotData,
+                                    processedUpdated: this.myname,
                                     processed: this.transactionData.processed, //get value from current
                                     processordetails: this.transactionData.processordetails, //get value from current
                                     served: this.transactionData.served, //get value from current
@@ -1876,6 +1907,32 @@
                 return uid.randomUUID(8);
 
 
+            },
+
+            agentfullname() {
+                if (!this.agentName) {
+                    Polymer.dom(this.root).querySelector("#agentList").style.display = 'none';
+                } else {
+                    this.agentName = this.agentName.toUpperCase();
+                    Polymer.dom(this.root).querySelector("#agentList").style.display = 'block';
+                }
+            },
+
+            _getagentdetails(e) {
+                this.agentName = null;
+                Polymer.dom(this.root).querySelector("#agentList").style.display = 'none';
+                var agentdetails = e.currentTarget.item;
+                this.draftdata_agentdetails_cellphone = agentdetails.cellphone;
+                this.draftdata_agentdetails_firstname = agentdetails.name.firstname;
+                this.draftdata_agentdetails_middlename = agentdetails.name.middlename;
+                this.draftdata_agentdetails_lastname = agentdetails.name.lastname;
+                this.draftdata_agentdetails_suffix = agentdetails.name.suffix;
+
+                this.agentKey = agentdetails.accountkey;
+                this.draftdata_agentdetails_type = agentdetails.type;
+                this.draftdata_agentdetails_group = agentdetails.group;
+                this.draftdata_agentdetails_designation = agentdetails.designation;
+                this.draftdata_agentdetails_type_group = agentdetails.type_group;
             },
         })
 

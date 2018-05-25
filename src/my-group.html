@@ -20,6 +20,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
 
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 <link rel="import" href="../bower_components/neon-animation/web-animations.html">
@@ -27,6 +29,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-view404.html">
 <link rel="import" href="my-view-group.html">
+<link rel="import" href="short-unique-id.html">
 
 <dom-module id="my-group">
     <template>
@@ -43,46 +46,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             @media screen and (max-width: 800px) {
                 .container {
-                    padding: 0
-                }
-
-                .containerDIV {
                     background-color: white;
                     margin: auto;
-                    padding: 16px;
-                    /* width: 100%; */
                     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-                }
-
-                .groupItem {
-                    background-color: white;
-                    margin: auto;
-                    /* width: 100%; */
-                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-                }
-
-                .menubtn {
-                    margin-right: 34px;
                 }
             }
 
             @media screen and (min-width: 800px) {
                 .container {
-                    padding: 16px
-                }
-
-                .containerDIV {
+                    width: 70%;
                     background-color: white;
                     margin: auto;
-                    padding: 16px;
-                    width: 80%;
-                    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-                }
-
-                .groupItem {
-                    background-color: white;
-                    margin: auto;
-                    width: 80%;
                     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
                 }
             }
@@ -109,8 +83,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             paper-item {
-                font-size: 12px;
                 cursor: pointer;
+            }
+
+            paper-icon-item {
+                cursor: pointer;
+                border-bottom: 1px solid gray;
             }
         </style>
 
@@ -151,106 +129,105 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                             <iron-pages selected="{{selectedAgentType}}">
                                 <!-- in-house -->
-                                <div class="container">
-                                    <div class="containerDIV">
-                                        <paper-input label="Create Group" placeholder="Group name" value={{inhouseName}}></paper-input>
-                                        <span id="inhouseErrMSG" style="color: red; font-size: 12px; display: none">{{inhouseErrMSG}}</span>
-                                        <br>
-                                        <paper-button class="submit" on-tap="_inhouseSubmit">Submit</paper-button>
-                                    </div>
-
-                                    <firebase-query id="inhouseQuery" path="/group/inhouse" data="{{inhouseData}}"></firebase-query>
-                                    <template is="dom-repeat" items="[[inhouseData]]">
-                                        <div style="margin-top: 16px">
-                                            <paper-icon-item class="groupItem">
-                                                <!-- <div class="avatar" slot="item-icon"></div> -->
+                                <div style="margin-top: 16px">
+                                    <div class="container">
+                                        <div style="background-color: #E0E0E0; padding: 16px; display: flex">
+                                            <paper-input label="Search" placeholder="Group name" value="{{searchGroupName}}" style="width: 100%">
+                                                <iron-icon icon="my-icons:search" slot="prefix"></iron-icon>
+                                            </paper-input>
+                                            <paper-button raised style="margin-top: 16px; margin-left: 16px" on-tap="_createInhouse" class="submit">create</paper-button>
+                                        </div>
+                                        <firebase-query id="inhouseQuery" path="/group/inhouse" data={{inhouseData}}></firebase-query>
+                                        <template is="dom-repeat" items=[[inhouseData]]>
+                                            <paper-icon-item>
+                                                <!-- <div class="avatar blue" slot="item-icon"></div> -->
                                                 <paper-item-body two-line>
                                                     <div>[[item.name]]</div>
-                                                    <!-- <div secondary>Jan 17, 2014</div> -->
+                                                    <!-- <div secondary>No of users</div> -->
                                                 </paper-item-body>
-                                                <paper-menu-button>
-                                                    <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
-                                                    <paper-listbox slot="dropdown-content">
-                                                        <paper-item on-tap="_openEditInhouseDialog" item="[[item]]">Edit</paper-item>
-                                                        <paper-item on-tap="_openDeleteInhouseDialog" item="[[item]]">Delete</paper-item>
-                                                        <a href$="{{_getViewInhouseGroupLink(item.$key)}}" style="color: black; text-decoration: none">
-                                                            <paper-item on-tap="_viewInhouseGroup" item="[[item]]">View</paper-item>
-                                                        </a>
-                                                    </paper-listbox>
-                                                </paper-menu-button>
+                                                <paper-icon-button icon="my-icons:edit" on-tap="_editInhouse" item="[[item]]"></paper-icon-button>
+                                                <paper-icon-button icon="my-icons:delete-forever" on-tap="_deleteInhouse" item="[[item]]"></paper-icon-button>
+                                                <a href$="{{_getViewInhouseGroupLink(item.$key)}}" style="color: black; text-decoration: none">
+                                                    <paper-icon-button icon="my-icons:account-circle" on-tap="_viewInhouseGroup" item="[[item]]"></paper-icon-button>
+                                                </a>
                                             </paper-icon-item>
-                                        </div>
-                                    </template>
-
-                                    <paper-dialog id="deleteInhouseDialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
-                                        <h2>Remove Group?</h2>
+                                        </template>
+                                    </div>
+                                    <paper-dialog id="createInhouseDialog">
+                                        <h2>Create Group</h2>
+                                        <paper-input label="In-House" placeholder="Group name" value="{{inhouseName}}"></paper-input>
                                         <div class="buttons">
                                             <paper-button dialog-dismiss>Cancel</paper-button>
-                                            <paper-button dialog-confirm autofocus on-tap="_deleteInhouse">OK</paper-button>
+                                            <paper-button dialog-confirm autofocus on-tap="_inhouseSubmit">Create</paper-button>
                                         </div>
                                     </paper-dialog>
-
-                                    <paper-dialog id="editInhouseDialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
-                                        <h2>Update Group</h2>
-                                        <!-- <span id="updateErrMSG" style="color: red; font-size: 12px; display: none">{{updateErrMSG}}</span> -->
-                                        <paper-input label="Create Group" placeholder="Group name" value={{updateInhouseName}}></paper-input>
+                                    <paper-dialog id="deleteInhouseDialog">
+                                        <h2>Delete this group?</h2>
                                         <div class="buttons">
                                             <paper-button dialog-dismiss>Cancel</paper-button>
-                                            <paper-button dialog-confirm autofocus on-tap="_editInhouse">OK</paper-button>
+                                            <paper-button dialog-confirm autofocus on-tap="_inhouseDelete">Delete</paper-button>
+                                        </div>
+                                    </paper-dialog>
+                                    <paper-dialog id="editInhouseDialog">
+                                        <h2>Edit Group</h2>
+                                        <paper-input label="In-House" placeholder="Group name" value="{{updateInhouseName}}"></paper-input>
+                                        <div class="buttons">
+                                            <paper-button dialog-dismiss>Cancel</paper-button>
+                                            <paper-button dialog-confirm autofocus on-tap="_inhouseUpdate">Update</paper-button>
                                         </div>
                                     </paper-dialog>
                                 </div>
 
                                 <!-- broker -->
-                                <div class="container">
-                                    <div class="containerDIV">
-                                        <paper-input label="Create Group" placeholder="Group name" value={{brokerName}}></paper-input>
-                                        <span id="brokerErrMSG" style="float: right; color: red; font-size: 12px; display: none">{{brokerErrMSG}}</span>
-                                        <br>
-                                        <paper-button class="submit" on-tap="_brokerSubmit">Submit</paper-button>
-                                    </div>
-
-                                    <firebase-query id="brokerQuery" path="/group/broker" data="{{brokerData}}"></firebase-query>
-                                    <template is="dom-repeat" items="[[brokerData]]">
-                                        <div style="margin-top: 16px">
-                                            <paper-icon-item class="groupItem">
-                                                <!-- <div class="avatar" slot="item-icon"></div> -->
+                                <div style="margin-top: 16px">
+                                    <div class="container">
+                                        <div style="background-color: #E0E0E0; padding: 16px; display: flex">
+                                            <paper-input label="Search" placeholder="Group name" value="{{searchGroupName}}" style="width: 100%">
+                                                <iron-icon icon="my-icons:search" slot="prefix"></iron-icon>
+                                            </paper-input>
+                                            <paper-button raised style="margin-top: 16px; margin-left: 16px" on-tap="_createBroker" class="submit">create</paper-button>
+                                        </div>
+                                        <firebase-query id="brokerQuery" path="/group/broker" data={{brokerData}}></firebase-query>
+                                        <template is="dom-repeat" items=[[brokerData]]>
+                                            <paper-icon-item>
+                                                <!-- <div class="avatar blue" slot="item-icon"></div> -->
                                                 <paper-item-body two-line>
                                                     <div>[[item.name]]</div>
-                                                    <!-- <div secondary>Jan 17, 2014</div> -->
+                                                    <!-- <div secondary>No of users</div> -->
                                                 </paper-item-body>
-                                                <paper-menu-button>
-                                                    <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
-                                                    <paper-listbox slot="dropdown-content">
-                                                        <paper-item on-tap="_openEditBrokerDialog" item="[[item]]">Edit</paper-item>
-                                                        <paper-item on-tap="_openDeleteBrokerDialog" item="[[item]]">Delete</paper-item>
-                                                        <a href$="{{_getViewBrokerGroupLink(item.$key)}}" style="color: black; text-decoration: none">
-                                                            <paper-item on-tap="_viewBrokerGroup" item="[[item]]">View</paper-item>
-                                                        </a>
-                                                    </paper-listbox>
-                                                </paper-menu-button>
+                                                <paper-icon-button icon="my-icons:edit" on-tap="_editBroker" item="[[item]]"></paper-icon-button>
+                                                <paper-icon-button icon="my-icons:delete-forever" on-tap="_deleteBroker" item="[[item]]"></paper-icon-button>
+                                                <a href$="{{_getViewBrokerGroupLink(item.$key)}}" style="color: black; text-decoration: none">
+                                                    <paper-icon-button icon="my-icons:account-circle" on-tap="_viewBrokerGroup" item="[[item]]"></paper-icon-button>
+                                                </a>
                                             </paper-icon-item>
-                                        </div>
-                                    </template>
-
-                                    <paper-dialog id="deleteBrokerDialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
-                                        <h2>Remove Group?</h2>
+                                        </template>
+                                    </div>
+                                    <paper-dialog id="createBrokerDialog">
+                                        <h2>Create Group</h2>
+                                        <paper-input label="Broker" placeholder="Group name" value="{{brokerName}}"></paper-input>
                                         <div class="buttons">
                                             <paper-button dialog-dismiss>Cancel</paper-button>
-                                            <paper-button dialog-confirm autofocus on-tap="_deleteBroker">OK</paper-button>
+                                            <paper-button dialog-confirm autofocus on-tap="_brokerSubmit">Create</paper-button>
                                         </div>
                                     </paper-dialog>
-
-                                    <paper-dialog id="editBrokerDialog" entry-animation="scale-up-animation" exit-animation="fade-out-animation">
-                                        <h2>Update Group</h2>
-                                        <!-- <span id="updateErrMSG" style="color: red; font-size: 12px; display: none">{{updateErrMSG}}</span> -->
-                                        <paper-input label="Create Group" placeholder="Group name" value={{updateBrokerName}}></paper-input>
+                                    <paper-dialog id="deleteBrokerDialog">
+                                        <h2>Delete this group?</h2>
                                         <div class="buttons">
                                             <paper-button dialog-dismiss>Cancel</paper-button>
-                                            <paper-button dialog-confirm autofocus on-tap="_editBroker">OK</paper-button>
+                                            <paper-button dialog-confirm autofocus on-tap="_brokerDelete">Delete</paper-button>
+                                        </div>
+                                    </paper-dialog>
+                                    <paper-dialog id="editBrokerDialog">
+                                        <h2>Edit Group</h2>
+                                        <paper-input label="Broker" placeholder="Group name" value="{{updateBrokerName}}"></paper-input>
+                                        <div class="buttons">
+                                            <paper-button dialog-dismiss>Cancel</paper-button>
+                                            <paper-button dialog-confirm autofocus on-tap="_brokerUpdate">Update</paper-button>
                                         </div>
                                     </paper-dialog>
                                 </div>
+
                             </iron-pages>
 
                         </div>
@@ -305,56 +282,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
 
             // IN-HOUSE
+            _createInhouse() {
+                Polymer.dom(this.root).querySelector("#createInhouseDialog").open();
+                this.inhouseName = null;
+            },
 
             _inhouseSubmit() {
-                if (this.inhouseName == null || this.inhouseName == '') {
-                    Polymer.dom(this.root).querySelector("#inhouseErrMSG").style.display = 'block';
-                    Polymer.dom(this.root).querySelector("#inhouseErrMSG").style.color = 'red';
-                    this.inhouseErrMSG = 'Please fillup the required field...'
-                } else {
-                    var inhouseQuery = Polymer.dom(this.root).querySelector("#inhouseQuery")
+                if (this.inhouseName) {
+                    var groupID = this.guid();
+                    var inhouseQuery = Polymer.dom(this.root).querySelector("#inhouseQuery");
                     inhouseQuery.ref.push({
-                        name: this.inhouseName
+                        name: this.inhouseName,
+                        groupID: groupID
                     });
-                    this.inhouseName = null;
-                    Polymer.dom(this.root).querySelector("#inhouseErrMSG").style.display = 'block';
-                    Polymer.dom(this.root).querySelector("#inhouseErrMSG").style.color = 'green';
-                    this.inhouseErrMSG = 'Successfully saved...';
                 }
             },
 
-            _openDeleteInhouseDialog(e) {
+            _deleteInhouse(e) {
                 this.inhouseKey = e.currentTarget.item.$key;
                 Polymer.dom(this.root).querySelector("#deleteInhouseDialog").open();
             },
 
-            _deleteInhouse() {
+            _inhouseDelete() {
                 Polymer.dom(this.root).querySelector("#inhouseQuery").ref.child(this.inhouseKey).remove();
-                Polymer.dom(this.root).querySelector("#inhouseErrMSG").style.display = 'block';
-                Polymer.dom(this.root).querySelector("#inhouseErrMSG").style.color = 'green';
-                this.inhouseErrMSG = 'Successfully delete...';
             },
 
-            _openEditInhouseDialog(e) {
+            _editInhouse(e) {
                 this.inhouseKey = e.currentTarget.item.$key;
                 this.updateInhouseName = e.currentTarget.item.name;
                 Polymer.dom(this.root).querySelector("#editInhouseDialog").open();
             },
 
-            _editInhouse() {
-                if (this.updateInhouseName == null || this.updateInhouseName == '') {
-                    Polymer.dom(this.root).querySelector("#inhouseErrMSG").style.display = 'block';
-                    Polymer.dom(this.root).querySelector("#inhouseErrMSG").style.color = 'red';
-                    this.inhouseErrMSG = 'Error in updating data...'
-                } else {
+            _inhouseUpdate() {
+                if (this.updateInhouseName) {
                     var inhouseQuery = Polymer.dom(this.root).querySelector("#inhouseQuery")
                     inhouseQuery.ref.child(this.inhouseKey).update({
                         name: this.updateInhouseName
                     });
                     this.updateInhouseName = null;
-                    Polymer.dom(this.root).querySelector("#inhouseErrMSG").style.display = 'block';
-                    Polymer.dom(this.root).querySelector("#inhouseErrMSG").style.color = 'green';
-                    this.inhouseErrMSG = 'Updated successfully...';
                 }
             },
 
@@ -367,6 +332,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 var data_args = e.currentTarget.item.$key;
                 var type = 'inhouse';
                 var inhouseGroupName = e.currentTarget.item.name;
+                var inhouseGroupID = e.currentTarget.item.groupID;
                 var node = Polymer.dom(this.root).querySelector("#inhouseGroup");
                 if (node) {
                     var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
@@ -378,6 +344,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
                     newDiv.setAttribute("transaction-key", data_args);
                     newDiv.setAttribute("group-name", inhouseGroupName);
+                    newDiv.setAttribute("group-id", inhouseGroupID);
                     newDiv.setAttribute("type", type);
                     newDiv.setAttribute("prev-route", this.route.prefix);
                     //if open existings
@@ -387,56 +354,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
 
             // BROKER
+            _createBroker() {
+                Polymer.dom(this.root).querySelector("#createBrokerDialog").open();
+                this.brokerName = null;
+            },
 
             _brokerSubmit() {
-                if (this.brokerName == null || this.brokerName == '') {
-                    Polymer.dom(this.root).querySelector("#brokerErrMSG").style.display = 'block';
-                    Polymer.dom(this.root).querySelector("#brokerErrMSG").style.color = 'red';
-                    this.brokerErrMSG = 'Please fillup the required field...'
-                } else {
-                    var brokerQuery = Polymer.dom(this.root).querySelector("#brokerQuery")
+                if (this.brokerName) {
+                    var groupID = this.guid();
+                    var brokerQuery = Polymer.dom(this.root).querySelector("#brokerQuery");
                     brokerQuery.ref.push({
-                        name: this.brokerName
+                        name: this.brokerName,
+                        groupID: groupID
                     });
-                    this.brokerName = null;
-                    Polymer.dom(this.root).querySelector("#brokerErrMSG").style.display = 'block';
-                    Polymer.dom(this.root).querySelector("#brokerErrMSG").style.color = 'green';
-                    this.brokerErrMSG = 'Successfully saved...';
                 }
             },
 
-            _openDeleteBrokerDialog(e) {
+            _deleteBroker(e) {
                 this.brokerKey = e.currentTarget.item.$key;
                 Polymer.dom(this.root).querySelector("#deleteBrokerDialog").open();
             },
 
-            _deleteBroker() {
+            _brokerDelete() {
                 Polymer.dom(this.root).querySelector("#brokerQuery").ref.child(this.brokerKey).remove();
-                Polymer.dom(this.root).querySelector("#brokerErrMSG").style.display = 'block';
-                Polymer.dom(this.root).querySelector("#brokerErrMSG").style.color = 'green';
-                this.brokerErrMSG = 'Successfully delete...';
             },
 
-            _openEditBrokerDialog(e) {
+            _editBroker(e) {
                 this.brokerKey = e.currentTarget.item.$key;
                 this.updateBrokerName = e.currentTarget.item.name;
                 Polymer.dom(this.root).querySelector("#editBrokerDialog").open();
             },
 
-            _editBroker() {
-                if (this.updateBrokerName == null || this.updateBrokerName == '') {
-                    Polymer.dom(this.root).querySelector("#brokerErrMSG").style.display = 'block';
-                    Polymer.dom(this.root).querySelector("#brokerErrMSG").style.color = 'red';
-                    this.brokerErrMSG = 'Error in updating data...'
-                } else {
+            _brokerUpdate() {
+                if (this.updateBrokerName) {
                     var brokerQuery = Polymer.dom(this.root).querySelector("#brokerQuery")
                     brokerQuery.ref.child(this.brokerKey).update({
                         name: this.updateBrokerName
                     });
                     this.updateBrokerName = null;
-                    Polymer.dom(this.root).querySelector("#brokerErrMSG").style.display = 'block';
-                    Polymer.dom(this.root).querySelector("#brokerErrMSG").style.color = 'green';
-                    this.brokerErrMSG = 'Updated successfully...';
                 }
             },
 
@@ -448,7 +403,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 // var data_args = Polymer.dom(e).rootTarget.getAttribute("id");
                 var data_args = e.currentTarget.item.$key;
                 var type = 'broker';
-                var inhouseGroupName = e.currentTarget.item.name;
+                var brokerGroupName = e.currentTarget.item.name;
+                var brokerGroupID = e.currentTarget.item.groupID;
                 var node = Polymer.dom(this.root).querySelector("#brokerGroup");
                 if (node) {
                     var oldDiv = Polymer.dom(node.parentNode).querySelector("#d26");
@@ -459,13 +415,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     newDiv.setAttribute("id", "d26");
 
                     newDiv.setAttribute("transaction-key", data_args);
-                    newDiv.setAttribute("group-name", inhouseGroupName);
+                    newDiv.setAttribute("group-name", brokerGroupName);
+                    newDiv.setAttribute("group-id", brokerGroupID);
                     newDiv.setAttribute("type", type);
                     newDiv.setAttribute("prev-route", this.route.prefix);
                     //if open existings
                     var currentDiv = document.getElementById("brokerGroup");
                     Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
                 }
+            },
+
+            guid() {
+                var uid = new ShortUniqueId();
+                return uid.randomUUID(6);
             },
         })
     </script>
