@@ -676,9 +676,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           Polymer.dom(this.root).querySelector("#checkAgentDetails").open();
         } else {
           var href = "/applications/edit/" + datas.$key;
+          // console.log(href);
           var editApp = Polymer.dom(this.root).querySelector("#openAppEdit");
-          editApp.click();
           editApp.href = href;
+          editApp.click();
 
           var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
           var node = Polymer.dom(this.root).querySelector("#appedit");

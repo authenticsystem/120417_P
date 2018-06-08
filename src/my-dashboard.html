@@ -2761,8 +2761,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       agentmychartChanged(agentmychart, agentselectedDWMY, agentdailyAct, agentwyear, agentweek, agentmonth, agentyear, agentyearly, agentselectedAgentChart) {
         if (agentmychart) {
-          var query, x;
+          var query, x, date;
           if (agentselectedDWMY == 0) {
+            date = agentdailyAct;
             if (agentselectedAgentChart == 0) {
               x = 0;
               query = '/reports/sales_agents/daily/' + agentdailyAct + '/agents/' + this.myType + '/' + this.myGroup + '/' + this.myaccountcode;
@@ -2782,6 +2783,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               agentweek = '0' + agentweek;
             }
             var weekly = agentwyear.substring(2, 4) + 'w' + agentweek;
+            date = weekly;
             if (agentselectedAgentChart == 0) {
               x = 0;
               query = '/reports/sales_agents/weekly/' + weekly + '/agents/' + this.myType + '/' + this.myGroup + '/' + this.myaccountcode;
@@ -2797,6 +2799,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
           } else if (agentselectedDWMY == 2) {
             var monthly = agentyear + '-' + agentmonth;
+            date = monthly;
             if (agentselectedAgentChart == 0) {
               x = 0;
               query = '/reports/sales_agents/monthly/' + monthly + '/agents/' + this.myType + '/' + this.myGroup + '/' + this.myaccountcode;
@@ -2811,6 +2814,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               query = '/reports/sales_agents/monthly/' + monthly + '/agents/' + this.myType + '/' + this.myGroup;
             }
           } else if (agentselectedDWMY == 3) {
+            date = agentyearly;
             if (agentselectedAgentChart == 0) {
               x = 0;
               query = '/reports/sales_agents/yearly/' + agentyearly + '/agents/' + this.myType + '/' + this.myGroup + '/' + this.myaccountcode;
@@ -2825,7 +2829,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               query = '/reports/sales_agents/yearly/' + agentyearly + '/agents/' + this.myType + '/' + this.myGroup;
             }
           }
-          this._mychartquery(x, agentdailyAct, query, agentmychart);
+          this._mychartquery(x, date, query, agentmychart);
         }
       },
 
