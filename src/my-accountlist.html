@@ -101,76 +101,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         width: 80px;
       }
     </style>
-    <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
-    <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
 
-    <!-- <div hidden$="{{!applicationActive}}">
-      <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
-        <div name="">
-
-          <app-header-layout fullbleed has-scrolling-region>
-            <app-header fixed slot="header">
-              <app-toolbar primary>
-                <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-                <div main-title id="addAccount">Accounts</div>
-                <div main-title id="addNew" style="display:none">New Account</div>
-              </app-toolbar>
-            </app-header>
-            <firebase-query id="query" path="/accountlist" data="{{account}}"></firebase-query>
-
-            <paper-datatable-card style="padding:17px;" header-fixed id-property="$key" header="Accounts" id="datatableCard">
-
-              <div slot="toolbar-select">
-                <paper-icon-button class="delete" icon="my-icons:delete-forever" no-ink on-tap="_deleteSelected"></paper-icon-button>
-              </div>
-              <div slot="toolbar-select-single">
-                <a href$="{{_getAccount(keyS)}}">
-                  <paper-icon-button class="edit" alt="{{keyS}}" id="{{keyS}}" data-args="{{keyS}}" icon="datatable:editable"></paper-icon-button>
-                </a>
-              </div>
-
-              <paper-dialog id="deleteUserInfo">
-                <br>
-                <h2>Delete Account Permanently?</h2>
-                <div class="buttons">
-                  <paper-button dialog-dismiss autofocus>No</paper-button>
-                  <paper-button dialog-confirm on-tap="deleteUser">Yes</paper-button>
-                </div>
-              </paper-dialog>
-
-              <paper-datatable data="{{account}}" id="datatable" header-fixed multi-selection selectable selected-items="{{selectedItem}}">
-                <div no-results>
-                  Loading or no more items...
-                </div>
-                <paper-datatable-column header="Account No" type="String" property="accountkey" sortable></paper-datatable-column>
-                <paper-datatable-column header="Name" type="Object" property="name" sortable>
-                  <template>
-                    <span>[[value.firstname]]</span>
-                    <span>[[value.middlename]]</span>
-                    <span>[[value.lastname]]</span>
-                    <span>[[value.suffix]]</span>
-                  </template>
-                </paper-datatable-column>
-                <paper-datatable-column header="Cellphone" type="String" property="cellphone" sortable></paper-datatable-column>
-                <paper-datatable-column header="Role" type="String" property="role" sortable></paper-datatable-column>
-                <paper-datatable-column header="Active" type="Boolean" property="active" sortable></paper-datatable-column>
-              </paper-datatable>
-            </paper-datatable-card>
-
-          </app-header-layout>
-          <a href="/accountlist/new" style="text-decoration: none;">
-            <paper-fab noink class="fab-menu" on-tap="_appsnew" icon="my-icons:add"></paper-fab>
-          </a>
-        </div>
-
-        <div name="/new">
-          <div id="appnew"></div>
-          <my-accountlist-new id="d23" path="" prev-route="{{route.prefix}}"></my-accountlist-new>
+    <template is="dom-if" if="{{!access}}">
+      <app-header-layout fullbleed has-scrolling-region>
+        <app-header fixed slot="header">
+          <app-toolbar primary>
+            <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+            <div main-title>Opps!</div>
+          </app-toolbar>
+        </app-header>
+        <div class="card">
+          <h3>Sorry!</h3>
+          <div>You're not allowed to access this content.</div>
         </div>
       </app-header-layout>
-    </template> -->
+    </template>
 
     <template is="dom-if" if="{{access}}">
+      <app-route route="{{route}}" pattern="" active="{{accountActive}}"></app-route>
+      <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
       <div hidden$="{{!accountActive}}">
         <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
 
@@ -223,7 +172,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </template>
                   </paper-datatable-column>
                   <paper-datatable-column header="Cellphone" type="String" property="cellphone" sortable></paper-datatable-column>
-                  <paper-datatable-column header="Role" type="String" property="role" sortable></paper-datatable-column>
+                  <paper-datatable-column header="Role" type="String" property="position" sortable></paper-datatable-column>
                   <paper-datatable-column header="Active" type="Boolean" property="active" sortable></paper-datatable-column>
                 </paper-datatable>
               </paper-datatable-card>
@@ -253,22 +202,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </template>
 
     <paper-dialog id="deactivateAccount">
-        <br>
-        <h3>Deactivate account?</h3>
-        <div class="buttons">
-          <paper-button dialog-dismiss autofocus>No</paper-button>
-          <paper-button dialog-confirm on-tap="deactivate">Yes</paper-button>
-        </div>
-      </paper-dialog>
+      <br>
+      <h3>Deactivate account?</h3>
+      <div class="buttons">
+        <paper-button dialog-dismiss autofocus>No</paper-button>
+        <paper-button dialog-confirm on-tap="deactivate">Yes</paper-button>
+      </div>
+    </paper-dialog>
 
-      <paper-dialog id="activateAccount">
-        <br>
-        <h3>Activate account?</h3>
-        <div class="buttons">
-          <paper-button dialog-dismiss autofocus>No</paper-button>
-          <paper-button dialog-confirm on-tap="activate">Yes</paper-button>
-        </div>
-      </paper-dialog>
+    <paper-dialog id="activateAccount">
+      <br>
+      <h3>Activate account?</h3>
+      <div class="buttons">
+        <paper-button dialog-dismiss autofocus>No</paper-button>
+        <paper-button dialog-confirm on-tap="activate">Yes</paper-button>
+      </div>
+    </paper-dialog>
+    
   </template>
 
   <script> 
@@ -343,23 +293,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      editDetails(e) {
-        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-        var node = Polymer.dom(this.root).querySelector("#appedit");
-        if (node) {
-          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
-          if (oldDiv) {
-            Polymer.dom(node.parentNode).removeChild(oldDiv);
-          }
-          var newDiv = document.createElement("my-accountlist-edit");
-          newDiv.setAttribute("id", "d25")
-          newDiv.setAttribute("transaction-key", data_args)
-          newDiv.setAttribute("prev-route", this.route.prefix);
-          //if open existing
-          var currentDiv = document.getElementById("appedit");
-          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-        }
-      },
+      // editDetails(e) {
+      //   var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+      //   var node = Polymer.dom(this.root).querySelector("#appedit");
+      //   if (node) {
+      //     var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
+      //     if (oldDiv) {
+      //       Polymer.dom(node.parentNode).removeChild(oldDiv);
+      //     }
+      //     var newDiv = document.createElement("my-accountlist-edit");
+      //     newDiv.setAttribute("id", "d25")
+      //     newDiv.setAttribute("transaction-key", data_args)
+      //     newDiv.setAttribute("prev-route", this.route.prefix);
+      //     //if open existing
+      //     var currentDiv = document.getElementById("appedit");
+      //     Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+      //   }
+      // },
 
       // delete() {
       //   if (this.selectedItems.length > 0) {
@@ -382,17 +332,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       deactivate() {
-          var newDiv = document.createElement("my-accountlist-new");
-          newDiv.setAttribute("id", "d23");
-          newDiv.setAttribute("prev-route", this.route.prefix);
-          // newDiv.setAttribute("block", "3")
-          //if open existing
-          var currentDiv = document.getElementById("appnew");
-          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-  
+        var newDiv = document.createElement("my-accountlist-new");
+        newDiv.setAttribute("id", "d23");
+        newDiv.setAttribute("prev-route", this.route.prefix);
+        // newDiv.setAttribute("block", "3")
+        //if open existing
+        var currentDiv = document.getElementById("appnew");
+        Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+
       },
       editDetails(e) {
         var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+        console.log(data_args);
         var node = Polymer.dom(this.root).querySelector("#appedit");
         if (node) {
           var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");

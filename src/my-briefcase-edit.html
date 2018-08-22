@@ -21,16 +21,12 @@
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../bower_components/datetime-picker/datetime-picker.html">
 
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
 
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
-
-<link rel="import" href="../bower_components/titanium-date-input/titanium-date-input.html">
-<link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
 
 <link rel="import" href="short-unique-id.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
@@ -396,9 +392,6 @@
 
 
         </app-drawer-layout>
-
-
-
 
     </template>
 
@@ -1207,6 +1200,8 @@
                                         email: this.draftdata_agentdetails_email,
                                         cellphone: this.draftdata_agentdetails_cellphone,
                                         uid: this.transactionData.agentdetails.uid,
+                                        type: this.transactionData.agentdetails.type,
+                                        group: this.transactionData.agentdetails.group
                                     },
                                     buyer: this.buyerKey,
                                     buyerdetails: {

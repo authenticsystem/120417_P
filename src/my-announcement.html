@@ -15,11 +15,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="shared-styles.html">
-
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="my-announcement-new.html">
-<link rel="import" href="my-announcement-detail.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="shared-styles.html">
 <link rel="import" href="my-announcement-edit.html">
 <link rel="import" href="my-view404.html">
 
@@ -35,6 +42,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             app-header {
                 color: rgb(255, 255, 255);
                 background-color: #388E3C;
+            }
+
+            @media screen and (min-width: 800px) {
+                .announcementDiv {
+                    width: 800px;
+                    margin: auto
+                }
+                .container {
+                    padding: 16px
+                }
+            }
+
+            @media screen and (max-width: 800px) {
+                .announcementDiv {
+                    width: 100%;
+                }
+                .container {
+                    padding: 0
+                }
             }
 
             paper-fab.fab-menu {
@@ -74,25 +100,37 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             }
 
+            paper-button.submit {
+                background-color: gray;
+                color: white;
+            }
+
+            paper-button {
+                /* margin-top: 20px; */
+                height: 32px;
+                font-size: 12px;
+                font-weight: 400;
+                width: 80px;
+            }
+
             iron-list {
                 padding-top: 16px;
-                margin-top: 16px;
-                padding-bottom: 16px;
+                --iron-list-items-container: {
+                    max-width: 800px;
+                    margin: auto;
+                    margin-top: 16px;
+                    margin-bottom: 60px;
+                    border-bottom: 1px solid #ddd;
+                }
             }
 
             .item {
                 @apply --layout-horizontal;
                 padding: 20px;
-                border-radius: 8px;
                 background-color: white;
                 border: 1px solid #ddd;
-                max-width: 800px;
-                margin: 16px auto 0 auto;
-            }
-
-            .item:focus {
-                outline: 0;
-                border-color: #333;
+                cursor: pointer;
+                margin-bottom: 10px;
             }
 
             .avatar {
@@ -111,109 +149,156 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             .primary {
                 font-size: 16px;
-            }
-
-            .primary_bold {
-                font-size: 16px;
                 font-weight: bold;
             }
 
             .secondary {
-                font-size: 12px;
-                color: black
-            }
-
-            .dim {
                 font-size: 14px;
                 color: gray;
             }
+
+            .attachmentIMG {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .success {
+                background-color: #ddffdd;
+                border-left: 6px solid #4CAF50;
+                padding: 4px 12px;
+            }
         </style>
 
-        <app-route route="{{route}}" pattern="" active="{{announcementActive}}"></app-route>
-        <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
-        <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
-        <div hidden$="{{!announcementActive}}">
-            <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
-                <div name="">
-                    <app-header-layout fullbleed has-scrolling-region>
-                        <app-header fixed slot="header">
-                            <app-toolbar primary>
-                                <!-- <paper-icon-button icon="my-icons:close" drawer-toggle on-tap="toggleDrawer"></paper-icon-button> -->
-                                <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-                                <div main-title hidden$="{{!access}}">Announcements</div>
-                                <div main-title hidden$="{{access}}">Opps!</div>
-                            </app-toolbar>
-                        </app-header>
+        <template is="dom-if" if="{{!access}}">
+            <app-header-layout fullbleed has-scrolling-region>
+                <app-header fixed slot="header">
+                    <app-toolbar primary>
+                        <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                        <div main-title>Opps!</div>
+                    </app-toolbar>
+                </app-header>
+                <div class="card">
+                    <h3>Sorry!</h3>
+                    <div>You're not allowed to access this content.</div>
+                </div>
+            </app-header-layout>
+        </template>
 
-                        <template is="dom-if" if="{{!access}}">
-                            <div class="card">
-                                <h3>Sorry!</h3>
-                                <div>You're not allowed to access this content.</div>
-                            </div>
-                        </template>
+        <template is="dom-if" if="{{access}}">
+            <app-route route="{{route}}" pattern="" active="{{announcementActive}}"></app-route>
+            <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
+            <div hidden$="{{!announcementActive}}">
+                <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
+                    <div name="">
+                        <app-header-layout fullbleed has-scrolling-region>
+                            <app-header fixed slot="header">
+                                <app-toolbar primary>
+                                    <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                                    <div main-title>Announcements</div>
+                                </app-toolbar>
+                            </app-header>
 
-                        <template is="dom-if" if="{{access}}">
                             <!-- <div class="card">
                                 <div class="typewriter">
                                     <h1>Coming soon......</h1>
                                 </div>
                             </div> -->
-                            <firebase-query path="/announcements" order-by-child="sender" equal-to="{{myaccountName}}" data="{{announcements}}"></firebase-query>
+                            <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}"></firebase-auth>
+                            <div class="container">
+                                <div class="announcementDiv">
+                                    <paper-card style="width: 100%;">
+                                        <div class="card-content">
+                                            <paper-icon-item>
+                                                <div class="avatar" slot="item-icon">
+                                                    <iron-image class="avatar" sizing="contain" src="[[_photo(user.photoURL)]]"></iron-image>
+                                                </div>
+                                                <paper-textarea id="annInput" label="Details" value="{{announcement}}" style="width: 100%"></paper-textarea>
+                                            </paper-icon-item>
+                                            <div>
+                                                <input id="att" type="file" accept="image/*" on-change="_attachments">
+                                            </div>
+                                            <div>
+                                                <span id="errMsg" style="color:red; font-size: 12px; float:right; display:none">{{msg}}</span>
+                                            </div>
+                                        </div>
+                                        <div class="card-actions">
+                                            <paper-button id="submitbtn" class="submit" on-tap="_postAnnouncement" disabled>post</paper-button>
+                                        </div>
+                                    </paper-card>
+                                </div>
+                                <br>
+                                <firebase-query id="query" path="/user-announcements/{{myaccountKey}}" data="{{myAnnouncement}}"></firebase-query>
 
-                            <iron-list items="[[_descending(announcements)]]" as="item" scroll-target="document">
-                                <template>
-                                    <div>
-                                        <div class="item" tabindex$="[[tabIndex]]">
+                                <template is="dom-repeat" items="[[reverseMyAnnouncement]]">
+                                    <div class="announcementDiv">
+                                        <div class="item">
                                             <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
                                             <div class="pad">
-                                                <div class="primary">[[item.title]]</div>
-                                                <div class="secondary dim">[[dateTimeFormat(item.timestamp,item.isupdated)]]</div>
+                                                <div class="secondary">[[dateTimeFormat(item.timestamp,item.isupdated)]]</div>
+                                                <br>
+                                                <div>
+                                                    <img class="attachmentIMG" src="[[item.attachmentURL]]" alt=" No photo" style="width:50%;">
+                                                </div>
+                                                <div class="primary">
+                                                    <p>[[item.announcement]]</p>
+                                                </div>
+                                                <br>
+                                                <div class="secondary">Posted by: [[item.postedBy]]</div>
                                             </div>
-                                            <a href$="{{_getViewEditLink(item.$key)}}">
-                                                <paper-icon-button icon="my-icons:edit" on-tap="editAnnouncement" data-args="{{item.$key}}" alt="{{item.$key}}"></paper-icon-button>
-                                            </a>
-                                            <a href$="{{_getViewDetailsLink(item.$key)}}">
-                                                <paper-icon-button icon="my-icons:open-in-new" on-tap="viewAnnouncement" data-args="{{item.$key}}" alt="{{item.$key}}"></paper-icon-button>
-                                            </a>
+                                            <paper-menu-button>
+                                                <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" alt="menu"></paper-icon-button>
+                                                <paper-listbox slot="dropdown-content">
+                                                    <a href$="{{_getEditAppLink(item.$key)}}" style="color: black; text-decoration: none">
+                                                        <paper-item on-tap="editDetails" id="{{item.$key}}">Edit</paper-item>
+                                                    </a>
+                                                    <paper-item on-tap="openDeleteDialog" item="[[item]]">Delete</paper-item>
+                                                </paper-listbox>
+                                            </paper-menu-button>
                                         </div>
                                     </div>
                                 </template>
-                            </iron-list>
-                        </template>
 
-                        <template is="dom-if" if="{{access}}">
-                            <a href="/announcement/new" style="text-decoration: none;">
-                                <paper-fab noink class="fab-menu" on-tap="_announcementNew" icon="my-icons:add"></paper-fab>
-                            </a>
-                        </template>
+                                <paper-dialog id="modal" modal>
+                                    <h1>Posting...</h1>
+                                    <!-- <div class="buttons">
+                                        <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
+                                    </div> -->
+                                </paper-dialog>
 
-                    </app-header-layout>
+                                <paper-dialog id="deleteDialog">
+                                    <h2>
+                                        <p>Delete announcement?</p>
+                                    </h2>
+                                    <div class="buttons">
+                                        <paper-button dialog-dismiss>Cancel</paper-button>
+                                        <paper-button dialog-confirm autofocus on-tap="deleteDialog">OK</paper-button>
+                                    </div>
+                                </paper-dialog>
 
-                </div>
-
-                <template is="dom-if" if="{{access}}">
-                    <div name="/new">
-                        <div id="announcementNew"></div>
-                        <my-announcement-new id="d23" path="" prev-route="{{route.prefix}}" myaccount="{{myaccountName}}" myrole="{{myaccountRole}}" myaccountkey="{{myaccountKey}}"></my-announcement-new>
+                                <paper-dialog id="deletemodal" modal>
+                                    <h1>Deleting data...</h1>
+                                    <!-- <div class="buttons">
+                                        <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
+                                    </div> -->
+                                </paper-dialog>
+                            </div>
+                        </app-header-layout>
                     </div>
-                </template>
+                    <div name="view404">Not found.</div>
+                </iron-pages>
+            </div>
 
-                <div name="view404">Not found.</div>
-            </iron-pages>
-        </div>
-        <!-- end of announcement active -->
-        <template is="dom-if" if="{{access}}">
-            <div hidden$="{{!detailActive}}">
-                <div id="announcementDetail"></div>
-                <my-announcement-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"></my-announcement-detail>
-            </div>
-        </template>
-        <template is="dom-if" if="{{access}}">
             <div hidden$="{{!editActive}}">
-                <div id="announcementEdit"></div>
-                <my-announcement-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}" myaccount="{{myaccountName}}"></my-announcement-edit>
+                <div id="annedit"></div>
+                <my-announcement-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}" myaccountkey={{myaccountKey}}
+                    myaccountname="{{myaccountName}}"></my-announcement-edit>
             </div>
+
+            <!-- end of announcement active -->
+
         </template>
+
     </template>
 
     <script>
@@ -224,14 +309,42 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 account: {
                     type: Object,
                     observer: 'accountChanged'
-                }
+                },
+                myAnnouncement: Object,
+                reverseMyAnnouncement: Object,
+                announcement: String,
+                fileImg: Object
             },
 
+            observers: [
+                'myAnnouncementChanged(myAnnouncement.*)',
+                'submitChanged(announcement, fileImg)'
+            ],
             accountChanged(e) {
                 this.myaccountName = e[0].name.firstname + ' ' + e[0].name.middlename + ' ' + e[0].name.lastname;
                 this.myaccountRole = e[0].role;
                 this.myaccountKey = e[0].accountkey;
-                // console.log(e[0].role);
+            },
+
+            submitChanged(e, f) {
+                var btn = Polymer.dom(this.root).querySelector("#submitbtn");
+                if (e || f) {
+                    btn.disabled = false;
+                    btn.style.backgroundColor = 'var(--paper-indigo-500)';
+                } else {
+                    btn.disabled = true;
+                    btn.style.backgroundColor = 'gray';
+                }
+            },
+
+            myAnnouncementChanged(e) {
+                if (e.base.length > 0) {
+                    var reverseMyAnnouncement = [];
+                    e.base.forEach(element => {
+                        reverseMyAnnouncement.push(element);
+                    });
+                    this.reverseMyAnnouncement = this._descending(reverseMyAnnouncement);
+                }
             },
 
             _photo(e) {
@@ -259,7 +372,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 if (f == true) {
                     return 'Updated: ' + time;
                 } else {
-                    return 'Created: ' + time;
+                    return time;
                 }
             },
 
@@ -270,73 +383,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     }
                 }));
                 this.$.narrow = !this.$.narrow;
-            },
-
-            _announcementNew() {
-                var node = Polymer.dom(this.root).querySelector("#announcementNew");
-                if (node) {
-                    var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
-                    if (oldDiv) {
-                        Polymer.dom(node.parentNode).removeChild(oldDiv);
-                    }
-                    var newDiv = document.createElement("my-announcement-new");
-                    newDiv.setAttribute("id", "d23");
-                    newDiv.setAttribute("prev-route", this.route.prefix);
-                    newDiv.setAttribute("myaccount", this.myaccountName);
-                    newDiv.setAttribute("myrole", this.myaccountRole);
-                    newDiv.setAttribute("myaccountkey", this.myaccountKey);
-                    var currentDiv = document.getElementById("announcementNew");
-                    Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-                }
-            },
-
-            viewAnnouncement(e) {
-                var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-                var node = Polymer.dom(this.root).querySelector("#announcementDetail");
-                if (node) {
-                    var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
-                    if (oldDiv) {
-                        Polymer.dom(node.parentNode).removeChild(oldDiv);
-                    }
-                    var newDiv = document.createElement("my-announcement-detail");
-                    newDiv.setAttribute("id", "d24")
-                    newDiv.setAttribute("transaction-key", data_args)
-                    newDiv.setAttribute("prev-route", this.route.prefix);
-                    //if open existing
-                    var currentDiv = document.getElementById("announcementDetail");
-                    Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-                }
-            },
-
-            editAnnouncement(e) {
-                var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-                var node = Polymer.dom(this.root).querySelector("#announcementEdit");
-                if (node) {
-                    var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
-                    if (oldDiv) {
-                        Polymer.dom(node.parentNode).removeChild(oldDiv);
-                    }
-                    var newDiv = document.createElement("my-announcement-edit");
-                    newDiv.setAttribute("id", "d25")
-                    newDiv.setAttribute("transaction-key", data_args)
-                    newDiv.setAttribute("prev-route", this.route.prefix);
-                    newDiv.setAttribute("myaccount", this.myaccountName);
-                    //if open existing
-                    var currentDiv = document.getElementById("announcementEdit");
-                    Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-                }
-            },
-
-            _getViewDetailsLink(e) {
-                return '/announcement/detail/' + e.toString();
-            },
-
-            _getViewEditLink(e) {
-                return '/announcement/edit/' + e.toString();
-            },
-
-            getClassForItem: function (item, selected) {
-                return selected ? 'item expanded' : 'item';
             },
 
             _updated(e) {
@@ -352,6 +398,126 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 return e.reverse();
             },
 
+            _attachments(e) {
+                this.fileImg = e.target.files[0];
+            },
+
+            _postAnnouncement() {
+                if (this.announcement || this.fileImg) {
+                    if (!this.announcement) {
+                        this.announcement = "";
+                    }
+                    var postData = {
+                        announcement: this.announcement,
+                        postedBy: this.myaccountName,
+                        timestamp: { ".sv": "timestamp" },
+                        photo: firebase.auth().currentUser.photoURL,
+                        isUpdate: false
+                    };
+                    var newPostKey = firebase.database().ref().child('announcements').push().key;
+                    var updates = {};
+                    updates['/announcements/' + newPostKey] = postData;
+                    updates['/user-announcements/' + this.myaccountKey + '/' + newPostKey] = postData;
+                    firebase.database().ref().update(updates);
+                    this.announcement = null;
+                    this.notification();
+                    if (this.fileImg) {
+                        Polymer.dom(this.root).querySelector("#errMsg").style.display = 'block';
+                        this.msg = 'Posting..';
+                        Polymer.dom(this.root).querySelector("#annInput").disabled = true;
+                        Polymer.dom(this.root).querySelector("#modal").open();
+
+                        this.upload(this.fileImg, newPostKey);
+                    } else {
+                        Polymer.dom(this.root).querySelector("#errMsg").style.display = 'none';
+                    }
+                } else {
+                    Polymer.dom(this.root).querySelector("#errMsg").style.display = 'block';
+                    this.msg = 'Please fillup  the required field..';
+                }
+            },
+
+            upload(fileImg, newPostKey) {
+                var storageRef = firebase.storage().ref('attachment/' + fileImg.name);
+                var ref = firebase.database().ref('announcements');
+                var ref2 = firebase.database().ref('user-announcements/' + this.myaccountKey);
+                storageRef.put(fileImg).then(function (snapshot) {
+
+                    ref.child(newPostKey).update({
+                        attachmentURL: snapshot.downloadURL,
+                        attachmentNAME: fileImg.name
+                    }).then(function () {
+                        window.location = '/announcement'
+                    });
+
+                    ref2.child(newPostKey).update({
+                        attachmentURL: snapshot.downloadURL,
+                        attachmentNAME: fileImg.name
+                    }).then(function () {
+                        window.location = '/announcement'
+                    });
+                });
+            },
+
+            notification() {
+                var ref = firebase.database().ref("notifications");
+                ref.push({
+                    title: 'Announcement',
+                    click: "/dashboard",
+                    message: "post new announcement",
+                    photo: firebase.auth().currentUser.photoURL,
+                    isread: false,
+                    sender: this.myaccountName,
+                    timestamp: { ".sv": "timestamp" },
+                    source: 'announcement',
+                    recipient: {
+                        staff: true,
+                        manager: true,
+                        agent: true,
+                        owner: true,
+                        recipient_accountCode: ''
+                    },
+                });
+            },
+
+            openDeleteDialog(e) {
+                this.announcementKEY = e.currentTarget.item.$key;
+                Polymer.dom(this.root).querySelector("#deleteDialog").open();
+            },
+
+            deleteDialog() {
+                var updates = {};
+                updates['/announcements/' + this.announcementKEY] = null;
+                updates['/user-announcements/' + this.myaccountKey + '/' + this.announcementKEY] = null;
+                firebase.database().ref().update(updates);
+                Polymer.dom(this.root).querySelector("#deletemodal").open();
+                window.location = "/announcement";
+            },
+
+            _getEditAppLink(e) {
+                return '/announcement/edit/' + e.toString();
+            },
+
+            editDetails(e) {
+                var data_args = Polymer.dom(e).rootTarget.getAttribute("id");
+                var node = Polymer.dom(this.root).querySelector("#annedit");
+                if (node) {
+                    var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
+                    if (oldDiv) {
+                        Polymer.dom(node.parentNode).removeChild(oldDiv);
+                    }
+                    var newDiv = document.createElement("my-announcement-edit");
+                    newDiv.setAttribute("id", "d25");
+
+                    newDiv.setAttribute("transaction-key", data_args);
+                    newDiv.setAttribute("prev-route", this.route.prefix);
+                    newDiv.setAttribute("myaccountkey", this.myaccountKey);
+                    newDiv.setAttribute("myaccountname", this.myaccountName);
+                    //if open existings
+                    var currentDiv = document.getElementById("annedit");
+                    Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+                }
+            },
         })
     </script>
 </dom-module>

@@ -187,8 +187,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background-color: #ddffdd;
         border-left: 6px solid #4CAF50;
         text-align: center;
-        max-width: 800px; 
-        margin: 16px auto 0 auto; 
+        max-width: 800px;
+        margin: 16px auto 0 auto;
         padding: 10px;
       }
 
@@ -196,18 +196,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         text-align: center;
         height: 40px;
       }
+
+      paper-badge {
+        --paper-badge-margin-left: -23px;
+        --paper-badge-margin-bottom: -30px;
+      }
     </style>
-
-    <custom-style>
-      <style is="custom-style">
-        /* Need to position the badge to look like a text superscript */
-
-        paper-badge {
-          --paper-badge-margin-left: -23px;
-          --paper-badge-margin-bottom: -30px;
-        }
-      </style>
-    </custom-style>
 
     <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
     <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
@@ -259,7 +253,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   <paper-tab>Approved
                   </paper-tab>
                 </paper-tabs>
-
               </template>
             </app-header>
 
@@ -302,10 +295,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <div class="loader" id="loader">{{loadingMessage}}</div>
                   </iron-list>
                 </template>
+
                 <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold"></iron-scroll-threshold>
 
                 <paper-dialog id="approvedApp">
-
                   <div hidden id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
                     <div id="start">
                       <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
@@ -353,11 +346,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                           <my-application-card item="{{item}}"></my-application-card>
 
                           <div tabindex="0">
-                            <a href$="{{_getEditAppLink(item.$key)}}" tabindex="-1">
-                              <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" data-args="{{item.$key}}" icon="my-icons:edit" alt="{{item.$key}}"
-                                style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
-                              <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
-                            </a>
+                            <a id="openAppEdit" tabindex="-1" alt="{{item.$key}}"></a>
+                            <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" item=[[item]] data-args="{{item.$key}}" icon="my-icons:edit"
+                              alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
+                            <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
+                            <!-- </a> -->
                           </div>
 
                           <div tabindex="1">
@@ -374,6 +367,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </template>
                     <div class="loader" id="loader">{{loadingMessage}}</div>
                   </iron-list>
+                  <paper-dialog id="checkAgentDetails">
+                    <div style="color: red; font-size: 16px; padding: 10px">
+                      <iron-icon icon="my-icons:icons:error-outline"></iron-icon> Edit application failed.
+                    </div>
+                  </paper-dialog>
                 </template>
                 <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold"></iron-scroll-threshold>
 
@@ -393,13 +391,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
               <paper-fab noink class="fab-menu" on-tap="_appsnew" icon="my-icons:add"></paper-fab>
             </a>
           </template> -->
-
         </div>
 
         <template is="dom-if" if="{{access}}">
           <div name="/new">
             <div id="appnew"></div>
-            <my-application-new id="d23" path="" prev-route="{{route.prefix}}"></my-application-new>
+            <my-application-new id="d23" path="" myname="{{myname}}" prev-route="{{route.prefix}}"></my-application-new>
           </div>
         </template>
 
@@ -421,7 +418,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <div hidden$="{{!editActive}}">
         <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
         <div id="appedit"></div>
-        <my-application-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}"></my-application-edit>
+        <my-application-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}" myname="{{myname}}"></my-application-edit>
         <!-- </template> -->
       </div>
 
@@ -536,7 +533,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.msg = '';
           }
         }
-
         var applications2 = [];
         e.base.forEach(element => {
           applications2.push(element);
@@ -641,6 +637,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           var newDiv = document.createElement("my-application-new");
           newDiv.setAttribute("id", "d23");
           newDiv.setAttribute("prev-route", this.route.prefix);
+          newDiv.setAttribute("myname", this.myname);
           // newDiv.setAttribute("block", "3")
           //if open existing
           var currentDiv = document.getElementById("appnew");
@@ -674,20 +671,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
       editDetails(e) {
-        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-        var node = Polymer.dom(this.root).querySelector("#appedit");
-        if (node) {
-          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
-          if (oldDiv) {
-            Polymer.dom(node.parentNode).removeChild(oldDiv);
+        var datas = e.currentTarget.item;
+        if (!datas.agentdetails.type) {
+          Polymer.dom(this.root).querySelector("#checkAgentDetails").open();
+        } else {
+          var href = "/applications/edit/" + datas.$key;
+          // console.log(href);
+          var editApp = Polymer.dom(this.root).querySelector("#openAppEdit");
+          editApp.href = href;
+          editApp.click();
+
+          var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+          var node = Polymer.dom(this.root).querySelector("#appedit");
+          if (node) {
+            var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
+            if (oldDiv) {
+              Polymer.dom(node.parentNode).removeChild(oldDiv);
+            }
+            var newDiv = document.createElement("my-application-edit");
+            newDiv.setAttribute("id", "d25")
+            newDiv.setAttribute("transaction-key", data_args)
+            newDiv.setAttribute("myname", this.myname);
+            newDiv.setAttribute("prev-route", this.route.prefix);
+            //if open existing
+            var currentDiv = document.getElementById("appedit");
+            Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
           }
-          var newDiv = document.createElement("my-application-edit");
-          newDiv.setAttribute("id", "d25")
-          newDiv.setAttribute("transaction-key", data_args)
-          newDiv.setAttribute("prev-route", this.route.prefix);
-          //if open existing
-          var currentDiv = document.getElementById("appedit");
-          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
         }
       },
       _viewThis(e) {

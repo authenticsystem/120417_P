@@ -14,8 +14,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
 <link rel="import" href="shared-styles.html">
 
 
@@ -34,7 +39,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             }
 
             paper-button {
-                margin-top: 20px;
                 height: 32px;
                 font-size: 12px;
                 font-weight: 400;
@@ -46,16 +50,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 color: white;
             }
 
-            .alertDanger {
-                background-color: #ffdddd;
-                border-left: 6px solid #f44336;
-                padding: 4px 8px;
-                display: none;
-                font-size: 12px;
+            @media screen and (max-width: 800px) {
+                .announcementDiv {
+                    width: 100%;
+                }
+                .container {
+                    padding: 0
+                }
+            }
+
+            @media screen and (min-width: 800px) {
+                .announcementDiv {
+                    width: 800px;
+                    margin: auto
+                }
+                .container {
+                    padding: 16px
+                }
+            }
+
+            .avatar {
+                height: 40px;
+                width: 40px;
+                border-radius: 20px;
+                box-sizing: border-box;
+                background-color: #DDD;
+            }
+
+            .attachmentIMGdiv {
+                border: 1px dotted gray;
+                margin-top: 16px;
+                margin-bottom: 16px;
+            }
+
+            .attachmentIMG {
+                display: block;
+                margin-left: auto;
+                margin-right: auto;
             }
         </style>
 
-        <firebase-document path="{{path}}" data="{{newdata}}"></firebase-document>
         <app-header-layout fullbleed has-scrolling-region>
             <app-header fixed slot="header">
                 <app-toolbar primary>
@@ -65,39 +99,44 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <div main-title>Edit announcement</div>
                 </app-toolbar>
             </app-header>
-            <div class="card">
-                <div class="alertDanger" id="alert">
-                    <p>
-                        {{alertMsg}}
-                    </p>
-                </div>
-                <div>
-                    <iron-form id="form1">
-                        <form action="/foo" method="get">
-                            <paper-input type="text" label="Title" value="{{title}}" required></paper-input>
-                            <paper-textarea label="Message" value="{{message}}" required></paper-textarea>
-                            <paper-checkbox id="Owner">Owner</paper-checkbox>
-                            <br>
-                            <paper-checkbox id="Staff">Admin staff</paper-checkbox>
-                            <br>
-                            <paper-checkbox id="Manager">Manager</paper-checkbox>
-                            <br>
-                            <paper-checkbox id="Agent">Agent</paper-checkbox>
-                            <br>
-                            <paper-button raised class="submit" on-tap="_openSavingDialog">Update</paper-button>
-                        </form>
-                    </iron-form>
+
+            <firebase-auth id="auth" status-known="{{statusKnown}}" user="{{user}}"></firebase-auth>
+            <firebase-document path="/user-announcements/{{myaccountkey}}/{{transactionKey}}" data="{{newdata}}"></firebase-document>
+
+            <div class="container">
+                <div class="announcementDiv">
+                    <paper-card style="width: 100%;">
+                        <div class="card-content">
+                            <paper-icon-item>
+                                <div class="avatar" slot="item-icon">
+                                    <iron-image class="avatar" sizing="contain" src="[[_photo(user.photoURL)]]"></iron-image>
+                                </div>
+                                <paper-textarea id="annInput" label="Details" value="{{announcement}}" style="width: 100%"></paper-textarea>
+                            </paper-icon-item>
+                            <div class="attachmentIMGdiv">
+                                <span style="font-size:12px; margin-left:16px">Attachments</span>
+                                <img class="attachmentIMG" src="{{attachmentURL}}" alt="No photo" style="width:50%;">
+                            </div>
+                            <div>
+                                <input id="att" type="file" accept="image/*" on-change="_attachments">
+                            </div>
+                            <div>
+                                <span id="errMsg" style="color:red; font-size: 12px; float:right; display:none">{{msg}}</span>
+                            </div>
+                        </div>
+                        <div class="card-actions">
+                            <paper-button id="submitbtn" class="submit" on-tap="_postAnnouncement">update</paper-button>
+                        </div>
+                    </paper-card>
                 </div>
             </div>
 
-            <paper-dialog id="savingDialog">
-                <h2>Update announcement?</h2>
-                <div class="buttons">
-                    <paper-button dialog-confirm autofocus on-tap="_updateAnnouncement">OK</paper-button>
-                    <paper-button dialog-dismiss>Cancel</paper-button>
-                </div>
+            <paper-dialog id="modal" modal>
+                <h1>Posting...</h1>
+                <!-- <div class="buttons">
+                    <paper-button dialog-confirm autofocus>Tap me to close</paper-button>
+                </div> -->
             </paper-dialog>
-
         </app-header-layout>
     </template>
 
@@ -105,18 +144,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         Polymer({
             is: 'my-announcement-edit',
             properties: {
-                myaccount: {
-                    type: String
-                },
-                transactionKey: {
-                    type: String,
-                    observer: 'transactionKeyChanged'
-                },
-                newdata: {
-                    type: Object,
-                    observer: 'newdataChanged'
-                },
+                myaccount: String,
+                myaccountkey: String,
+                myaccountname: String,
+                transactionKey: String,
+                newdata: Object,
+                announcement: String,
+                fileImg: Object
             },
+
+            observers: [
+                'newdataChanged(newdata)',
+                'submitChanged(announcement, fileImg)'
+            ],
 
             toggleDrawer() {
                 this.dispatchEvent(new CustomEvent('toggleDrawer', {
@@ -127,108 +167,130 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.$.narrow = !this.$.narrow;
             },
 
-            transactionKeyChanged() {
-                this.getpath();
-            },
+            newdataChanged() {
+                if (Object.keys(this.newdata).length > 0) {
+                    if (this.newdata.announcement == null) {
+                        this.announcement = '';
+                    } else {
+                        this.announcement = this.newdata.announcement;
+                    }
 
-            getpath() {
-                if (this.transactionKey) {
-                    this.path = 'announcements/' + this.transactionKey;
-                }
-                return this.path;
-            },
+                    if (this.newdata.attachmentURL == null) {
+                        this.attachmentURL = '';
+                    } else {
+                        this.attachmentURL = this.newdata.attachmentURL;
+                    }
 
-            newdataChanged(e) {
-                if (Object.keys(e).length > 0) {
-                    this.title = e.title;
-                    this.message = e.message;
-                    if (e.agent == true) {
-                        Polymer.dom(this.root).querySelector("#Agent").checked = true;
-                    }
-                    if (e.manager == true) {
-                        Polymer.dom(this.root).querySelector("#Manager").checked = true;
-                    }
-                    if (e.owner == true) {
-                        Polymer.dom(this.root).querySelector("#Owner").checked = true;
-                    }
-                    if (e.staff == true) {
-                        Polymer.dom(this.root).querySelector("#Staff").checked = true;
+                    if (this.newdata.attachmentNAME == null) {
+                        this.attachmentNAME = '';
+                    } else {
+                        this.attachmentNAME = this.newdata.attachmentNAME;
                     }
                 }
             },
 
-            _openSavingDialog() {
-                if (!this.title || !this.message) {
-                    this.$.form1.submit();
-                    Polymer.dom(this.root).querySelector("#alert").style.display = 'block';
-                    this.alertMsg = 'Please fill-up the required field.';
-                }
-                else {
-                    this.$.savingDialog.open();
+            submitChanged(e, f) {
+                var btn = Polymer.dom(this.root).querySelector("#submitbtn");
+                if (e || f) {
+                    btn.disabled = false;
+                    btn.style.backgroundColor = 'var(--paper-indigo-500)';
+                } else {
+                    btn.disabled = true;
+                    btn.style.backgroundColor = 'gray';
                 }
             },
 
-            _updateAnnouncement() {
-                var boxStaff = Polymer.dom(this.root).querySelector("#Staff");
-                var boxManager = Polymer.dom(this.root).querySelector("#Manager");
-                var boxAgent = Polymer.dom(this.root).querySelector("#Agent");
-                var boxOwner = Polymer.dom(this.root).querySelector("#Owner");
-                var staff = false;
-                var manager = false;
-                var agent = false;
-                var owner = false;
+            _photo(e) {
+                if (e) {
+                    return e;
+                } else {
+                    return '../images/user.png';
+                }
+            },
 
-                if (boxStaff.checked == true) {
-                    staff = true;
-                }
-                if (boxManager.checked == true) {
-                    manager = true;
-                }
-                if (boxAgent.checked == true) {
-                    agent = true;
-                }
-                if (boxOwner.checked == true) {
-                    owner = true;
-                }
+            _attachments(e) {
+                this.fileImg = e.target.files[0];
+            },
 
-                var ref = firebase.database().ref("/announcements");
-                ref.child(this.transactionKey).update({
-                    staff: staff,
-                    manager: manager,
-                    agent: agent,
-                    owner: owner,
-                    title: this.title,
-                    message: this.message,
-                    photo: firebase.auth().currentUser.photoURL,
-                    timestamp: { ".sv": "timestamp" },
-                    sender: this.myaccount,
-                    isupdated: true
+            _postAnnouncement() {
+                if (this.announcement || this.fileImg) {
+                    var postData = {
+                        announcement: this.announcement,
+                        postedBy: this.myaccountname,
+                        timestamp: { ".sv": "timestamp" },
+                        photo: firebase.auth().currentUser.photoURL,
+                        isUpdate: true,
+                        attachmentURL: this.attachmentURL,
+                        attachmentNAME: this.attachmentNAME
+                    };
+                    // var newPostKey = firebase.database().ref().child('announcements').push().key;
+                    var updates = {};
+                    updates['/announcements/' + this.transactionKey] = postData;
+                    updates['/user-announcements/' + this.myaccountkey + '/' + this.transactionKey] = postData;
+                    firebase.database().ref().update(updates);
+                    this.announcement = null;
+                    this.notification();
+
+                    if (this.fileImg) {
+                        Polymer.dom(this.root).querySelector("#errMsg").style.display = 'block';
+                        this.msg = 'Posting..';
+                        Polymer.dom(this.root).querySelector("#annInput").disabled = true;
+                        Polymer.dom(this.root).querySelector("#modal").open();
+
+                        this.upload(this.fileImg, this.transactionKey, this.myaccountkey);
+                    } else {
+                        Polymer.dom(this.root).querySelector("#errMsg").style.display = 'none';
+                        window.location = '/announcement'
+                    }
+
+                } else {
+                    Polymer.dom(this.root).querySelector("#errMsg").style.display = 'block';
+                    this.msg = 'Please fillup  the required field..';
+                }
+            },
+
+            upload(fileImg, newPostKey, myaccountkey) {
+                var storageRef = firebase.storage().ref('attachment/' + fileImg.name);
+                var ref = firebase.database().ref('announcements');
+                var ref2 = firebase.database().ref('user-announcements/' + myaccountkey);
+                storageRef.put(fileImg).then(function (snapshot) {
+
+                    ref.child(newPostKey).update({
+                        attachmentURL: snapshot.downloadURL,
+                        attachmentNAME: fileImg.name
+                    }).then(function () {
+                        window.location = '/announcement'
+                    });
+
+                    ref2.child(newPostKey).update({
+                        attachmentURL: snapshot.downloadURL,
+                        attachmentNAME: fileImg.name
+                    }).then(function () {
+                        window.location = '/announcement'
+                    });
                 });
-
-                this.notification(staff, manager, agent, owner, this.title, );
-                window.location = "/announcement";
             },
 
-            notification(staff, manager, agent, owner, announcementTitle) {
+            notification() {
                 var ref = firebase.database().ref("notifications");
                 ref.push({
-                    title: announcementTitle,
+                    title: 'Announcement',
                     click: "/dashboard",
                     message: "updating announcement",
                     photo: firebase.auth().currentUser.photoURL,
                     isread: false,
-                    recipient: {
-                        staff: staff,
-                        manager: manager,
-                        agent: agent,
-                        owner: owner,
-                        recipient_accountCode: ''
-                    },
-                    sender: this.myaccount,
+                    sender: this.myaccountname,
                     timestamp: { ".sv": "timestamp" },
                     source: 'announcement',
+                    recipient: {
+                        staff: true,
+                        manager: true,
+                        agent: true,
+                        owner: true,
+                        recipient_accountCode: ''
+                    },
                 });
-            }
+            },
         })
     </script>
 </dom-module>

@@ -26,6 +26,8 @@
         <style include="shared-styles">
             :host {
                 display: block;
+
+                padding: 10px;
             }
 
             app-header {
@@ -33,163 +35,180 @@
                 background-color: #388E3C;
             }
 
-            app-header paper-icon-button {
-                --paper-icon-button-ink-color: #000000;
-            }
-
-            app-drawer-layout:not([narrow]) [drawer-toggle] {
-                display: none;
-            }
-
-            app-drawer {
-                --app-drawer-content-container: {
-                    background-color: #F4F5F6;
-                }
-            }
-
-            paper-icon-button.menu {
-                margin-right: 16px;
-            }
-
-            paper-item {
-                height: 64px;
-            }
-
-            .mnu {
-                padding: 16px;
-            }
-
-            paper-fab {
-                background: #1976d2;
-            }
-
-            .labelitem {
-                padding: 0px;
-                margin: 0;
-            }
-
-            @media (min-width: 800px) {
-                .footer {
-                    position: absolute;
-                    bottom: 16px;
+            @media screen and (max-width: 800px) {
+                .nameInput {
                     width: 100%;
                 }
-                .paper-fab-0 {
-                    position: absolute;
-                    left: 48px;
-                    bottom: 48px;
-                }
-                .paper-fab-1 {
-                    position: absolute;
-                    right: 48px;
-                    bottom: 48px;
+            }
+
+            @media screen and (min-width: 800px) {
+                .nameInput {
+                    width: 24%;
+                    display: inline-block;
                 }
             }
 
-            @media (max-width: 800px) {
-                .paper-fab-0 {
-                    position: absolute;
-                    left: 16px;
-                    bottom: 48px;
-                }
-                .paper-fab-1 {
-                    position: absolute;
-                    right: 16px;
-                    bottom: 48px;
-                }
-                .docu {
-                    margin-left: 16px;
-                    margin-right: 16px;
-                }
+            .container {
+                background-color: white;
+                padding: 16px;
+                box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
             }
 
-            paper-button.indigo {
-                background: white;
-                height: 32px;
-                font-size: 12px;
-                font-weight: 400;
-                background: green;
-                color: white;
-                width: 80px;
-            }
-
-            paper-button.cancel {
-                background: white;
+            paper-button {
                 height: 32px;
                 font-size: 12px;
                 font-weight: 400;
                 width: 80px;
             }
 
-            paper-button.green {
-                background-color: var(--paper-green-500);
+            paper-button.submit {
+                background-color: var(--paper-indigo-500);
                 color: white;
             }
 
             paper-checkbox {
-                font-size: 14px;
                 margin-right: 5px;
             }
         </style>
-        <!-- <firebase-document id="transactionFire" path="/accountlist/{{transactionKey}}" data="{{transactionData}}" disabled="true"></firebase-document> -->
-        <firebase-query id="query" path="/accountlist/{{transactionKey}}" data="{{editData}}"></firebase-query>
+
+        <firebase-document id="query" path="/accountlist/{{transactionKey}}" data="{{editData}}"></firebase-document>
+
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-header-layout id="appheader" has-scrolling-region>
                 <app-header fixed slot="header">
                     <app-toolbar>
                         <a href="/accountlist">
-                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
+                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="cancelPrintPreview"></paper-icon-button>
                         </a>
                         <div main-title>Edit Account</div>
-                        <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
-                        <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
+                        <paper-icon-button hidden$="{{acctFirstStep}}" icon="my-icons:print" on-tap="print_preview"></paper-icon-button>
                     </app-toolbar>
-                    
-                    <!-- <paper-dialog id="modal">
-                        <h3>Successfully Updated.</h3>
-                        <div class="buttons">
-                            <a href="/accountlist" style="text-decoration:none">
-                                <paper-button dialog-confirm>Ok</paper-button>
-                            </a>
-                        </div>
-                    </paper-dialog> -->
                 </app-header>
-                <div class="docu">
-                    <div class="docu-header">Edit Account</div>
-                    <div class="details">
-                        <paper-input readonly="true" value="{{accountkey}}" always-float-label label="Account no"></paper-input>
-                        <paper-input value="{{firstname}}" always-float-label label="First Name"></paper-input>
-                        <paper-input value="{{middlename}}" always-float-label label="Middle Name"></paper-input>
-                        <paper-input value="{{lastname}}" always-float-label label="Last Name"></paper-input>
-                        <paper-input value="{{suffix}}" always-float-label label="Suffix"></paper-input>
+
+                <div style="padding: 16px;" hidden$="{{acctFirstStep}}">
+                    <div class="container">
+                        <span style="color:red; font-size:13px; float:right">{{msg}}</span>
+                        <paper-input readonly="true" value="{{accountkey}}" always-float-label label="Account No."></paper-input>
+                        <paper-input value="{{firstname}}" always-float-label label="First Name" placeholder="Juan" class="nameInput"></paper-input>
+                        <paper-input value="{{middlename}}" always-float-label label="Middle Name" placeholder="Dalisay" class="nameInput"></paper-input>
+                        <paper-input value="{{lastname}}" always-float-label label="Last Name" placeholder="dela Cruz" class="nameInput"></paper-input>
+                        <paper-input value="{{suffix}}" always-float-label label="Suffix" placeholder="Jr" class="nameInput"></paper-input>
                         <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label
-                            label="Cellphone">
+                            label="Cellphone num.">
                             <div slot="prefix">+63</div>
                         </paper-input>
-                        <paper-dropdown-menu style="cursor:pointer" label="Role">
-                            <paper-listbox slot="dropdown-content" class="dropdown-content" selected="{{roleAdd}}">
-                                <paper-item>Owner</paper-item>
-                                <paper-item>Manager</paper-item>
-                                <paper-item>Sales Agent</paper-item>
-                                <paper-item>Staff</paper-item>
+                        <paper-input label="Position" placeholder="Owner" value="{{position}}"></paper-input>
+                        <!-- <paper-dropdown-menu label="Role" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{role}}">
+                                <paper-item value="Owner">Owner</paper-item>
+                                <paper-item value="Manager">Manager</paper-item>
+                                <paper-item value="Sales Agent">Sales Agent</paper-item>
+                                <paper-item value="Staff">Staff</paper-item>
                             </paper-listbox>
-                        </paper-dropdown-menu>
-                        <br>
-                        <div style="font-size:12px; margin-top:1em;">Access</div>
-                        <paper-checkbox id="dash">Dashboard</paper-checkbox>
-                        <paper-checkbox id="app">Applications</paper-checkbox>
-                        <paper-checkbox id="acc">Accounts</paper-checkbox>
-                        <paper-checkbox id="case">Briefcase</paper-checkbox>
-                        <paper-checkbox id="ann">Announcement</paper-checkbox>
+                        </paper-dropdown-menu> -->
+                        <!-- <span hidden$="{{typeHide}}"> -->
+                        <!-- <paper-dropdown-menu label="Type" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{type}}">
+                                <paper-item value="inhouse">In-House</paper-item>
+                                <paper-item value="broker">Broker</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu> -->
+                        <!-- </span> -->
+                        <!-- <span hidden$="{{groupHide}}"> -->
+                        <!-- <paper-dropdown-menu label="Group" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{group}}">
+                                <firebase-query path="/group/{{type}}" data="{{groupData}}"></firebase-query>
+                                <template is="dom-repeat" items="[[groupData]]">
+                                    <paper-item value="[[item.groupID]]">[[item.name]]</paper-item>
+                                </template>
+                            </paper-listbox>
+                        </paper-dropdown-menu> -->
+                        <!-- </span> -->
+                        <!-- <span hidden$="{{designationHide}}"> -->
+                        <!-- <paper-dropdown-menu label="Designation" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{designation}}">
+                                <paper-item value="Team Leader">Team Leader</paper-item>
+                                <paper-item value="Member">Member</paper-item>
+                            </paper-listbox>
+                        </paper-dropdown-menu> -->
+                        <!-- </span> -->
+                        <div>
+                            <div style="font-size:12px; margin-top:10px;">Reports</div>
+                            <paper-checkbox id="sales">Owner</paper-checkbox>
+                            <paper-checkbox id="staff">Staff</paper-checkbox>
+                            <paper-checkbox id="salesAgent" on-tap="_showAgentReports">Agent</paper-checkbox>
+                        </div>
+                        <div hidden$="{{hideAgentReports}}">
+                            <paper-dropdown-menu label="Type" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                                <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{type}}">
+                                    <paper-item value="inhouse">In-House</paper-item>
+                                    <paper-item value="broker">Broker</paper-item>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+                            <paper-dropdown-menu label="Group" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                                <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{group}}">
+                                    <firebase-query path="/group/{{type}}" data="{{groupData}}"></firebase-query>
+                                    <template is="dom-repeat" items="[[groupData]]">
+                                        <paper-item value="[[item.groupID]]">[[item.name]]</paper-item>
+                                    </template>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+                            <paper-dropdown-menu label="Designation" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                                <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{designation}}">
+                                    <paper-item value="Team Leader">Team Leader</paper-item>
+                                    <paper-item value="Member">Member</paper-item>
+                                </paper-listbox>
+                            </paper-dropdown-menu>
+                            <br>
+                            <div style="font-size:12px; margin-top:10px;">Agent Reports</div>
+                            <paper-checkbox id="agentstype">Agents Type</paper-checkbox>
+                            <paper-checkbox id="agentsgroup">Agents Group</paper-checkbox>
+                            <paper-checkbox id="agents">All Agents</paper-checkbox>
+                        </div>
+                        <div style="font-size:12px; margin-top:10px;">Access</div>
+                        <paper-checkbox id="dashboard">Dashboard</paper-checkbox>
+                        <paper-checkbox id="applications">Applications</paper-checkbox>
+                        <paper-checkbox id="accountlist">Accountlist</paper-checkbox>
+                        <paper-checkbox id="briefcase">Briefcase</paper-checkbox>
+                        <paper-checkbox id="announcement">Announcement</paper-checkbox>
+                        <paper-checkbox id="group">Group</paper-checkbox>
+                        <div style="margin-top: 16px">
+                            <paper-button class="submit" on-tap="_submit">Update</paper-button>
+                        </div>
                     </div>
-                    <br>
-                    <br>
-                    <paper-button class="indigo" on-click="_done" raised>Update</paper-button>
-                    <a href="/accountlist" style="text-decoration:none">
-                        <paper-button class="cancel" on-tap="_cancel">Cancel</paper-button>
-                    </a>
-                    <span style="color:red; font-size:13px; float:right">{{msg}}</span>
                 </div>
+
+                <div style="border: 5px dotted #bbb;" hidden$="{{acctSecondStep}}">
+                    <paper-card style="width: 100%">
+                        <div id="printMe" class="card-content">
+                            <div>Account No.
+                                <span style="font-family: Courier New; font-size: 20px">
+                                    <strong>{{accountkey}}</strong>
+                                </span>
+                            </div>
+                            <div>Name: {{firstname}} {{middlename}} {{lastname}} {{suffix}}</div>
+                            <div>Contact No. +63{{cellphone}}</div>
+                            <div>Position: {{position}}</div>
+                            <div>Type: {{type}}</div>
+                            <div>Group: {{group}}</div>
+                            <div>Designation: {{designation}}</div>
+                            <br>
+                            <div>
+                                <strong>To login to Haven of Peace, Please follow instructions below.</strong>
+                            </div>
+                            <div>Step 1. Create an account to Haven of Peace under more options</div>
+                            <div>Step 2. Verify Email, click the link that was sent to your email account.</div>
+                            <div>Step 3. Enter the account number above to link your Haven of Peace account.</div>
+                            <div>Step 4. Enter the account code that was sent to your phone number provided above to complete
+                                the login procedure.</div>
+                        </div>
+                        <div class="card-actions">
+                            <paper-button on-tap="_print">
+                                <iron-icon icon="my-icons:print"></iron-icon> Print</paper-button>
+                        </div>
+                    </paper-card>
+                </div>
+
             </app-header-layout>
         </app-drawer-layout>
     </template>
@@ -200,176 +219,265 @@
             properties: {
                 editData: {
                     type: Object,
-                    observer: '_editDataChanged'
                 },
-                equal: {
-                    type: String,
-                    value: ''
-                },
-                accountkey: {
-                    type: String,
-                    value: ''
-                },
+                // role: String,
+                // typeHide: Boolean,
                 transactionKey: {
                     type: String,
                     value: '',
-                    observer: 'transactionKeyChanged'
                 },
-                selectedItem: {
-                    observer: '_selectedItemChanged'
-                },
-                selectedItems: {
-                    type: Object,
-                },
-                keyS: {
-                    type: String,
-                    value: ''
-                },
-                roleAdd: {
-                    type: Number,
-                    value: 1,
-                    observer: 'roleAddChanged'
-                },
-                role: {
-                    type: String,
-                    value: ''
-                },
-                access: {
+                acctFirstStep: Boolean,
+                acctSecondStep: Boolean,
+                hideAgentReports: {
                     type: Boolean,
-                    value: ''
+                    value: true
                 },
             },
-            roleAddChanged() {
-                if (this.roleAdd == 0) {
-                    this.role = 'Owner';
-                }
-                else if (this.roleAdd == 1) {
-                    this.role = 'Manager';
-                }
-                else if (this.roleAdd == 2) {
-                    this.role = 'Sales Agent';
-                }
-                else {
-                    this.role = 'Staff';
-                }
+
+            observers: [
+                // 'roleChanged(role)',
+                'transactionKeyChanged(transactionKey)',
+                '_editDataChanged(editData)'
+            ],
+
+            ready() {
+                this.acctFirstStep = false;
+                this.acctSecondStep = true;
             },
+
+            // roleChanged(e) {
+            //     if (e == 'Manager') {
+            //         this.typeHide = false;
+            //         this.groupHide = true;
+            //         this.designationHide = true;
+            //     } else if (e == 'Sales Agent') {
+            //         this.typeHide = false;
+            //         this.groupHide = false;
+            //         this.designationHide = false;
+            //     } else {
+            //         this.typeHide = true;
+            //         this.groupHide = true;
+            //         this.designationHide = true;
+            //     }
+            // },
+
             _editDataChanged() {
-                if (this.editData.length > 0) {
-                    this.accountkey = this.editData[1].$val;
-                    this.firstname = this.editData[4].firstname;
-                    this.middlename = this.editData[4].middlename;
-                    this.lastname = this.editData[4].lastname;
-                    this.suffix = this.editData[4].suffix;
-                    this.cellphone = this.editData[3].$val;
+                if (Object.keys(this.editData).length > 0) {
+                    this.uid = this.editData.uid;
+                    this.accountkey = this.editData.accountkey;
+                    this.firstname = this.editData.name.firstname;
+                    this.middlename = this.editData.name.middlename;
+                    this.lastname = this.editData.name.lastname;
+                    this.suffix = this.editData.name.suffix;
+                    this.cellphone = this.editData.cellphone;
+                    this.position = this.editData.position;
+                    this.type = this.editData.type;
+                    this.group = this.editData.group;
+                    this.designation = this.editData.designation;
 
-                    if (this.editData[0].accountlist == true) {
-                        Polymer.dom(this.root).querySelector("#acc").checked = true;
+                    if (this.editData.access.accountlist == true) {
+                        Polymer.dom(this.root).querySelector("#accountlist").checked = true;
+                    }
+                    if (this.editData.access.applications == true) {
+                        Polymer.dom(this.root).querySelector("#applications").checked = true;
+                    }
+                    if (this.editData.access.dashboard == true) {
+                        Polymer.dom(this.root).querySelector("#dashboard").checked = true;
+                    }
+                    if (this.editData.access.briefcase == true) {
+                        Polymer.dom(this.root).querySelector("#briefcase").checked = true;
+                    }
+                    if (this.editData.access.announcement == true) {
+                        Polymer.dom(this.root).querySelector("#announcement").checked = true;
+                    }
+                    if (this.editData.access.group == true) {
+                        Polymer.dom(this.root).querySelector("#group").checked = true;
                     }
 
-                    if (this.editData[0].applications == true) {
-                        Polymer.dom(this.root).querySelector("#app").checked = true;
+                    if (this.editData.reports.staffChart == true) {
+                        Polymer.dom(this.root).querySelector("#staff").checked = true;
                     }
-
-                    if (this.editData[0].dashboard == true) {
-                        Polymer.dom(this.root).querySelector("#dash").checked = true;
+                    if (this.editData.reports.salesAgent == true) {
+                        Polymer.dom(this.root).querySelector("#salesAgent").checked = true;
+                        this.hideAgentReports = false;
                     }
-                    if (this.editData[0].briefcase == true) {
-                        Polymer.dom(this.root).querySelector("#case").checked = true;
+                    if (this.editData.reports.salesChart == true) {
+                        Polymer.dom(this.root).querySelector("#sales").checked = true;
                     }
-                    if (this.editData[0].announcement == true) {
-                        Polymer.dom(this.root).querySelector("#ann").checked = true;
+                    if (this.editData.reports.agentstypeChart == true) {
+                        Polymer.dom(this.root).querySelector("#agentstype").checked = true;
                     }
-
-                    if (this.editData[5].$val == "Owner") {
-                        this.roleAdd = 0;
+                    if (this.editData.reports.agentsgroupChart == true) {
+                        Polymer.dom(this.root).querySelector("#agentsgroup").checked = true;
                     }
-                    if (this.editData[5].$val == "Manager") {
-                        this.roleAdd = 1;
-                    }
-                    if (this.editData[5].$val == "Sales Agent") {
-                        this.roleAdd = 2;
-                    }
-                    if (this.editData[5].$val == "Staff") {
-                        this.roleAdd = 3;
+                    if (this.editData.reports.agentsChart == true) {
+                        Polymer.dom(this.root).querySelector("#agents").checked = true;
                     }
                 }
             },
+
             transactionKeyChanged() {
                 this.$.appheader.resetLayout();
             },
-            getpath() {
-                this.accountkey = this.guid();
+
+            _submit() {
+                var salesAgents = Polymer.dom(this.root).querySelector("#salesAgent");
+                if (!this.firstname || !this.middlename || !this.lastname || !this.cellphone || !this.position) {
+                    this.msg = 'Please fill-up the required field.';
+                } else if (this.cellphone.length != 10) {
+                    this.msg = 'Error! Invalid cellphone number...';
+                } else if (salesAgents.checked == true) {
+                    if (!this.type || !this.group || !this.designation) {
+                        this.msg = 'Please fill-up the required field.';
+                    } else {
+                        this._continue();
+                    }
+                } else {
+                    this.type = '';
+                    this.group = '';
+                    this.designation = '';
+                    var agentstype = Polymer.dom(this.root).querySelector("#agentstype").checked = false;
+                    var agentsgroup = Polymer.dom(this.root).querySelector("#agentsgroup").checked = false;
+                    var agents = Polymer.dom(this.root).querySelector("#agents").checked = false;
+                    this._continue();
+                }
+
             },
-            guid: function () {
-                var uid = new ShortUniqueId();
-                return uid.randomUUID(7);
-            },
-            _done() {
-                var box1 = Polymer.dom(this.root).querySelector("#dash");
-                var box2 = Polymer.dom(this.root).querySelector("#app");
-                var box3 = Polymer.dom(this.root).querySelector("#acc");
-                var box4 = Polymer.dom(this.root).querySelector("#case");
-                var box5 = Polymer.dom(this.root).querySelector("#ann");
+
+            _continue() {
+                this.msg = '';
+                if (!this.suffix) {
+                    this.suffix = '';
+                }
+                var box1 = Polymer.dom(this.root).querySelector("#dashboard");
+                var box2 = Polymer.dom(this.root).querySelector("#applications");
+                var box3 = Polymer.dom(this.root).querySelector("#accountlist");
+                var box4 = Polymer.dom(this.root).querySelector("#briefcase");
+                var box5 = Polymer.dom(this.root).querySelector("#announcement");
+                var box6 = Polymer.dom(this.root).querySelector("#group");
                 var dashboard = false;
                 var applications = false;
-                var accounts = false;
+                var accountlist = false;
                 var briefcase = false;
                 var announcement = false;
-
-
-                if (!this.firstname || !this.middlename || !this.lastname) {
-                    this.msg = 'Please fill-up the required field.';
+                var group = false;
+                if (box1.checked == true) {
+                    dashboard = true;
                 }
-                else {
-                    if (box1.checked == true) {
-                        dashboard = true;
-                    }
-                    if (box2.checked == true) {
-                        applications = true;
-                    }
-                    if (box3.checked == true) {
-                        accounts = true;
-                    }
-                    if (box4.checked == true) {
-                        briefcase = true;
-                    }
-                    if (box5.checked == true) {
-                        announcement = true;
-                    }
-                    if (this.cellphone.length != 10) {
-                        this.msg = 'Error! Invalid cellphone number.';
-                    }
-                    else {
-                        this.msg = '';
-                        if (!this.suffix) {
-                            this.suffix = '';
-                        }
-
-                        var ref = firebase.database().ref('/accountlist');
-                        ref.child(this.transactionKey).update({
-                            access: {
-                                accountlist: accounts,
-                                applications: applications,
-                                dashboard: dashboard,
-                                briefcase: briefcase,
-                                announcement: announcement
-                            },
-                            name: {
-                                firstname: this.firstname,
-                                middlename: this.middlename,
-                                lastname: this.lastname,
-                                suffix: this.suffix
-                            },
-                            cellphone: this.cellphone,
-                            role: this.role,
-                        });
-                    }
-                    // this.$.modal.open();
-                    window.location = "/accountlist"
+                if (box2.checked == true) {
+                    applications = true;
+                }
+                if (box3.checked == true) {
+                    accountlist = true;
+                }
+                if (box4.checked == true) {
+                    briefcase = true;
+                }
+                if (box5.checked == true) {
+                    announcement = true;
+                }
+                if (box6.checked == true) {
+                    group = true;
                 }
 
+                var staff = Polymer.dom(this.root).querySelector("#staff");
+                var salesAgents = Polymer.dom(this.root).querySelector("#salesAgent");
+                var sales = Polymer.dom(this.root).querySelector("#sales");
+
+                var agentstype = Polymer.dom(this.root).querySelector("#agentstype");
+                var agentsgroup = Polymer.dom(this.root).querySelector("#agentsgroup");
+                var agents = Polymer.dom(this.root).querySelector("#agents");
+                var staffChart = false;
+                var salesChart = false;
+                var salesAgent = false;
+
+                var agentstypeChart = false;
+                var agentsgroupChart = false;
+                var agentsChart = false;
+                if (salesAgents.checked == true) {
+                    salesAgent = true;
+                }
+                if (staff.checked == true) {
+                    staffChart = true;
+                }
+                if (sales.checked == true) {
+                    salesChart = true;
+                }
+                if (agentstype.checked == true) {
+                    agentstypeChart = true;
+                }
+                if (agentsgroup.checked == true) {
+                    agentsgroupChart = true;
+                }
+                if (agents.checked == true) {
+                    agentsChart = true;
+                }
+                this._accountSave(dashboard, applications, accountlist, briefcase, announcement, group, salesAgent, staffChart, salesChart, agentstypeChart, agentsgroupChart, agentsChart);
             },
-            _cancel() { }
+
+            _accountSave(dashboard, applications, accountlist, briefcase, announcement, group, salesAgent, staffChart, salesChart, agentstypeChart, agentsgroupChart, agentsChart) {
+                var ref = firebase.database().ref('/accountlist');
+                ref.child(this.transactionKey).update({
+                    active: true,
+                    accountkey: this.accountkey,
+                    name: {
+                        firstname: this.firstname,
+                        middlename: this.middlename,
+                        lastname: this.lastname,
+                        suffix: this.suffix,
+                        fullname: this.firstname.toUpperCase() + ' ' + this.middlename.toUpperCase() + ' ' + this.lastname.toUpperCase()
+                    },
+                    cellphone: this.cellphone,
+                    position: this.position,
+                    type: this.type,
+                    group: this.group,
+                    type_group: this.type + "_" + this.group,
+                    designation: this.designation,
+                    access: {
+                        dashboard: dashboard,
+                        applications: applications,
+                        accountlist: accountlist,
+                        briefcase: briefcase,
+                        announcement: announcement,
+                        group: group
+                    },
+                    reports: {
+                        salesAgent: salesAgent,
+                        staffChart: staffChart,
+                        salesChart: salesChart,
+                        agentstypeChart: agentstypeChart,
+                        agentsgroupChart: agentsgroupChart,
+                        agentsChart: agentsChart
+                    }
+                })
+                window.location = '/accountlist';
+            },
+
+            cancelPrintPreview() {
+                this.acctFirstStep = false;
+                this.acctSecondStep = true;
+            },
+
+            print_preview() {
+                this.acctFirstStep = true;
+                this.acctSecondStep = false;
+            },
+
+            _print() {
+                var content = Polymer.dom(this.root).querySelector("#printMe").innerHTML;
+                var mywindow = window.open('', 'Print', 'height=600,width=800');
+                mywindow.document.write(content);
+                mywindow.print();
+            },
+
+            _showAgentReports() {
+                var salesAgents = Polymer.dom(this.root).querySelector("#salesAgent");
+                if (salesAgents.checked == true) {
+                    this.hideAgentReports = false;
+                } else {
+                    this.hideAgentReports = true;
+                }
+            },
         })
     </script>
 </dom-module>

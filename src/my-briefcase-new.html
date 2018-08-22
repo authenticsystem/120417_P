@@ -21,16 +21,12 @@
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../bower_components/datetime-picker/datetime-picker.html">
 
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
 
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
-
-<link rel="import" href="../bower_components/titanium-date-input/titanium-date-input.html">
-<link rel="import" href="../bower_components/paper-time-input/paper-time-input.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
 
 <link rel="import" href="short-unique-id.html">
@@ -178,20 +174,15 @@
                 </app-header>
 
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
+
                     <neon-animatable>
                         <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
-
                         <firebase-query id="query" path="/accountlist" order-by-child="uid" equal-to="{{userid}}" data="{{agentsList}}"></firebase-query>
-
                         <firebase-document id="fdColor"></firebase-document>
-
                         <firebase-query id="query" path="/briefcasedraft" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1 data="{{lastApplication}}"></firebase-query>
-
                         <firebase-query path="/reservations/{{fullLot}}" order-by-child='isexpired' equal-to='false' limit-to-last=1 data="{{lastReservation}}"></firebase-query>
 
-
                         <div class="docu">
-
                             <div class="docu-header">
                                 <span>1. Lot Details</span>
                             </div>
@@ -250,11 +241,9 @@
                                         </br>
                                         <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
                                             <div id="start">
-
                                                 <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px;"></iron-icon>
                                                 <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" type="datetime-local" no-label-float="true"
                                                     value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}" readonly></paper-input>
-
                                             </div>
                                         </div>
 
@@ -298,8 +287,6 @@
                     </neon-animatable> -->
 
                     <neon-animatable>
-
-
                         <div class="docu">
                             <div class="docu-header">3. Finalize</div>
                             <div class="details">
@@ -359,6 +346,7 @@
                             </div>
                         </div>
                     </neon-animatable>
+
                 </neon-animated-pages>
 
             </app-header-layout>
@@ -372,12 +360,7 @@
                 </div>
             </div>
 
-
-
         </app-drawer-layout>
-
-
-
 
     </template>
 
@@ -593,6 +576,8 @@
                     this.agentdetails_suffix = e[0].name.suffix;
                     this.agentdetails_email = this.email;
                     this.agentdetails_uid = e[0].uid;
+                    this.agentdetails_type = e[0].type;
+                    this.agentdetails_group = e[0].group;
                 }
             },
             selectHold() {
@@ -600,7 +585,6 @@
                 showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
                 // var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
                 // showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
-
                 var serverdatetime = firebase.database().ref("info/serverdatetime");
                 serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
                 serverdatetime.once('value').then(snapshot => {
@@ -807,7 +791,6 @@
                 }
             },
             _select2(e) {
-
                 this.entryanimation = "slide-from-right-animation";
                 this.exitanimation = "slide-left-animation";
                 if (parseInt(this.selectedPage) >= 0) {
@@ -831,7 +814,9 @@
                                         suffix: this.agentdetails_suffix,
                                         email: this.agentdetails_email,
                                         cellphone: this.agentdetails_cellphone,
-                                        uid: this.agentdetails_uid
+                                        uid: this.agentdetails_uid,
+                                        type: this.agentdetails_type,
+                                        group: this.agentdetails_group
                                     },
                                     buyer: this.buyerKey,
                                     buyerdetails: {
@@ -903,8 +888,6 @@
                                         saveSuccess.setAttribute("style", "display: none; color: green;");
                                         saveFailed.setAttribute("style", "display: block; color: red;");
                                     }
-
-
                                     //if ok, update bg_color, status_name
                                     //check reservations if current is expired, then check if there is prior reservation, then iscurrent=false
                                     var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
