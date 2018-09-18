@@ -1,25 +1,16 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
-<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
-<link rel="import" href="../bower_components/neon-animation/web-animations.html">
-<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+
 <link rel="import" href="shared-styles.html">
-<link rel="import" href="my-icons.html">
-<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="short-unique-id.html">
 
 <dom-module id="my-accountlist-edit">
     <template>
@@ -58,7 +49,7 @@
                 height: 32px;
                 font-size: 12px;
                 font-weight: 400;
-                width: 80px;
+                /* width: 80px; */
             }
 
             paper-button.submit {
@@ -77,137 +68,150 @@
             <app-header-layout id="appheader" has-scrolling-region>
                 <app-header fixed slot="header">
                     <app-toolbar>
-                        <a href="/accountlist">
-                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back" on-tap="cancelPrintPreview"></paper-icon-button>
+                        <a id="href" href="/accountlist">
+                            <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>Edit Account</div>
-                        <paper-icon-button hidden$="{{acctFirstStep}}" icon="my-icons:print" on-tap="print_preview"></paper-icon-button>
+                        <paper-icon-button hidden$="{{printPreview}}" icon="my-icons:print" on-tap="print_preview"></paper-icon-button>
                     </app-toolbar>
                 </app-header>
 
-                <div style="padding: 16px;" hidden$="{{acctFirstStep}}">
-                    <div class="container">
-                        <span style="color:red; font-size:13px; float:right">{{msg}}</span>
-                        <paper-input readonly="true" value="{{accountkey}}" always-float-label label="Account No."></paper-input>
-                        <paper-input value="{{firstname}}" always-float-label label="First Name" placeholder="Juan" class="nameInput"></paper-input>
-                        <paper-input value="{{middlename}}" always-float-label label="Middle Name" placeholder="Dalisay" class="nameInput"></paper-input>
-                        <paper-input value="{{lastname}}" always-float-label label="Last Name" placeholder="dela Cruz" class="nameInput"></paper-input>
-                        <paper-input value="{{suffix}}" always-float-label label="Suffix" placeholder="Jr" class="nameInput"></paper-input>
-                        <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter maxlength="10" value="{{cellphone}}" always-float-label
-                            label="Cellphone num.">
-                            <div slot="prefix">+63</div>
-                        </paper-input>
-                        <paper-input label="Position" placeholder="Owner" value="{{position}}"></paper-input>
-                        <!-- <paper-dropdown-menu label="Role" vertical-align="top" horizontal-align="left" vertical-offset="60">
-                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{role}}">
-                                <paper-item value="Owner">Owner</paper-item>
-                                <paper-item value="Manager">Manager</paper-item>
-                                <paper-item value="Sales Agent">Sales Agent</paper-item>
-                                <paper-item value="Staff">Staff</paper-item>
-                            </paper-listbox>
-                        </paper-dropdown-menu> -->
-                        <!-- <span hidden$="{{typeHide}}"> -->
-                        <!-- <paper-dropdown-menu label="Type" vertical-align="top" horizontal-align="left" vertical-offset="60">
-                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{type}}">
-                                <paper-item value="inhouse">In-House</paper-item>
-                                <paper-item value="broker">Broker</paper-item>
-                            </paper-listbox>
-                        </paper-dropdown-menu> -->
-                        <!-- </span> -->
-                        <!-- <span hidden$="{{groupHide}}"> -->
-                        <!-- <paper-dropdown-menu label="Group" vertical-align="top" horizontal-align="left" vertical-offset="60">
-                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{group}}">
-                                <firebase-query path="/group/{{type}}" data="{{groupData}}"></firebase-query>
-                                <template is="dom-repeat" items="[[groupData]]">
-                                    <paper-item value="[[item.groupID]]">[[item.name]]</paper-item>
+                <template is="dom-if" if="{{!printPreview}}">
+                    <div class="container" style="margin: 16px;">
+                        <iron-form id="accountlistForm">
+                            <form>
+                                <span style="color:red; font-size:13px; float:right">{{msg}}</span>
+
+                                <paper-input readonly value="{{accountkey}}" always-float-label label="Account Key"
+                                    required></paper-input>
+                                <paper-input value="{{firstname}}" always-float-label label="First Name" class="nameInput"
+                                    required></paper-input>
+                                <paper-input value="{{middlename}}" always-float-label label="Middle Name" class="nameInput"
+                                    required></paper-input>
+                                <paper-input value="{{lastname}}" always-float-label label="Last Name" class="nameInput"
+                                    required></paper-input>
+                                <paper-input value="{{suffix}}" always-float-label label="Suffix" class="nameInput"></paper-input>
+                                <paper-input value="{{email}}" always-float-label label="Email" required></paper-input>
+                                <paper-input required allowed-pattern="[\d]" prevent-invalid-input char-counter
+                                    maxlength="10" value="{{cellphone}}" always-float-label label="Cellphone num.">
+                                    <div slot="prefix">+63</div>
+                                </paper-input>
+                                <paper-input label="Position" value="{{position}}" required></paper-input>
+
+                                <div style="font-size:12px; margin-top:10px;">Access</div>
+                                <paper-checkbox checked="{{dashboard}}">Dashboard</paper-checkbox>
+                                <paper-checkbox checked="{{applications}}">Applications</paper-checkbox>
+                                <paper-checkbox checked="{{accountlist}}">Accountlist</paper-checkbox>
+                                <paper-checkbox checked="{{briefcase}}">Briefcase</paper-checkbox>
+                                <paper-checkbox checked="{{announcement}}">Announcement</paper-checkbox>
+                                <paper-checkbox checked="{{group}}">Group</paper-checkbox>
+
+                                <template is="dom-if" if="{{dashboard}}">
+                                    <div>
+                                        <div style="font-size:12px; margin-top:10px;">Reports</div>
+                                        <paper-checkbox checked="{{sales}}">Owner</paper-checkbox>
+                                        <paper-checkbox checked="{{staff}}">Staff</paper-checkbox>
+                                        <paper-checkbox checked="{{salesAgent}}">Agent</paper-checkbox>
+                                    </div>
                                 </template>
-                            </paper-listbox>
-                        </paper-dropdown-menu> -->
-                        <!-- </span> -->
-                        <!-- <span hidden$="{{designationHide}}"> -->
-                        <!-- <paper-dropdown-menu label="Designation" vertical-align="top" horizontal-align="left" vertical-offset="60">
-                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{designation}}">
-                                <paper-item value="Team Leader">Team Leader</paper-item>
-                                <paper-item value="Member">Member</paper-item>
-                            </paper-listbox>
-                        </paper-dropdown-menu> -->
-                        <!-- </span> -->
-                        <div>
-                            <div style="font-size:12px; margin-top:10px;">Reports</div>
-                            <paper-checkbox id="sales">Owner</paper-checkbox>
-                            <paper-checkbox id="staff">Staff</paper-checkbox>
-                            <paper-checkbox id="salesAgent" on-tap="_showAgentReports">Agent</paper-checkbox>
-                        </div>
-                        <div hidden$="{{hideAgentReports}}">
-                            <paper-dropdown-menu label="Type" vertical-align="top" horizontal-align="left" vertical-offset="60">
-                                <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{type}}">
-                                    <paper-item value="inhouse">In-House</paper-item>
-                                    <paper-item value="broker">Broker</paper-item>
-                                </paper-listbox>
-                            </paper-dropdown-menu>
-                            <paper-dropdown-menu label="Group" vertical-align="top" horizontal-align="left" vertical-offset="60">
-                                <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{group}}">
-                                    <firebase-query path="/group/{{type}}" data="{{groupData}}"></firebase-query>
-                                    <template is="dom-repeat" items="[[groupData]]">
-                                        <paper-item value="[[item.groupID]]">[[item.name]]</paper-item>
-                                    </template>
-                                </paper-listbox>
-                            </paper-dropdown-menu>
-                            <paper-dropdown-menu label="Designation" vertical-align="top" horizontal-align="left" vertical-offset="60">
-                                <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{designation}}">
-                                    <paper-item value="Team Leader">Team Leader</paper-item>
-                                    <paper-item value="Member">Member</paper-item>
-                                </paper-listbox>
-                            </paper-dropdown-menu>
-                            <br>
-                            <div style="font-size:12px; margin-top:10px;">Agent Reports</div>
-                            <paper-checkbox id="agentstype">Agents Type</paper-checkbox>
-                            <paper-checkbox id="agentsgroup">Agents Group</paper-checkbox>
-                            <paper-checkbox id="agents">All Agents</paper-checkbox>
-                        </div>
-                        <div style="font-size:12px; margin-top:10px;">Access</div>
-                        <paper-checkbox id="dashboard">Dashboard</paper-checkbox>
-                        <paper-checkbox id="applications">Applications</paper-checkbox>
-                        <paper-checkbox id="accountlist">Accountlist</paper-checkbox>
-                        <paper-checkbox id="briefcase">Briefcase</paper-checkbox>
-                        <paper-checkbox id="announcement">Announcement</paper-checkbox>
-                        <paper-checkbox id="group">Group</paper-checkbox>
+
+                                <template is="dom-if" if="{{salesAgent}}">
+                                    <div>
+                                        <div style="font-size:12px; margin-top:10px;">Agent Reports</div>
+                                        <paper-checkbox checked="{{agentstype}}">Agents Type</paper-checkbox>
+                                        <paper-checkbox checked="{{agentsgroup}}">Agents Group</paper-checkbox>
+                                        <paper-checkbox checked="{{agents}}">All Agents</paper-checkbox>
+                                    </div>
+                                    <div>
+                                        <paper-dropdown-menu label="Type" vertical-align="top" horizontal-align="left"
+                                            vertical-offset="60" required>
+                                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{selectedType}}">
+                                                <paper-item value="inhouse">In-House</paper-item>
+                                                <paper-item value="broker">Broker</paper-item>
+                                            </paper-listbox>
+                                        </paper-dropdown-menu>
+                                        <paper-dropdown-menu label="Group" vertical-align="top" horizontal-align="left"
+                                            vertical-offset="60" required>
+                                            <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{selectedGroup}}">
+                                                <firebase-query path="/group/{{selectedType}}" data="{{groupData}}"></firebase-query>
+                                                <template is="dom-repeat" items="[[groupData]]">
+                                                    <paper-item value="[[item.groupID]]">[[item.name]]</paper-item>
+                                                </template>
+                                            </paper-listbox>
+                                        </paper-dropdown-menu>
+                                        <!-- <paper-dropdown-menu label="Designation" vertical-align="top" horizontal-align="left" vertical-offset="60">
+                                        <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{designation}}">
+                                            <paper-item value="Team Leader">Team Leader</paper-item>
+                                            <paper-item value="Member">Member</paper-item>
+                                        </paper-listbox>
+                                    </paper-dropdown-menu> -->
+                                    </div>
+                                </template>
+
+                            </form>
+                        </iron-form>
+
                         <div style="margin-top: 16px">
-                            <paper-button class="submit" on-tap="_submit">Update</paper-button>
+                            <paper-button id="submitBTN" class="submit" on-tap="_submit">Update</paper-button>
                         </div>
                     </div>
-                </div>
+                </template>
 
-                <div style="border: 5px dotted #bbb;" hidden$="{{acctSecondStep}}">
-                    <paper-card style="width: 100%">
-                        <div id="printMe" class="card-content">
-                            <div>Account No.
-                                <span style="font-family: Courier New; font-size: 20px">
-                                    <strong>{{accountkey}}</strong>
+                <!-- <paper-dialog id="submitDialog">
+                    <p>
+                        <h2>Update account?</h2>
+                    </p>
+                    <div class="buttons">
+                        <paper-button dialog-dismiss>Cancel</paper-button>
+                        <paper-button dialog-confirm autofocus on-tap="_submit">Update</paper-button>
+                    </div>
+                </paper-dialog> -->
+
+                <paper-dialog id="successDialog" no-cancel-on-outside-click>
+                    <div style="text-align: center;">
+                        <h3>Account updated successfully!</h3>
+                    </div>
+                    <div class="buttons">
+                        <paper-button dialog-dismiss on-tap="_successDone">OK</paper-button>
+                    </div>
+                </paper-dialog>
+
+                <template is="dom-if" if="{{printPreview}}">
+                    <div style="padding: 16px;">
+                        <paper-card style="width: 100%">
+                            <div id="printMe" class="card-content">
+                                <div>Account No.
+                                    <span style="font-family: Courier New; font-size: 20px">
+                                        <strong>{{accountkey}}</strong>
+                                    </span>
+                                </div>
+                                <div>Name: {{firstname}} {{middlename}} {{lastname}} {{suffix}}</div>
+                                <div>Contact No. +63{{cellphone}}</div>
+                                <div>Position: {{position}}</div>
+                                <div>Type: {{type}}</div>
+                                <div>Group: {{group}}</div>
+                                <br>
+                                <div>
+                                    <strong>To login to Haven of Peace, Please follow instructions below.</strong>
+                                </div>
+                                <div>Step 1. Create an account to Haven of Peace under more options</div>
+                                <div>Step 2. Verify Email, click the link that was sent to your email account.</div>
+                                <div>Step 3. Enter the account number above to link your Haven of Peace account.</div>
+                                <div>Step 4. Enter the account code that was sent to your phone number provided above
+                                    to
+                                    complete the login procedure.</div>
+                            </div>
+                            <div class="card-actions">
+                                <span style="float: right; margin-bottom: 8px;">
+                                    <paper-button on-tap="_closePrintPreview">Cancel</paper-button>
+                                    <paper-button on-tap="_print">
+                                        <!-- <iron-icon icon="my-icons:print"></iron-icon> Print --> Print
+                                    </paper-button>
                                 </span>
                             </div>
-                            <div>Name: {{firstname}} {{middlename}} {{lastname}} {{suffix}}</div>
-                            <div>Contact No. +63{{cellphone}}</div>
-                            <div>Position: {{position}}</div>
-                            <div>Type: {{type}}</div>
-                            <div>Group: {{group}}</div>
-                            <div>Designation: {{designation}}</div>
-                            <br>
-                            <div>
-                                <strong>To login to Haven of Peace, Please follow instructions below.</strong>
-                            </div>
-                            <div>Step 1. Create an account to Haven of Peace under more options</div>
-                            <div>Step 2. Verify Email, click the link that was sent to your email account.</div>
-                            <div>Step 3. Enter the account number above to link your Haven of Peace account.</div>
-                            <div>Step 4. Enter the account code that was sent to your phone number provided above to complete
-                                the login procedure.</div>
-                        </div>
-                        <div class="card-actions">
-                            <paper-button on-tap="_print">
-                                <iron-icon icon="my-icons:print"></iron-icon> Print</paper-button>
-                        </div>
-                    </paper-card>
-                </div>
+                        </paper-card>
+                    </div>
+                </template>
 
             </app-header-layout>
         </app-drawer-layout>
@@ -220,46 +224,41 @@
                 editData: {
                     type: Object,
                 },
-                // role: String,
-                // typeHide: Boolean,
                 transactionKey: {
                     type: String,
                     value: '',
                 },
-                acctFirstStep: Boolean,
-                acctSecondStep: Boolean,
-                hideAgentReports: {
+                printPreview: {
                     type: Boolean,
-                    value: true
-                },
+                    value: false
+                }
             },
 
             observers: [
-                // 'roleChanged(role)',
                 'transactionKeyChanged(transactionKey)',
-                '_editDataChanged(editData)'
+                '_editDataChanged(editData)',
+                '_salesAgentChanged(salesAgent)',
+                '_dashboardChanged(dashboard)'
             ],
 
-            ready() {
-                this.acctFirstStep = false;
-                this.acctSecondStep = true;
+            _salesAgentChanged(e) {
+                if (e === false) {
+                    this.agentstype = false;
+                    this.agentsgroup = false;
+                    this.agents = false;
+
+                    this.selectedType = '';
+                    this.selectedGroup = '';
+                }
             },
 
-            // roleChanged(e) {
-            //     if (e == 'Manager') {
-            //         this.typeHide = false;
-            //         this.groupHide = true;
-            //         this.designationHide = true;
-            //     } else if (e == 'Sales Agent') {
-            //         this.typeHide = false;
-            //         this.groupHide = false;
-            //         this.designationHide = false;
-            //     } else {
-            //         this.typeHide = true;
-            //         this.groupHide = true;
-            //         this.designationHide = true;
-            //     }
-            // },
+            _dashboardChanged(e) {
+                if (e === false) {
+                    this.sales = false;
+                    this.staff = false;
+                    this.salesAgent = false;
+                }
+            },
 
             _editDataChanged() {
                 if (Object.keys(this.editData).length > 0) {
@@ -270,197 +269,169 @@
                     this.lastname = this.editData.name.lastname;
                     this.suffix = this.editData.name.suffix;
                     this.cellphone = this.editData.cellphone;
+                    this.email = this.editData.email;
                     this.position = this.editData.position;
-                    this.type = this.editData.type;
-                    this.group = this.editData.group;
-                    this.designation = this.editData.designation;
+                    this.selectedType = this.editData.type;
+                    this.selectedGroup = this.editData.group;
 
-                    if (this.editData.access.accountlist == true) {
-                        Polymer.dom(this.root).querySelector("#accountlist").checked = true;
-                    }
-                    if (this.editData.access.applications == true) {
-                        Polymer.dom(this.root).querySelector("#applications").checked = true;
-                    }
-                    if (this.editData.access.dashboard == true) {
-                        Polymer.dom(this.root).querySelector("#dashboard").checked = true;
-                    }
-                    if (this.editData.access.briefcase == true) {
-                        Polymer.dom(this.root).querySelector("#briefcase").checked = true;
-                    }
-                    if (this.editData.access.announcement == true) {
-                        Polymer.dom(this.root).querySelector("#announcement").checked = true;
-                    }
-                    if (this.editData.access.group == true) {
-                        Polymer.dom(this.root).querySelector("#group").checked = true;
-                    }
+                    this.accountlist = this.editData.access.accountlist;
+                    this.applications = this.editData.access.applications;
+                    this.dashboard = this.editData.access.dashboard;
+                    this.briefcase = this.editData.access.briefcase;
+                    this.announcement = this.editData.access.announcement;
+                    this.group = this.editData.access.groups;
 
-                    if (this.editData.reports.staffChart == true) {
-                        Polymer.dom(this.root).querySelector("#staff").checked = true;
-                    }
-                    if (this.editData.reports.salesAgent == true) {
-                        Polymer.dom(this.root).querySelector("#salesAgent").checked = true;
-                        this.hideAgentReports = false;
-                    }
-                    if (this.editData.reports.salesChart == true) {
-                        Polymer.dom(this.root).querySelector("#sales").checked = true;
-                    }
-                    if (this.editData.reports.agentstypeChart == true) {
-                        Polymer.dom(this.root).querySelector("#agentstype").checked = true;
-                    }
-                    if (this.editData.reports.agentsgroupChart == true) {
-                        Polymer.dom(this.root).querySelector("#agentsgroup").checked = true;
-                    }
-                    if (this.editData.reports.agentsChart == true) {
-                        Polymer.dom(this.root).querySelector("#agents").checked = true;
-                    }
+                    this.staff = this.editData.reports.staffChart;
+                    this.salesAgent = this.editData.reports.salesAgentChart;
+                    this.sales = this.editData.reports.salesChart;
+
+                    this.agentstype = this.editData.reports.salesAgentReport.agentstypeChart;
+                    this.agentsgroup = this.editData.reports.salesAgentReport.agentsgroupChart;
+                    this.agents = this.editData.reports.salesAgentReport.agentsChart;
                 }
             },
 
             transactionKeyChanged() {
-                this.$.appheader.resetLayout();
+                Polymer.dom(this.root).querySelector("#appheader").resetLayout();
             },
 
             _submit() {
-                var salesAgents = Polymer.dom(this.root).querySelector("#salesAgent");
-                if (!this.firstname || !this.middlename || !this.lastname || !this.cellphone || !this.position) {
-                    this.msg = 'Please fill-up the required field.';
-                } else if (this.cellphone.length != 10) {
-                    this.msg = 'Error! Invalid cellphone number...';
-                } else if (salesAgents.checked == true) {
-                    if (!this.type || !this.group || !this.designation) {
-                        this.msg = 'Please fill-up the required field.';
+                var submitBTN = Polymer.dom(this.root).querySelector('#submitBTN');
+                var accountlistForm = Polymer.dom(this.root).querySelector('#accountlistForm');
+
+                accountlistForm.submit();
+                submitBTN.disabled = true;
+
+                if (this.firstname && this.middlename && this.lastname && this.email && this.cellphone && this.position) {
+                    if (this.cellphone.length != 10) {
+                        this.msg = 'Error! Invalid cellphone number...';
+                        submitBTN.disabled = false;
+                    } else if (this.salesAgent === true) {
+                        if (this.selectedType && this.selectedGroup) {
+                            this.msg = null;
+                            submitBTN.disabled = false;
+
+                            var data = {
+                                uid: this.uid ? this.uid : '',
+                                accountkey: this.accountkey,
+                                active: true,
+                                name: {
+                                    firstname: this.firstname,
+                                    middlename: this.middlename,
+                                    lastname: this.lastname,
+                                    suffix: this.suffix ? this.suffix : ''
+                                },
+                                email: this.email,
+                                cellphone: this.cellphone,
+                                position: this.position,
+                                access: {
+                                    accountlist: this.accountlist,
+                                    announcement: this.announcement,
+                                    applications: this.applications,
+                                    briefcase: this.briefcase,
+                                    dashboard: this.dashboard,
+                                    groups: this.group
+                                },
+                                type: this.selectedType,
+                                group: this.selectedGroup,
+                                type_group: this.selectedType + '_' + this.selectedGroup,
+                                reports: {
+                                    salesChart: this.sales,
+                                    staffChart: this.staff,
+                                    salesAgentChart: this.salesAgent,
+                                    salesAgentReport: {
+                                        agentsChart: this.agents,
+                                        agentstypeChart: this.agentstype,
+                                        agentsgroupChart: this.agentsgroup
+                                    }
+                                }
+                            };
+                            this._finish(data);
+                        } else {
+                            this.msg = null;
+                            submitBTN.disabled = false;
+                        }
                     } else {
-                        this._continue();
+                        this.msg = null;
+                        submitBTN.disabled = false;
+
+                        var data = {
+                            uid: this.uid ? this.uid : '',
+                            accountkey: this.accountkey,
+                            active: true,
+                            name: {
+                                firstname: this.firstname,
+                                middlename: this.middlename,
+                                lastname: this.lastname,
+                                suffix: this.suffix ? this.suffix : ''
+                            },
+                            email: this.email,
+                            cellphone: this.cellphone,
+                            position: this.position,
+                            access: {
+                                accountlist: this.accountlist,
+                                announcement: this.announcement,
+                                applications: this.applications,
+                                briefcase: this.briefcase,
+                                dashboard: this.dashboard,
+                                groups: this.group
+                            },
+                            type: this.selectedType,
+                            group: this.selectedGroup,
+                            type_group: this.selectedType + '_' + this.selectedGroup,
+                            reports: {
+                                salesChart: this.sales,
+                                staffChart: this.staff,
+                                salesAgentChart: this.salesAgent,
+                                salesAgentReport: {
+                                    agentsChart: this.agents,
+                                    agentstypeChart: this.agentstype,
+                                    agentsgroupChart: this.agentsgroup
+                                }
+                            }
+                        };
+                        this._finish(data);
                     }
                 } else {
-                    this.type = '';
-                    this.group = '';
-                    this.designation = '';
-                    var agentstype = Polymer.dom(this.root).querySelector("#agentstype").checked = false;
-                    var agentsgroup = Polymer.dom(this.root).querySelector("#agentsgroup").checked = false;
-                    var agents = Polymer.dom(this.root).querySelector("#agents").checked = false;
-                    this._continue();
+                    this.msg = null;
+                    submitBTN.disabled = false;
                 }
-
             },
 
-            _continue() {
-                this.msg = '';
-                if (!this.suffix) {
-                    this.suffix = '';
-                }
-                var box1 = Polymer.dom(this.root).querySelector("#dashboard");
-                var box2 = Polymer.dom(this.root).querySelector("#applications");
-                var box3 = Polymer.dom(this.root).querySelector("#accountlist");
-                var box4 = Polymer.dom(this.root).querySelector("#briefcase");
-                var box5 = Polymer.dom(this.root).querySelector("#announcement");
-                var box6 = Polymer.dom(this.root).querySelector("#group");
-                var dashboard = false;
-                var applications = false;
-                var accountlist = false;
-                var briefcase = false;
-                var announcement = false;
-                var group = false;
-                if (box1.checked == true) {
-                    dashboard = true;
-                }
-                if (box2.checked == true) {
-                    applications = true;
-                }
-                if (box3.checked == true) {
-                    accountlist = true;
-                }
-                if (box4.checked == true) {
-                    briefcase = true;
-                }
-                if (box5.checked == true) {
-                    announcement = true;
-                }
-                if (box6.checked == true) {
-                    group = true;
-                }
-
-                var staff = Polymer.dom(this.root).querySelector("#staff");
-                var salesAgents = Polymer.dom(this.root).querySelector("#salesAgent");
-                var sales = Polymer.dom(this.root).querySelector("#sales");
-
-                var agentstype = Polymer.dom(this.root).querySelector("#agentstype");
-                var agentsgroup = Polymer.dom(this.root).querySelector("#agentsgroup");
-                var agents = Polymer.dom(this.root).querySelector("#agents");
-                var staffChart = false;
-                var salesChart = false;
-                var salesAgent = false;
-
-                var agentstypeChart = false;
-                var agentsgroupChart = false;
-                var agentsChart = false;
-                if (salesAgents.checked == true) {
-                    salesAgent = true;
-                }
-                if (staff.checked == true) {
-                    staffChart = true;
-                }
-                if (sales.checked == true) {
-                    salesChart = true;
-                }
-                if (agentstype.checked == true) {
-                    agentstypeChart = true;
-                }
-                if (agentsgroup.checked == true) {
-                    agentsgroupChart = true;
-                }
-                if (agents.checked == true) {
-                    agentsChart = true;
-                }
-                this._accountSave(dashboard, applications, accountlist, briefcase, announcement, group, salesAgent, staffChart, salesChart, agentstypeChart, agentsgroupChart, agentsChart);
-            },
-
-            _accountSave(dashboard, applications, accountlist, briefcase, announcement, group, salesAgent, staffChart, salesChart, agentstypeChart, agentsgroupChart, agentsChart) {
-                var ref = firebase.database().ref('/accountlist');
-                ref.child(this.transactionKey).update({
-                    active: true,
-                    accountkey: this.accountkey,
-                    name: {
-                        firstname: this.firstname,
-                        middlename: this.middlename,
-                        lastname: this.lastname,
-                        suffix: this.suffix,
-                        fullname: this.firstname.toUpperCase() + ' ' + this.middlename.toUpperCase() + ' ' + this.lastname.toUpperCase()
-                    },
-                    cellphone: this.cellphone,
-                    position: this.position,
-                    type: this.type,
-                    group: this.group,
-                    type_group: this.type + "_" + this.group,
-                    designation: this.designation,
-                    access: {
-                        dashboard: dashboard,
-                        applications: applications,
-                        accountlist: accountlist,
-                        briefcase: briefcase,
-                        announcement: announcement,
-                        group: group
-                    },
-                    reports: {
-                        salesAgent: salesAgent,
-                        staffChart: staffChart,
-                        salesChart: salesChart,
-                        agentstypeChart: agentstypeChart,
-                        agentsgroupChart: agentsgroupChart,
-                        agentsChart: agentsChart
+            _finish(data) {
+                // var newPostKey = firebase.database().ref().child('accountlist').push().key;
+                var newPostKey = this.transactionKey;
+                var updates = {};
+                if (data.reports.salesAgentChart === true) {
+                    var agentData = {
+                        firstname: data.name.firstname,
+                        middlename: data.name.middlename,
+                        lastname: data.name.lastname,
+                        suffix: data.name.suffix,
+                        cellphone: data.cellphone,
+                        email: data.email,
+                        type: data.type,
+                        group: data.group
                     }
-                })
+                    updates['/accountlist/' + newPostKey] = data;
+                    updates['/agents/' + data.accountkey] = agentData;
+                } else {
+                    updates['/accountlist/' + newPostKey] = data;
+                }
+                firebase.database().ref().update(updates);
+                Polymer.dom(this.root).querySelector("#successDialog").open();
+            },
+
+            _successDone(){
                 window.location = '/accountlist';
             },
 
-            cancelPrintPreview() {
-                this.acctFirstStep = false;
-                this.acctSecondStep = true;
+            print_preview() {
+                this.printPreview = true
             },
 
-            print_preview() {
-                this.acctFirstStep = true;
-                this.acctSecondStep = false;
+            _closePrintPreview() {
+                this.printPreview = false;
             },
 
             _print() {
@@ -468,15 +439,6 @@
                 var mywindow = window.open('', 'Print', 'height=600,width=800');
                 mywindow.document.write(content);
                 mywindow.print();
-            },
-
-            _showAgentReports() {
-                var salesAgents = Polymer.dom(this.root).querySelector("#salesAgent");
-                if (salesAgents.checked == true) {
-                    this.hideAgentReports = false;
-                } else {
-                    this.hideAgentReports = true;
-                }
             },
         })
     </script>

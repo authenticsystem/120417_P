@@ -1,0 +1,56 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-notifications">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                /* padding: 10px; */
+            }
+
+            app-header {
+                color: rgb(255, 255, 255);
+                background-color: #388E3C;
+            }
+        </style>
+
+        <app-header-layout fullbleed has-scrolling-region>
+            <app-header fixed slot="header">
+                <app-toolbar primary>
+                    <a href="/dashboard">
+                        <paper-icon-button style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
+                    </a>
+                    <div main-title>Notifications</div>
+                </app-toolbar>
+            </app-header>
+
+            <!-- <firebase-document path=""></firebase-document> -->
+
+            <div class="card">Notifications</div>
+
+        </app-header-layout>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-notifications',
+        })
+    </script>
+</dom-module>

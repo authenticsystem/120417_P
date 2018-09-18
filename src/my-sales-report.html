@@ -1,0 +1,131 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-buttons-group/paper-buttons-group.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-sales-report">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                padding: 16px;
+            }
+
+            paper-card {
+                width: 100%
+            }
+
+            .right {
+                @apply --layout-horizontal;
+                @apply --layout-end-justified;
+            }
+
+            #customGroup {
+                --paper-buttons-group-selected: {
+                    background-color: green !important;
+                    color: white;
+                }
+                paper-button {
+                    width: 80px;
+                }
+            }
+
+            /* canvas {
+                -moz-user-select: none;
+                -webkit-user-select: none;
+                -ms-user-select: none;
+            } */
+        </style>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-sales-report',
+
+            properties: {
+            },
+
+            observers: [
+                '_canvasChanged(selectedReport, selectedDWMY, dailyDate, weeklyYear, weeklyNum, monthlyMonth, monthyYear, yearlyYear)'
+            ],
+
+            
+
+            ready() {
+                this.selectedReport = 'activity';
+                this.selectedDWMY = 'daily';
+
+                this.dailyDate = this.formatDate(new Date(), 'daily');
+
+                this.weeklyYear = this.formatDate(new Date(), 'year');
+                this.weeklyNum = this.formatDate(new Date(), 'weekNum');
+                this.weeklyDateRange = this.getDateRangeOfWeek(this.weeklyNum, this.weeklyYear);
+
+                this.monthlyMonth = this.formatDate(new Date(), 'month');
+                this.monthyYear = this.formatDate(new Date(), 'year');
+
+                this.yearlyYear = this.formatDate(new Date(), 'year');
+            },
+
+            formatDate(now, x) {
+                if (x === 'daily') {
+                    var day = ("0" + now.getDate()).slice(-2);
+                    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+                    return now.getFullYear() + "-" + (month) + "-" + (day);
+                } else if (x === 'weekNum') {
+                    now = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+                    now.setUTCDate(now.getUTCDate() + 4 - (now.getUTCDay() || 7));
+                    var yearStart = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
+                    var weekNo = Math.ceil((((now - yearStart) / 86400000) + 1) / 7);
+                    return weekNo;
+                } else if (x === 'year') {
+                    return now.getFullYear();
+                } else if (x === 'month') {
+                    return ("0" + (now.getMonth() + 1)).slice(-2);
+                }
+
+            },
+
+            getDateRangeOfWeek(weekNo, y) {
+                Date.prototype.getWeek = function () {
+                    var date = new Date(this.getTime());
+                    date.setHours(0, 0, 0, 0);
+                    // Thursday in current week decides the year.
+                    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+                    // January 4 is always in week 1.
+                    var week1 = new Date(date.getFullYear(), 0, 4);
+                    // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+                    return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+                }
+                var rangeToFrom = [];
+                var d1, numOfdaysPastSinceLastMonday, rangeIsFrom, rangeIsTo;
+                d1 = new Date('' + y + '');
+                numOfdaysPastSinceLastMonday = d1.getDay() - 1;
+                d1.setDate(d1.getDate() - numOfdaysPastSinceLastMonday);
+                d1.setDate(d1.getDate() + (7 * (weekNo - d1.getWeek())));
+                rangeIsFrom = d1.getFullYear() + "-" + ("0" + (d1.getMonth() + 1)).slice(-2) + "-" + ("0" + d1.getDate()).slice(-2)
+                d1.setDate(d1.getDate() + 6);
+                rangeIsTo = d1.getFullYear() + "-" + ("0" + (d1.getMonth() + 1)).slice(-2) + "-" + ("0" + d1.getDate()).slice(-2)
+                return rangeIsFrom + " - " + rangeIsTo;
+            },
+        })
+    </script>
+</dom-module>

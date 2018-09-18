@@ -222,35 +222,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     agent: agent,
                     owner: owner
                 };
+
+                var startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
+
+                var notificationData = {
+                    isRead: false,
+                    date: startDateTimeValue,
+                    href: '/dashboard',
+                    message: this.myaccount + " publish new announcement",
+                    userPhoto: this.user.photoURL
+                }
+
                 var updates = {};
                 updates['/announcements/' + announcementPush] = announcementData;
-                // updates['/user-announcements/' + accountkey + '/' + announcementPush] = announcementData;
-                this.notification(staff, manager, agent, owner, this.title);
-                // this._uploadAttachment(attachment, announcementPush);
+                updates['/notifications/' + announcementPush] = notificationData;
                 this.$.successDialog.open();
                 return firebase.database().ref().update(updates);
-
-            },
-
-            notification(staff, manager, agent, owner, announcementTitle) {
-                var ref = firebase.database().ref("notifications");
-                ref.push({
-                    title: announcementTitle,
-                    click: "/dashboard",
-                    message: "publish new announcement",
-                    photo: firebase.auth().currentUser.photoURL,
-                    isread: false,
-                    recipient: {
-                        staff: staff,
-                        manager: manager,
-                        agent: agent,
-                        owner: owner,
-                        recipient_accountCode: ''
-                    },
-                    sender: this.myaccount,
-                    timestamp: { ".sv": "timestamp" },
-                    source: 'announcement',
-                });
             },
 
             _uploadAttachment(myAttachment, pushkey) {

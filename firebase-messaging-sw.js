@@ -15,8 +15,8 @@ firebase.initializeApp({
 // messages.
 const messaging = firebase.messaging();
 
-messaging.setBackgroundMessageHandler(function(payload) {
-  console.log('[firebase-messaging-sw.js] Received background message ', payload);
+messaging.setBackgroundMessageHandler(function (payload) {
+  // console.log('[firebase-messaging-sw.js] Received background message ', payload);
   // Customize notification here
   const notificationTitle = 'Haven of Peace Memorial Garden';
   const notificationOptions = {
@@ -26,5 +26,5 @@ messaging.setBackgroundMessageHandler(function(payload) {
   };
 
   return self.registration.showNotification(notificationTitle,
-      notificationOptions);
+    notificationOptions);
 });

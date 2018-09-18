@@ -21,6 +21,8 @@
 <link rel="import" href="../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/salte-dialog/salte-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 
 <link rel="import" href="shared-styles.html">
 <link rel="import" href="my-icons.html">
@@ -140,49 +142,38 @@
             }
         </style>
 
-        <!-- <app-route route="{{route}}" pattern="/:key" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
-
-        <!-- <firebase-document id="lotdoc" path="/lots/[[routeData.lot]]" data="{{lotdetailsAPP}}">
-        </firebase-document> -->
-
         <firebase-document id="idd" path="{{path}}" data="{{newdata}}" disabled="true"></firebase-document>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
                 <div class="mnu" role="listbox">
-                    <!-- <iron-selector attr-for-selected="value" class="drawer-list"> -->
-
-                    <!-- on-tap="_selectPage" data-args="0" -->
                     <paper-item id="lotdetails">
                         <div class="circle-mini-first">1</div>
                         <span>Lot Details</span>
                     </paper-item>
-
-                    <!-- on-tap="_selectPage" data-args="1" -->
                     <paper-item id="buyersinformation">
                         <div class="circle-mini">2</div>
                         <span>Buyer's Information</span>
                     </paper-item>
-
-                    <!-- on-tap="_selectPage" data-args="2" -->
                     <paper-item id="samplecomputation">
                         <div class="circle-mini-last">3</div>
                         <span>Agent's Information</span>
                     </paper-item>
-
-                    <!-- </iron-selector> -->
                 </div>
             </app-drawer>
 
             <app-header-layout id="appheader" has-scrolling-region>
                 <app-header fixed slot="header">
                     <app-toolbar>
-                        <a href="/applications" tabindex="-1">
+                        <a id="href" href="{{prevRoute}}" tabindex="-1">
                             <paper-icon-button class="menu" noink style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
                         <div main-title>{{referenceLabel}} {{newdata.reference}}</div>
+                        <template is="dom-if" if="{{_checkIfNewApplication(pathLink)}}">
+                            <paper-icon-button icon="my-icons:thumb-down" on-tap="_openDisApprovedDialog"></paper-icon-button>
+                            <paper-icon-button icon="my-icons:thumb-up" on-tap="_openApprovedDialog"></paper-icon-button>
+                        </template>
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
-                        <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
 
                 </app-header>
@@ -235,6 +226,13 @@
                                             </span>
                                         </div>
 
+                                        <div style="padding-top: 5px;">
+                                            <div style="font-size: 12px; color: gray;margin-bottom: -.3em">Status</div>
+                                            <span id="type">
+                                                [[newdata.briefcasedetails.status]]
+                                            </span>
+                                        </div>
+
                                     </div>
                                     <div class="card-actions" id="cardActions" style="display: none;">
                                         <div>
@@ -254,7 +252,6 @@
 
                                     </div>
                                 </paper-card>
-
                             </div>
                         </div>
                     </neon-animatable>
@@ -263,7 +260,8 @@
                         <div class="docu">
                             <div class="docu-header">2. Buyer's Information</div>
                             <div class="details">
-                                <paper-input always-float-label="true" readonly="true" type="number" label="Cellphone No." value="{{newdata.buyerdetails.cellphone}}"></paper-input>
+                                <paper-input always-float-label="true" readonly="true" type="number" label="Cellphone No."
+                                    value="{{newdata.buyerdetails.cellphone}}"></paper-input>
                                 <paper-input always-float-label="true" readonly="true" label="First Name" value="{{newdata.buyerdetails.firstname}}"></paper-input>
                                 <paper-input always-float-label="true" readonly="true" label="Middle Name" value="{{newdata.buyerdetails.middlename}}"></paper-input>
                                 <paper-input always-float-label="true" readonly="true" label="Last Name" value="{{newdata.buyerdetails.lastname}}"></paper-input>
@@ -277,7 +275,8 @@
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
                             <div class="detais">
-                                <paper-input always-float-label="true" readonly="true" type="number" label="Cellphone No." value="{{newdata.agentdetails.cellphone}}"></paper-input>
+                                <paper-input always-float-label="true" readonly="true" type="number" label="Cellphone No."
+                                    value="{{newdata.agentdetails.cellphone}}"></paper-input>
                                 <paper-input always-float-label="true" readonly="true" label="First Name" value="{{newdata.agentdetails.firstname}}"></paper-input>
                                 <paper-input always-float-label="true" readonly="true" label="Middle Name" value="{{newdata.agentdetails.middlename}}"></paper-input>
                                 <paper-input always-float-label="true" readonly="true" label="Last Name" value="{{newdata.agentdetails.lastname}}"></paper-input>
@@ -288,8 +287,6 @@
                     </neon-animatable>
 
                 </neon-animated-pages>
-
-
             </app-header-layout>
 
             <div class="footer">
@@ -297,16 +294,54 @@
                     <paper-fab id="favleft" class="paper-fab-0" icon="my-icons:chevron-left" on-tap="_select1"></paper-fab>
                 </div>
                 <div hidden$="[[favrighthide]]">
-                    <paper-fab style="background: #1976d2;" id="favright" class="paper-fab-1" icon="my-icons:chevron-right" on-tap="_select2"></paper-fab>
+                    <paper-fab style="background: #1976d2;" id="favright" class="paper-fab-1" icon="my-icons:chevron-right"
+                        on-tap="_select2"></paper-fab>
                 </div>
             </div>
 
+            <salte-dialog id="disApprovedDialog" no-auto-fullscreen>
+                <h2 style$="background-color: {{newdata.lotdetails.maprenderdetails.type_bg_color}}; color: {{newdata.lotdetails.maprenderdetails.type_fore_color}}">
+                    <div>
+                        {{_formatLot(newdata.lotdetails.block, newdata.lotdetails.lot, newdata.lotdetails.level)}}
+                    </div>
+                    <div style="font-size: 12px">Reference key: {{newdata.reference}}</div>
+                </h2>
+                <div style="color: red">{{msg}}</div>
+                <paper-input label="Reason" always-float-label value="{{reason}}"></paper-input>
+                <div class="buttons">
+                    <paper-button dialog-dismiss>Cancel</paper-button>
+                    <paper-button on-tap="_sudmitDisApproved">Disapproved</paper-button>
+                </div>
+            </salte-dialog>
 
+            <paper-dialog id="approvedDialog">
+                <p>
+                    <h3>Approved this application?</h3>
+                </p>
+                <div class="buttons">
+                    <paper-button dialog-dismiss>Cancel</paper-button>
+                    <paper-button dialog-confirm autofocus on-tap="_approvedRequest">Approved</paper-button>
+                </div>
+            </paper-dialog>
+
+            <paper-dialog id="successDialog" no-cancel-on-outside-click>
+                <p>
+                    <h3>{{successDialogMsg}}</h3>
+                </p>
+                <div class="buttons">
+                    <paper-button on-tap="_successDone">OK</paper-button>
+                </div>
+            </paper-dialog>
+
+            <paper-dialog id="approvedDialogError" no-cancel-on-outside-click>
+                <p style="color: red"><span style="font-weight: bold">ERROR!</span> Application request can't be
+                    process this lot is already {{dialogDataStatus}}.</p>
+                <div class="buttons">
+                    <paper-button dialog-dismiss>OK</paper-button>
+                </div>
+            </paper-dialog>
 
         </app-drawer-layout>
-
-
-
 
     </template>
 
@@ -315,6 +350,9 @@
             is: 'my-application-detail',
 
             properties: {
+                user: Object,
+                prevRoute: String,
+                pathLink: String,
                 narrow: {
                     type: Boolean,
                     notify: true
@@ -341,35 +379,30 @@
                 newdata: Object,
                 transactionKey: {
                     type: String,
-                    value: '',
+                    // value: '',
                     observer: 'transactionKeyChanged'
                 },
-
+                myname: String
             },
 
             observers: [
-                'newdataChanged(newdata)'
+                'newdataChanged(newdata)',
+                'userChanged(user)'
             ],
 
-            _getPrevRoute() {
-                return this.prevRoute || '/applications'
-            },
+            userChanged(e) { console.log(e) },
 
             transactionKeyChanged() {
                 if (this.transactionKey) {
                     this.$.appheader.resetLayout();
                     this.selectedPage = 0;
                     this.getpath();
-
                     this.$.idd.disabled = false;
-
-                    // console.log(this.transactionKey);
                 }
             },
 
             newdataChanged() {
                 // console.log(this.newdata);
-
                 if (Object.keys(this.newdata).length > 0) {
                     if (this.newdata.lotdetails) {
                         this.fullLotName = 'Block ' + this.newdata.lotdetails.block + ' - Lot ' + this.newdata.lotdetails.lot;
@@ -423,34 +456,11 @@
             },
 
             getpath() {
-                // this.applicationKey = this.guid();
-                // this.path = 'applications/' + this.applicationKey;
                 if (this.transactionKey) {
-                    this.path = 'applications/' + this.transactionKey;
-                    // console.log(this.path);
+                    this.path = this.pathLink + '/' + this.transactionKey;
                 }
-
-
-
-                return this.path;
+                // return this.path;
             },
-
-            toggleDrawer() {
-                // this.dispatchEvent(new CustomEvent('toggleDrawer', {
-                //     bubbles: true, composed: true, detail: {
-                //         narrow: this.$.narrow
-                //     }
-                // }));
-                // this.$.narrow = !this.$.narrow;
-
-                Polymer.dom(this.parentNode).removeChild(this);
-
-            },
-
-            _currentPage(e, s) {
-                return s === e;
-            },
-
 
             ready() {
                 this.selectedPage = 0;
@@ -509,56 +519,310 @@
                     this.favlefthide = true;
                     this.favrighthide = false;
                 }
-
-                //create or update /lot & /isdraft values
-                // if (this.fullLot) {
-                //     this.$.idd.setStoredValue(this.path + '/lot', this.fullLot);
-                //     this.$.idd.setStoredValue(this.path + '/isdraft', true);
-                // }
-
             },
-            _rdChanged(newData, oldData) {
-                this.fromRD = true;
 
-                // this.isUserClicked = true;
-                // console.log('_rd');
-                // console.log(oldData);
-                // console.log(newData);
-            },
-            _ldChanged(newData, oldData) {
-                this.fromLD = true;
-
-                // this.isUserClicked = true;
-                // console.log('_rd');
-                // console.log(oldData);
-                // console.log(newData);
-            },
-            s4: function () {
-                return Math.floor((1 + Math.random()) * 0x10000)
-                    .toString(16)
-                    .substring(1);
-            },
-            guid: function () {
-                // return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' +
-                //     this.s4() + '-' + this.s4() + this.s4() + this.s4();
-
-
-                var uid = new ShortUniqueId();
-
-                // console.log(uid.randomUUID(8));
-                // var shortid = new shortid();
-                return uid.randomUUID(8);
-
-            },
             _getLocalDatetimeFormat(e) {
                 var xdate = new Date(e);
                 return xdate.toDateString() + ' ' + xdate.toLocaleTimeString().replace(/:\d{2}\s/, ' ');;
-            }
+            },
 
+            _checkIfNewApplication(e) {
+                if (e === 'applicationsNew') return true
+                else return false;
+            },
 
+            _formatLot(block, lot, level) {
+                if (level) return 'Block ' + block + ' Lot ' + lot + ' Level ' + level;
+                else return 'Block ' + block + ' Lot ' + lot;
+            },
+
+            _openDisApprovedDialog(e) {
+                if (this.newdata) {
+                    console.log(this.newdata)
+                    this.reason = null;
+                    Polymer.dom(this.root).querySelector('#disApprovedDialog').open();
+                } else {
+                    alert('Something went wrong.!');
+                }
+            },
+
+            _sudmitDisApproved() {
+                if (this.reason) {
+                    this.msg = '';
+                    var self = this;
+
+                    var ddate = new Date();
+                    var startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                        + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
+                    var notificationData = {
+                        isRead: false,
+                        date: startDateTimeValue,
+                        href: '/briefcase',
+                        message: this.myname + ' disapproved your request',
+                        agentdetails: this.newdata.agentdetails,
+                        lotdetails: this.newdata.lotdetails,
+                        userPhoto: this.user.photoURL
+                    }
+
+                    var updates = {};
+
+                    updates["/briefcaseDraft/" + this.newdata.agent + "/" + this.transactionKey + '/briefcasedetails/status'] = 'Disapproved';
+                    updates["/briefcaseDraft/" + this.newdata.agent + "/" + this.transactionKey + '/briefcasedetails/processedBy'] = this.myname;
+                    updates["/briefcaseDraft/" + this.newdata.agent + "/" + this.transactionKey + '/briefcasedetails/dateProcessed'] = startDateTimeValue;
+                    updates["/briefcaseDraft/" + this.newdata.agent + "/" + this.transactionKey + '/briefcasedetails/reason'] = this.reason;
+                    updates["/applicationsNew/" + this.transactionKey] = null;
+
+                    updates['/notifications/' + this.newdata.agent + '/' + this.transactionKey] = notificationData;
+
+                    firebase.database().ref('/users/' + this.newdata.agent).once('value').then(function (tokenSnap) {
+                        var key = 'AAAAYRWQPB8:APA91bHX03IsFX7JFre5nsMNjZ_4BFKsJZl3NCpEpFi8eJQkug5c3aJmIWdZWMiH_eoARBgSoXswyM2djDIqMkpRjpJxWOizUQZKtkfJoUbd0N0F2NXUIHPNpvrC_O4W61wh16FJaaMg';
+                        var to = tokenSnap.val().token;
+                        var notification = {
+                            'title': 'Application disapproved',
+                            'body': self.myname + ' disapproved your request',
+                            'icon': '../images/favicon.ico',
+                            'click_action': 'https://hpmg.baseph.com/briefcase',
+                        };
+
+                        fetch('https://fcm.googleapis.com/fcm/send', {
+                            'method': 'POST',
+                            'headers': {
+                                'Authorization': 'key=' + key,
+                                'Content-Type': 'application/json'
+                            },
+                            'body': JSON.stringify({
+                                'notification': notification,
+                                'to': to
+                            })
+                        }).then(function (response) {
+                            console.log(response);
+                        }).catch(function (error) {
+                            console.error(error);
+                        })
+                    });
+
+                    firebase.database().ref().update(updates);
+                    Polymer.dom(this.root).querySelector('#disApprovedDialog').close();
+                    Polymer.dom(this.root).querySelector('#successDialog').open();
+                    this.successDialogMsg = 'Application request successfully disapproved!'
+                    // this.$.href.click();
+                } else {
+                    this.msg = 'Please provide reason';
+                }
+            },
+
+            _openApprovedDialog(e) {
+                if (this.newdata) {
+                    var lot = this.newdata.lot;
+                    var type = this.newdata.lotdetails.type + '_available_yes';
+                    var approvedDialog = Polymer.dom(this.root).querySelector('#approvedDialog');
+                    var errorDialog = Polymer.dom(this.root).querySelector('#approvedDialogError');
+                    var self = this;
+
+                    firebase.database().ref('/lots/' + lot).once('value', function (data) {
+                        if (data.val().type_status_inventoriable === type) {
+                            approvedDialog.open();
+                        } else {
+                            self.dialogDataStatus = data.val().status;
+                            errorDialog.open();
+                        }
+                    });
+                } else {
+                    alert('Something went wrong.!');
+                }
+            },
+
+            _approvedRequest() {
+                var ddate = new Date(), self = this;
+                var startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+                this.expiryHoursDaysLabel = "hours";
+                this.expiryHoursDaysValue = 24;
+                var xdate = new Date(startDateTimeValue);
+                xdate.setHours(xdate.getHours() + this.expiryHoursDaysValue);
+                this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+
+                var expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
+                    + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+
+                var dataForApplications = {
+                    agent: this.newdata.agent,
+                    agentdetails: this.newdata.agentdetails,
+                    buyer: this.newdata.buyer,
+                    buyerdetails: this.newdata.buyerdetails,
+                    lot: this.newdata.lot,
+                    lotdetails: this.newdata.lotdetails,
+                    expiry: expiryDate,
+                    isexpired: false,
+                    start: startDateTimeValue,
+                    timestamp: { ".sv": "timestamp" },
+                    type: this.newdata.type,
+                    reference: this.newdata.reference,
+                    briefcasedetails: {
+                        status: 'Approved',
+                        dateCreated: this.newdata.briefcasedetails.dateCreated,
+                        isUpdated: this.newdata.briefcasedetails.isUpdated,
+                        dateSendRequest: this.newdata.briefcasedetails.dateSendRequest,
+                        processedBy: this.myname,
+                        dateProcessed: startDateTimeValue,
+                    },
+                    isserved: 'false',
+                    processed: this.myname,
+                    processordetails: '',
+                    served: '',
+                    status: '',
+                }
+
+                var notificationData = {
+                    isRead: false,
+                    date: startDateTimeValue,
+                    href: '/briefcase',
+                    message: this.myname + ' approved your request',
+                    agentdetails: this.newdata.agentdetails,
+                    lotdetails: this.newdata.lotdetails,
+                    userPhoto: this.user.photoURL
+                }
+
+                var newPostKey = firebase.database().ref().child('briefcase').push().key;
+                var updates = {};
+
+                updates["/briefcase/" + this.newdata.agent + "/" + newPostKey] = dataForApplications;
+                updates["/applications/" + newPostKey] = dataForApplications;
+                updates["/briefcaseDraft/" + this.newdata.agent + "/" + this.transactionKey] = null;
+                updates["/applicationsNew/" + this.transactionKey] = null;
+
+                updates['/notifications/' + this.newdata.agent + '/' + newPostKey] = notificationData;
+
+                firebase.database().ref('/users/' + this.newdata.agent).once('value').then(function (tokenSnap) {
+                    var key = 'AAAAYRWQPB8:APA91bHX03IsFX7JFre5nsMNjZ_4BFKsJZl3NCpEpFi8eJQkug5c3aJmIWdZWMiH_eoARBgSoXswyM2djDIqMkpRjpJxWOizUQZKtkfJoUbd0N0F2NXUIHPNpvrC_O4W61wh16FJaaMg';
+                    var to = tokenSnap.val().token;
+                    var notification = {
+                        'title': 'Application approved',
+                        'body': self.myname + ' approved your request',
+                        'icon': '../images/favicon.ico',
+                        'click_action': 'https://hpmg.baseph.com/briefcase',
+                    };
+
+                    fetch('https://fcm.googleapis.com/fcm/send', {
+                        'method': 'POST',
+                        'headers': {
+                            'Authorization': 'key=' + key,
+                            'Content-Type': 'application/json'
+                        },
+                        'body': JSON.stringify({
+                            'notification': notification,
+                            'to': to
+                        })
+                    }).then(function (response) {
+                        console.log(response);
+                    }).catch(function (error) {
+                        console.error(error);
+                    })
+                });
+
+                var isCurrentReservation = false;
+                if (this.lastReservation) {
+                    if (this.lastReservation.length > 0) {
+                        isCurrentReservation = false;
+                    }
+                    else {
+                        isCurrentReservation = true;
+                    }
+                }
+                else {
+                    isCurrentReservation = true;
+                }
+
+                var dataForReservation = {
+                    agent: this.newdata.agent,
+                    agentdetails: this.newdata.agentdetails,
+                    buyer: this.newdata.buyer,
+                    buyerdetails: this.newdata.buyerdetails,
+                    expiry: expiryDate,
+                    isexpired: false,
+                    start: startDateTimeValue,
+                    timestamp: { ".sv": "timestamp" },
+                    iscurrent: isCurrentReservation,
+                    type: this.newdata.type,
+                    reference: this.newdata.reference
+                }
+
+                updates["/reservations/" + this.newdata.lot + "/" + newPostKey] = dataForReservation;
+
+                if (isCurrentReservation == true) {
+                    updates["/lots/" + this.newdata.lot + "/reservation"] = this.transactionKey;
+                    updates["/lots/" + this.newdata.lot + "/reservationdetails"] = dataForReservation;
+                    updates["/lots/" + this.newdata.lot + "/status"] = 'hold';
+                    updates["/lots/" + this.newdata.lot + "/maprenderdetails/status_name"] = 'Hold';
+                    updates["/lots/" + this.newdata.lot + "/maprenderdetails/bg_color"] = '#E65100';
+                    updates["/lots/" + this.newdata.lot + "/maprenderdetails/fore_color"] = 'white';
+                    updates["/lots/" + this.newdata.lot + "/type_status_inventoriable"] = this.newdata.lotdetails.type + '_hold_' + this.newdata.lotdetails.inventoriable;
+                    //shb 01/04
+                    //for lots with level/map_lot: check other lots by map_lot, compare and get winning map_lot status
+                    //get lots thru map_lot
+                    if (this.newdata.lotdetails.level) {
+                        var otherLotsRef = firebase.database().ref('lots');
+                        var otherLotMapLot = this.newdata.lot;
+                        otherLotsRef.orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
+                            if (snap.exists()) {
+                                var winningValStat = 0;
+                                snap.forEach(element => {
+                                    var valStat = 0;
+                                    var stat = element.val().status;
+                                    if (stat) {
+                                        if (stat === 'available') valStat = 5;
+                                        else if (stat === 'hold') valStat = 4;
+                                        else if (stat === 'reserved') valStat = 3;
+                                        else if (stat === 'soldlacking') valStat = 2;
+                                        else if (stat === 'sold') valStat = 1;
+                                        else valStat = 0; //notyetavailable
+                                    }
+                                    if (valStat > winningValStat) {
+                                        winningValStat = valStat;
+                                    }
+                                });
+
+                                var winningColor;
+                                if (winningValStat == 5) winningColor = 'available';
+                                else if (winningValStat == 4) winningColor = 'hold';
+                                else if (winningValStat == 3) winningColor = 'reserved';
+                                else if (winningValStat == 2) winningColor = 'soldlacking';
+                                else if (winningValStat == 1) winningColor = 'sold';
+                                else winningColor = 'notyetavailable';
+
+                                var corresStatusColorRef = firebase.database().ref('statuscolor/' + winningColor);
+                                // this.$.fdColor.db.ref('statuscolor/' + winningColor);
+                                var transTypeCorrespondingColorRef = firebase.database().ref('statuscolor/hold');
+                                transTypeCorrespondingColorRef.on('value', statusColor => {
+                                    if (statusColor.exists()) {
+                                        corresStatusColor = statusColor.val()
+                                        updates["/lots/" + otherLotMapLot + "/status"] = winningColor;
+                                        updates["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
+                                        updates["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
+                                        updates["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
+                                        updates["/lots/" + otherLotMapLot + "/type_status_inventoriable"] = this.newdata.type + '_' + winningColor + '_' + 'no';
+
+                                    }
+                                });
+                            }
+                        });
+                    }
+
+                }
+                //if ok, update bg_color, status_name
+                //check reservations if current is expired, then check if there is prior reservation, then iscurrent=false
+                firebase.database().ref().update(updates);
+                Polymer.dom(this.root).querySelector('#approvedDialog').close();
+                Polymer.dom(this.root).querySelector('#successDialog').open();
+                this.successDialogMsg = 'Application request successfully approved!'
+                // this.$.href.click();
+                // window.location = "/applications";
+            },
+
+            _successDone() {
+                window.location = "/applications";
+            },
         })
-
-
-
     </script>
 </dom-module>

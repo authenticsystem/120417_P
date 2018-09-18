@@ -9,486 +9,598 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
-<link rel="import" href="shared-styles.html">
-<link rel="import" href="my-icons.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-auth.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-messaging.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/neon-animation/web-animations.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-checkbox/paper-checkbox.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/salte-dialog/salte-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-badge/paper-badge.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+
 <dom-module id="my-account">
-  <template>
-    <style include="shared-styles">
-      :host {
-        display: block;
-
-        padding: 10px;
-      }
-
-      .pad {
-        padding: 0 16px;
-        @apply --layout-flex;
-        @apply --layout-vertical;
-      }
-
-      .primary {
-        font-size: 18px;
-        text-transform: capitalize;
-      }
-
-      .shortText,
-      .longText {
-        font-size: 12px;
-      }
-
-      app-header {
-        color: rgb(255, 255, 255);
-        background-color: #388E3C;
-      }
-
-      paper-icon-button.menu {
-        margin-right: 16px;
-      }
-
-      iron-image {
-        margin: 0 auto;
-      }
-
-      paper-button.green {
-        background-color: var(--paper-green-500);
-        color: white;
-        margin-top: 3px;
-      }
-
-      paper-button.green[active] {
-        background-color: var(--paper-red-500);
-      }
-
-      #uploader {
-        -webkit-appearance: none;
-        /* appearance: none; */
-        width: 50%;
-        margin-bottom: 10px;
-      }
-
-      a {
-        text-decoration: none;
-        background: yellow;
-        padding: 2px;
-        border-radius: 3px;
-        font-weight: 500;
-      }
-
-      .action paper-button {
-        height: 35px;
-        font-size: 12px;
-        font-weight: 400;
-        width: 80px;
-        text-align: center;
-      }
-
-      /* label {
-        padding: 10px;
-        background: #dedede;
-        margin: 20px auto;
-        display: block;
-        width: 150px;
-        cursor: pointer;
-        color: #444;
-        font-size: 70%;
-        background: linear-gradient(#eee, #ddd);
-        color: #666;
-        border-radius: 2px;
-        box-shadow: inset 0px 1px 0px rgba(255, 255, 255, 0.5);
-        border: 1px solid #d2d2d2;
-        text-align: center;
-      } */
-
-      .action paper-button {
-        height: 32px;
-        font-size: 12px;
-        font-weight: 400;
-        width: 80px;
-      }
-
-      paper-button.green {
-        background-color: var(--paper-green-500);
-        color: white;
-      }
-
-      paper-button.green[active] {
-        background-color: var(--paper-red-500);
-      }
-    </style>
-
-
-    <firebase-query id="query" path="/accountlist" data="{{account}}" order-by-child="uid" equal-to="{{user.uid}}">
-    </firebase-query>
-
-    <!-- <!-- <firebase-document path="/users/{{user.uid}}" data="{{usersToken}}"></firebase-document> -->
-    <!-- <firebase-messaging id="messaging" token="{{token}}" on-message="handleMessage"></firebase-messaging> --> -->
-    <!-- <firebase-document path="/users/[[user.uid]]/token" data="[[token]]"></firebase-document> -->
-
-
-    <app-header-layout fullbleed has-scrolling-region>
-      <app-header fixed slot="header">
-        <app-toolbar primary>
-          <!-- <paper-icon-button icon="my-icons:close" drawer-toggle on-tap="toggleDrawer"></paper-icon-button> -->
-          <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-          <div main-title>My Account</div>
-        </app-toolbar>
-      </app-header>
-
-      <div class="card">
-        <!-- <div style="float:right; font-size:12px">
-          <paper-toggle-button on-tap="_subscribe" checked="{{checkSubscription}}">Subscribe</paper-toggle-button>
-        </div> -->
-        <!-- <paper-menu-button style="float:right">
-          <paper-icon-button icon="my-icons:more-vert" slot="dropdown-trigger" title="Change email/password" horizontal-align="left"></paper-icon-button>
-          <paper-listbox slot="dropdown-content">
-            <paper-item style="font-size:12px">Change email</paper-item>
-            <paper-item style="font-size:12px">Change password</paper-item>
-          </paper-listbox>
-        </paper-menu-button> -->
-        <!-- <div class="profilePhoto" style="text-align:center">
-          <iron-icon hidden$="{{user.photoURL}}" icon="my-icons:account-circle" style=" height:180px;width:180px; max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></iron-icon>
-          <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style=" max-width:180px; border-radius: 50%; object-fit: cover; object-position: center"></img>
-          <br>
-          <progress value="0" max="100" id="uploader" style=" -webkit-appearance: none; width:180px; height:5px;">0%</progress>
-          <br>
-          <input type="file" id="fileButton" on-tap="_upload" accept="image/*"></input>
-          <label for="file">Upload new picture</label>
-          <input type="file" id="file" id="fileButton" on-tap="_upload" accept="image/*" style="display:none" />
-        </div>
-        <br> -->
-        <div class="info">
-          <paper-input label="Email" value="{{user.email}}" id="email" readonly></paper-input>
-          <paper-input label="Firstname" value="{{firstname}}" id="fname" readonly></paper-input>
-          <paper-input label="Middlename" value="{{middlename}}" id="mname" readonly></paper-input>
-          <paper-input label="Lastname" value="{{lastname}}" id="lname" readonly></paper-input>
-          <paper-input label="Suffix" value="{{suffix}}" id="suffix" readonly></paper-input>
-          <!-- <paper-input label="Email address" value="{{user.email}}" id="email"></paper-input> -->
-        </div>
-        <div class="action">
-          <!-- <paper-button style="width:180px">Change email/password</paper-button> -->
-          <!-- <paper-button on-tap="_update" toggles raised class="custom green">Update</paper-button> -->
-        </div>
-      </div>
-    </app-header-layout>
-
-    <!-- <div class="card">
-
-        <span hidden$="{{user.emailVerified}}">
-          <paper-icon-button icon="my-icons:close" on-tap="_signOut" style="float:right" title="Sign Out"></paper-icon-button>
-          <h1>Verify Email</h1>
-          <span>Let us know if this email belongs to you.
-            <br> Click the link in the email sent to
-            <b>[[user.email]]</b>.
-          </span>
-          <br>
-          <br>
-          <div class="action" style="float:right">
-            <paper-button on-tap="_reload" title="Already Verified">Verified</paper-button>
-            <paper-button on-tap="_resend" toggles raised class="custom green" title="Resend Verification">Resend</paper-button>
-          </div>
-        </span>
-
-        <span hidden$="{{!user.emailVerified}}">
-
-          <img hidden$="{{!user.photoURL}}" src="{{user.photoURL}}" style="border-radius:30px; height:150px; width:150px;"></img>
-          <img hidden$="{{user.photoURL}}" src="../images/user.png" style="border-radius:30px; height:150px; width:150px;"></img>
-          <img src="{{downloadURL}}"></img>
-          <paper-input label="{{_userName(user.displayName)}}" id="name"></paper-input>
-          <paper-input readonly label="{{user.email}}" id="email"></paper-input>
-          <paper-input label="{{_role(account)}}" readonly></paper-input>
-
-          <div class="card-actions">
-            <div class="horizontal justified">
-              <div style="float:right">
-                <span style="font-size:14px;" hidden$="{{verified}}">
-                  Account not link. Link your account
-                  <a href="/account-link">here</a>.
-                </span>
-                <span hidden$="{{!verified}}">
-                  <iron-icon icon="my-icons:check"></iron-icon> Account linked
-                </span>
-              </div>
-            </div>
-          </div>
-
-        </span>
-        <paper-toast id="toast" text="Successfully updated!"></paper-toast>
-
-      </div> -->
-
-  </template>
-  <script>
-    Polymer({
-      is: 'my-account',
-      properties: {
-        account: {
-          type: Object,
-          observer: 'accountChanged'
-        },
-        verified: {
-          type: Boolean,
-          value: false
-        },
-        // checkSubscription: Boolean
-      },
-
-      ready() {
-        // this.checkSubscription();
-        // this.saveMessagingDeviceToken();
-      },
-    //   saveMessagingDeviceToken() {
-    //     firebase.messaging().getToken().then(function (currentToken) {
-    //       if (currentToken) {
-    //         console.log('Got FCM device token:', currentToken);
-
-    //         var key = 'AAAAYRWQPB8:APA91bHX03IsFX7JFre5nsMNjZ_4BFKsJZl3NCpEpFi8eJQkug5c3aJmIWdZWMiH_eoARBgSoXswyM2djDIqMkpRjpJxWOizUQZKtkfJoUbd0N0F2NXUIHPNpvrC_O4W61wh16FJaaMg';
-    //         fetch('https://iid.googleapis.com/iid/v1/' + currentToken + '/rel/topics/hop', {
-    //           'method': 'POST',
-    //           'headers': {
-    //             'Authorization': 'key=' + key,
-    //             'Content-Type': 'application/json'
-    //           }
-    //         }).then(function (response) {
-    //           console.log(response);
-    //         }).catch(function (error) {
-    //           console.error(error);
-    //         });
-
-    //     // Saving the Device Token to the datastore.
-    //     firebase.database().ref('/fcmTokens').child(currentToken)
-    //       .set(firebase.auth().currentUser.uid);
-    //   } else {
-    //     // Need to request permissions to show notifications.
-    //     this.requestNotificationsPermissions();
-    //   }
-    // }.bind(this)).catch(function (error) {
-    //   console.error('Unable to get messaging token.', error);
-    // });
-    //   },
-    // requestNotificationsPermissions() {
-    //   console.log('Requesting notifications permission...');
-    //   firebase.messaging().requestPermission().then(function () {
-    //     // Notification permission granted.
-    //     this.saveMessagingDeviceToken();
-    //   }.bind(this)).catch(function (error) {
-    //     console.error('Unable to get permission to notify.', error);
-    //   });
-    // },
-
-      // checkSubscription() {
-      //   firebase.database().ref('/tokens').orderByChild("uid").equalTo(firebase.auth().currentUser.uid).once('value').then((snapshot) => {
-      //     if (snapshot.val()) {
-      //       this.checkSubscription = true;
-      //     } else {
-      //       this.checkSubscription = false;
-      //     }
-      //   });
-      // },
-      // _subscribe() {
-      //   if (this.checkSubscription) {
-      //     firebase.messaging().requestPermission()
-      //       .then(() => this.handleTokenRefresh())
-      //       .then(() => this.checkSubscription())
-      //       .catch((err) => {
-      //         console.log("error getting permission :(");
-      //       });
-      //   }
-      //   else {
-      //     firebase.messaging().getToken()
-      //       .then((token) => firebase.messaging().deleteToken(token))
-      //       .then(() => firebase.database().ref('/tokens').orderByChild("uid").equalTo(firebase.auth().currentUser.uid).once('value'))
-      //       .then((snapshot) => {
-      //         const key = Object.keys(snapshot.val())[0];
-      //         return firebase.database().ref('/tokens').child(key).remove();
-      //       })
-      //       .then(() => this.checkSubscription())
-      //       .catch((err) => {
-      //         console.log("error deleting token :(");
-      //       });
-      //   }
-      // },
-      // handleTokenRefresh() {
-      //   return firebase.messaging().getToken().then((token) => {
-      //     firebase.database().ref('/tokens').push({
-      //       token: token,
-      //       uid: firebase.auth().currentUser.uid
-      //     });
-
-      //     var key = 'AAAAYRWQPB8:APA91bHX03IsFX7JFre5nsMNjZ_4BFKsJZl3NCpEpFi8eJQkug5c3aJmIWdZWMiH_eoARBgSoXswyM2djDIqMkpRjpJxWOizUQZKtkfJoUbd0N0F2NXUIHPNpvrC_O4W61wh16FJaaMg';
-
-      //     fetch('https://iid.googleapis.com/iid/v1/' + token + '/rel/topics/hop', {
-      //       'method': 'POST',
-      //       'headers': {
-      //         'Authorization': 'key=' + key,
-      //         'Content-Type': 'application/json'
-      //       }
-      //     }).then(function (response) {
-      //       console.log(response);
-      //     }).catch(function (error) {
-      //       console.error(error);
-      //     });
-      //   });
-      // },
-
-    //   handleMessage() {
-    //   console.log("Message received.", arguments);
-    // },
-
-    accountChanged() {
-      if (this.account.length > 0) {
-        this.account[0].name.firstname;
-        this.account[0].name.middlename;
-        this.account[0].name.lastname;
-        this.account[0].name.suffix;
-        this.account[0].$key;
-        this.firstname = this.account[0].name.firstname;
-        this.middlename = this.account[0].name.middlename;
-        this.lastname = this.account[0].name.lastname;
-        this.suffix = this.account[0].name.suffix;
-        this.key = this.account[0].$key;
-        this.accountkey = this.account[0].accountkey;
-        this.userId = this.account[0].uid;
-      }
-    },
-
-    _resend() {
-      var user = firebase.auth().currentUser;
-      user.sendEmailVerification().then(function () {
-        // Email sent.
-        window.location.reload();
-      }).catch(function (error) {
-        // An error happened.
-      });
-    },
-
-    _reload() {
-      window.location.reload();
-    },
-
-    _userName(e) {
-      if (e) return e;
-      else return 'Name not defined';
-    },
-
-    _role(e) {
-      if (Object.keys(e).length > 0) {
-        this.verified = true;
-        if (e[0].role) return e[0].role;
-        else return 'Role not yet assign'
-      }
-      else {
-        this.verified = false;
-        return 'Role Unknown'
-      };
-    },
-
-    toggleDrawer() {
-      this.dispatchEvent(new CustomEvent('toggleDrawer', {
-        bubbles: true, composed: true, detail: {
-          narrow: this.$.narrow
-        }
-      }));
-      this.$.narrow = !this.$.narrow;
-    },
-
-    _signOut() {
-      firebase.auth().signOut().then(function () {
-        // Sign-out successful.
-        window.location.reload()
-        this.set("route.path", "");
-      }).catch(function (error) {
-        // An error happened.
-      });
-
-    },
-
-    _upload(e) {
-      var fileButton = Polymer.dom(this.root).querySelector("#fileButton");
-      var uploader = Polymer.dom(this.root).querySelector("#uploader");
-
-      fileButton.addEventListener('change', function (e) {
-        //get file
-        var file = e.target.files[0];
-        //create storage
-        var storageRef = firebase.storage().ref('profilePic/' + file.name);
-        //upload file
-        var uploadTask = storageRef.put(file);
-        //update progressbar
-        uploadTask.on('state_changed',
-
-          function progress(snapshot) {
-            var percentage = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-            uploader.value = percentage;
-            if (percentage === 100) {
-              var user = firebase.auth().currentUser;
-              var photoUrl = user.photoURL;
-              if (user) {
-                console.log(user.photoURL);
-                // Create a reference to the file to delete
-                var desertRef = firebase.storage().refFromURL(user.photoURL);
-                // Delete the file
-                desertRef.delete().then(function () {
-                  // File deleted successfully
-                }).catch(function (error) {
-                  // Uh-oh, an error occurred!
-                });
-              }
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
             }
-          },
-          function error(err) {
-          },
-          function () {
-            var downloadURL = uploadTask.snapshot.downloadURL;
-            var user = firebase.auth().currentUser;
-            user.updateProfile({
-              photoURL: downloadURL
-            }).then(function () {
-              // Update successful.
-              window.location.reload()
-            }).catch(function (error) {
-              // An error happened.
-            });
-          }
 
-        );
-      });
-    },
+            [threshold-triggered] paper-tabs {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1;
+            }
 
-    _update() {
-      if (!this.firstname || !this.middlename || !this.lastname) {
-        this.msg = 'Please fill-up the required field.';
-      }
-      else {
-        this.msg = '';
-        if (!this.suffix) {
-          this.suffix = '';
-        }
-        var ref = firebase.database().ref('/accountlist');
-        ref.child(this.key).update({
-          name: {
-            firstname: this.firstname,
-            middlename: this.middlename,
-            lastname: this.lastname,
-            suffix: this.suffix
-          },
-        });
-      }
-      window.location = "/account"
-    },
-    })
-  </script>
+            app-toolbar {
+                color: black
+            }
+
+            paper-tab {
+                --paper-tab: {
+                    color: #388E3C;
+                }
+
+                --paper-tab-content-unselected: {
+                    color: black;
+                }
+            }
+
+            paper-tabs {
+                --paper-tabs-selection-bar-color: #388E3C;
+            }
+
+            .avatar {
+                display: inline-block;
+                box-sizing: border-box;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: var(--paper-amber-500);
+            }
+
+            .mycontainer {
+                max-width: 900px;
+                margin: 16px auto;
+            }
+
+            paper-button {
+                height: 32px;
+                font-size: 12px;
+                font-weight: 400;
+            }
+
+            .green {
+                background-color: #388E3C;
+                color: white;
+            }
+
+            paper-card {
+                margin-bottom: 16px;
+            }
+
+            a {
+                text-decoration: none;
+                color: black
+            }
+
+            .column {
+                float: left;
+                width: 25%;
+                padding: 10px;
+            }
+
+            .column img {
+                opacity: 0.8;
+                cursor: pointer;
+            }
+
+            .column img:hover {
+                opacity: 1;
+            }
+
+            .row:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+
+            @media (min-width: 768px) {
+                iron-image {
+                    height: 200px;
+                    width: 200px;
+                    border: 1px solid white;
+                }
+
+                app-header {
+                    color: rgb(255, 255, 255);
+                    background-color: #388E3C;
+                    height: 200px;
+
+                    --app-header-background-front-layer: {
+                        background-image: url(../images/cover.jpg);
+                        background-size: cover;
+                        height: 100%;
+                        /* width;: 100%; */
+                    }
+                }
+
+                #tabs {
+                    height: 70px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                iron-image {
+                    height: 100px;
+                    width: 100px;
+                    border: 2px solid white;
+                }
+
+                app-header {
+                    color: rgb(255, 255, 255);
+                    background-color: #388E3C;
+                    height: 130px;
+
+                    --app-header-background-front-layer: {
+                        background-image: url(../images/cover.jpg);
+                        background-size: cover;
+                    }
+                }
+
+                #tabs {
+                    height: 30px;
+                }
+            }
+        </style>
+
+        <app-header-layout fullbleed has-scrolling-region>
+            <app-header fixed effects="waterfall blend-background parallax-background">
+                <app-toolbar>
+                    <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                    <div main-title>My Account</div>
+                </app-toolbar>
+                <div style="text-align: center;">
+                    <iron-image sizing="cover" src="{{_checkPhoto(user.photoURL)}}"></iron-image>
+                </div>
+            </app-header>
+            <div style="background-color: #fff;">
+                <div id="tabs"></div>
+                <paper-tabs attr-for-selected="name" selected="{{myAccountTab}}">
+                    <paper-tab name="about">About</paper-tab>
+                    <paper-tab name="announcement">Announcement</paper-tab>
+                    <paper-tab name="notifications" style="margin-right: 16px;">
+                        <span id="notifications">Notifications</span>
+                        <paper-badge for="notifications" label="{{notifCount}}" style="margin-left: 8px"></paper-badge>
+                    </paper-tab>
+                </paper-tabs>
+            </div>
+
+            <iron-pages attr-for-selected="name" selected="{{myAccountTab}}">
+                <div name="about" class="mycontainer">
+                    <paper-card style="width: 100%;">
+                        <div class="card-content">
+                            <paper-input readonly label="Name" value="{{fullname}}"></paper-input>
+                            <paper-input readonly label="Email" value="{{email}}"></paper-input>
+                            <paper-input readonly label="Cellphone" value="{{cellphone}}"></paper-input>
+                            <paper-input readonly label="Position" value="{{position}}"></paper-input>
+                        </div>
+                    </paper-card>
+                </div>
+                <div name="announcement" class="mycontainer">
+                    <template is="dom-if" if="{{announcementAccess}}">
+                        <paper-card style="padding: 15px; width: 100%">
+                            <!-- <span style="float: right;">
+                                <paper-checkbox checked="{{showAll}}">show all</paper-checkbox> -->
+                            </span><br>
+                            <span id="errmsg" style="color: red; font-size: 12px">{{errmsg}}</span>
+                            <iron-form id="form">
+                                <form>
+                                    <paper-textarea autofocus label="{{today}}" placeholder="Announcement" value="{{announcement}}"></paper-textarea>
+                                    <!-- <input id="file-uploader" type="file" multiple accept="image/*" /> -->
+                                </form>
+                            </iron-form>
+                            <span style="float: left;">
+                                <paper-checkbox checked="{{showAll}}">show all</paper-checkbox>
+                            </span>
+                            <span style="float: right;">
+                                <paper-button class="green" on-tap="_postAnnouncement">post</paper-button>
+                            </span>
+                        </paper-card>
+                    </template>
+
+                    <firebase-query path="{{announcementPath}}" data="{{announcementsData}}"></firebase-query>
+                    <iron-list items="[[announcementsData]]">
+                        <template>
+                            <div>
+                                <paper-card style="width: 100%">
+                                    <paper-icon-item>
+                                        <img class="avatar" slot="item-icon" src="[[_checkPhoto(item.photo)]]">
+                                        <paper-item-body two-line>
+                                            <div>[[item.postedBy]]</div>
+                                            <div secondary>
+                                                <div>[[_getLocalDatetimeFormat(item.date, item.isUpdate)]]</div>
+                                            </div>
+                                        </paper-item-body>
+                                        <template is="dom-if" if="{{!showAll}}">
+                                            <paper-icon-button icon="my-icons:edit" item="[[item]]" on-tap="_openEditAnnouncement"></paper-icon-button>
+                                            <paper-icon-button icon="my-icons:delete-forever" item="[[item]]" on-tap="_openDeleteAnnouncement"></paper-icon-button>
+                                        </template>
+                                    </paper-icon-item>
+                                    <div class="card-content">
+                                        <h2>[[item.announcement]]</h2>
+                                        <!-- <firebase-query path="{{announcementPath}}/[[item.$key]]/attachment" data="{{attachmentData}}"></firebase-query>
+                                        <div class="row">
+                                            <template is="dom-repeat" items="[[attachmentData]]">
+                                                <div class="column">
+                                                    <img src="[[item.url]]" alt="Nature" style="width:100%">
+                                                </div>
+                                            </template>
+                                        </div> -->
+                                    </div>
+                                </paper-card>
+                            </div>
+                        </template>
+                    </iron-list>
+                </div>
+                <div name="notifications" class="mycontainer">
+                    <firebase-query path="/notifications/{{accountkey}}" data="{{notificationsData}}"></firebase-query>
+                    <iron-list items="[[notificationsData]]">
+                        <template>
+                            <div>
+                                <a href="[[item.href]]" item="[[item]]" on-tap="_read">
+                                    <paper-card style$="width: 100%; opacity: [[_checkIfItsRead(item.isRead)]]">
+                                        <paper-icon-item>
+                                            <img class="avatar" slot="item-icon" src="[[item.userPhoto]]">
+                                            <paper-item-body two-line>
+                                                <div>[[item.message]]</div>
+                                                <div secondary>
+                                                    <div>[[_getLocalDatetimeFormat(item.date)]]</div>
+                                                </div>
+                                            </paper-item-body>
+                                        </paper-icon-item>
+                                    </paper-card>
+                                </a>
+                            </div>
+                        </template>
+                    </iron-list>
+                </div>
+            </iron-pages>
+
+            <salte-dialog id="editAnnouncementDialog" no-cancel-on-outside-click>
+                <h2>
+                    <paper-icon-item>
+                        <img class="avatar" slot="item-icon" src="[[itemUpdate.photo]]">
+                        <paper-item-body two-line>
+                            <div>[[itemUpdate.postedBy]]</div>
+                            <div secondary style="color: white">
+                                <div>[[_getLocalDatetimeFormat(itemUpdate.date, itemUpdate.isUpdate)]]</div>
+                            </div>
+                        </paper-item-body>
+                    </paper-icon-item>
+                </h2>
+                <span id="errmsg" style="color: red; font-size: 12px">{{editErrmsg}}</span>
+                <span>
+                    <paper-textarea value="{{updateAnnouncement}}"></paper-textarea>
+                </span>
+                <div class="buttons">
+                    <paper-button on-tap="_cancelAnnouncement">Cancel</paper-button>
+                    <paper-button on-tap="_editAnnouncement">Update</paper-button>
+                </div>
+            </salte-dialog>
+
+            <paper-dialog id="deleteAnnouncementDialog">
+                <h2>Delete announcement?</h2>
+                <div class="buttons">
+                    <paper-button dialog-dismiss>Cancel</paper-button>
+                    <paper-button dialog-confirm autofocus on-tap="_deleteAnnouncement">Delete</paper-button>
+                </div>
+            </paper-dialog>
+
+        </app-header-layout>
+
+    </template>
+    <script>
+        Polymer({
+            is: 'my-account',
+
+            properties: {
+                user: Object,
+                account: Object,
+                myAccountTab: {
+                    type: String,
+                    value: 'about'
+                },
+                announcement: {
+                    type: String,
+                    value: '',
+                    observer: '_announcementChanged'
+                },
+                showAll: {
+                    type: Boolean,
+                    value: true,
+                    observer: 'showAllChanged'
+                },
+                notifCount: {
+                    type: Number,
+                    value: 0
+                },
+            },
+
+            observers: [
+                '_attachmentDataChanged(attachmentData)',
+                '_userChanged(user)',
+                '_accountChanged(account)',
+                '_announcementsDataChanged(announcementsData.*)',
+                '_notificationsDataChanged(notificationsData.*)'
+            ],
+
+            _attachmentDataChanged(e) {
+                if (e.length > 0) this.attachmentHasData = true;
+                else this.attachmentHasData = false;
+            },
+
+            handleMessage(payload) {
+                console.log('message recieved', payload);
+            },
+
+            _userChanged(e) {
+                // console.log(e);
+            },
+
+            _accountChanged(e) {
+                // console.log(e);
+                if (e.length > 0) {
+                    this.fullname = e[0].name.firstname + ' ' + e[0].name.middlename + ' ' + e[0].name.lastname
+                }
+                this.email = e[0].email;
+                this.cellphone = e[0].cellphone;
+                this.position = e[0].position;
+                this.accountkey = e[0].accountkey;
+                this.announcementAccess = e[0].access.announcement;
+            },
+
+            _announcementsDataChanged(e) {
+                if (e.base.length > 0) {
+                    this.announcementsData = e.base.reverse();
+                }
+            },
+
+            _notificationsDataChanged(e) {
+                if (e.base.length > 0) {
+                    this.notificationsData = e.base.reverse();
+
+                    var countn = 0;
+                    e.base.forEach(element => {
+                        if (element.isRead == false) {
+                            countn++;
+                        }
+                    });
+                    this.notifCount = countn;
+                } else {
+                    this.notifCount = 0;
+                }
+            },
+
+            showAllChanged(e) {
+                if (e === false) {
+                    this.announcementPath = '/user-announcements/' + this.accountkey;
+                } else {
+                    this.announcementPath = '/announcements';
+                }
+            },
+
+            ready() {
+                this.today = this._getLocalDatetimeFormat(new Date);
+            },
+
+            _getLocalDatetimeFormat(e, f) {
+                if (f === true) {
+                    var xdate = new Date(e); return xdate.toDateString() + ' updated';
+                } else {
+                    var xdate = new Date(e); return xdate.toDateString()
+                }
+                // return xdate.toDateString() + ' ' + xdate.toLocaleTimeString().replace(/:\d{2}\s/, ' ');;
+            },
+
+            catchError(e) {
+                alert(e.detail.message);
+            },
+
+            _postAnnouncement() {
+                var form = Polymer.dom(this.root).querySelector('#form');
+                var fileUploader = Polymer.dom(this.root).querySelector('#file-uploader');
+                // || fileUploader.files.length > 0
+                if (this.announcement) {
+                    var ddate = new Date(), self = this;
+                    var startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                        + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
+                    var postData = {
+                        photo: this.user.photoURL,
+                        date: startDateTimeValue,
+                        announcement: this.announcement,
+                        postedBy: this.fullname,
+                        isUpdate: false
+                    }
+
+                    var notificationData = {
+                        isRead: false,
+                        date: startDateTimeValue,
+                        href: '/account',
+                        message: this.fullname + ' post new announcement',
+                        userPhoto: this.user.photoURL
+                    }
+
+                    var newPostKey = firebase.database().ref().child('announcements').push().key;
+                    var updates = {};
+
+                    firebase.database().ref('/accountlist').once('value').then(function (snapshot) {
+                        snapshot.forEach(element => {
+                            updates['/notifications/' + element.val().accountkey + '/' + newPostKey] = notificationData;
+                            firebase.database().ref().update(updates);
+                        });
+                    });
+
+                    firebase.database().ref('/users').once('value').then(function (snapshot) {
+                        snapshot.forEach(element => {
+                            var key = 'AAAAYRWQPB8:APA91bHX03IsFX7JFre5nsMNjZ_4BFKsJZl3NCpEpFi8eJQkug5c3aJmIWdZWMiH_eoARBgSoXswyM2djDIqMkpRjpJxWOizUQZKtkfJoUbd0N0F2NXUIHPNpvrC_O4W61wh16FJaaMg';
+                            var to = element.val().token;
+                            var notification = {
+                                'title': 'Announcement',
+                                'body': self.fullname + ' post new announcement',
+                                'icon': '../images/favicon.ico',
+                                'click_action': 'https://hpmg.baseph.com/account'
+                            };
+
+                            fetch('https://fcm.googleapis.com/fcm/send', {
+                                'method': 'POST',
+                                'headers': {
+                                    'Authorization': 'key=' + key,
+                                    'Content-Type': 'application/json'
+                                },
+                                'body': JSON.stringify({
+                                    'notification': notification,
+                                    'to': to
+                                })
+                            }).then(function (response) {
+                                console.log(response);
+                            }).catch(function (error) {
+                                console.error(error);
+                            })
+                        });
+                    });
+                    // for (var i = 0; i < fileUploader.files.length; i++) {
+                    //     var storageRef = firebase.storage().ref('announcementFiles/' + fileUploader.files[i].name);
+                    //     storageRef.put(fileUploader.files[i]).then(function (snapshot) {
+                    //         firebase.database().ref('announcements').child(newPostKey + "/attachment").push({
+                    //             url: snapshot.downloadURL,
+                    //             // type: snapshot.metadata.contentType.split("/")[1],
+                    //             // name: snapshot.metadata.name
+                    //         });
+                    //         firebase.database().ref('user-announcements/' + self.accountkey).child(newPostKey + "/attachment").push({
+                    //             url: snapshot.downloadURL,
+                    //         });
+                    //     });
+                    // }
+                    updates['/announcements/' + newPostKey] = postData;
+                    updates['/user-announcements/' + this.accountkey + '/' + newPostKey] = postData;
+                    form.reset();
+                    // fileUploader.value = '';
+                    return firebase.database().ref().update(updates);
+                } else {
+                    this.errmsg = 'Please enter announcement';
+                }
+            },
+
+            _announcementChanged(e) {
+                if (e) this.errmsg = '';
+            },
+
+            _openEditAnnouncement(e) {
+                this.itemUpdate = e.currentTarget.item;
+                this.updateAnnouncement = this.itemUpdate.announcement;
+                this.$.editAnnouncementDialog.open();
+            },
+
+            _cancelAnnouncement() {
+                this.editErrmsg = '';
+                this.$.editAnnouncementDialog.close();
+            },
+
+            _editAnnouncement() {
+                if (this.updateAnnouncement) {
+                    var ddate = new Date();
+                    var startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                        + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
+                    var postData = {
+                        photo: this.itemUpdate.photo,
+                        date: startDateTimeValue,
+                        announcement: this.updateAnnouncement,
+                        postedBy: this.itemUpdate.postedBy,
+                        isUpdate: true
+                    }
+
+                    var notificationData = {
+                        isRead: false,
+                        date: startDateTimeValue,
+                        href: '/account',
+                        message: this.fullname + ' update an announcement',
+                        userPhoto: this.user.photoURL
+                    }
+
+                    var updates = {};
+                    var newPostKey = firebase.database().ref().child('announcements').push().key;
+
+                    firebase.database().ref('/accountlist').once('value').then(function (snapshot) {
+                        snapshot.forEach(element => {
+                            updates['/notifications/' + element.val().accountkey + '/' + newPostKey] = notificationData;
+                            firebase.database().ref().update(updates);
+                        });
+                    });
+
+                    updates['/announcements/' + this.itemUpdate.$key] = postData;
+                    updates['/user-announcements/' + this.accountkey + '/' + this.itemUpdate.$key] = postData;
+                    this.editErrmsg = '';
+                    this.$.editAnnouncementDialog.close()
+                    return firebase.database().ref().update(updates);
+                } else {
+                    this.editErrmsg = 'Please enter announcement';
+                }
+            },
+
+            _openDeleteAnnouncement(e) {
+                this.itemRemove = e.currentTarget.item;
+                this.$.deleteAnnouncementDialog.open();
+            },
+
+            _deleteAnnouncement() {
+                var updates = {};
+                updates['/announcements/' + this.itemRemove.$key] = null;
+                updates['/user-announcements/' + this.accountkey + '/' + this.itemRemove.$key] = null;
+                return firebase.database().ref().update(updates);
+            },
+
+            toggleDrawer() {
+                this.dispatchEvent(new CustomEvent('toggleDrawer', {
+                    bubbles: true, composed: true, detail: {
+                        narrow: this.$.narrow
+                    }
+                }));
+                this.$.narrow = !this.$.narrow;
+            },
+
+            _checkPhoto(e) {
+                if (e) return e;
+                else return '../images/user.png';
+            },
+
+            _read(e) {
+                var item = e.currentTarget.item;
+                var updates = {};
+                updates['/notifications/' + this.accountkey + '/' + item.$key + '/isRead'] = true;
+                return firebase.database().ref().update(updates);
+            },
+
+            _checkIfItsRead(e) {
+                if (e === true) return 0.5;
+                else return 1;
+            },
+        })
+    </script>
 </dom-module>

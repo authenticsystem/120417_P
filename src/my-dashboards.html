@@ -1,0 +1,1888 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/paper-buttons-group/paper-buttons-group.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-toggle-button/paper-toggle-button.html">
+<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/paper-badge/paper-badge.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="my-application-detail.html">
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script> -->
+<script src="../bower_components/chart.js/dist/Chart.js"></script>
+<script src="../bower_components/chart.js/dist/Chart.bundle.js"></script>
+<script src="../bower_components/chartjs-plugin-datalabels/dist/Chartjs-plugin-datalabels.js"></script>
+<script type="text/javascript" src="../bower_components/Chart.PieceLabel.js/src/Chart.PieceLabel.js"></script>
+
+<dom-module id="my-dashboard">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+            }
+
+            app-header {
+                color: rgb(255, 255, 255);
+                background-color: #388E3C;
+            }
+
+            paper-card {
+                width: 100%;
+                margin-bottom: 16px;
+            }
+
+            .right {
+                @apply --layout-horizontal;
+                @apply --layout-end-justified;
+            }
+
+            .horizontal {
+                @apply --layout-horizontal;
+            }
+
+            @media (min-width: 768px) {
+                .flex {
+                    @apply --layout-horizontal;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .flex {
+                    @apply --layout-vertical;
+                }
+                #tabSpanTitle {
+                    display: none;
+                }
+            }
+
+            #customGroup {
+                --paper-buttons-group-selected: {
+                    background-color: green !important;
+                    color: white;
+                }
+                paper-button {
+                    width: 80px;
+                }
+            }
+
+            .chart-container {
+                position: relative;
+                margin: auto;
+                width: 100%;
+                height: 400px;
+            }
+
+            table {
+                border-collapse: collapse;
+                border-spacing: 0;
+                width: 100%;
+                border: 1px solid #ddd;
+            }
+
+            th,
+            td {
+                text-align: left;
+                padding: 8px;
+                font-size: 12px;
+            }
+
+            tr:nth-child(even) {
+                background-color: #f2f2f2
+            }
+
+            #comparativeItem {
+                font-size: 12px;
+            }
+
+            #comparativeItem:nth-child(odd) {
+                background-color: #f2f2f2
+            }
+
+            paper-button {
+                height: 32px;
+                font-size: 12px;
+                font-weight: 400;
+            }
+
+            #totalTxt {
+                display: inline-block;
+                transform: scale(2, 4);
+                -webkit-transform: scale(2, 4);
+                -moz-transform: scale(2, 4);
+                -ms-transform: scale(2, 4);
+                -o-transform: scale(2, 4);
+                margin: 18px;
+            }
+
+            .totalCard {
+                margin-right: 8px;
+                margin-top: 8px;
+                text-align: center
+            }
+
+            #tabReports {
+                background-color: #ccc;
+                --paper-tabs-selection-bar-color: #388E3C;
+                --paper-tab: {
+                    color: #388E3C;
+                }
+                --paper-tab-content-unselected: {
+                    color: black;
+                }
+            }
+
+            .avatar {
+                display: inline-block;
+                box-sizing: border-box;
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                background: var(--paper-amber-500);
+            }
+        </style>
+
+        <template is="dom-if" if="{{!access}}">
+            <app-header-layout fullbleed has-scrolling-region>
+                <app-header fixed slot="header">
+                    <app-toolbar primary>
+                        <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                        <div main-title>Opps!</div>
+                    </app-toolbar>
+                </app-header>
+                <div class="card">
+                    <h3>Sorry!</h3>
+                    <div>You're not allowed to access this content.</div>
+                </div>
+            </app-header-layout>
+        </template>
+
+        <template is="dom-if" if="{{access}}">
+            <app-location route="{{newRoute}}"></app-location>
+            <app-route route="{{newRoute}}" pattern="/dashboard/detail/:key" active="{{detailActive}}"></app-route>
+
+            <div hidden$="{{dashActive}}">
+                <app-header-layout fullbleed has-scrolling-region>
+                    <app-header fixed slot="header">
+                        <app-toolbar primary>
+                            <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                            <div main-title>Dashboard</div>
+                            <!-- <paper-icon-button id="notifications" icon="my-icons:notifications" on-tap="toggleDrawerRight"></paper-icon-button> -->
+                        </app-toolbar>
+                        <paper-tabs attr-for-selected="name" selected="{{dashboardTabs}}" scrollable>
+                            <paper-tab name="announcement">
+                                <iron-icon icon="my-icons:announcement"></iron-icon>
+                                &nbsp; <span id="tabSpanTitle">Announcements</span>
+                            </paper-tab>
+                            <paper-tab name="reports">
+                                <iron-icon icon="my-icons:assessment" id="tabIcons"></iron-icon>
+                                &nbsp; <span id="tabSpanTitle">Reports</span>
+                            </paper-tab>
+                            <paper-tab name="notifications">
+                                <iron-icon icon="my-icons:notifications" id="tabIcons" class="notifyIcon"></iron-icon>
+                                <div style="display: inline-block;">
+                                    <span id="tabSpanTitle" style="margin-right: 16px;">Notifications</span>
+                                    <paper-badge label="{{notifCount}}"></paper-badge>
+                                </div>
+                            </paper-tab>
+                        </paper-tabs>
+                    </app-header>
+
+                    <iron-pages attr-for-selected="name" selected="{{dashboardTabs}}">
+                        <div name="announcement">
+                            <firebase-query path="/announcements" data="{{announcementsData}}" limit-to-last="50"></firebase-query>
+                            <div style="max-width: 900px; margin: 16px auto;">
+                                <iron-list items="[[announcementsData]]" as="item">
+                                    <template>
+                                        <div>
+                                            <paper-card style="width: 100%">
+                                                <div class="card-content">
+                                                    <paper-icon-item>
+                                                        <img class="avatar" slot="item-icon" src="[[item.photo]]">
+                                                        <paper-item-body two-line>
+                                                            <div>[[item.postedBy]]</div>
+                                                            <div secondary>
+                                                                <div>[[dateTimeFormat(item.timestamp,item.isUpdate)]]</div>
+                                                            </div>
+                                                        </paper-item-body>
+                                                    </paper-icon-item>
+                                                    <h3>[[item.announcement]]</h3>
+                                                </div>
+                                            </paper-card>
+                                        </div>
+                                    </template>
+                                </iron-list>
+
+                                <!-- <div hidden="{{hasRecord}}">
+                                    <paper-card style="width: 100%; cursor: pointer;">
+                                        <div style="text-align: center; padding: 16px;">No record found...</div>
+                                    </paper-card>
+                                </div> -->
+                            </div>
+                        </div>
+                        <div name="reports" style="padding: 16px;">
+                            <template is="dom-if" if="{{salesAgentReportChart}}">
+                                <firebase-query path="group/{{selectedAgentType}}" data="{{groupData}}"></firebase-query>
+                                <firebase-query path="agents" data="{{agentData}}"></firebase-query>
+                                <paper-card>
+                                    <div>
+                                        <paper-tabs attr-for-selected="name" selected="{{selectedAgent}}" id="tabReports">
+                                            <paper-tab name="myReports">My Reports</paper-tab>
+                                            <template is="dom-if" if="{{agentType}}">
+                                                <paper-tab name="agentType">Agent Type</paper-tab>
+                                            </template>
+                                            <template is="dom-if" if="{{agentGroup}}">
+                                                <paper-tab name="agentGroup">Agent Group</paper-tab>
+                                            </template>
+                                            <template is="dom-if" if="{{agents}}">
+                                                <paper-tab name="agents">Agents</paper-tab>
+                                            </template>
+                                        </paper-tabs>
+                                    </div>
+                                    <div class="card-content">
+                                        <div class="top">
+                                            <div>
+                                                <center>
+                                                    <paper-buttons-group attr-for-selected="name" selected="{{selectedAgentDWMY}}" id="customGroup">
+                                                        <paper-button name="daily" style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
+                                                        <paper-button name="weekly" style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Weekly</paper-button>
+                                                        <paper-button name="monthly" style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Monthly</paper-button>
+                                                        <paper-button name="yearly" style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
+                                                    </paper-buttons-group>
+                                                </center>
+                                            </div>
+                                            <iron-pages attr-for-selected="name" selected="{{selectedAgentDWMY}}">
+                                                <div name="daily">
+                                                    <paper-input style="width: 200px;" label="Date" type="date" value="{{agentDailyDate}}">
+                                                        <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                                                    </paper-input>
+                                                </div>
+                                                <div name="weekly">
+                                                    <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                                                    <paper-input value={{agentWeeklyYear}} style="width:60px;display:inline-block" type="number" label="Year"></paper-input>
+                                                    <paper-input value={{agentWeeklyNum}} style="width:60px;display:inline-block" type="number" label="Week"></paper-input>
+                                                    <span style="font-size:12px">{{agentWeeklyDateRange}}</span>
+                                                </div>
+                                                <div name="monthly">
+                                                    <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                                                    <paper-dropdown-menu label="Month" style="width:100px; display:inline-block">
+                                                        <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{agentMonthlyMonth}}">
+                                                            <paper-item value="01">January</paper-item>
+                                                            <paper-item value="02">February</paper-item>
+                                                            <paper-item value="03">March</paper-item>
+                                                            <paper-item value="04">April</paper-item>
+                                                            <paper-item value="05">May</paper-item>
+                                                            <paper-item value="06">June</paper-item>
+                                                            <paper-item value="07">July</paper-item>
+                                                            <paper-item value="08">August</paper-item>
+                                                            <paper-item value="09">September</paper-item>
+                                                            <paper-item value="10">October</paper-item>
+                                                            <paper-item value="11">November</paper-item>
+                                                            <paper-item value="12">December</paper-item>
+                                                        </paper-listbox>
+                                                    </paper-dropdown-menu>
+                                                    <paper-input value={{agentMonthyYear}} style="width:70px;display:inline-block" type="number" label="Year"></paper-input>
+                                                </div>
+                                                <div name="yearly">
+                                                    <paper-input value={{agentYearlyYear}} type="number" style="width:100px; display:inline-block" label="Year">
+                                                        <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                                                    </paper-input>
+                                                </div>
+                                            </iron-pages>
+                                        </div>
+
+                                        <div>
+                                            <canvas id="agentChart"></canvas>
+                                        </div>
+                                    </div>
+                                </paper-card>
+                            </template>
+
+                            <template is="dom-if" if="{{salesChart}}">
+                                <paper-card>
+                                    <div>
+                                        <paper-tabs id="tabReports" attr-for-selected="name" selected="{{selectedReport}}">
+                                            <paper-tab name="activity">Activity</paper-tab>
+                                            <paper-tab name="comparative">Comparative</paper-tab>
+                                            <paper-tab name="overall">Over All</paper-tab>
+                                        </paper-tabs>
+                                    </div>
+                                    <div class="card-content">
+                                        <iron-pages attr-for-selected="name" selected="{{selectedReport}}">
+                                            <div name="activity">
+                                                <div class="top">
+                                                    <div>
+                                                        <center>
+                                                            <paper-buttons-group attr-for-selected="name" selected="{{selectedDWMY}}" id="customGroup">
+                                                                <paper-button name="daily" style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
+                                                                <paper-button name="weekly" style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Weekly</paper-button>
+                                                                <paper-button name="monthly" style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Monthly</paper-button>
+                                                                <paper-button name="yearly" style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
+                                                            </paper-buttons-group>
+                                                        </center>
+                                                    </div>
+                                                    <iron-pages attr-for-selected="name" selected="{{selectedDWMY}}">
+                                                        <div name="daily">
+                                                            <paper-input style="width: 200px;" label="Date" type="date" value="{{dailyDate}}">
+                                                                <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                                                            </paper-input>
+                                                        </div>
+                                                        <div name="weekly">
+                                                            <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                                                            <paper-input value={{weeklyYear}} style="width:60px;display:inline-block" type="number" label="Year"></paper-input>
+                                                            <paper-input value={{weeklyNum}} style="width:60px;display:inline-block" type="number" label="Week"></paper-input>
+                                                            <span style="font-size:12px">{{weeklyDateRange}}</span>
+                                                        </div>
+                                                        <div name="monthly">
+                                                            <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                                                            <paper-dropdown-menu label="Month" style="width:100px; display:inline-block">
+                                                                <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{monthlyMonth}}">
+                                                                    <paper-item value="01">January</paper-item>
+                                                                    <paper-item value="02">February</paper-item>
+                                                                    <paper-item value="03">March</paper-item>
+                                                                    <paper-item value="04">April</paper-item>
+                                                                    <paper-item value="05">May</paper-item>
+                                                                    <paper-item value="06">June</paper-item>
+                                                                    <paper-item value="07">July</paper-item>
+                                                                    <paper-item value="08">August</paper-item>
+                                                                    <paper-item value="09">September</paper-item>
+                                                                    <paper-item value="10">October</paper-item>
+                                                                    <paper-item value="11">November</paper-item>
+                                                                    <paper-item value="12">December</paper-item>
+                                                                </paper-listbox>
+                                                            </paper-dropdown-menu>
+                                                            <paper-input value={{monthyYear}} style="width:70px;display:inline-block" type="number" label="Year"></paper-input>
+                                                        </div>
+                                                        <div name="yearly">
+                                                            <paper-input value={{yearlyYear}} type="number" style="width:100px; display:inline-block" label="Year">
+                                                                <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                                                            </paper-input>
+                                                        </div>
+                                                    </iron-pages>
+                                                </div>
+
+                                                <firebase-query path="{{salesQuery}}" data="{{totalSalesData}}"></firebase-query>
+                                                <div class="horizontal">
+                                                    <paper-card class="totalCard">
+                                                        <div style="background-color: red; color: white; padding: 4px">
+                                                            TOTAL SOLD
+                                                        </div>
+                                                        <div class="card-content">
+                                                            <span id="totalTxt" style="color:red;">{{totalSold}}</span>
+                                                        </div>
+                                                    </paper-card>
+                                                    <paper-card class="totalCard">
+                                                        <div style="background-color: rgb(145, 145, 0); color: white; padding: 4px">
+                                                            TOTAL HOLD
+                                                        </div>
+                                                        <div class="card-content">
+                                                            <span id="totalTxt" style="color:rgb(145, 145, 0);">{{totalHold}}</span>
+                                                        </div>
+                                                    </paper-card>
+                                                    <paper-card class="totalCard">
+                                                        <div style="background-color: orange; color: white; padding: 4px">
+                                                            TOTAL RESERVED
+                                                        </div>
+                                                        <div class="card-content">
+                                                            <span id="totalTxt" style="color:orange;">{{totalReserved}}</span>
+                                                        </div>
+                                                    </paper-card>
+                                                </div>
+
+                                                <div style="font-size: 12px">
+                                                    <paper-toggle-button checked={{showTable}}>Show Table</paper-toggle-button>
+                                                </div>
+                                                <template is="dom-if" if="{{showTable}}">
+                                                    <firebase-query path="{{salesQuery}}/lotType" data="{{salesData}}"></firebase-query>
+                                                    <div>
+                                                        <paper-button on-tap="_exportTableToCSV" raised style="float: right;">
+                                                            <iron-icon icon="my-icons:description"></iron-icon>
+                                                            Export to CSV
+                                                        </paper-button>
+                                                    </div>
+                                                    <br><br>
+                                                    <div style="overflow-x:auto;">
+                                                        <table id="salesTable">
+                                                            <tr>
+                                                                <th>Lot types</th>
+                                                                <th>Sold</th>
+                                                                <th>Hold</th>
+                                                                <th>Reserved</th>
+                                                            </tr>
+                                                            <template is="dom-if" if="{{!hasSalesData}}">
+                                                                <tr>
+                                                                    <td colspan="4" style="text-align: center">No record
+                                                                        found...
+                                                                    </td>
+                                                                </tr>
+                                                            </template>
+                                                            <template is="dom-repeat" items="[[salesData]]">
+                                                                <tr>
+                                                                    <td>[[_formatLotTypes(item.$key)]]</td>
+                                                                    <td>[[item.sold]]</td>
+                                                                    <td>[[item.hold]]</td>
+                                                                    <td>[[item.reserved]]</td>
+                                                                </tr>
+                                                            </template>
+                                                        </table>
+                                                    </div>
+                                                </template>
+                                                <template is="dom-if" if="{{!showTable}}">
+                                                    <br>
+                                                    <div class="chart-container">
+                                                        <canvas id="allSalesChart"></canvas>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                            <div name="comparative">
+                                                <div class="top">
+                                                    <div>
+                                                        <center>
+                                                            <paper-buttons-group attr-for-selected="name" selected="{{comparativeDMY}}" id="customGroup">
+                                                                <paper-button name="daily" style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px;  border-top-left-radius: 5px 5px; border-bottom-left-radius: 5px 5px;">Daily</paper-button>
+                                                                <paper-button name="monthly" style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; height:33px">Monthly</paper-button>
+                                                                <paper-button name="yearly" style="font-size: 12px; border-left: 1px solid green;border-top: 1px solid green; border-bottom: 1px solid green; border-right: 1px solid green; height:33px; border-top-right-radius: 5px 5px; border-bottom-right-radius: 5px 5px;">Yearly</paper-button>
+                                                            </paper-buttons-group>
+                                                        </center>
+                                                    </div>
+                                                    <iron-pages attr-for-selected="name" selected="{{comparativeDMY}}">
+                                                        <div name="daily" class="flex">
+                                                            <paper-input style="width: 150px; margin-right: 16px;" label="From" type="date" value="{{dailyFrom}}">
+                                                                <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                                                            </paper-input>
+                                                            <paper-input style="width: 150px;" label="To" type="date" value="{{dailyTo}}">
+                                                                <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                                                            </paper-input>
+                                                        </div>
+                                                        <div name="monthly">
+                                                            <div class="flex">
+                                                                <div class="horizontal">
+                                                                    <paper-dropdown-menu label="Month from" style="width:100px; margin-right: 8px">
+                                                                        <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{monthlyMonthFrom}}">
+                                                                            <paper-item value="01">January</paper-item>
+                                                                            <paper-item value="02">February</paper-item>
+                                                                            <paper-item value="03">March</paper-item>
+                                                                            <paper-item value="04">April</paper-item>
+                                                                            <paper-item value="05">May</paper-item>
+                                                                            <paper-item value="06">June</paper-item>
+                                                                            <paper-item value="07">July</paper-item>
+                                                                            <paper-item value="08">August</paper-item>
+                                                                            <paper-item value="09">September</paper-item>
+                                                                            <paper-item value="10">October</paper-item>
+                                                                            <paper-item value="11">November</paper-item>
+                                                                            <paper-item value="12">December</paper-item>
+                                                                        </paper-listbox>
+                                                                    </paper-dropdown-menu>
+                                                                    <paper-input value={{monthlyYearFrom}} style="width:70px; margin-right: 8px;" type="number" label="Year from"></paper-input>
+                                                                </div>
+                                                                <div class="horizontal">
+                                                                    <paper-dropdown-menu label="Month from" style="width:100px; margin-right: 8px">
+                                                                        <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{monthlyMonthTo}}">
+                                                                            <paper-item value="01">January</paper-item>
+                                                                            <paper-item value="02">February</paper-item>
+                                                                            <paper-item value="03">March</paper-item>
+                                                                            <paper-item value="04">April</paper-item>
+                                                                            <paper-item value="05">May</paper-item>
+                                                                            <paper-item value="06">June</paper-item>
+                                                                            <paper-item value="07">July</paper-item>
+                                                                            <paper-item value="08">August</paper-item>
+                                                                            <paper-item value="09">September</paper-item>
+                                                                            <paper-item value="10">October</paper-item>
+                                                                            <paper-item value="11">November</paper-item>
+                                                                            <paper-item value="12">December</paper-item>
+                                                                        </paper-listbox>
+                                                                    </paper-dropdown-menu>
+                                                                    <paper-input value={{monthlyYearTo}} style="width:70px;" type="number" label="Year to"></paper-input>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div name="yearly">
+                                                            <div style="display: flex">
+                                                                <paper-input value={{yearlyYearFrom}} type="number" style="width:100px; margin-right: 8px;" label="Year">
+                                                                    <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                                                                </paper-input>
+                                                                <paper-input value={{yearlyYearTo}} type="number" style="width:100px;" label="Year">
+                                                                    <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                                                                </paper-input>
+                                                            </div>
+                                                        </div>
+                                                    </iron-pages>
+                                                </div>
+                                                <firebase-query path="/reports/comparative" data="{{salesComparativeData}}"></firebase-query>
+                                                <div>
+                                                    <paper-dropdown-menu style="cursor:pointer; float: right;" vertical-align="top" horizontal-align="right">
+                                                        <paper-listbox slot="dropdown-content" attr-for-selected="name" selected="{{selectedComparativeLotTypes}}">
+                                                            <paper-item id="comparativeItem" name="all">All</paper-item>
+                                                            <template is="dom-repeat" items="[[salesComparativeData]]">
+                                                                <paper-item id="comparativeItem" name="[[item.$key]]">[[_formatLotTypes(item.$key)]]</paper-item>
+                                                            </template>
+                                                        </paper-listbox>
+                                                    </paper-dropdown-menu>
+                                                </div><br>
+                                                <div class="chart-container">
+                                                    <canvas id="comparativeChart"></canvas>
+                                                </div>
+                                                <br>
+                                            </div>
+                                            <div name="overall">
+                                                <firebase-query path="/reports/overAll/{{overAllDate}}/lotType" data="{{salesOverAllData}}"></firebase-query>
+                                                <div>
+                                                    <paper-input style="width: 200px; margin-right: 16px;" label="Date" type="date" value="{{overAllDate}}">
+                                                        <iron-icon icon="my-icons:event" slot="prefix"></iron-icon>
+                                                    </paper-input>
+                                                </div>
+                                                <div style="font-size: 12px">
+                                                    <paper-toggle-button checked={{showOverAllTable}}>Show Table</paper-toggle-button>
+                                                </div><br>
+
+                                                <template is="dom-if" if="{{!showOverAllTable}}">
+                                                    <div class="chart-container">
+                                                        <canvas id="overAllChart"></canvas>
+                                                    </div>
+                                                </template>
+
+                                                <template is="dom-if" if="{{showOverAllTable}}">
+                                                    <div>
+                                                        <paper-button on-tap="_exportOverAllTableToCSV" raised style="float: right;">
+                                                            <iron-icon icon="my-icons:description"></iron-icon>
+                                                            Export to CSV
+                                                        </paper-button>
+                                                    </div><br><br>
+                                                    <div style="overflow-x:auto;">
+                                                        <table id="overAllReportTable">
+                                                            <tr>
+                                                                <th>Lot types</th>
+                                                                <th>Sold</th>
+                                                                <th>Hold</th>
+                                                                <th>Reserved</th>
+                                                                <th>Available</th>
+                                                                <th>Not yet available</th>
+                                                            </tr>
+                                                            <template is="dom-repeat" items="[[salesOverAllData]]">
+                                                                <tr>
+                                                                    <td>[[_formatLotTypes(item.$key)]]</td>
+                                                                    <td>[[item.sold]]</td>
+                                                                    <td>[[item.hold]]</td>
+                                                                    <td>[[item.reserved]]</td>
+                                                                    <td>[[item.available]]</td>
+                                                                    <td>[[item.notyetavailable]]</td>
+                                                                </tr>
+                                                            </template>
+                                                        </table>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </iron-pages>
+                                    </div>
+                                </paper-card>
+                            </template>
+
+                            <template is="dom-if" if="{{staffChart}}">
+                                <paper-card>
+                                    <div class="card-content">
+                                        <firebase-query path="/reports/activity/daily" equal-to="{{todayDate}}" data="{{totalSalesData}}"></firebase-query>
+                                        <!-- <paper-input type="date" value="{{todayDate}}"></paper-input> -->
+                                        <div class="horizontal">
+                                            <paper-card class="totalCard">
+                                                <div style="background-color: red; color: white; padding: 4px">
+                                                    TOTAL SOLD
+                                                </div>
+                                                <div class="card-content">
+                                                    <span id="totalTxt" style="color:red;">{{totalSold}}</span>
+                                                </div>
+                                            </paper-card>
+                                            <paper-card class="totalCard">
+                                                <div style="background-color: rgb(145, 145, 0); color: white; padding: 4px">
+                                                    TOTAL HOLD
+                                                </div>
+                                                <div class="card-content">
+                                                    <span id="totalTxt" style="color:rgb(145, 145, 0);">{{totalHold}}</span>
+                                                </div>
+                                            </paper-card>
+                                            <paper-card class="totalCard">
+                                                <div style="background-color: orange; color: white; padding: 4px">
+                                                    TOTAL RESERVED
+                                                </div>
+                                                <div class="card-content">
+                                                    <span id="totalTxt" style="color:orange;">{{totalReserved}}</span>
+                                                </div>
+                                            </paper-card>
+                                        </div>
+                                        <div>
+                                            <paper-toggle-button checked="{{staffTable}}">Show Table</paper-toggle-button>
+                                        </div>
+                                        <template is="dom-if" if="{{staffTable}}">
+                                            <firebase-query path="/lots" order-by-child="reservationdetails/start" start-at="{{todayDate}}T00:00" data="{{todayLotDetails}}"></firebase-query>
+                                            <div>
+                                                <paper-button on-tap="_exportStaffTableToCSV" raised style="float: right;">
+                                                    <iron-icon icon="my-icons:description"></iron-icon>
+                                                    Export to CSV
+                                                </paper-button>
+                                            </div>
+                                            <br><br>
+                                            <div style="overflow-x:auto;">
+                                                <table id="staffReportTable">
+                                                    <tr>
+                                                        <th>Lot types</th>
+                                                        <th>Lot</th>
+                                                        <th>Status</th>
+                                                        <th>Agent</th>
+                                                        <th>Buyer</th>
+                                                        <th>Date</th>
+                                                    </tr>
+                                                    <template is="dom-repeat" items="{{todayLotDetails}}">
+                                                        <tr>
+                                                            <td>{{_formatLotTypes(item.type)}}</td>
+                                                            <td>{{_formatLots(item.block, item.lot, item.level)}}</td>
+                                                            <td style="text-align: left;">{{item.status}}</td>
+                                                            <td style="text-align: left;">{{item.reservationdetails.agentdetails.firstname}}
+                                                                {{item.reservationdetails.agentdetails.middlename}} {{item.reservationdetails.agentdetails.lastname}}
+                                                            </td>
+                                                            <td style="text-align: left;">{{item.reservationdetails.buyerdetails.firstname}}
+                                                                {{item.reservationdetails.buyerdetails.middlename}} {{item.reservationdetails.buyerdetails.lastname}}
+                                                            </td>
+                                                            <td style="text-align: left;">{{item.reservationdetails.start}}</td>
+                                                        </tr>
+                                                    </template>
+                                                </table>
+                                            </div>
+                                        </template>
+                                        <template is="dom-if" if="{{!staffTable}}">
+                                            <div>
+                                                <canvas id="staffCharts"></canvas>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </paper-card>
+                            </template>
+                        </div>
+                        <div name="notifications">
+                            <firebase-query path="{{notificationsPath}}" data="{{notificationsData}}" limit-to-last="50"></firebase-query>
+                            <div style="max-width: 900px; margin: 16px auto;">
+                                <iron-list items="[[notificationsData]]" as="item">
+                                    <template>
+                                        <div>
+                                            <paper-card style$="width: 100%; cursor: pointer; opacity: {{_checkIsRead(item.isRead)}}" on-tap="viewThis" item="[[item]]">
+                                                <paper-icon-item>
+                                                    <img class="avatar" slot="item-icon" src="[[item.userPhoto]]">
+                                                    <paper-item-body two-line>
+                                                        <div>[[item.message]]</div>
+                                                        <div secondary>[[_formatLots(item.lotdetails.block, item.lotdetails.lot,
+                                                            item.lotdetails.level)]]
+                                                        </div>
+                                                        <div secondary>[[_getLocalDatetimeFormat(item.date)]]</div>
+                                                    </paper-item-body>
+                                                </paper-icon-item>
+                                            </paper-card>
+                                        </div>
+                                    </template>
+                                </iron-list>
+
+                                <div hidden="{{hasRecord}}">
+                                    <paper-card style="width: 100%; cursor: pointer;">
+                                        <div style="text-align: center; padding: 16px;">No record found...</div>
+                                    </paper-card>
+                                </div>
+                            </div>
+                        </div>
+                    </iron-pages>
+
+                </app-header-layout>
+            </div>
+
+            <template is="dom-if" if="{{detailActive}}" restamp>
+                <my-application-detail id="d24" prev-route="{{route.prefix}}" transaction-key='{{transKey}}' path-link="{{applicationsTab}}"
+                    is-me="{{isMe}}" user="{{user}}"></my-application-detail>
+            </template>
+        </template>
+
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-dashboard',
+
+            properties: {
+                user: Object,
+                route: Object,
+                account: Object,
+                selectedReport: {
+                    type: String,
+                    value: 'activity'
+                },
+                selectedDWMY: {
+                    type: String,
+                    value: "daily"
+                },
+                comparativeDMY: {
+                    type: String,
+                    value: "daily"
+                },
+                totalSold: {
+                    type: Number,
+                    value: 0
+                },
+                totalHold: {
+                    type: Number,
+                    value: 0
+                },
+                totalReserved: {
+                    type: Number,
+                    value: 0
+                },
+                dashboardTabs: {
+                    type: String,
+                    value: "announcement"
+                },
+                countNotification: {
+                    type: Number,
+                    value: 0
+                },
+                notificationsData: Object,
+                hasRecord: Boolean,
+                notifCount: {
+                    type: Number,
+                    value: 0
+                }
+            },
+
+            observers: [
+                '_newRouteChanged(newRoute.path)',
+                '_accountChanged(account)',
+                '_notificationsDataChanged(notificationsData.*)',
+                '_dashboardTabsChanged(dashboardTabs, staffChart, salesAgentReportChart)',
+                '_staffChartChanged(myStaffChart , todayDate)',
+                '_selectedAgentChanged(salesAgentCharts, selectedAgent, selectedAgentDWMY, agentDailyDate, agentWeeklyYear, agentWeeklyNum, agentMonthlyMonth, agentMonthyYear, agentYearlyYear)',
+                '_salesOverAllReportChanged(allSalesOverAllChart, overAllDate, filterSHRAN)',
+                '_salesComparativeReportChanged(allSalesComparativeChart, comparativeDMY, dailyFrom, dailyTo, monthlyMonthFrom, monthlyYearFrom, monthlyMonthTo, monthlyYearTo, yearlyYearFrom, yearlyYearTo, selectedComparativeLotTypes)',
+                '_salesActivityReportChanged(allSalesActivityChart, selectedDWMY, dailyDate, weeklyYear, weeklyNum, monthlyMonth, monthyYear, yearlyYear)',
+                '_selectedReportChanged(selectedReport)',
+                '_salesDataChanged(salesData)',
+                '_totalSalesDataChanged(totalSalesData)'
+            ],
+
+            _newRouteChanged(e) {
+                if (this.detailActive) this.dashActive = true;
+                else this.dashActive = false;
+            },
+
+            _notificationsDataChanged(e) {
+                if (e.base.length > 0) {
+                    var notifications = [];
+                    var countn = 0;
+                    e.base.forEach(element => {
+                        notifications.push(element);
+                        if (element.isRead == false) {
+                            countn++;
+                        }
+                    });
+                    this.notifCount = countn;
+                    this.hasRecord = true;
+                    this.notificationsData = e.base.reverse();
+                }
+                else {
+                    this.hasRecord = false;
+                    this.notifCount = 0;
+                }
+            },
+
+            _accountChanged(e) {
+                if (e.length > 0) {
+                    // console.log(e);
+                    this.salesChart = e[0].reports.salesChart;
+                    this.staffChart = e[0].reports.staffChart;
+
+                    this.salesAgentReportChart = e[0].reports.salesAgentChart;
+                    this.agentType = e[0].reports.salesAgentReport.agentstypeChart;
+                    this.agentGroup = e[0].reports.salesAgentReport.agentsgroupChart;
+                    this.agents = e[0].reports.salesAgentReport.agentsChart;
+                    this.selectedAgentType = e[0].type;
+                    this.selectedAgentGroup = e[0].group;
+                    this.accountkey = e[0].accountkey
+
+                    this.isMe = {
+                        key: e[0].accountkey,
+                        name: e[0].name
+                    };
+
+                    if (e[0].access.applications === true) {
+                        this.notificationsPath = 'notifications';
+                        this.applicationsTab = 'applicationsNew';
+                    } else if (e[0].access.briefcase === true) {
+                        this.notificationsPath = 'notificationsUser/' + this.accountkey;
+                        this.applicationsTab = 'briefcaseDraft/' + this.accountkey;
+                    } else {
+                        this.notificationsPath = '';
+                        this.applicationsTab = '';
+                    }
+                }
+            },
+
+            _dashboardTabsChanged(dashboardTabs, staffChart, salesAgentReportChart) {
+                if (dashboardTabs === 'reports') {
+                    this.selectedReport = 'activity';
+                    if (staffChart === true) {
+                        if (!this.myStaffChart) {
+                            var ctx = Polymer.dom(this.root).querySelector("#staffCharts").getContext('2d');
+                            var staffChart = new Chart(ctx, {
+                                type: 'horizontalBar',
+                                options: {
+                                    responsive: true,
+                                    title: {
+                                        display: true,
+                                        text: "Today Sales Report"
+                                    },
+                                    legend: {
+                                        position: 'top'
+                                    },
+                                    scales: {
+                                        xAxes: [{
+                                            ticks: {
+                                                beginAtZero: true
+                                            },
+                                            stacked: true
+                                        }],
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero: true
+                                            },
+                                            stacked: true
+                                        }]
+                                    },
+                                    plugins: {
+                                        datalabels: {
+                                            color: 'white',
+                                            font: {
+                                                weight: 'bold'
+                                            },
+                                        }
+                                    },
+                                }
+                            });
+                            this.myStaffChart = staffChart
+                        }
+                    }
+
+                    if (salesAgentReportChart === true) {
+                        this.selectedAgentDWMY = 'daily';
+                        this.selectedAgent = 'myReports';
+
+                        if (!this.salesAgentCharts) {
+                            var ctx = Polymer.dom(this.root).querySelector("#agentChart").getContext('2d');
+                            var salesAgentChart = new Chart(ctx, {
+                                type: 'horizontalBar',
+                                options: {
+                                    responsive: true,
+                                    legend: {
+                                        position: 'top'
+                                    },
+                                    scales: {
+                                        xAxes: [{
+                                            ticks: {
+                                                beginAtZero: true
+                                            },
+                                            stacked: true
+                                        }],
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero: true
+                                            },
+                                            stacked: true
+                                        }]
+                                    },
+                                    plugins: {
+                                        datalabels: {
+                                            color: 'white',
+                                            font: {
+                                                weight: 'bold'
+                                            },
+                                        }
+                                    },
+                                }
+                            });
+                            this.salesAgentCharts = salesAgentChart;
+                        }
+                    }
+                }
+            },
+
+            ready() {
+
+                this.dailyDate = this.formatDate(new Date(), 'daily');
+                this.weeklyYear = this.formatDate(new Date(), 'year');
+                this.weeklyNum = this.formatDate(new Date(), 'weekNum');
+                this.weeklyDateRange = this.getDateRangeOfWeek(this.weeklyNum, this.weeklyYear);
+                this.monthlyMonth = this.formatDate(new Date(), 'month');
+                this.monthyYear = this.formatDate(new Date(), 'year');
+                this.yearlyYear = this.formatDate(new Date(), 'year');
+
+                this.selectedComparativeLotTypes = 'all';
+                this.dailyFrom = this.formatDate(new Date(), 'daily');
+                this.dailyTo = this.formatDate(new Date(), 'daily');
+                this.monthlyMonthFrom = this.formatDate(new Date(), 'month');
+                this.monthlyMonthTo = this.formatDate(new Date(), 'month');
+                this.monthlyYearFrom = this.formatDate(new Date(), 'year');
+                this.monthlyYearTo = this.formatDate(new Date(), 'year');
+                this.yearlyYearFrom = this.formatDate(new Date(), 'year');
+                this.yearlyYearTo = this.formatDate(new Date(), 'year');
+
+                this.filterSHRAN = 'sold';
+                this.overAllDate = this.formatDate(new Date(), 'daily');
+
+                this.agentDailyDate = this.formatDate(new Date(), 'daily');
+                this.agentWeeklyYear = this.formatDate(new Date(), 'year');
+                this.agentWeeklyNum = this.formatDate(new Date(), 'weekNum');
+                this.agentWeeklyDateRange = this.getDateRangeOfWeek(this.weeklyNum, this.weeklyYear);
+                this.agentMonthlyMonth = this.formatDate(new Date(), 'month');
+                this.agentMonthyYear = this.formatDate(new Date(), 'year');
+                this.agentYearlyYear = this.formatDate(new Date(), 'year');
+
+                this.todayDate = this.formatDate(new Date(), 'daily');
+
+                // if (this.staffChart === true) {
+
+                // }
+                // if (this.salesAgentReportChart === true) {
+                //     this.selectedAgentDWMY = 'daily';
+                //     this.selectedAgent = 'myReports';
+                // }
+            },
+
+            _totalSalesDataChanged(e) {
+                // console.log(e);
+                if (e.length > 0) {
+                    if (this.salesChart === true) {
+                        Object.keys(e).forEach(x => {
+                            if (e[x].$key == 'totalHold') {
+                                this.totalHold = e[x].$val;
+                            }
+                            else if (e[x].$key == 'totalSold') {
+                                this.totalSold = e[x].$val;
+                            }
+                            else if (e[x].$key == 'totalReserved') {
+                                this.totalReserved = e[x].$val;
+                            }
+                        })
+                    }
+
+                    if (this.staffChart === true) {
+                        this.totalHold = e[0].totalHold ? e[0].totalHold : 0;
+                        this.totalSold = e[0].totalSold ? e[0].totalSold : 0;
+                        this.totalReserved = e[0].totalReserved ? e[0].totalReserved : 0;
+                    }
+                } else {
+                    this.totalHold = 0;
+                    this.totalReserved = 0;
+                    this.totalSold = 0;
+                }
+            },
+
+            _salesDataChanged(e) {
+                if (e.length > 0) this.hasSalesData = true;
+                else this.hasSalesData = false;
+            },
+
+            _selectedReportChanged(e) {
+                if (this.salesChart === true) {
+                    if (e === 'activity') {
+                        this.allSalesComparativeChart = null;
+                        this.allSalesOverAllChart = null;
+
+                        if (!this.allSalesActivityChart) {
+                            var ctx = Polymer.dom(this.root).querySelector('#allSalesChart').getContext('2d');
+                            allSalesActivityChart = new Chart(ctx, {
+                                type: 'bar',
+                                data: {},
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    tooltips: {
+                                        mode: 'index',
+                                        intersect: false
+                                    },
+                                    legend: {
+                                        position: 'bottom',
+                                    },
+                                    plugins: {
+                                        datalabels: {
+                                            color: 'white',
+                                            font: {
+                                                weight: 'bold'
+                                            },
+                                        }
+                                    },
+                                    scales: {
+                                        yAxes: [{
+                                            stacked: true,
+                                            ticks: {
+                                                beginAtZero: true
+                                            },
+                                            ticks: {
+                                                fontSize: 11
+                                            }
+                                        }],
+                                        xAxes: [{
+                                            stacked: true,
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
+                                        }]
+                                    }
+                                }
+                            });
+                            this.allSalesActivityChart = allSalesActivityChart;
+                        }
+                    } else if (e === 'comparative') {
+                        this.allSalesActivityChart = null;
+                        this.allSalesOverAllChart = null;
+
+                        if (!this.allSalesComparativeChart) {
+                            var ctx = Polymer.dom(this.root).querySelector("#comparativeChart").getContext('2d');
+                            var allSalesComparativeChart = new Chart(ctx, {
+                                type: 'line',
+                                data: {},
+                                options: {
+                                    legend: {
+                                        position: 'bottom'
+                                    },
+                                    plugins: {
+                                        datalabels: {
+                                            display: false
+                                        }
+                                    },
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    scales: {
+                                        yAxes: [{
+                                            ticks: {
+                                                beginAtZero: true
+                                            }
+                                        }]
+                                    }
+                                }
+                            });
+                            this.allSalesComparativeChart = allSalesComparativeChart;
+                        }
+                    } else if (e === 'overall') {
+                        this.allSalesActivityChart = null;
+                        this.allSalesComparativeChart = null;
+
+                        if (!this.allSalesOverAllChart) {
+                            var ctx = Polymer.dom(this.root).querySelector("#overAllChart").getContext('2d');
+                            var allSalesOverAllChart = new Chart(ctx, {
+                                type: 'pie',
+                                options: {
+                                    pieceLabel: {
+                                        render: 'percentage',
+                                        position: 'outside',
+                                        fontColor: ['black', 'black', 'black', 'black', 'black'],
+                                        precision: 2,
+                                    },
+                                    legend: {
+                                        display: true,
+                                        position: 'top',
+
+                                    },
+                                    plugins: {
+                                        datalabels: {
+                                            color: 'black',
+                                            font: {
+                                                weight: 'bold'
+                                            },
+                                        }
+                                    },
+                                    responsive: true,
+                                    maintainAspectRatio: false
+                                }
+                            });
+                            this.allSalesOverAllChart = allSalesOverAllChart;
+                        }
+                    }
+                }
+            },
+
+            _salesActivityReportChanged(allSalesActivityChart, selectedDWMY, dailyDate, weeklyYear, weeklyNum, monthlyMonth, monthyYear, yearlyYear) {
+                if (allSalesActivityChart) {
+                    if (selectedDWMY === 'daily') {
+                        this.salesQuery = '/reports/activity/daily/' + dailyDate;
+                        _activityQuery(this.salesQuery, this.allSalesActivityChart);
+                    } else if (selectedDWMY === 'weekly') {
+                        var weekly = weeklyYear.toString().substring(2, 4) + 'w' + weeklyNum.toString();
+                        this.salesQuery = '/reports/activity/weekly/' + weekly;
+                        _activityQuery(this.salesQuery, this.allSalesActivityChart);
+                    } else if (selectedDWMY === 'monthly') {
+                        var monthly = monthyYear.toString() + '-' + monthlyMonth;
+                        this.salesQuery = '/reports/activity/monthly/' + monthly;
+                        _activityQuery(this.salesQuery, this.allSalesActivityChart);
+                    } else if (selectedDWMY === 'yearly') {
+                        this.salesQuery = '/reports/activity/yearly/' + yearlyYear.toString();
+                        _activityQuery(this.salesQuery, this.allSalesActivityChart);
+                    }
+                    function _activityQuery(query, allSalesActivityChart) {
+                        firebase.database().ref(query + '/lotType').once('value', function (snapshot) {
+                            if (snapshot.exists()) {
+                                var itemHold = [];
+                                var itemSold = [];
+                                var itemReserved = [];
+                                var itemKey = [];
+                                var colors = [];
+
+                                snapshot.forEach(function (element) {
+                                    var itemhold = element.val().hold;
+                                    var itemsold = element.val().sold;
+                                    var itemreserved = element.val().reserved;
+
+                                    if (element.key == 'lawnlots') { itemkey = 'Lawn Lots'; bgColor = '#2196F3'; }
+                                    else if (element.key == 'wallniche') { itemkey = 'Wall Niche'; bgColor = '#E91E63'; }
+                                    else if (element.key == 'bonechamber') { itemkey = 'Bone Chamber'; bgColor = '#3F51B5'; }
+                                    else if (element.key == 'cinerarium') { itemkey = 'Cinerarium'; bgColor = '#795548'; }
+                                    else if (element.key == 'familylots4') { itemkey = 'Family Lots 1 (37.45m²)'; bgColor = '#BA68C8'; }
+                                    else if (element.key == 'familylots5') { itemkey = 'Family Lots 1 (Irregular)'; bgColor = '#E1BEE7'; }
+                                    else if (element.key == 'familylots1') { itemkey = 'Family Lots 2 (53.27m²)'; bgColor = '#4A148C'; }
+                                    else if (element.key == 'familylots2') { itemkey = 'Family Lots 2 (52.83m²)'; bgColor = '#7B1FA2'; }
+                                    else if (element.key == 'familylots3') { itemkey = 'Family Lots 2 (Irregular)'; bgColor = '#9C27B0'; }
+                                    else if (element.key == 'gardenlots1') { itemkey = 'Garden Lots 1 (12.52m²)'; bgColor = '#DCEDC8'; }
+                                    else if (element.key == 'gardenlots2') { itemkey = 'Garden Lots 1 (12.43m²)'; bgColor = '#AED581'; }
+                                    else if (element.key == 'gardenlots3') { itemkey = 'Garden Lots 1 (Irregular)'; bgColor = '#8BC34A'; }
+                                    else if (element.key == 'gardenlots4') { itemkey = 'Garden Lots 2 (20.00m²)'; bgColor = '#689F38'; }
+                                    else if (element.key == 'gardenlots5') { itemkey = 'Garden Lots 2 (Irregular)'; bgColor = '#33691E'; }
+
+                                    itemHold.push(itemhold);
+                                    itemSold.push(itemsold);
+                                    itemReserved.push(itemreserved);
+
+                                    itemKey.push(itemkey);
+                                    colors.push(bgColor);
+                                });
+
+                                var soldColor = [];
+                                var holdColor = [];
+                                var reservedColor = [];
+                                for (var i = 0; i < itemKey.length; i++) {
+                                    soldColor.push('rgb(245,0,0)');
+                                    holdColor.push('rgb(145, 145, 0)');
+                                    reservedColor.push('orange');
+                                }
+
+                                var data = {
+                                    labels: itemKey,
+                                    datasets: [
+                                        {
+                                            label: 'Sold',
+                                            data: itemSold,
+                                            backgroundColor: soldColor,
+                                            borderColor: [
+                                                'rgb(245,0,0)'
+                                            ],
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: 'Reserved',
+                                            data: itemReserved,
+                                            backgroundColor: reservedColor,
+                                            borderColor: [
+                                                'orange'
+                                            ],
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: 'Hold',
+                                            data: itemHold,
+                                            backgroundColor: holdColor,
+                                            borderColor: [
+                                                'rgb(145, 145, 0)'
+                                            ],
+                                            borderWidth: 1
+                                        }
+                                    ]
+                                };
+                                allSalesActivityChart.data = data;
+                                allSalesActivityChart.update();
+                            } else {
+                                var data = {
+                                    labels: [],
+                                    datasets: [
+                                        {
+                                            label: 'Sold',
+                                            data: [],
+                                            backgroundColor: [],
+                                            borderColor: [
+                                                'rgb(245,0,0)'
+                                            ],
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: 'Reserved',
+                                            data: [],
+                                            backgroundColor: [],
+                                            borderColor: [
+                                                'orange'
+                                            ],
+                                            borderWidth: 1
+                                        },
+                                        {
+                                            label: 'Hold',
+                                            data: [],
+                                            backgroundColor: [],
+                                            borderColor: [
+                                                'rgb(145, 145, 0)'
+                                            ],
+                                            borderWidth: 1
+                                        }
+                                    ]
+                                }
+
+                                allSalesActivityChart.data = data;
+                                allSalesActivityChart.update();
+                            }
+                        });
+                    }
+                }
+            },
+
+            _salesComparativeReportChanged(allSalesComparativeChart, comparativeDMY, dailyFrom, dailyTo, monthlyMonthFrom, monthlyYearFrom, monthlyMonthTo, monthlyYearTo, yearlyYearFrom, yearlyYearTo, selectedComparativeLotTypes) {
+                var start, end;
+                if (allSalesComparativeChart) {
+                    if (comparativeDMY === 'daily') {
+                        start = dailyFrom;
+                        end = dailyTo;
+                    } else if (comparativeDMY === 'monthly') {
+                        start = monthlyYearFrom.toString() + "-" + monthlyMonthFrom;
+                        end = monthlyYearTo.toString() + "-" + monthlyMonthTo;
+                    }
+                    else if (comparativeDMY === 'yearly') {
+                        start = yearlyYearFrom.toString();
+                        end = yearlyYearTo.toString();
+                    }
+
+                    var monthNames = [
+                        "Jan", "Feb", "Mar",
+                        "Apr", "May", "Jun", "Jul",
+                        "Aug", "Sep", "Oct",
+                        "Nov", "Dec"
+                    ];
+
+                    if (selectedComparativeLotTypes === 'all') {
+                        var query = "/reports/activity/" + comparativeDMY;
+                        _comparativeQuery(query, allSalesComparativeChart);
+                    }
+                    else {
+                        var query = "/reports/comparative/" + selectedComparativeLotTypes + "/" + comparativeDMY;
+                        _comparativeQuery(query, allSalesComparativeChart);
+                    }
+
+                    function _comparativeQuery(query, allSalesComparativeChart) {
+                        firebase.database().ref(query).orderByKey().startAt(start).endAt(end).once("value", function (snapshot) {
+                            var typeHold = [];
+                            var typeSold = [];
+                            var typeReserved = [];
+                            var labels = [];
+
+                            if (snapshot.exists()) {
+                                snapshot.forEach(element => {
+                                    if (comparativeDMY == 'daily') {
+                                        labels.push(element.key.substring(8, 10));
+                                    }
+                                    if (comparativeDMY == 'monthly') {
+                                        var index = new Date(element.key).getMonth();
+                                        labels.push(monthNames[index]);
+                                    }
+                                    if (comparativeDMY == 'yearly') {
+                                        labels.push(element.key.substring(0, 4));
+                                    }
+                                    typeSold.push(element.val().totalSold);
+                                    typeHold.push(element.val().totalHold);
+                                    typeReserved.push(element.val().totalReserved);
+
+                                    var data = {
+                                        labels: labels,
+                                        datasets: [{
+                                            label: 'Sold',
+                                            data: typeSold,
+                                            backgroundColor: 'transparent',
+                                            borderColor: 'red',
+                                            borderWidth: 1,
+                                            datalabels: {
+                                                align: 'end',
+                                                anchor: 'end',
+                                                display: true,
+                                                backgroundColor: 'red',
+                                                borderRadius: 4,
+                                                color: '#ddd',
+                                                font: {
+                                                    weight: 'bold'
+                                                }
+                                            }
+                                        },
+                                        {
+                                            label: 'Hold',
+                                            data: typeHold,
+                                            backgroundColor: 'transparent',
+                                            borderColor: 'orange',
+                                            borderWidth: 1,
+                                            hidden: true,
+                                            datalabels: {
+                                                align: 'end',
+                                                anchor: 'end',
+                                                display: true,
+                                                backgroundColor: 'orange',
+                                                borderRadius: 4,
+                                                color: '#001f3f',
+                                                font: {
+                                                    weight: 'bold'
+                                                }
+                                            }
+                                        },
+                                        {
+                                            label: 'Reserved',
+                                            data: typeReserved,
+                                            backgroundColor: 'transparent',
+                                            borderColor: 'yellow',
+                                            borderWidth: 1,
+                                            hidden: true,
+                                            datalabels: {
+                                                align: 'end',
+                                                anchor: 'end',
+                                                display: true,
+                                                backgroundColor: 'yellow',
+                                                borderRadius: 4,
+                                                color: '#001f3f',
+                                                font: {
+                                                    weight: 'bold'
+                                                }
+                                            }
+                                        }],
+
+                                    };
+                                    allSalesComparativeChart.data = data;
+                                    allSalesComparativeChart.update();
+                                });
+                            } else {
+                                var data = {
+                                    labels: labels,
+                                    datasets: [{
+                                        label: 'Sold',
+                                        data: [],
+                                        backgroundColor: 'transparent',
+                                        borderColor: 'red',
+                                        borderWidth: 1,
+                                        datalabels: {
+                                            align: 'end',
+                                            anchor: 'end',
+                                            display: true,
+                                            backgroundColor: 'red',
+                                            borderRadius: 4,
+                                            color: '#ddd',
+                                            font: {
+                                                weight: 'bold'
+                                            }
+                                        }
+                                    },
+                                    {
+                                        label: 'Hold',
+                                        data: [],
+                                        backgroundColor: 'transparent',
+                                        borderColor: 'orange',
+                                        borderWidth: 1,
+                                        hidden: true,
+                                        datalabels: {
+                                            align: 'end',
+                                            anchor: 'end',
+                                            display: true,
+                                            backgroundColor: 'orange',
+                                            borderRadius: 4,
+                                            color: '#001f3f',
+                                            font: {
+                                                weight: 'bold'
+                                            }
+                                        }
+                                    },
+                                    {
+                                        label: 'Reserved',
+                                        data: [],
+                                        backgroundColor: 'transparent',
+                                        borderColor: 'yellow',
+                                        borderWidth: 1,
+                                        hidden: true,
+                                        datalabels: {
+                                            align: 'end',
+                                            anchor: 'end',
+                                            display: true,
+                                            backgroundColor: 'yellow',
+                                            borderRadius: 4,
+                                            color: '#001f3f',
+                                            font: {
+                                                weight: 'bold'
+                                            }
+                                        }
+                                    }],
+
+                                };
+                                allSalesComparativeChart.data = data;
+                                allSalesComparativeChart.update();
+                            }
+                        });
+                    }
+                }
+            },
+
+            _salesOverAllReportChanged(allSalesOverAllChart, overAllDate, filterSHRAN) {
+                if (allSalesOverAllChart) {
+                    firebase.database().ref('/reports/overAll/' + overAllDate + '/overall').once('value', function (snap) {
+                        var datas = [];
+                        var labels = [];
+                        var colors = [];
+
+                        if (snap.exists()) {
+                            snap.forEach(function (element) {
+                                if (element.key == 'totalHold') { itemkey = 'Hold'; bgColor = 'rgb(145, 145, 0)'; }
+                                else if (element.key == 'totalSold') { itemkey = 'Sold'; bgColor = 'red'; }
+                                else if (element.key == 'totalReserved') { itemkey = 'Reserved'; bgColor = 'orange'; }
+                                else if (element.key == 'totalAvailable') { itemkey = 'Available'; bgColor = 'green'; }
+                                else if (element.key == 'totalNotyetavailable') { itemkey = 'Not yet available'; bgColor = 'gray'; }
+
+                                datas.push(element.val());
+                                labels.push(itemkey);
+                                colors.push(bgColor);
+                            });
+
+                            var data = {
+                                datasets: [{
+                                    data: datas,
+                                    backgroundColor: colors,
+                                }],
+                                labels: labels,
+                            }
+
+                            allSalesOverAllChart.data = data;
+                            allSalesOverAllChart.update();
+                        } else {
+                            var data = {
+                                datasets: [{
+                                    data: [],
+                                    backgroundColor: [
+                                        'black'
+                                    ]
+                                }],
+                                labels: ['No data found'],
+                            }
+
+                            allSalesOverAllChart.data = data;
+                            allSalesOverAllChart.update();
+                        }
+                    });
+                }
+            },
+
+            _staffChartChanged(myStaffChart, todayDate) {
+                if (myStaffChart) {
+                    if (todayDate) {
+                        var staffQuery = '/reports/activity/daily/' + todayDate + '/lotType';
+                        firebase.database().ref(staffQuery).on('value', function (snapshot) {
+                            if (snapshot.exists()) {
+                                var itemKey = [];
+                                var itemHold = [];
+                                var itemSold = [];
+                                var itemReserved = [];
+
+                                snapshot.forEach(function (element) {
+                                    var itemkey = element.key;
+                                    var itemhold = element.val().hold;
+                                    var itemsold = element.val().sold;
+                                    var itemreserved = element.val().reserved;
+
+                                    itemKey.push(itemkey);
+                                    itemHold.push(itemhold);
+                                    itemSold.push(itemsold);
+                                    itemReserved.push(itemreserved);
+                                });
+
+                                var soldColor = [];
+                                var holdColor = [];
+                                var reservedColor = [];
+
+                                for (var i = 0; i < itemKey.length; i++) {
+                                    soldColor.push('rgb(245,0,0)');
+                                    holdColor.push('rgb(145, 145, 0)');
+                                    reservedColor.push('orange');
+                                }
+
+                                var data = {
+                                    labels: itemKey,
+                                    datasets: [
+                                        {
+                                            label: ['Sold'],
+                                            data: itemSold,
+                                            backgroundColor: soldColor,
+                                        },
+                                        {
+                                            label: ['Reserved'],
+                                            data: itemReserved,
+                                            backgroundColor: reservedColor,
+                                        },
+                                        {
+                                            label: ['Hold'],
+                                            data: itemHold,
+                                            backgroundColor: holdColor,
+                                        }
+                                    ]
+                                };
+
+                                myStaffChart.data = data;
+                                myStaffChart.update();
+                            } else {
+                                var data = {
+                                    labels: ['No Data Found'],
+                                    datasets: []
+                                };
+                                myStaffChart.data = data;
+                                myStaffChart.update();
+                            }
+                        });
+                    }
+                }
+            },
+
+            _selectedAgentChanged(salesAgentCharts, selectedAgent, selectedAgentDWMY, agentDailyDate, agentWeeklyYear, agentWeeklyNum, agentMonthlyMonth, agentMonthyYear, agentYearlyYear) {
+                if (salesAgentCharts) {
+                    var mykey, query, title = {};
+                    if (selectedAgentDWMY === 'daily') {
+                        mykey = selectedAgentDWMY + "/" + agentDailyDate;
+                    } else if (selectedAgentDWMY === 'weekly') {
+                        mykey = selectedAgentDWMY + "/" + agentWeeklyYear.toString().substring(2, 4) + "w" + agentWeeklyNum.toString();
+                    } else if (selectedAgentDWMY === 'monthly') {
+                        mykey = selectedAgentDWMY + "/" + agentMonthyYear.toString() + "-" + agentMonthlyMonth;
+                    } else if (selectedAgentDWMY === 'yearly') {
+                        mykey = selectedAgentDWMY + "/" + agentYearlyYear.toString();
+                    }
+
+                    if (selectedAgent === 'myReports') {
+                        query = "/reports/sales_agents/" + mykey + "/agents/" + this.selectedAgentType + "/" + this.selectedAgentGroup;
+                        // + "/" + this.accountkey
+                    } else if (selectedAgent === 'agentType') {
+                        query = "/reports/sales_agents/" + mykey + "/type";
+                    } else if (selectedAgent === 'agentGroup') {
+                        query = "/reports/sales_agents/" + mykey + "/groups/" + this.selectedAgentType;
+                    } else if (selectedAgent === 'agents') {
+                        query = "/reports/sales_agents/" + mykey + "/agents/" + this.selectedAgentType + "/" + this.selectedAgentGroup;
+                    }
+
+                    var groupData = this.groupData;
+                    var agentData = this.agentData;
+                    var self = this;
+
+                    if (selectedAgent === 'myReports') {
+                        firebase.database().ref(query).orderByKey().equalTo(this.accountkey).once('value', function (snapshot) {
+                            var itemHold = [];
+                            var itemSold = [];
+                            var itemReserved = [];
+
+                            if (snapshot.exists()) {
+                                snapshot.forEach(function (element) {
+                                    itemHold.push(element.val().hold ? element.val().hold : 0);
+                                    itemSold.push(element.val().sold ? element.val().hold : 0);
+                                    itemReserved.push(element.val().reserved ? element.val().hold : 0);
+                                });
+
+                                var data = {
+                                    labels: [self.accountkey],
+                                    datasets: [
+                                        {
+                                            label: 'Sold',
+                                            data: itemSold,
+                                            backgroundColor: 'red',
+                                        },
+                                        {
+                                            label: 'Reserved',
+                                            data: itemReserved,
+                                            backgroundColor: 'orange',
+                                        },
+                                        {
+                                            label: 'Hold',
+                                            data: itemHold,
+                                            backgroundColor: 'rgb(145, 145, 0)',
+                                        }
+                                    ]
+                                };
+
+                                salesAgentCharts.data = data;
+                                salesAgentCharts.update();
+                            } else {
+                                var data = {
+                                    labels: ['No data'],
+                                    datasets: []
+                                };
+
+                                salesAgentCharts.data = data;
+                                salesAgentCharts.update();
+                            }
+                        })
+                    } else {
+                        firebase.database().ref(query).once('value', function (snapshot) {
+                            if (snapshot.exists()) {
+                                var itemHold = [];
+                                var itemSold = [];
+                                var itemReserved = [];
+                                var itemKey = [];
+
+                                snapshot.forEach(function (element) {
+
+                                    itemHold.push(element.val().hold ? element.val().hold : 0);
+                                    itemSold.push(element.val().sold ? element.val().sold : 0);
+                                    itemReserved.push(element.val().reserved ? element.val().reserved : 0);
+
+                                    if (selectedAgent === 'agentType') {
+                                        itemKey.push(_formatItemKey(element.key, 'agentType'));
+                                    } else if (selectedAgent === 'agentGroup') {
+                                        itemKey.push(_formatItemKey(element.key, 'agentGroup'));
+                                    } else if (selectedAgent === 'agents') {
+                                        itemKey.push(_formatItemKey(element.key, 'agents'));
+                                    }
+                                });
+
+                                function _formatItemKey(itemKey, x) {
+                                    if (x === "agentType") {
+                                        if (itemKey === 'inhouse') { return "In House"; }
+                                        else if (itemKey === 'broker') { return "Broker"; }
+                                    } else if (x === 'agentGroup') {
+                                        for (var i = 0; i < groupData.length; i++) {
+                                            if (groupData[i].groupID === itemKey) { return groupData[i].name; }
+                                            else { return 'No group'; }
+                                        }
+                                    } else if (x === 'agents') {
+                                        for (var i = 0; i < agentData.length; i++) {
+                                            if (agentData[i].$key === itemKey) { return agentData[i].lastname; }
+                                        }
+                                    }
+                                }
+                                var data = {
+                                    labels: itemKey,
+                                    datasets: [
+                                        {
+                                            label: 'Sold',
+                                            data: itemSold,
+                                            backgroundColor: 'red',
+                                        },
+                                        {
+                                            label: 'Reserved',
+                                            data: itemReserved,
+                                            backgroundColor: 'orange',
+                                        },
+                                        {
+                                            label: 'Hold',
+                                            data: itemHold,
+                                            backgroundColor: 'rgb(145, 145, 0)',
+                                        }
+                                    ]
+                                };
+
+                                salesAgentCharts.data = data;
+                                salesAgentCharts.update();
+                            } else {
+                                var data = {
+                                    labels: ['No data'],
+                                    datasets: []
+                                };
+                                salesAgentCharts.data = data;
+                                salesAgentCharts.update();
+                            }
+                        });
+                    }
+                }
+            },
+
+            formatDate(now, x) {
+                if (x === 'daily') {
+                    var day = ("0" + now.getDate()).slice(-2);
+                    var month = ("0" + (now.getMonth() + 1)).slice(-2);
+                    return now.getFullYear() + "-" + (month) + "-" + (day);
+                } else if (x === 'weekNum') {
+                    now = new Date(Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()));
+                    now.setUTCDate(now.getUTCDate() + 4 - (now.getUTCDay() || 7));
+                    var yearStart = new Date(Date.UTC(now.getUTCFullYear(), 0, 1));
+                    var weekNo = Math.ceil((((now - yearStart) / 86400000) + 1) / 7);
+                    return weekNo;
+                } else if (x === 'year') {
+                    return now.getFullYear();
+                } else if (x === 'month') {
+                    return ("0" + (now.getMonth() + 1)).slice(-2);
+                }
+
+            },
+
+            getDateRangeOfWeek(weekNo, y) {
+                Date.prototype.getWeek = function () {
+                    var date = new Date(this.getTime());
+                    date.setHours(0, 0, 0, 0);
+                    // Thursday in current week decides the year.
+                    date.setDate(date.getDate() + 3 - (date.getDay() + 6) % 7);
+                    // January 4 is always in week 1.
+                    var week1 = new Date(date.getFullYear(), 0, 4);
+                    // Adjust to Thursday in week 1 and count number of weeks from date to week1.
+                    return 1 + Math.round(((date.getTime() - week1.getTime()) / 86400000 - 3 + (week1.getDay() + 6) % 7) / 7);
+                }
+                var rangeToFrom = [];
+                var d1, numOfdaysPastSinceLastMonday, rangeIsFrom, rangeIsTo;
+                d1 = new Date('' + y + '');
+                numOfdaysPastSinceLastMonday = d1.getDay() - 1;
+                d1.setDate(d1.getDate() - numOfdaysPastSinceLastMonday);
+                d1.setDate(d1.getDate() + (7 * (weekNo - d1.getWeek())));
+                rangeIsFrom = d1.getFullYear() + "-" + ("0" + (d1.getMonth() + 1)).slice(-2) + "-" + ("0" + d1.getDate()).slice(-2)
+                d1.setDate(d1.getDate() + 6);
+                rangeIsTo = d1.getFullYear() + "-" + ("0" + (d1.getMonth() + 1)).slice(-2) + "-" + ("0" + d1.getDate()).slice(-2)
+                return rangeIsFrom + " - " + rangeIsTo;
+            },
+
+            _formatLotTypes(e) {
+                if (e == 'lawnlots') return 'Lawn Lots';
+                else if (e == 'wallniche') return 'Wall Niche';
+                else if (e == 'bonechamber') return 'Bone Chamber';
+                else if (e == 'cinerarium') return 'Cinerarium';
+                else if (e == 'familylots4') return 'Family Lots 1 (37.45m²)';
+                else if (e == 'familylots5') return 'Family Lots 1 (Irregular)';
+                else if (e == 'familylots1') return 'Family Lots 2 (53.27m²)';
+                else if (e == 'familylots2') return 'Family Lots 2 (52.83m²)';
+                else if (e == 'familylots3') return 'Family Lots 2 (Irregular)';
+                else if (e == 'gardenlots1') return 'Garden Lots 1 (12.52m²)';
+                else if (e == 'gardenlots2') return 'Garden Lots 1 (12.43m²)';
+                else if (e == 'gardenlots3') return 'Garden Lots 1 (Irregular)';
+                else if (e == 'gardenlots4') return 'Garden Lots 2 (20.00m²)';
+                else if (e == 'gardenlots5') return 'Garden Lots 2 (Irregular)';
+            },
+
+            _formatLots(block, lot, level) {
+                if (block && lot && level) {
+                    if (level) return 'Block ' + block + ' Lot ' + lot + ' Level ' + level;
+                    else return 'Block ' + block + ' Lot ' + lot;
+                } else {
+                    return '';
+                }
+            },
+
+            _exportTableToCSV() {
+                this.export_table_to_csv('daily', "salesReport.csv");
+            },
+
+            _exportOverAllTableToCSV() {
+                this.export_table_to_csv('overAll', "overAllSalesReport.csv");
+            },
+
+            _exportStaffTableToCSV() {
+                this.export_table_to_csv('today', "todayReports.csv");
+            },
+
+            export_table_to_csv(report, filename) {
+                var csv = [];
+                if (report == 'daily') {
+                    var rows = Polymer.dom(this.root).querySelectorAll("#salesTable tr");
+                }
+                else if (report == 'overAll') {
+                    var rows = Polymer.dom(this.root).querySelectorAll("#overAllReportTable tr");
+                }
+                else if (report == 'today') {
+                    var rows = Polymer.dom(this.root).querySelectorAll("#staffReportTable tr");
+                }
+                for (var i = 0; i < rows.length; i++) {
+                    var row = [], cols = rows[i].querySelectorAll("td, th");
+
+                    for (var j = 0; j < cols.length; j++)
+                        row.push(cols[j].innerText);
+
+                    csv.push(row.join(","));
+                }
+                this.download_csv(csv.join("\n"), filename);
+            },
+
+            download_csv(csv, filename) {
+                var csvFile;
+                var downloadLink;
+                // CSV FILE
+                csvFile = new Blob([csv], { type: "text/csv" });
+                downloadLink = document.createElement("a");
+                downloadLink.download = filename;
+                downloadLink.href = window.URL.createObjectURL(csvFile);
+                downloadLink.style.display = "none";
+                document.body.appendChild(downloadLink);
+                downloadLink.click();
+            },
+
+            toggleDrawer() {
+                this.dispatchEvent(new CustomEvent('toggleDrawer', {
+                    bubbles: true, composed: true, detail: {
+                        narrow: this.$.narrow
+                    }
+                }));
+                this.$.narrow = !this.$.narrow;
+            },
+
+            toggleDrawerRight() {
+                Polymer.dom(this.root).querySelector('#drawer').toggle();
+            },
+
+            _getLocalDatetimeFormat(e) {
+                var xdate = new Date(e);
+                return xdate.toDateString() + ' ' + xdate.toLocaleTimeString().replace(/:\d{2}\s/, ' ');;
+            },
+
+            viewThis(e) {
+                this.set('newRoute.path', e.currentTarget.item.href);
+                this.transKey = e.currentTarget.item.$key;
+
+                var updates = {};
+                updates[this.notificationsPath + '/' + this.transKey + '/isRead'] = true;
+                firebase.database().ref().update(updates);
+            },
+
+            _checkIsRead(e) {
+                if (e === true) return 0.5;
+                else return 1;
+            },
+
+            dateTimeFormat(e, f) {
+                var a = new Date(e);
+                var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                var year = a.getFullYear();
+                var month = months[a.getMonth()];
+                var date = a.getDate();
+                var hour = a.getHours();
+                var min = a.getMinutes();
+                var sec = a.getSeconds();
+                var time = month + ' ' + date + ',' + ' ' + year + ' ' + hour + ':' + min + ':' + sec;
+
+                if (f == true) {
+                    return 'Updated: ' + time;
+                } else {
+                    return 'Created: ' + time;
+                }
+            },
+        })
+    </script>
+</dom-module>

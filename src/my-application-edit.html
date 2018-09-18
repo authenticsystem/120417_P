@@ -142,6 +142,23 @@
             div[role="listbox"] {
                 border: 1px solid #e5e5e5;
             }
+
+            #myagent {
+                font-size: 12px;
+                cursor: pointer;
+            }
+
+            #myagent:nth-child(even) {
+                background-color: #f2f2f2
+            }
+
+            paper-button {
+                height: 32px;
+                font-size: 12px;
+                font-weight: 400;
+                color: #388E3C;
+                /* width: 80px; */
+            }
         </style>
 
         <!-- to get the record of Transaction Key -->
@@ -211,7 +228,8 @@
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
                         <!-- for current Transaction Keys data -->
-                        <firebase-document id="transactionFire" path="/applications/{{transactionKey}}" data="{{transactionData}}" disabled="true"></firebase-document>
+                        <firebase-document id="transactionFire" path="/applications/{{transactionKey}}" data="{{transactionData}}"
+                            disabled="true"></firebase-document>
 
                         <!-- for Lot Details when entering Block, Lot, Level -->
                         <firebase-document id="lotFire" path="/lots/{{fullLot}}" data="{{fullLotData}}" disabled="true"></firebase-document>
@@ -220,15 +238,15 @@
                         <firebase-document id="fdColor" disabled="true"></firebase-document>
 
                         <!-- to get the last Applications filed, will be use to compare MIN and MAX Start Date -->
-                        <firebase-query id="otherApplicationFire" path="/applications" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1
-                            data="{{lastApplication}}" disabled="true"></firebase-query>
+                        <firebase-query id="otherApplicationFire" path="/applications" order-by-child='lot' equal-to='{{fullLot}}'
+                            limit-to-last=1 data="{{lastApplication}}" disabled="true"></firebase-query>
 
                         <!-- to check if there is current reservation not yet isexpired or not yet served -->
                         <firebase-query id="reservationsFire" path="/reservations/{{origFullLot}}" limit-to-last=3 data="{{lastTwoReservation}}"
                             disabled="true"></firebase-query>
 
-                        <firebase-query id="lastReservationFire" path="/reservations/{{fullLot}}" order-by-child='iscurrent' equal-to='true' limit-to-last=1
-                            data="{{lastReservation}}" disabled="true"></firebase-query>
+                        <firebase-query id="lastReservationFire" path="/reservations/{{fullLot}}" order-by-child='iscurrent'
+                            equal-to='true' limit-to-last=1 data="{{lastReservation}}" disabled="true"></firebase-query>
 
                         <div class="docu">
 
@@ -236,8 +254,10 @@
                                 <span>1. Lot Details</span>
                             </div>
                             <div class="details">
-                                <paper-input label="Block" required="true" auto-validate="true" always-float-label value="{{block}}" style="display: inline-block; width: 20%;"></paper-input>
-                                <paper-input label="Lot" required="true" auto-validate="true" always-float-label value="{{lot}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
+                                <paper-input label="Block" required="true" auto-validate="true" always-float-label
+                                    value="{{block}}" style="display: inline-block; width: 20%;"></paper-input>
+                                <paper-input label="Lot" required="true" auto-validate="true" always-float-label value="{{lot}}"
+                                    style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
                                 <paper-input label="Level" always-float-label value="{{level}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
 
                                 <paper-spinner id="spinnerDetails" alt="Getting details...." style="height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
@@ -300,14 +320,17 @@
                                                 <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
                                                 <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
                                                 <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
-                                                <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}" type="datetime-local"
-                                                    no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
+                                                <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}"
+                                                    max="{{maxStartDateTime}}" type="datetime-local" no-label-float="true"
+                                                    value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
 
                                             </div>
                                             <div id="expiry" style="position: relative; padding-top: 16px;">
                                                 <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon>
-                                                <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span>
-                                                <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input>
+                                                <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires
+                                                    in</span>
+                                                <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}"
+                                                    style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input>
                                                 <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span>
                                                 <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span>
                                                 <!-- <datetime-picker class="end" datetime={{draftdata_expiry}} hour12="true"></datetime-picker> -->
@@ -323,16 +346,20 @@
                     </neon-animatable>
 
                     <neon-animatable>
-                        <firebase-query path="/buyers" order-by-child='cellphone' equal-to='{{draftdata_buyerdetails_cellphone}}' limit-to-first=1
-                            data="{{buyersList}}"></firebase-query>
+                        <firebase-query path="/buyers" order-by-child='cellphone' equal-to='{{draftdata_buyerdetails_cellphone}}'
+                            limit-to-first=1 data="{{buyersList}}"></firebase-query>
 
                         <div class="docu">
                             <div class="docu-header">2. Buyer's Information</div>
                             <div class="details">
-                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_buyerdetails_cellphone}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_buyerdetails_firstname}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_buyerdetails_middlename}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_buyerdetails_lastname}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number"
+                                    label="Cellphone No." value="{{draftdata_buyerdetails_cellphone}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name"
+                                    value="{{draftdata_buyerdetails_firstname}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name"
+                                    value="{{draftdata_buyerdetails_middlename}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name"
+                                    value="{{draftdata_buyerdetails_lastname}}"></paper-input>
                                 <paper-input always-float-label="true" label="Suffix" value="{{draftdata_buyerdetails_suffix}}"></paper-input>
                                 <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_buyerdetails_email}}"></paper-input>
                             </div>
@@ -342,25 +369,50 @@
                     <neon-animatable>
                         <!-- <firebase-query path="/agents" order-by-child="cellphone" equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1
                             data="{{agentsList}}"></firebase-query> -->
+                        <firebase-query path="/agents" order-by-child="{{filterAgent}}" start-at='{{searchAgent}}'
+                            limit-to-first=5 data="{{agentsList}}"></firebase-query>
 
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
                             <div class="detais">
-                                <firebase-query path="/accountlist" order-by-child="/name/fullname" start-at={{agentName}} limit-to-first="5" data="{{agentDATA}}"></firebase-query>
-                                <paper-input on-keyup="agentfullname" label="Search" placeholder="Search by fullname" value="{{agentName}}">
-                                    <iron-icon icon="my-icons:search" slot="prefix"></iron-icon>
-                                </paper-input>
-                                <div role="listbox" id="agentList" style="display: none">
-                                    <template is="dom-repeat" items="[[agentDATA]]">
-                                        <paper-item style="cursor: pointer;" on-tap="_getagentdetails" item="[[item]]">[[item.name.fullname]]</paper-item>
+                                <template is="dom-if" if="{{!agentDetailsCard}}">
+                                    <div style="display: flex">
+                                        <paper-input label="{{search}}" value="{{searchAgent}}" style="margin-right: 8px; width: 100%">
+                                            <iron-icon icon="my-icons:search" slot="prefix"></iron-icon>
+                                        </paper-input>
+                                        <paper-menu-button id="btn-menu" horizontal-align="right" style="margin-top: 16px;">
+                                            <paper-icon-button slot="dropdown-trigger" icon="my-icons:tune"></paper-icon-button>
+                                            <paper-listbox style="cursor:pointer" slot="dropdown-content"
+                                                attr-for-selected="name" selected="{{filterAgent}}">
+                                                <paper-item name="cellphone">Cellphone</paper-item>
+                                                <paper-item name="firstname">Firstname</paper-item>
+                                                <paper-item name="lastname">Lastname</paper-item>
+                                            </paper-listbox>
+                                        </paper-menu-button>
+                                    </div>
+                                    <template is="dom-if" if="{{searchResult}}">
+                                        <div role="listbox">
+                                            <template is="dom-repeat" items=[[agentsList]]>
+                                                <paper-item id="myagent" item="[[item]]" on-tap="_selectAgentDetails">[[_getFullname(item.firstname,
+                                                    item.middlename, item.lastname, item.suffix)]]
+                                                </paper-item>
+                                            </template>
+                                        </div>
                                     </template>
-                                </div>
-                                <paper-input readonly type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
-                                <paper-input readonly label="Firstname" value="{{draftdata_agentdetails_firstname}}"></paper-input>
-                                <paper-input readonly label="Middlename" value="{{draftdata_agentdetails_middlename}}"></paper-input>
-                                <paper-input readonly label="Lastname" value="{{draftdata_agentdetails_lastname}}"></paper-input>
-                                <paper-input readonly label="Suffix" value="{{draftdata_agentdetails_suffix}}"></paper-input>
-                                <paper-input readonly label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
+                                </template>
+
+                                <template is="dom-if" if="{{agentDetailsCard}}">
+                                    <paper-card style="width: 100%">
+                                        <div class="card-content">
+                                            <paper-input readonly label="Name" value="{{_getFullname(draftData_agentdetails.firstname, draftData_agentdetails.middlename, draftData_agentdetails.lastname)}}"></paper-input>
+                                            <paper-input readonly label="Email" value="{{draftData_agentdetails.email}}"></paper-input>
+                                            <paper-input readonly label="Cellphone" value="{{draftData_agentdetails.cellphone}}"></paper-input>
+                                        </div>
+                                        <div class="card-actions">
+                                            <paper-button on-tap="_cancelAgentDetails">Cancel</paper-button>
+                                        </div>
+                                    </paper-card>
+                                </template>
                                 <!-- <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
                                 <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}"></paper-input>
                                 <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"></paper-input>
@@ -377,42 +429,53 @@
 
                             <div class="details">
                                 <div>Please review the following details:</div>
-                                <div>
-                                    <div style="background-color: dimgrey; color:white; padding:5px">
-                                        Lot Details
+                                <paper-card style="width: 100%; padding-top: 0">
+                                    <div style$="background-color: {{lotMaprenderdetails.type_bg_color}}; color: {{lotMaprenderdetails.type_fore_color}}; padding: 16px">
+                                        <div style="font-size: 24px">{{_formatLOT(block, lot, level)}}</div>
+                                        <div style="font-size: 12px;">
+                                            {{fullLotData.type}} - {{fullLotData.area}} -
+                                            {{fullLotData.maprenderdetails.designation_name}}
+                                        </div>
                                     </div>
-                                    <div>Block: {{block}}</div>
-                                    <div>Lot: {{lot}}</div>
-                                    <div>Level: {{level}}</div>
-                                    <div>Area: {{fullLotData.area}}</div>
-                                    <div>Designation: {{fullLotData.maprenderdetails.designation_name}}</div>
-                                    <div>Type: {{fullLotData.maprenderdetails.type_name}}</div>
-                                    <div>Transaction: {{draftdata_type}}</div>
-                                    <div>Start: {{startDateTimeValue}}</div>
-                                    <div>Expires: {{expiryDate}}</div>
-                                </div>
-                                <div>
-                                    <div style="background-color: dimgrey; color:white; padding:5px">
-                                        Buyer Information
+                                    <div class="card-content">
+                                        <div style="font-size: 12px;">Status</div>
+                                        <div style="color: black">{{draftdata_type}}</div>
+                                        <div style="font-size: 12px;">Date</div>
+                                        <div style="color: black">{{startDateTimeValue}}</div>
+                                        <br>
+                                        <div style="font-size: 12px;">Buyer Details</div>
+                                        <div style="color: black">
+                                            <iron-icon icon="my-icons:person"></iron-icon>
+                                            {{_getFullname(draftdata_buyerdetails_firstname,
+                                            draftdata_buyerdetails_middlename, draftdata_buyerdetails_lastname,
+                                            draftdata_buyerdetails_suffix)}}
+                                        </div>
+                                        <div style="color: black">
+                                            <iron-icon icon="my-icons:phone"></iron-icon>
+                                            {{draftdata_buyerdetails_cellphone}}
+                                        </div>
+                                        <div style="color: black">
+                                            <iron-icon icon="my-icons:email"></iron-icon>
+                                            {{draftdata_buyerdetails_email}}
+                                        </div><br>
+
+                                        <div style="font-size: 12px;">Agent Details</div>
+                                        <div style="color: black">
+                                            <iron-icon icon="my-icons:person"></iron-icon>
+                                            {{_getFullname(draftData_agentdetails.firstname,
+                                            draftData_agentdetails.middlename, draftData_agentdetails.lastname,
+                                            draftdata_buyerdetails_suffix)}}
+                                        </div>
+                                        <div style="color: black">
+                                            <iron-icon icon="my-icons:phone"></iron-icon>
+                                            {{draftData_agentdetails.cellphone}}
+                                        </div>
+                                        <div style="color: black">
+                                            <iron-icon icon="my-icons:email"></iron-icon>
+                                            {{draftData_agentdetails.email}}
+                                        </div>
                                     </div>
-                                    <div>First Name: {{draftdata_buyerdetails_firstname}}</div>
-                                    <div>Middle Name: {{draftdata_buyerdetails_middlename}}</div>
-                                    <div>Last Name: {{draftdata_buyerdetails_lastname}}</div>
-                                    <div>Suffix: {{draftdata_buyerdetails_suffix}}</div>
-                                    <div>Cellphone: {{draftdata_buyerdetails_cellphone}}</div>
-                                    <div>Email: {{draftdata_buyerdetails_email}}</div>
-                                </div>
-                                <div>
-                                    <div style="background-color: dimgrey; color:white; padding:5px">
-                                        Agent Information
-                                    </div>
-                                    <div>First Name: {{draftdata_agentdetails_firstname}}</div>
-                                    <div>Middle Name: {{draftdata_agentdetails_middlename}}</div>
-                                    <div>Last Name: {{draftdata_agentdetails_lastname}}</div>
-                                    <div>Suffix: {{draftdata_agentdetails_suffix}}</div>
-                                    <div>Cellphone: {{draftdata_agentdetails_cellphone}}</div>
-                                    <div>Email: {{draftdata_agentdetails_email}}</div>
-                                </div>
+                                </paper-card>
                             </div>
                         </div>
                     </neon-animatable>
@@ -424,8 +487,12 @@
                             <div class="details">
                                 <paper-item>
                                     <paper-item-body>
-                                        <div id="saveSuccess" style="display: none; color: green;">Application saved. Ref. {{applicationKey}}</div>
-                                        <div id="saveFailed" style="display: none; color: red;">Error updating data. {{saveErrorDetails}}</div>
+                                        <div id="saveSuccess" style="display: none; color: green;">Application saved.
+                                            Ref.
+                                            {{applicationKey}}
+                                        </div>
+                                        <div id="saveFailed" style="display: none; color: red;">Error updating data.
+                                            {{saveErrorDetails}}</div>
                                     </paper-item-body>
                                 </paper-item>
 
@@ -448,7 +515,8 @@
                     <paper-fab id="favleft" class="paper-fab-0" icon="my-icons:chevron-left" on-tap="_select1"></paper-fab>
                 </div>
                 <div hidden$="[[favrighthide]]">
-                    <paper-fab style="background: #1976d2;" id="favright" class="paper-fab-1" icon="my-icons:chevron-right" on-tap="_select2"></paper-fab>
+                    <paper-fab style="background: #1976d2;" id="favright" class="paper-fab-1" icon="my-icons:chevron-right"
+                        on-tap="_select2"></paper-fab>
                 </div>
             </div>
 
@@ -531,7 +599,7 @@
                 agentsList: {
                     type: Object,
                     value: null,
-                    observer: 'agentsListChanged'
+                    // observer: 'agentsListChanged'
                 },
                 buyerKey: {
                     type: String,
@@ -561,8 +629,15 @@
                     type: Boolean,
                     value: false
                 },
-                origFullLot: String
-
+                origFullLot: String,
+                filterAgent: {
+                    type: String,
+                    value: 'lastname'
+                },
+                agentDetailsCard: {
+                    type: Boolean,
+                    value: false
+                }
             },
 
             observers: [
@@ -570,12 +645,10 @@
                 'draftdatatypeChanged(draftdata_type.*)',
                 'startDateTimeValueChanged(startDateTimeValue,expiryHoursDaysValue)',
                 'draftdata_buyerdetails_cellphoneChanged(draftdata_buyerdetails_cellphone,draftdata_buyerdetails_firstname,draftdata_buyerdetails_middlename,draftdata_buyerdetails_lastname)',
-                'draftdata_agentdetails_cellphoneChanged(agentKey,draftdata_agentdetails_cellphone,draftdata_agentdetails_firstname,draftdata_agentdetails_middlename,draftdata_agentdetails_lastname)',
+                'draftdata_agentdetails_cellphoneChanged(draftData_agentdetails)',
                 'lastApplicationChanged(lastApplication.*)',
                 'isStartDateTimeInvalidChanged(isStartDateTimeInvalid.*)',
-
-                // 'transactionDataChanged(transactionData)'
-
+                '_searchChanged(filterAgent, searchAgent)'
             ],
 
             deleteApplicationOpen() {
@@ -686,9 +759,7 @@
 
             transactionKeyChanged() {
                 // console.log(this.transactionKey);
-
                 this.$.appheader.resetLayout();
-
                 if (this.transactionKey) {
                     this.$.idd.disabled = false;
                     this.$.transactionFire.disabled = false;
@@ -756,17 +827,17 @@
                     this.draftdata_buyerdetails_email = this.transactionData.buyerdetails.email;
 
                     this.agentKey = this.transactionData.agent;
-                    this.draftdata_agentdetails_cellphone = this.transactionData.agentdetails.cellphone;
-                    this.draftdata_agentdetails_firstname = this.transactionData.agentdetails.firstname;
-                    this.draftdata_agentdetails_middlename = this.transactionData.agentdetails.middlename;
-                    this.draftdata_agentdetails_lastname = this.transactionData.agentdetails.lastname;
-                    this.draftdata_agentdetails_suffix = this.transactionData.agentdetails.suffix;
-                    this.draftdata_agentdetails_email = this.transactionData.agentdetails.email;
+                    this.draftData_agentdetails = this.transactionData.agentdetails;
+                    if (this.draftData_agentdetails) this.agentDetailsCard = true;
+                    else this.agentDetailsCard = false;
+                    // console.log(this.transactionData.agentdetails);
 
-                    this.draftdata_agentdetails_type = this.transactionData.agentdetails.type;
-                    this.draftdata_agentdetails_group = this.transactionData.agentdetails.group;
-                    this.draftdata_agentdetails_designation = this.transactionData.agentdetails.designation;
-                    this.draftdata_agentdetails_type_group = this.transactionData.agentdetails.type_group;
+                    // this.draftdata_agentdetails_cellphone = this.transactionData.agentdetails.cellphone;
+                    // this.draftdata_agentdetails_firstname = this.transactionData.agentdetails.firstname;
+                    // this.draftdata_agentdetails_middlename = this.transactionData.agentdetails.middlename;
+                    // this.draftdata_agentdetails_lastname = this.transactionData.agentdetails.lastname;
+                    // this.draftdata_agentdetails_suffix = this.transactionData.agentdetails.suffix;
+                    // this.draftdata_agentdetails_email = this.transactionData.agentdetails.email;
 
                     if (typeof (this.transTypeCorrespondingColor) == 'undefined') {
                         var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + (this.transactionData.type == 'Reserve' ? 'reserved' : (this.transactionData.type == 'Hold' ? 'hold' : (this.transactionData.type == 'Buy' ? 'sold' : ''))));
@@ -862,8 +933,8 @@
                 }
             },
 
-            draftdata_agentdetails_cellphoneChanged() {
-                if (this.agentKey, this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
+            draftdata_agentdetails_cellphoneChanged(e) {
+                if (e) {
                     this.favrighthide = false;
                 }
                 else {
@@ -962,24 +1033,24 @@
                 }
             },
 
-            agentsListChanged(e) {
-                if (e) {
-                    if (e.length > 0) {
-                        this.agentKey = e[0].$key;
-                        this.draftdata_agentdetails_firstname = e[0].firstname;
-                        this.draftdata_agentdetails_middlename = e[0].middlename;
-                        this.draftdata_agentdetails_lastname = e[0].lastname;
-                        this.draftdata_agentdetails_suffix = e[0].suffix;
-                        this.draftdata_agentdetails_email = e[0].email;
-                    }
-                    else {
-                        this.agentKey = '';
-                    }
-                }
-                else {
-                    this.agentKey = '';
-                }
-            },
+            // agentsListChanged(e) {
+            //     if (e) {
+            //         if (e.length > 0) {
+            //             this.agentKey = e[0].$key;
+            //             this.draftdata_agentdetails_firstname = e[0].firstname;
+            //             this.draftdata_agentdetails_middlename = e[0].middlename;
+            //             this.draftdata_agentdetails_lastname = e[0].lastname;
+            //             this.draftdata_agentdetails_suffix = e[0].suffix;
+            //             this.draftdata_agentdetails_email = e[0].email;
+            //         }
+            //         else {
+            //             this.agentKey = '';
+            //         }
+            //     }
+            //     else {
+            //         this.agentKey = '';
+            //     }
+            // },
 
             selectReserve() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
@@ -1078,6 +1149,7 @@
                     if (this.fullLotData.inventoriable == "yes") {
 
                         if (this.fullLotData.lot) {
+                            this.lotMaprenderdetails = this.fullLotData.maprenderdetails;
                             var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
                             spinnerDetails.active = false;
                             //ok we have value
@@ -1323,13 +1395,13 @@
                 this.draftdata_buyerdetails_email = '';
                 this.draftdata_buyerdetails_cellphone = '';
 
-                this.draftdata_agentdetails_cellphone = '';
-                this.draftdata_agentdetails_firstname = '';
-                this.draftdata_agentdetails_middlename = '';
-                this.draftdata_agentdetails_lastname = '';
-                this.draftdata_agentdetails_suffix = '';
-                this.draftdata_agentdetails_email = '';
-                this.draftdata_agentdetails_cellphone = '';
+                // this.draftdata_agentdetails_cellphone = '';
+                // this.draftdata_agentdetails_firstname = '';
+                // this.draftdata_agentdetails_middlename = '';
+                // this.draftdata_agentdetails_lastname = '';
+                // this.draftdata_agentdetails_suffix = '';
+                // this.draftdata_agentdetails_email = '';
+                // this.draftdata_agentdetails_cellphone = '';
 
                 this.minStartDateTime = '';
                 this.saveErrorDetails = '...';
@@ -1388,24 +1460,25 @@
                                 var firebaseUpdate = {};
 
                                 //get agent and buyer key, use 
-                                this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
+                                // this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
                                 this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
 
                                 var draftdata = {
                                     agent: this.agentKey,
-                                    agentdetails: {
-                                        firstname: this.draftdata_agentdetails_firstname,
-                                        middlename: this.draftdata_agentdetails_middlename,
-                                        lastname: this.draftdata_agentdetails_lastname,
-                                        suffix: this.draftdata_agentdetails_suffix,
-                                        email: this.draftdata_agentdetails_email,
-                                        cellphone: this.draftdata_agentdetails_cellphone,
+                                    agentdetails: this.draftData_agentdetails,
+                                    // agentdetails: {
+                                    //     firstname: this.draftdata_agentdetails_firstname,
+                                    //     middlename: this.draftdata_agentdetails_middlename,
+                                    //     lastname: this.draftdata_agentdetails_lastname,
+                                    //     suffix: this.draftdata_agentdetails_suffix,
+                                    //     email: this.draftdata_agentdetails_email,
+                                    //     cellphone: this.draftdata_agentdetails_cellphone,
 
-                                        type: this.draftdata_agentdetails_type,
-                                        group: this.draftdata_agentdetails_group,
-                                        designation: this.draftdata_agentdetails_designation,
-                                        group: this.draftdata_agentdetails_type_group
-                                    },
+                                    //     type: this.draftdata_agentdetails_type,
+                                    //     group: this.draftdata_agentdetails_group,
+                                    //     designation: this.draftdata_agentdetails_designation,
+                                    //     group: this.draftdata_agentdetails_type_group
+                                    // },
                                     buyer: this.buyerKey,
                                     buyerdetails: {
                                         firstname: this.draftdata_buyerdetails_firstname,
@@ -1432,6 +1505,8 @@
                                 };
                                 //save to /applications/{id}
                                 firebaseUpdate["/applications/" + this.transactionKey] = draftdata;
+                                //save to /briefcase/{agent key}/{id}
+                                firebaseUpdate["/briefcase/" + this.agentKey + "/" + this.transactionKey] = draftdata;
 
                                 var draftBuyer = {
                                     firstname: this.draftdata_buyerdetails_firstname,
@@ -1452,24 +1527,24 @@
                                     return;
                                 }
 
-                                var draftAgent = {
-                                    firstname: this.draftdata_agentdetails_firstname,
-                                    middlename: this.draftdata_agentdetails_middlename,
-                                    lastname: this.draftdata_agentdetails_lastname,
-                                    suffix: this.draftdata_agentdetails_suffix,
-                                    email: this.draftdata_agentdetails_email,
-                                    cellphone: this.draftdata_agentdetails_cellphone
-                                };
+                                // var draftAgent = {
+                                //     firstname: this.draftdata_agentdetails_firstname,
+                                //     middlename: this.draftdata_agentdetails_middlename,
+                                //     lastname: this.draftdata_agentdetails_lastname,
+                                //     suffix: this.draftdata_agentdetails_suffix,
+                                //     email: this.draftdata_agentdetails_email,
+                                //     cellphone: this.draftdata_agentdetails_cellphone
+                                // };
 
-                                if (this.agentKey) {
-                                    //save to /agents/{new id}
-                                    firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
-                                }
-                                else {
-                                    this.saveErrorDetails = "Agent Key is empty.";
-                                    saveSuccess.setAttribute("style", "display: none; color: green;");
-                                    saveFailed.setAttribute("style", "display: block; color: red;");
-                                }
+                                // if (this.agentKey) {
+                                //     //save to /agents/{new id}
+                                //     firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
+                                // }
+                                // else {
+                                //     this.saveErrorDetails = "Agent Key is empty.";
+                                //     saveSuccess.setAttribute("style", "display: none; color: green;");
+                                //     saveFailed.setAttribute("style", "display: block; color: red;");
+                                // }
 
                                 var sdate;
                                 var serverdatetime = firebase.database().ref("info/serverdatetime");
@@ -1549,14 +1624,15 @@
 
                                     var dataForReservation = {
                                         agent: this.agentKey,
-                                        agentdetails: {
-                                            firstname: this.draftdata_agentdetails_firstname,
-                                            middlename: this.draftdata_agentdetails_middlename,
-                                            lastname: this.draftdata_agentdetails_lastname,
-                                            suffix: this.draftdata_agentdetails_suffix,
-                                            email: this.draftdata_agentdetails_email,
-                                            cellphone: this.draftdata_agentdetails_cellphone
-                                        },
+                                        agentdetails: this.draftData_agentdetails,
+                                        // agentdetails: {
+                                        //     firstname: this.draftdata_agentdetails_firstname,
+                                        //     middlename: this.draftdata_agentdetails_middlename,
+                                        //     lastname: this.draftdata_agentdetails_lastname,
+                                        //     suffix: this.draftdata_agentdetails_suffix,
+                                        //     email: this.draftdata_agentdetails_email,
+                                        //     cellphone: this.draftdata_agentdetails_cellphone
+                                        // },
                                         buyer: this.buyerKey,
                                         buyerdetails: {
                                             firstname: this.draftdata_buyerdetails_firstname,
@@ -1841,7 +1917,7 @@
                         this.favrighthide = false;
 
                         if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname
-                            && this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
+                            && this.draftData_agentdetails) {
                             this.favrighthide = false;
                         }
                         else {
@@ -1909,34 +1985,82 @@
 
             },
 
-            agentfullname() {
-                if (!this.agentName) {
-                    Polymer.dom(this.root).querySelector("#agentList").style.display = 'none';
-                } else {
-                    this.agentName = this.agentName.toUpperCase();
-                    Polymer.dom(this.root).querySelector("#agentList").style.display = 'block';
+            // agentfullname() {
+            //     if (!this.agentName) {
+            //         Polymer.dom(this.root).querySelector("#agentList").style.display = 'none';
+            //     } else {
+            //         this.agentName = this.agentName.toUpperCase();
+            //         Polymer.dom(this.root).querySelector("#agentList").style.display = 'block';
+            //     }
+            // },
+
+            // _getagentdetails(e) {
+            //     this.agentName = null;
+            //     Polymer.dom(this.root).querySelector("#agentList").style.display = 'none';
+            //     var agentdetails = e.currentTarget.item;
+            //     this.draftdata_agentdetails_cellphone = agentdetails.cellphone;
+            //     this.draftdata_agentdetails_firstname = agentdetails.name.firstname;
+            //     this.draftdata_agentdetails_middlename = agentdetails.name.middlename;
+            //     this.draftdata_agentdetails_lastname = agentdetails.name.lastname;
+            //     this.draftdata_agentdetails_suffix = agentdetails.name.suffix;
+
+            //     this.agentKey = agentdetails.accountkey;
+            //     this.draftdata_agentdetails_type = agentdetails.type;
+            //     this.draftdata_agentdetails_group = agentdetails.group;
+            //     this.draftdata_agentdetails_designation = agentdetails.designation;
+            //     this.draftdata_agentdetails_type_group = agentdetails.type_group;
+            // },
+
+            _searchChanged(e, f) {
+                if (e) {
+                    this.search = 'Search by ' + e;
+                    if (f) {
+                        this.searchAgent = this._capitalFirstLetter(f);
+                        this.searchResult = true;
+                    } else {
+                        this.searchAgent = null;
+                        this.searchResult = false;
+                    }
+                    this.search = 'Search by ' + e;
                 }
+                else { this.search = 'No filter'; }
             },
 
-            _getagentdetails(e) {
-                this.agentName = null;
-                Polymer.dom(this.root).querySelector("#agentList").style.display = 'none';
-                var agentdetails = e.currentTarget.item;
-                this.draftdata_agentdetails_cellphone = agentdetails.cellphone;
-                this.draftdata_agentdetails_firstname = agentdetails.name.firstname;
-                this.draftdata_agentdetails_middlename = agentdetails.name.middlename;
-                this.draftdata_agentdetails_lastname = agentdetails.name.lastname;
-                this.draftdata_agentdetails_suffix = agentdetails.name.suffix;
+            _capitalFirstLetter(string) {
+                return string.charAt(0).toUpperCase() + string.slice(1);
+            },
 
-                this.agentKey = agentdetails.accountkey;
-                this.draftdata_agentdetails_type = agentdetails.type;
-                this.draftdata_agentdetails_group = agentdetails.group;
-                this.draftdata_agentdetails_designation = agentdetails.designation;
-                this.draftdata_agentdetails_type_group = agentdetails.type_group;
+            _getFullname(fname, mname, lname, suffix) {
+                if (suffix) return fname + ' ' + mname + ' ' + lname + ' ' + suffix;
+                else return fname + ' ' + mname + ' ' + lname;
+            },
+
+            _selectAgentDetails(e) {
+                var data = e.currentTarget.item;
+                this.agentKey = data.$key;
+                this.draftData_agentdetails = {
+                    cellphone: data.cellphone,
+                    email: data.email,
+                    firstname: data.firstname,
+                    middlename: data.middlename,
+                    lastname: data.lastname,
+                    suffix: data.suffix,
+                    type: data.type,
+                    group: data.group
+                };
+                this.agentDetailsCard = true;
+            },
+
+            _cancelAgentDetails() {
+                this.agentDetailsCard = false;
+                this.draftData_agentdetails = null;
+                this.searchAgent = null;
+            },
+
+            _formatLOT(block, lot, level) {
+                if (level) return "Block " + block + " Lot " + lot + " Level " + level;
+                else return "Block " + block + " Lot " + lot;
             },
         })
-
-
-
     </script>
 </dom-module>

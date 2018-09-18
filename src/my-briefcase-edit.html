@@ -1,36 +1,26 @@
 <link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/paper-item/paper-item-body.html">
-<link rel="import" href="../bower_components/paper-item/paper-icon-item.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animatable.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 <link rel="import" href="../bower_components/neon-animation/neon-animation-behavior.html">
 <link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
-<link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-document.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
-<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-
-<link rel="import" href="shared-styles.html">
-<link rel="import" href="my-icons.html">
-
-<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
-<link rel="import" href="../bower_components/paper-spinner/paper-spinner.html">
-
-<link rel="import" href="short-unique-id.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 
+<link rel="import" href="my-icons.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="short-unique-id.html">
 
 <dom-module id="my-briefcase-edit">
     <template>
@@ -44,10 +34,6 @@
                 background-color: #388E3C;
             }
 
-            app-header paper-icon-button {
-                --paper-icon-button-ink-color: #000000;
-            }
-
             app-drawer-layout:not([narrow]) [drawer-toggle] {
                 display: none;
             }
@@ -58,28 +44,13 @@
                 }
             }
 
-            paper-icon-button.menu {
-                margin-right: 16px;
-            }
-
-            paper-item {
-                height: 64px;
-            }
-
             .mnu {
                 padding: 16px;
             }
 
             paper-fab {
-                background: #1976d2;
+                background-color: #1976d2;
             }
-
-            .labelitem {
-                padding: 0px;
-                margin: 0;
-            }
-
-
 
             @media (min-width: 800px) {
                 .footer {
@@ -87,293 +58,227 @@
                     bottom: 16px;
                     width: 100%;
                 }
-                .paper-fab-0 {
+                #favBack {
                     position: absolute;
                     left: 48px;
                     bottom: 48px;
                 }
-
-                .paper-fab-1 {
+                #favNext {
                     position: absolute;
                     right: 48px;
                     bottom: 48px;
                 }
-
             }
 
             @media (max-width: 800px) {
-                .paper-fab-0 {
+                #favBack {
                     position: absolute;
                     left: 16px;
                     bottom: 48px;
                 }
-
-                .paper-fab-1 {
+                #favNext {
                     position: absolute;
                     right: 16px;
                     bottom: 48px;
                 }
-
-                .docu {
-                    margin-left: 16px;
-                    margin-right: 16px;
-                }
-
             }
 
-            paper-button.green {
-                background-color: var(--paper-green-500);
-                color: white;
+            .listbox {
+                border: 1px solid #ccc;
+                margin-top: 16px;
             }
 
-
-            datetime-picker.begin {
-                --datetime-selected-background: #2362EC;
-                --datetime-background: #071533;
-                --datetime-color: #eeeeee;
+            paper-item {
+                font-size: 12px;
+                cursor: pointer;
             }
 
-            datetime-picker.end {
-                --datetime-selected-background: #CC1C1C;
-                --datetime-background: #071533;
-                --datetime-color: #eeeeee;
+            paper-button {
+                height: 32px;
+                font-size: 12px;
+                font-weight: 400;
             }
         </style>
 
-        <!-- to get the record of Transaction Key -->
-        <firebase-document id="idd" path="{{getpath()}}" data="{{newdata}}" disabled="true"></firebase-document>
+        <firebase-document id="transactionFire" path="/briefcaseDraft/{{accountKey}}/{{transactionKey}}" data="{{transactionData}}"></firebase-document>
 
         <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
             <app-drawer id="drawer" slot="drawer" swipe-open="[[narrow]]" align="right">
                 <div class="mnu" role="listbox">
-                    <!-- <iron-selector attr-for-selected="value" class="drawer-list"> -->
-
-                    <!-- on-tap="_selectPage" data-args="0" -->
                     <paper-item id="lotdetails">
                         <div class="circle-mini-first">1</div>
                         <span>Lot Details</span>
                     </paper-item>
 
-                    <!-- on-tap="_selectPage" data-args="1" -->
                     <paper-item id="buyersinformation">
                         <div class="circle-mini">2</div>
                         <span>Buyer's Information</span>
                     </paper-item>
 
-                    <!-- on-tap="_selectPage" data-args="2" -->
-                    <!-- <paper-item id="samplecomputation">
-                        <div class="circle-mini">3</div>
-                        <span>Agent's Information</span>
-                    </paper-item> -->
-
-                    <!-- on-tap="_selectPage" data-args="3" -->
                     <paper-item id="finalize">
                         <div class="circle-mini">3</div>
                         <span>Finalize</span>
                     </paper-item>
 
-                    <!-- on-tap="_selectPage" data-args="4" -->
                     <paper-item id="complete">
                         <div class="circle-mini-last">4</div>
                         <span>Complete</span>
                     </paper-item>
-
-                    <!-- </iron-selector> -->
                 </div>
             </app-drawer>
 
-            <app-header-layout id="appheader" has-scrolling-region>
+            <firebase-query id="briefcase" path="/briefcase/{{agentKey}}"></firebase-query>
+
+            <app-header-layout id="appheader" fullbleed has-scrolling-region>
                 <app-header fixed slot="header">
-                    <app-toolbar>
-                        <a href="/briefcase">
+                    <app-toolbar primary>
+                        <a id="href" href="/briefcase">
                             <paper-icon-button noink class="menu" style="color: white;" icon="my-icons:arrow-back"></paper-icon-button>
                         </a>
-                        <div main-title>{{referenceLabel}} {{applicationKey}}</div>
+                        <div main-title>Edit Briefcase {{reference}}</div>
+                        <paper-icon-button icon="my-icons:delete-forever" on-tap="_openDeleteDialog"></paper-icon-button>
                         <paper-icon-button drawer-toggle icon="my-icons:menu"></paper-icon-button>
-                        <!-- <paper-icon-button icon="my-icons:more-vert" on-tap="toggleDrawer"></paper-icon-button> -->
                     </app-toolbar>
-
                 </app-header>
 
                 <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
                     <neon-animatable>
-                        <!-- for current Transaction Keys data -->
-                        <firebase-document id="transactionFire" path="/briefcasedraft/{{accountKey}}/{{transactionKey}}" data="{{transactionData}}"
-                            disabled="true"></firebase-document>
+                        <firebase-document path="/lots/{{fullLot}}" data="{{fullLotData}}"></firebase-document>
+                        <div style="padding: 16px">
+                            <paper-card style="width: 100%">
+                                <div class="card-content">
+                                    <div class="docu-header">1. Lot Details</div>
+                                    <div class="docu-content">
+                                        <div style="display: flex">
+                                            <paper-input always-float-label label="Block" value="{{block}}" style="margin-right: 8px"></paper-input>
+                                            <paper-input always-float-label label="Lot" value="{{lot}}" style="margin-right: 8px"></paper-input>
+                                            <paper-input always-float-label label="Level" value="{{level}}"></paper-input>
+                                        </div>
+                                    </div>
 
-                        <!-- for Lot Details when entering Block, Lot, Level -->
-                        <firebase-document id="lotFire" path="/lots/{{fullLot}}" data="{{fullLotData}}" disabled="true"></firebase-document>
+                                    <template is="dom-if" if="{{fulllotCard}}">
+                                        <paper-card style="width: 100%">
+                                            <template is="dom-if" if="{{noRecord}}">
+                                                <div class="card-content">
+                                                    <div style="text-align: center">No record found..</div>
+                                                </div>
+                                            </template>
 
-                        <!-- for corresponding Selected Transaction Color Hold, Reserve, Buy -->
-                        <firebase-document id="fdColor" disabled="true"></firebase-document>
-
-                        <!-- to get the last Applications filed, will be use to compare MIN and MAX Start Date -->
-                        <firebase-query id="otherApplicationFire" path="/briefcasedraft" order-by-child='lot' equal-to='{{fullLot}}' limit-to-last=1
-                            data="{{lastApplication}}" disabled="true"></firebase-query>
-
-                        <!-- to check if there is current reservation not yet isexpired or not yet served -->
-                        <firebase-query id="reservationsFire" path="/reservations/{{origFullLot}}" limit-to-last=3 data="{{lastTwoReservation}}"
-                            disabled="true"></firebase-query>
-
-                        <firebase-query id="lastReservationFire" path="/reservations/{{fullLot}}" order-by-child='iscurrent' equal-to='true' limit-to-last=1
-                            data="{{lastReservation}}" disabled="true"></firebase-query>
-
-                        <firebase-query path="/agents" order-by-child='cellphone' equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1
-                            data="{{agentsList}}"></firebase-query>
-
-                        <div class="docu">
-
-                            <div class="docu-header">
-                                <span>1. Lot Details</span>
-                            </div>
-                            <div class="details">
-                                <paper-input label="Block" required="true" auto-validate="true" always-float-label value="{{block}}" style="display: inline-block; width: 20%;"></paper-input>
-                                <paper-input label="Lot" required="true" auto-validate="true" always-float-label value="{{lot}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
-                                <paper-input label="Level" always-float-label value="{{level}}" style="display: inline-block; width: 20%; padding-left: 2px;"></paper-input>
-
-                                <paper-spinner id="spinnerDetails" alt="Getting details...." style="height: 20px; width: 20px;--paper-spinner-stroke-width: 2px;"></paper-spinner>
-
-                                <div id="errorMsgDiv" style="display: none; color:red; ">
-                                    <iron-icon icon="my-icons:error-outline"></iron-icon>&nbsp;{{validationMessage}}
+                                            <template is="dom-if" if="{{!noRecord}}">
+                                                <div style$="padding:16px; background-color: {{fullLotData.maprenderdetails.type_bg_color}}; color:{{fullLotData.maprenderdetails.type_fore_color}}">
+                                                    <span style$="padding: 4px; background-color:{{fullLotData.maprenderdetails.bg_color}}; color:{{fullLotData.maprenderdetails.fore_color}}">
+                                                        {{fullLotData.maprenderdetails.status_name}}
+                                                    </span><br>
+                                                    <div style="font-size: 24px;">{{_formatLot(fullLotData.block, fullLotData.lot,
+                                                        fullLotData.level)}}
+                                                    </div>
+                                                    <div style="font-size: 12px">{{fullLotData.maprenderdetails.type_name}}
+                                                        - {{fullLotData.area}} - {{fullLotData.designation}}</div>
+                                                </div>
+                                            </template>
+                                        </paper-card>
+                                    </template>
                                 </div>
-
-                                <paper-card id="stepOneCard" heading="" style="width:100%; margin-top: 16px; display: none;">
-                                    <div id="cardcontentlotDetails" class="card-content" style="height: 48px; background-color: rgb(122, 122, 122); color: white;">
-                                        <div style="position: absolute; padding-left: 16px; bottom: 5px; left: 0px; font-weight: 400; font-size: 20px;">
-                                            [[fullLotName]]
-                                        </div>
-                                    </div>
-                                    <div class="card-content" style="top: -4px;">
-                                        <div style="display: inline-block; padding-right: 24px;">
-                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{areaLabel}}</div>
-                                            <span style="font-weight: 400;">
-                                                [[fullLotData.area]]
-                                            </span>
-                                        </div>
-
-                                        <div style="display: inline-block; padding-left: 24px; padding-right: 24px;">
-                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{designationLabel}}</div>
-                                            <span style="font-weight: 400;">
-                                                [[fullLotData.maprenderdetails.designation_name]]
-                                            </span>
-                                        </div>
-
-                                        <!-- style="padding-top: 8px;" -->
-                                        <div style="padding-top: 5px;">
-                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{typeLabel}}</div>
-                                            <span style="font-weight: 400;">
-                                                [[fullLotData.maprenderdetails.type_name]]
-                                            </span>
-                                        </div>
-
-                                        <!-- style="padding-top: 8px;" -->
-                                        <div style="padding-top: 5px;">
-                                            <div style="font-size: 12px; color: darkgray;margin-bottom: -.3em">{{statusLabel}}</div>
-                                            <span style="font-weight: 400;" id="statusValue">
-                                                [[fullLotData.maprenderdetails.status_name]]
-                                            </span>
-                                        </div>
-
-                                    </div>
-
-                                    </br>
-                                    <div id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
-                                        <div id="start">
-                                            <!-- <span style="color: blue;">Date:</span> -->
-                                            <!-- <datetime-picker class="begin" datetime={{draftdata_start}} hour12="true"></datetime-picker> -->
-
-                                            <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
-                                            <!-- <titanium-date-input style="display: inline-block; width: 100px;" value="{{startDateValue}}"></titanium-date-input>
-                                                <paper-time-input hide-label="true" style="display:inline-block;" hour="{{startTimeHour}}" min="{{startTimeMinute}}" am-pm="{{startTimeAMPM}}" value="{{startTimeValue}}"></paper-time-input> -->
-                                            <paper-input id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}" type="datetime-local"
-                                                no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"
-                                                readonly></paper-input>
-
-                                        </div>
-
-
-                                    </div>
-                                </paper-card>
-
-                            </div>
+                            </paper-card>
                         </div>
                     </neon-animatable>
-
                     <neon-animatable>
-                        <firebase-query path="/buyers" order-by-child='cellphone' equal-to='{{draftdata_buyerdetails_cellphone}}' limit-to-first=1
-                            data="{{buyersList}}"></firebase-query>
-
-                        <div class="docu">
-                            <div class="docu-header">2. Buyer's Information</div>
-                            <div class="details">
-                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No." value="{{draftdata_buyerdetails_cellphone}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_buyerdetails_firstname}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_buyerdetails_middlename}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_buyerdetails_lastname}}"></paper-input>
-                                <paper-input always-float-label="true" label="Suffix" value="{{draftdata_buyerdetails_suffix}}"></paper-input>
-                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_buyerdetails_email}}"></paper-input>
-                            </div>
+                        <firebase-query path="buyers" order-by-child="cellphone" equal-to="{{cellphoneNum}}" limit-to-first="1" data="{{buyersData}}"></firebase-query>
+                        <div style="padding: 16px">
+                            <paper-card style="width: 100%">
+                                <div class="card-content">
+                                    <div class="docu-header">2. Buyer's Information</div>
+                                    <div class="docu-content">
+                                        <paper-input label="Cellphone*" always-float-label value="{{cellphoneNum}}"></paper-input>
+                                        <paper-input label="Firstname*" always-float-label value="{{firstname}}"></paper-input>
+                                        <paper-input label="Middlename*" always-float-label value="{{middlename}}"></paper-input>
+                                        <paper-input label="Lastname*" always-float-label value="{{lastname}}"></paper-input>
+                                        <paper-input label="Suffix" always-float-label value="{{suffix}}"></paper-input>
+                                        <paper-input label="email" always-float-label value="{{email}}"></paper-input>
+                                    </div>
+                                </div>
+                            </paper-card>
                         </div>
                     </neon-animatable>
-
                     <neon-animatable>
-                        <div class="docu">
-                            <div class="docu-header">3. Finalize</div>
-                            <div class="details">
-                                <div>Please review the following details:</div>
-                                <div>
-                                    <div style="background-color: dimgrey; color:white; padding:5px">
-                                        Lot Details
+                        <div style="padding: 16px">
+                            <paper-card style="width: 100%">
+                                <div class="card-content">
+                                    <div class="docu-header">3. Finalize</div>
+                                    <div class="docu-content">
+                                        <paper-card style="width: 100%">
+                                            <div style$="padding:16px; background-color: {{fullLotData.maprenderdetails.type_bg_color}}; color:{{fullLotData.maprenderdetails.type_fore_color}}">
+                                                <span style$="padding: 4px; background-color:{{fullLotData.maprenderdetails.bg_color}}; color:{{fullLotData.maprenderdetails.fore_color}}">
+                                                    {{fullLotData.maprenderdetails.status_name}}
+                                                </span><br>
+                                                <div style="font-size: 24px;">{{_formatLot(fullLotData.block, fullLotData.lot,
+                                                    fullLotData.level)}}
+                                                </div>
+                                                <div style="font-size: 12px">{{fullLotData.maprenderdetails.type_name}} -
+                                                    {{fullLotData.area}} - {{fullLotData.designation}}</div>
+                                            </div>
+                                            <div class="card-content">
+                                                <div style="color: gray">Buyer's Details</div>
+                                                <div>
+                                                    <table>
+                                                        <tr>
+                                                            <td style="font-size: 12px">Name:</td>
+                                                            <td>{{_formatName(firstname, middlename, lastname, suffix)}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="font-size: 12px">Cellphone:</td>
+                                                            <td>{{_check(cellphoneNum)}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="font-size: 12px">Email:</td>
+                                                            <td>{{_check(email)}}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div style="color: gray">Agent's Details</div>
+                                                <div>
+                                                    <table>
+                                                        <tr>
+                                                            <td style="font-size: 12px">Name:</td>
+                                                            <td>{{_formatName(agent_firstname, agent_middlename, agent_lastname,
+                                                                agent_suffix)}}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="font-size: 12px">Cellphone:</td>
+                                                            <td>{{_check(agent_cellphoneNum)}}</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="font-size: 12px">Email:</td>
+                                                            <td>{{_check(agent_email)}}</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </paper-card>
                                     </div>
-                                    <div>Block: {{block}}</div>
-                                    <div>Lot: {{lot}}</div>
-                                    <div>Level: {{level}}</div>
-                                    <div>Area: {{fullLotData.area}}</div>
-                                    <div>Designation: {{fullLotData.maprenderdetails.designation_name}}</div>
-                                    <div>Type: {{fullLotData.maprenderdetails.type_name}}</div>
-                                    <div>Transaction: {{draftdata_type}}</div>
-                                    <div>Start: {{startDateTimeValue}}</div>
-                                    <div>Expires: {{expiryDate}}</div>
                                 </div>
-                                <div>
-                                    <div style="background-color: dimgrey; color:white; padding:5px">
-                                        Buyer Information
-                                    </div>
-                                    <div>First Name: {{draftdata_buyerdetails_firstname}}</div>
-                                    <div>Middle Name: {{draftdata_buyerdetails_middlename}}</div>
-                                    <div>Last Name: {{draftdata_buyerdetails_lastname}}</div>
-                                    <div>Suffix: {{draftdata_buyerdetails_suffix}}</div>
-                                    <div>Cellphone: {{draftdata_buyerdetails_cellphone}}</div>
-                                    <div>Email: {{draftdata_buyerdetails_email}}</div>
-                                </div>
-                                <div>
-                                    <div style="background-color: dimgrey; color:white; padding:5px">
-                                        Agent Information
-                                    </div>
-                                    <div>First Name: {{draftdata_agentdetails_firstname}}</div>
-                                    <div>Middle Name: {{draftdata_agentdetails_middlename}}</div>
-                                    <div>Last Name: {{draftdata_agentdetails_lastname}}</div>
-                                    <div>Suffix: {{draftdata_agentdetails_suffix}}</div>
-                                    <div>Cellphone: {{draftdata_agentdetails_cellphone}}</div>
-                                    <div>Email: {{draftdata_agentdetails_email}}</div>
-                                </div>
-                            </div>
+                            </paper-card>
                         </div>
                     </neon-animatable>
-
                     <neon-animatable>
-                        <div class="docu">
-                            <div class="docu-header">4. Completed</div>
-
-                            <div class="details">
-                                <paper-item>
-                                    <paper-item-body>
-                                        <div id="saveSuccess" style="display: none; color: green;">Application saved. Ref. {{applicationKey}}</div>
-                                        <div id="saveFailed" style="display: none; color: red;">Error updating data. {{saveErrorDetails}}</div>
-                                    </paper-item-body>
-                                </paper-item>
-
-                            </div>
+                        <div style="padding: 16px">
+                            <paper-card style="width: 100%">
+                                <div class="card-content">
+                                    <div class="docu-header">4. Complete</div>
+                                    <div class="docu-content">
+                                        <div style="text-align:center; color: green" id="msg">{{MSG}} <span style="font-weight: bold">"{{briefcaseRef}}"</span></div>
+                                    </div>
+                                </div>
+                            </paper-card>
+                        </div>
+                    </neon-animatable>
+                    <neon-animatable>
+                        <div style="padding: 16px">
+                            <paper-card style="width: 100%">
+                                <div class="card-content">four
+                                </div>
+                            </paper-card>
                         </div>
                     </neon-animatable>
                 </neon-animated-pages>
@@ -381,996 +286,243 @@
             </app-header-layout>
 
             <div class="footer">
-                <div hidden$="[[favlefthide]]">
-                    <paper-fab id="favleft" class="paper-fab-0" icon="my-icons:chevron-left" on-tap="_select1"></paper-fab>
-                </div>
-                <div hidden$="[[favrighthide]]">
-                    <paper-fab style="background: #1976d2;" id="favright" class="paper-fab-1" icon="my-icons:chevron-right" on-tap="_select2"></paper-fab>
-                </div>
+                <template is="dom-if" if="{{back}}">
+                    <paper-fab id="favBack" icon="my-icons:chevron-left" on-tap="_back"></paper-fab>
+                </template>
+                <template is="dom-if" if="{{next}}">
+                    <paper-fab id="favNext" icon="my-icons:chevron-right" on-tap="_next"></paper-fab>
+                </template>
             </div>
 
-
+            <paper-dialog id="deleteDialog">
+                <div style="text-align: center; padding: 16px"><p><h3>Delete this application?</h3></p></div>
+                <div class="buttons">
+                    <paper-button dialog-dismiss>Cancel</paper-button>
+                    <paper-button dialog-confirm autofocus on-tap="_deleteThis">Delete</paper-button>
+                </div>
+            </paper-dialog>
 
         </app-drawer-layout>
 
     </template>
-
     <script>
         Polymer({
             is: 'my-briefcase-edit',
 
             properties: {
-                blocklot: String,
-                details: Object,
+                transactionKey: String,
                 accountKey: String,
-                narrow: {
-                    type: Boolean,
-                    notify: true
-                },
-                selectedPage: Number,
-                entryanimation: {
-                    type: String,
-                    value: "slide-from-right-animation"
-                },
-                exitanimation: {
-                    type: String,
-                    value: "slide-left-animation"
-                },
-                route: Object,
-
-                routeData: Object,
-                lotdetailsAPP: {
-                    type: Object,
-                    observer: '_ldChanged'
-                },
-                reservationdetailsAPP: {
-                    type: Object,
-                    observer: '_rdChanged'
-                },
-                favlefthide: {
-                    type: Boolean,
-                    value: true
-                },
-                favrighthide: {
-                    type: Boolean,
-                    value: true
-                },
-                block: {
-                    type: String,
-                    // value: '',
-                    observer: 'blocklotplotChanged'
-                },
-                lot: {
-                    type: String,
-                    // value: '',
-                    observer: 'blocklotplotChanged'
-                },
-                level: {
-                    type: String,
-                    // value: '',
-                    observer: 'blocklotplotChanged'
-                },
-                fullLot: String,
-                fullLotData: {
-                    type: Object,
-                },
-                path: String,
-                newdata: Object,
-                buyersList: {
-                    type: Object,
-                    value: null,
-                    notify: true,
-                    observer: 'buyersListChanged'
-                },
-                agentsList: {
-                    type: Object,
-                    observer: 'agentsListChanged'
-                },
-                buyerKey: {
-                    type: String,
-                    value: ''
-                },
-                agentKey: {
-                    type: String,
-                    value: ''
-                },
-                expiryDate: String,
-                isStartDateTimeInvalidGlobal: Boolean,
-                applicationKey: {
-                    type: String,
-                    value: ''
-                },
-                transTypeCorrespondingColor: Object,
-                transactionKey: {
-                    type: String,
-                    value: '',
-                    observer: 'transactionKeyChanged'
-                },
                 transactionData: {
                     type: Array,
                     observer: 'transactionDataChanged'
                 },
-                transTypeChange: {
+                selectedPage: {
+                    type: Number,
+                    value: 0
+                },
+                back: {
                     type: Boolean,
                     value: false
                 },
-                origFullLot: String
-
+                next: {
+                    type: Boolean,
+                    value: false
+                },
             },
 
             observers: [
-                'fulllotDataChanged(fullLotData.*)',
-                'draftdatatypeChanged(draftdata_type.*)',
-                'startDateTimeValueChanged(startDateTimeValue,expiryHoursDaysValue)',
-                'draftdata_buyerdetails_cellphoneChanged(draftdata_buyerdetails_cellphone,draftdata_buyerdetails_firstname,draftdata_buyerdetails_middlename,draftdata_buyerdetails_lastname)',
-                'draftdata_agentdetails_cellphoneChanged(draftdata_agentdetails_cellphone,draftdata_agentdetails_firstname,draftdata_agentdetails_middlename,draftdata_agentdetails_lastname)',
-                'lastApplicationChanged(lastApplication.*)',
-                'isStartDateTimeInvalidChanged(isStartDateTimeInvalid.*)',
-
+                '_transactionKeyChanged(transactionKey)',
+                '_blocklotlevelChanged(block, lot, level)',
+                '_fullLotDataChanged(fullLotData.*)',
+                '_buyersDataChanged(buyersData)',
+                '_selectedPageChanged(selectedPage, fullLotData, cellphoneNum, firstname, middlename, lastname)'
             ],
 
-            deleteApplicationOpen() {
-                this.$.deleteApplicationPD.open();
+            transactionDataChanged(e) {
+                if (Object.keys(e).length > 0) {
+                    this.block = e.lotdetails.block;
+                    this.lot = e.lotdetails.lot;
+                    this.level = e.lotdetails.level;
+
+                    this.buyerKey = e.buyer;
+                    this.firstname = e.buyerdetails.firstname;
+                    this.middlename = e.buyerdetails.middlename;
+                    this.lastname = e.buyerdetails.lastname;
+                    this.suffix = e.buyerdetails.suffix;
+                    this.cellphoneNum = e.buyerdetails.cellphone;
+                    this.email = e.buyerdetails.email;
+
+                    this.agentKey = e.agent;
+                    this.agent_firstname = e.agentdetails.firstname;
+                    this.agent_middlename = e.agentdetails.middlename;
+                    this.agent_lastname = e.agentdetails.lastname;
+                    this.agent_suffix = e.agentdetails.suffix;
+                    this.agent_cellphoneNum = e.agentdetails.cellphone;
+                    this.agent_email = e.agentdetails.email;
+
+                    this.reference = e.reference;
+                    this.briefcasedetails = e.briefcasedetails;
+                }
             },
 
-            deleteApplication() {
-                var db = firebase.database().ref('briefcasedraft').child(this.accountKey).child(this.transactionKey).remove();
-                window.location = 'briefcase';
-
-            },
-
-            transactionKeyChanged() {
-
+            _transactionKeyChanged(e) {
                 this.$.appheader.resetLayout();
-
-                if (this.transactionKey) {
-                    this.$.idd.disabled = false;
-                    this.$.transactionFire.disabled = false;
-                    this.$.lotFire.disabled = false;
-                    this.$.fdColor.disabled = false;
-                    this.$.otherApplicationFire.disabled = false;
-                    this.$.reservationsFire.disabled = false;
-                    this.$.lastReservationFire.disabled = false;
-
-                }
             },
 
-            transactionDataChanged() {
-                if (Object.keys(this.transactionData).length > 0) {
-                    // console.log(this.transactionData);
-                    this.origFullLot = 'block' + this.transactionData.lotdetails.block + 'lot' + this.transactionData.lotdetails.lot + (this.transactionData.lotdetails.level ? 'level' + this.transactionData.lotdetails.level : '');
-
-                    this.applicationKey = this.transactionData.reference;
-                    if (this.transactionData.lotdetails) {
-                        this.block = this.transactionData.lotdetails.block;
-                        this.lot = this.transactionData.lotdetails.lot;
-                        this.level = this.transactionData.lotdetails.level;
-                    }
-
-                    var serverdatetime = firebase.database().ref("info/serverdatetime");
-                    serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
-                    serverdatetime.once('value').then(snapshot => {
-                        var ddate = new Date(snapshot.val());
-
-                        this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
-                            + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
-
-                        this.expiryDate = this.transactionData.expiry;
-                    });
-                    // this.minStartDateTime = this.transactionData.start; // still to determine
-                    // this.maxStartDateTime = this.transactionData.expiry; // still to determine
-
-                    var xdate = new Date(this.transactionData.expiry);
-                    this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-
-                    var sdate = new Date(this.transactionData.start);
-                    var ddate = xdate.getTime() - sdate.getTime();
-                    this.expiryHoursDaysValue = ddate / (this.transactionData.type === 'Hold' ? (1000 * 60 * 60) : this.transactionData.type === 'Reserve' ? (1000 * 60 * 60 * 24) : 0); //in hours & in days
-                    this.expiryHoursDaysLabel = (this.transactionData.type === 'Hold' ? 'hours' : this.transactionData.type === 'Reserve' ? 'days' : '');
-                    this.draftdata_type = this.transactionData.type;
-
-                    var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
-                    showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
-
-                    // var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
-                    // showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
-
-
-                    this.buyerKey = this.transactionData.buyer;
-                    this.draftdata_buyerdetails_cellphone = this.transactionData.buyerdetails.cellphone;
-                    this.draftdata_buyerdetails_firstname = this.transactionData.buyerdetails.firstname;
-                    this.draftdata_buyerdetails_middlename = this.transactionData.buyerdetails.middlename;
-                    this.draftdata_buyerdetails_lastname = this.transactionData.buyerdetails.lastname;
-                    this.draftdata_buyerdetails_suffix = this.transactionData.buyerdetails.suffix;
-                    this.draftdata_buyerdetails_email = this.transactionData.buyerdetails.email;
-
-                    this.agentKey = this.transactionData.agent;
-                    this.draftdata_agentdetails_cellphone = this.transactionData.agentdetails.cellphone;
-                    this.draftdata_agentdetails_firstname = this.transactionData.agentdetails.firstname;
-                    this.draftdata_agentdetails_middlename = this.transactionData.agentdetails.middlename;
-                    this.draftdata_agentdetails_lastname = this.transactionData.agentdetails.lastname;
-                    this.draftdata_agentdetails_suffix = this.transactionData.agentdetails.suffix;
-                    this.draftdata_agentdetails_email = this.transactionData.agentdetails.email;
-
-                    if (typeof (this.transTypeCorrespondingColor) == 'undefined') {
-                        var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + (this.transactionData.type == 'Reserve' ? 'reserved' : (this.transactionData.type == 'Hold' ? 'hold' : (this.transactionData.type == 'Buy' ? 'sold' : ''))));
-                        corresStatusColorRef.on('value', statusColor => {
-                            if (statusColor.exists()) {
-                                this.transTypeCorrespondingColor = statusColor.val()
-                                // console.log(this.transTypeCorrespondingColor);
-                            }
-                        });
-                    }
-                }
-
+            guid() {
+                var uid = new ShortUniqueId();
+                return uid.randomUUID(6);
             },
 
-            isStartDateTimeInvalidChanged() {
-                this.favrighthide = this.isStartDateTimeInvalid;
-                this.isStartDateTimeInvalidGlobal = this.isStartDateTimeInvalid;
-                // console.log(this.isStartDateTimeInvalid);
-            },
-
-            lastApplicationChanged() {
-                //loop thru the applications, get Previous and Next of the Current Transaction Key
-                if (this.lastApplication[0]) {
-
-                    if (this.lastApplication[0].$key == this.transactionKey) {
-                        // console.log(this.lastApplication[0].$key)
-
-                        //min start = start
-                        if (this.transactionData.start) {
-                            this.minStartDateTime = this.transactionData.start;
-                            this.maxStartDateTime = '';
-
-                            if (this.startDateTimeValue) {
-                                var startDTV = new Date(this.startDateTimeValue);
-                                var minStartDT = new Date(this.minStartDateTime);
-                                if (startDTV >= minStartDT) {
-                                    this.isStartDateTimeInvalidGlobal = false;
-                                }
-                                else {
-                                    this.isStartDateTimeInvalidGlobal = true;
-                                }
-                            }
-                        }
-                        else {
-                            this.minStartDateTime = '';
-                            this.maxStartDateTime = '';
-                        }
-                    }
-                    else {
-                        //min start = expiry
-                        if (this.transactionData.start) {
-                            this.minStartDateTime = this.transactionData.start;
-                            this.maxStartDateTime = this.transactionData.expiry;
-
-                            if (this.startDateTimeValue) {
-                                var startDTV = new Date(this.startDateTimeValue);
-                                var minStartDT = new Date(this.minStartDateTime);
-                                var maxStartDT = new Date(this.maxStartDateTime);
-                                if (startDTV >= minStartDT && startDTV <= maxStartDT) {
-                                    this.isStartDateTimeInvalidGlobal = false;
-                                }
-                                else {
-                                    this.isStartDateTimeInvalidGlobal = true;
-                                }
-                            }
-                        }
-                        else {
-                            this.minStartDateTime = '';
-                            this.maxStartDateTime = '';
-                        }
-                    }
-
-                }
-                else {
-                    this.minStartDateTime = '';
-                    this.maxStartDateTime = '';
-                }
-
-                // console.log(this.lastApplication[0]);
-
-            },
-
-            _getPrevRoute() {
-                return this.prevRoute || '/briefcase'
-            },
-
-            draftdata_buyerdetails_cellphoneChanged() {
-                if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname) {
-                    this.favrighthide = false;
-                }
-                else {
-                    this.favrighthide = true;
-                }
-            },
-
-            draftdata_agentdetails_cellphoneChanged() {
-                if (this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
-                    this.favrighthide = false;
-                }
-                else {
-                    this.favrighthide = true;
-                }
-            },
-
-            startDateTimeValueChanged() {
-                if (this.draftdata_type === 'Reserve') {
-                    var xdate = new Date(this.$.startDateTimeValueV.value);
-                    xdate.setDate(xdate.getDate() + Number(this.expiryHoursDaysValue));
-                    this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-                    this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
-                        + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-
-                    if (this.maxStartDateTime) {
-                        var maxSDate = new Date(this.maxStartDateTime);
-                        if (xdate <= maxSDate) {
-                            this.isStartDateTimeInvalid = false;
-                        }
-                        else {
-                            this.isStartDateTimeInvalid = true;
-                        }
-                    }
-                }
-                else if (this.draftdata_type === 'Hold') {
-                    var xdate = new Date(this.$.startDateTimeValueV.value);
-                    xdate.setHours(xdate.getHours() + Number(this.expiryHoursDaysValue));
-                    this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-                    this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
-                        + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-
-                    if (this.maxStartDateTime) {
-                        var maxSDate = new Date(this.maxStartDateTime);
-                        if (xdate <= maxSDate) {
-                            this.isStartDateTimeInvalid = false;
-                        }
-                        else {
-                            this.isStartDateTimeInvalid = true;
-                        }
-                    }
-                }
-                else if (this.draftdata_type === 'Buy') {
-                    this.expiryDate = '';
-
-                    // this.isStartDateTimeInvalidGlobal = false;
-
-                }
-
-                if (this.$.startDateTimeValueV.value) {
-                    if (this.isStartDateTimeInvalid === true) {
-                        this.favrighthide = true;
-                    }
-                    else {
-                        this.favrighthide = false;
-                    }
-                }
-                else {
-                    this.favrighthide = true;
-                }
-
-            },
-
-            draftdatatypeChanged(e) {
-                if (this.transTypeChange === true) {
-                    if (e) {
-                        if (this.isStartDateTimeInvalid === true) {
-                            this.favrighthide = true;
-                        }
-                        else {
-                            this.favrighthide = false;
-                        }
-                    }
-                    else {
-                        this.favrighthide = true;
-                    }
-                }
-            },
-
-            buyersListChanged(e) {
-                if (e) {
-                    if (e.length > 0) {
-                        this.buyerKey = e[0].$key;
-                        this.draftdata_buyerdetails_firstname = e[0].firstname;
-                        this.draftdata_buyerdetails_middlename = e[0].middlename;
-                        this.draftdata_buyerdetails_lastname = e[0].lastname;
-                        this.draftdata_buyerdetails_suffix = e[0].suffix;
-                        this.draftdata_buyerdetails_email = e[0].email;
-                    }
-                    else {
-                        this.buyerKey = '';
-                    }
-                }
-                else {
-                    this.buyerKey = '';
-                }
-            },
-
-            agentsListChanged(e) {
-                // console.log(e)
-                // if (e) {
-                if (e.length > 0) {
-                    this.agentKey = e[0].$key;
-                    this.draftdata_agentdetails_firstname = e[0].firstname;
-                    this.draftdata_agentdetails_middlename = e[0].middlename;
-                    this.draftdata_agentdetails_lastname = e[0].lastname;
-                    this.draftdata_agentdetails_suffix = e[0].suffix;
-                    this.draftdata_agentdetails_email = e[0].email;
-                    // console.log(this.agentKey);
-                }
-                // else {
-                //     this.agentKey = '';
-                // }
-                // }
-                // else {
-                //     this.agentKey = '';
-                // }
-            },
-
-            selectReserve() {
-                var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
-                showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
-
-                var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
-                showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
-
-                var ddate = new Date();
-                this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
-                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
-                this.expiryHoursDaysLabel = "days";
-                this.expiryHoursDaysValue = 30;
-                var xdate = new Date(this.$.startDateTimeValueV.value);
-                xdate.setDate(xdate.getDate() + this.expiryHoursDaysValue);
-                this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-
-                this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
-                    + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-
-
-                //get color
-                var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/reserved');
-                transTypeCorrespondingColorRef.on('value', snapshot => {
-                    if (snapshot) {
-                        this.transTypeCorrespondingColor = snapshot.val()
-                    }
-                });
-
-                this.transTypeChange = true;
-
-            },
-            selectHold() {
-                var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
-                showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
-
-                var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
-                showExpiry.setAttribute("style", "display: block; padding-top: 8px; position: relative;");
-
-                var ddate = new Date();
-                this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
-                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
-                this.expiryHoursDaysLabel = "hours";
-                this.expiryHoursDaysValue = 24;
-                var xdate = new Date(this.$.startDateTimeValueV.value);
-                xdate.setHours(xdate.getHours() + this.expiryHoursDaysValue);
-                this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-
-                this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
-                    + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-
-                //get color
-                var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/hold');
-                transTypeCorrespondingColorRef.on('value', snapshot => {
-                    if (snapshot.exists()) {
-                        this.transTypeCorrespondingColor = snapshot.val()
-                    }
-                });
-
-                this.transTypeChange = true;
-            },
-            selectBuy() {
-                var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
-                showStartExpiry.setAttribute("style", "background-color: whitesmoke; padding: 16px; display: block");
-
-                var hideExpiry = Polymer.dom(this.root).querySelector("#expiry");
-                hideExpiry.setAttribute("style", "display: none;");
-
-                this.set('draftdata.expiry', '');
-
-                var ddate = new Date();
-                this.startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
-                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
-
-                this.expiryDate = '';
-
-                //get color
-                var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/sold');
-                transTypeCorrespondingColorRef.on('value', snapshot => {
-                    if (snapshot) {
-                        this.transTypeCorrespondingColor = snapshot.val()
-                    }
-                });
-
-                this.transTypeChange = true;
-            },
-
-            getpath() {
-                this.applicationKey = this.guid();
-                this.path = 'briefcasedraft/' + this.applicationKey;
-                return this.path;
-            },
-
-            fulllotDataChanged() {
-                if (this.fullLotData) {
-                    if (this.fullLotData.inventoriable == "yes") {
-
-                        if (this.fullLotData.lot) {
-                            var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-                            spinnerDetails.active = false;
-                            //ok we have value
-                            var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
-                            errormsg.setAttribute("style", "display: none;");
-
-                            var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
-                            cardcontentlotDetails.setAttribute("style", "height: 48px; background-color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_bg_color : "rgb(122, 122, 122)") + "; color: " + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.type_fore_color : "white") + ";");
-
-                            this.fullLotName = "Block " + this.fullLotData.block + " - Lot " + this.fullLotData.lot + (this.fullLotData.level ? " - Level " + this.fullLotData.level : "");
-                            this.areaLabel = this.fullLotData.area ? "Area" : "";
-                            this.designationLabel = this.fullLotData.designation ? "Designation" : "";
-                            this.typeLabel = this.fullLotData.type ? "Type" : "";
-                            this.statusLabel = this.fullLotData.status ? "Current Status" : "";
-
-                            var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
-                            statusValue.setAttribute("style", "font-weight: 400; color:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.fore_color : "black") + "; background:" + (this.fullLotData.maprenderdetails ? this.fullLotData.maprenderdetails.bg_color : "gray") + "; border-radius: 2px; padding-left: 2px;padding-right: 2px;");
-
-                            var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
-                            stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: block;");
-
-
-                            var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
-                            if (this.fullLotData.status == 'available') { // || this.fullLotData.status == 'hold' || this.fullLotData.status == 'reserved'
-                                // cardActions.setAttribute("style", "display: block;");
-
-                                if (this.draftdata_type) {
-                                    this.favrighthide = false;
-                                }
-                                else {
-                                    this.favrighthide = false;
-                                }
-
-
-                            }
-                            else {
-                                if (this.fullLot != this.origFullLot) {
-                                    // cardActions.setAttribute("style", "display: none;");
-                                    this.favrighthide = true;
-                                }
-                                else {
-                                    if (this.transTypeChange === true) {
-                                        // cardActions.setAttribute("style", "display: none;");
-                                        this.favrighthide = true;
-                                    }
-                                    else {
-                                        // cardActions.setAttribute("style", "display: block;");
-                                        this.favrighthide = false;
-                                        if (this.fullLotData.status == 'sold' || this.fullLotData.status == 'soldlacking') {
-                                            var showExpiry = Polymer.dom(this.root).querySelector("#expiry");
-                                            showExpiry.setAttribute("style", "display: none; padding-top: 8px; position: relative;");
-                                        }
-                                    }
-                                }
-                            }
-
-
-                            this.referenceLabel = 'Ref.';
-
-
-                        }
-                        else {
-                            if (this.fullLot) {
-                                var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-                                spinnerDetails.active = false;
-
-                                var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
-                                errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
-                                this.validationMessage = 'Not found!';
-
-                                var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
-                                cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
-
-                                var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
-                                stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
-
-                                this.fullLotName = "";
-                                this.areaLabel = "";
-                                this.designationLabel = "";
-                                this.typeLabel = "";
-                                this.statusLabel = "";
-
-                                var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
-                                statusValue.setAttribute("style", "font-weight: 400;");
-
-                                // var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
-                                // cardActions.setAttribute("style", "display: none;");
-
-                                this.favrighthide = true;
-
-                                this.referenceLabel = 'Not found!'
-                            }
-                        }
-
-                    }
-                    else {
-                        if (this.fullLot) {
-                            var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-                            spinnerDetails.active = false;
-
-                            var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
-                            errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
-                            this.validationMessage = 'Not found!';
-
-                            var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
-                            cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
-
-                            var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
-                            stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
-
-                            this.fullLotName = "";
-                            this.areaLabel = "";
-                            this.designationLabel = "";
-                            this.typeLabel = "";
-                            this.statusLabel = "";
-
-                            var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
-                            statusValue.setAttribute("style", "font-weight: 400;");
-
-                            // var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
-                            // cardActions.setAttribute("style", "display: none;");
-
-                            this.favrighthide = true;
-
-                            this.referenceLabel = 'Not found!'
-                        }
-                    }
-
-                }
-                else {
-                    if (this.fullLot) {
-
-                        var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-                        spinnerDetails.active = false;
-
-                        var errormsg = Polymer.dom(this.root).querySelector("#errorMsgDiv");
-                        errormsg.setAttribute("style", "display: inline-block;color:red;font-size: 12px;");
-                        this.validationMessage = 'Not found!';
-
-                        var cardcontentlotDetails = Polymer.dom(this.root).querySelector("#cardcontentlotDetails");
-                        cardcontentlotDetails.setAttribute("style", "height: 48px; background-color: rgb(122, 122, 122); color: white;");
-
-                        var stepOneCard = Polymer.dom(this.root).querySelector("#stepOneCard");
-                        stepOneCard.setAttribute("style", "width:100%; margin-top: 16px; display: none;");
-
-                        this.fullLotName = "";
-                        this.areaLabel = "";
-                        this.designationLabel = "";
-                        this.typeLabel = "";
-                        this.statusLabel = "";
-
-                        var statusValue = Polymer.dom(this.root).querySelector("#statusValue");
-                        statusValue.setAttribute("style", "font-weight: 400;");
-
-                        var cardActions = Polymer.dom(this.root).querySelector("#cardActions");
-                        cardActions.setAttribute("style", "display: none;");
-
-                        this.favrighthide = true;
-
-                        this.referenceLabel = 'Not found!'
-                    }
-
-
-                }
-            },
-
-            blocklotplotChanged() {
-                if (this.block) { this.block = this.block.toString().toUpperCase(); }
-                if (this.lot) { this.lot = this.lot.toString().toUpperCase(); }
-                if (this.level) { this.level = this.level.toString().toLowerCase(); }
+            _blocklotlevelChanged(block, lot, level) {
+                if (block || lot || level) { this.fulllotCard = true; }
+                else { this.fulllotCard = false; }
+
+                if (block) { this.block = block.toString().toUpperCase(); }
+                if (lot) { this.lot = lot.toString().toUpperCase(); }
+                if (level) { this.level = level.toString().toLowerCase(); }
 
                 this.fullLot = "block" + this.block + "lot" + this.lot + (this.level ? "level" + this.level : "");
-
-                var spinnerDetails = Polymer.dom(this.root).querySelector("#spinnerDetails");
-                spinnerDetails.active = true;
             },
 
-            toggleDrawer() {
-
-                Polymer.dom(this.parentNode).removeChild(this);
-
+            _fullLotDataChanged() {
+                if (this.fullLotData) {
+                    if (this.fullLotData.lot) {
+                        this.noRecord = false;
+                    } else {
+                        this.noRecord = true;
+                    }
+                }
             },
 
-            _currentPage(e, s) {
-                return s === e;
+            _buyersDataChanged(e) {
+                if (e.length > 0) {
+                    this.buyerKey = e[0].$key;
+                    this.firstname = e[0].firstname;
+                    this.middlename = e[0].middlename;
+                    this.lastname = e[0].lastname;
+                    this.suffix = e[0].suffix;
+                    this.email = e[0].email;
+                }
             },
 
-            _selectPage(e) {
-                // var data_args = Polymer.dom(e).rootTarget.getAttribute("data-args");
-
-                // // console.log(this.selectedPage);
-                // // console.log(data_args);
-
-                // if (Number(data_args) < this.selectedPage) {
-                //     this.selectedPage = Number(data_args);
-                //     this._select1();
-                // }
-                // else if (Number(data_args) > this.selectedPage) {
-                //     this.selectedPage = Number(data_args);
-                //     this._select2();
-                // }
-
+            _selectedPageChanged() {
+                if (this.selectedPage === 0) {
+                    this.back = false;
+                    if (this.fullLotData.type_status_inventoriable === this.fullLotData.type + '_' + this.fullLotData.status + '_' + this.fullLotData.inventoriable && this.fullLotData.inventoriable === 'yes' && this.fullLotData.status === 'available') {
+                        this.next = true;
+                    } else {
+                        this.next = false;
+                    }
+                } else if (this.selectedPage === 1) {
+                    this.back = true;
+                    if (this.cellphoneNum && this.firstname && this.middlename && this.lastname) {
+                        this.next = true;
+                    } else {
+                        this.next = false;
+                    }
+                    Polymer.dom(this.root).querySelector('#favNext').style.backgroundColor = '#1976d2';
+                    Polymer.dom(this.root).querySelector('#favNext').icon = "my-icons:chevron-right";
+                } else if (this.selectedPage === 2) {
+                    this.back = true;
+                    this.next = true;
+                    Polymer.dom(this.root).querySelector('#favNext').style.backgroundColor = 'green';
+                    Polymer.dom(this.root).querySelector('#favNext').icon = "my-icons:done";
+                } else {
+                    this.back = false;
+                    this.next = false;
+                }
             },
 
-
-            ready() {
-                this.selectedPage = 0;
-
-                this.draftdata_buyerdetails_cellphone = '';
-                this.draftdata_buyerdetails_firstname = '';
-                this.draftdata_buyerdetails_middlename = '';
-                this.draftdata_buyerdetails_lastname = '';
-                this.draftdata_buyerdetails_suffix = '';
-                this.draftdata_buyerdetails_email = '';
-                this.draftdata_buyerdetails_cellphone = '';
-
-                // this.draftdata_agentdetails_cellphone = '';
-                // this.draftdata_agentdetails_firstname = '';
-                // this.draftdata_agentdetails_middlename = '';
-                // this.draftdata_agentdetails_lastname = '';
-                // this.draftdata_agentdetails_suffix = '';
-                // this.draftdata_agentdetails_email = '';
-                // this.draftdata_agentdetails_cellphone = '';
-
-                this.minStartDateTime = '';
-                this.saveErrorDetails = '...';
-
-                // this.favrighthide=false;
-
-
-            },
-
-            _select1(e) {
+            _back() {
                 this.entryanimation = "slide-from-left-animation";
                 this.exitanimation = "slide-right-animation";
-
-                if (parseInt(this.selectedPage) <= 2) {
-                    if (parseInt(this.selectedPage) !== 0) {
-                        this.selectedPage = (parseInt(this.selectedPage) - 1);
-
-                        Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: #1976d2;");
-                        Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:chevron-right");
-
-
-                        if (this.selectedPage === 0) {
-                            this.favlefthide = true;
-                        }
-
-                        this.favrighthide = false;
-                    }
-                    else {
-                        this.favlefthide = true;
-                        this.favrighthide = false;
-                    }
-                }
-                else {
-                    this.selectedPage = 2;
-                }
-
+                this.selectedPage = (parseInt(this.selectedPage) - 1);
             },
 
-            _select2(e) {
+            _next() {
                 this.entryanimation = "slide-from-right-animation";
                 this.exitanimation = "slide-left-animation";
-                if (parseInt(this.selectedPage) >= 0) {
-                    if (parseInt(this.selectedPage) == 2) {
-                        //complete
-                        if (this.isStartDateTimeInvalidGlobal == true) {
-                            var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                            this.saveErrorDetails = "Start date conflict, please change the start date accordingly.";
-                            saveFailed.setAttribute("style", "display: block; color: red;");
-                        }
-                        else {
-                            var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
-                            var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                            var favRightVar = Polymer.dom(this.root).querySelector("#favright");
+                this.selectedPage = (parseInt(this.selectedPage) + 1);
 
-                            if (this.transactionKey) {
-                                var firebaseDb = this.$.idd.db;
-                                var firebaseDbRef = firebaseDb.ref();
-                                var firebaseUpdate = {};
+                if (this.selectedPage === 3) {
+                    var ddate = new Date();
+                    var startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                        + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
 
-                                //get agent and buyer key, use 
-                                this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
-                                this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
+                    this.buyerKey ? this.buyerKey : this.guid();
 
-                                var draftdata = {
-                                    agent: this.agentKey,
-                                    agentdetails: {
-                                        firstname: this.draftdata_agentdetails_firstname,
-                                        middlename: this.draftdata_agentdetails_middlename,
-                                        lastname: this.draftdata_agentdetails_lastname,
-                                        suffix: this.draftdata_agentdetails_suffix,
-                                        email: this.draftdata_agentdetails_email,
-                                        cellphone: this.draftdata_agentdetails_cellphone,
-                                        uid: this.transactionData.agentdetails.uid,
-                                        type: this.transactionData.agentdetails.type,
-                                        group: this.transactionData.agentdetails.group
-                                    },
-                                    buyer: this.buyerKey,
-                                    buyerdetails: {
-                                        firstname: this.draftdata_buyerdetails_firstname,
-                                        middlename: this.draftdata_buyerdetails_middlename,
-                                        lastname: this.draftdata_buyerdetails_lastname,
-                                        suffix: this.draftdata_buyerdetails_suffix,
-                                        cellphone: this.draftdata_buyerdetails_cellphone,
-                                        email: this.draftdata_buyerdetails_email
-                                    },
-                                    expiry: '',
-                                    isdraft: this.transactionData.isdraft,
-                                    isapproved: this.transactionData.isapproved,
-                                    isserved: this.transactionData.isserved, //get value from current
-                                    lot: this.fullLot,
-                                    lotdetails: this.fullLotData,
-                                    processed: this.transactionData.processed, //get value from current
-                                    processordetails: this.transactionData.processordetails, //get value from current
-                                    served: this.transactionData.served, //get value from current
-                                    start: this.startDateTimeValue,
-                                    status: this.transactionData.status, //get value from current
-                                    timestamp: { ".sv": "timestamp" },
-                                    type: this.transactionData.type,
-                                    reference: this.applicationKey
-                                };
-                                //save to /applications/{id}
-                                firebaseUpdate["/briefcasedraft/" + this.accountKey + "/" + this.transactionKey] = draftdata;
-
-                                var draftBuyer = {
-                                    firstname: this.draftdata_buyerdetails_firstname,
-                                    middlename: this.draftdata_buyerdetails_middlename,
-                                    lastname: this.draftdata_buyerdetails_lastname,
-                                    suffix: this.draftdata_buyerdetails_suffix,
-                                    cellphone: this.draftdata_buyerdetails_cellphone,
-                                    email: this.draftdata_buyerdetails_email
-                                };
-                                if (this.buyerKey) {
-                                    //save to /buyers/{new id}
-                                    firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
-                                }
-                                else {
-                                    this.saveErrorDetails = "Buyer Key is empty.";
-                                    saveSuccess.setAttribute("style", "display: none; color: green;");
-                                    saveFailed.setAttribute("style", "display: block; color: red;");
-                                    return;
-                                }
-
-                                var draftAgent = {
-                                    firstname: this.draftdata_agentdetails_firstname,
-                                    middlename: this.draftdata_agentdetails_middlename,
-                                    lastname: this.draftdata_agentdetails_lastname,
-                                    suffix: this.draftdata_agentdetails_suffix,
-                                    email: this.draftdata_agentdetails_email,
-                                    cellphone: this.draftdata_agentdetails_cellphone
-                                };
-                                if (this.agentKey) {
-                                    //save to /agents/{new id}
-                                    firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
-                                }
-                                else {
-                                    this.saveErrorDetails = "Agent Key is empty.";
-                                    saveSuccess.setAttribute("style", "display: none; color: green;");
-                                    saveFailed.setAttribute("style", "display: block; color: red;");
-                                }
-
-                                var sdate;
-                                var serverdatetime = firebase.database().ref("info/serverdatetime");
-                                serverdatetime.set(firebase.database.ServerValue.TIMESTAMP);
-                                serverdatetime.once('value').then(snapshot => {
-                                    var sdate = new Date(snapshot.val());
-
-                                    var uPromise = firebaseDbRef.update(firebaseUpdate, function (error) {
-                                        if (error) {
-                                            console.log("Error updating data:", error);
-                                            this.saveErrorDetails = error;
-                                            saveSuccess.setAttribute("style", "display: none; color: green;");
-                                            saveFailed.setAttribute("style", "display: block; color: red;");
-
-                                            this.favlefthide = false;
-                                            this.favrighthide = true;
-
-                                            // console.log('1');
-                                        }
-                                        else {
-                                            this.saveErrorDetails = "";
-                                            saveSuccess.setAttribute("style", "display: block; color: green;");
-                                            saveFailed.setAttribute("style", "display: none; color: red;");
-
-                                            this.favlefthide = true;
-                                            this.favrighthide = true;
-
-                                            favRightVar.setAttribute("style", "display: none; background: #1976d2;");
-
-                                            // console.log('2');
-                                        }
-                                    });
-
-
-                                });
-
-
-                            }
-                            else {
-                                //transactionKey is missing
-                                var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-                                this.saveErrorDetails = "Transaction Key is missing.";
-                                saveFailed.setAttribute("style", "display: block; color: red;");
-                            }
-
-                            //verification first
-                            //get colors
-                            //get map_lot
-                            //get reservations
-                        }
-
-
-
+                    var buyerdetails = {
+                        firstname: this.firstname,
+                        middlename: this.middlename,
+                        lastname: this.lastname,
+                        suffix: this.suffix,
+                        cellphone: this.cellphoneNum,
+                        email: this.email
                     }
-                    else {
-                        // console.log('xx ' + this.selectedPage);
 
-                        this.favlefthide = false;
-                        this.favrighthide = false;
+                    var agentdetails = {
+                        firstname: this.agent_firstname,
+                        middlename: this.agent_middlename,
+                        lastname: this.agent_lastname,
+                        suffix: this.agent_suffix,
+                        cellphone: this.agent_cellphoneNum,
+                        email: this.agent_email
+                    }
 
-                        if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname
-                            && this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
-                            this.favrighthide = false;
-                        }
-                        else {
-                            this.favrighthide = true;
+                    var data = {
+                        buyer: this.buyerKey,
+                        buyerdetails: buyerdetails,
+                        agent: this.agentKey,
+                        agentdetails: agentdetails,
+                        lot: this.fullLot,
+                        lotdetails: this.fullLotData,
+                        reference: this.reference,
+                        type: 'Hold',
+                        timestamp: firebase.database.ServerValue.TIMESTAMP,
+                        start: startDateTimeValue,
+                        briefcasedetails: {
+                            status: 'Draft',
+                            dateCreated: this.briefcasedetails.dateCreated,
+                            isUpdated: true,
                         }
                     }
 
-                    if (parseInt(this.selectedPage) !== 3) {
-                        this.selectedPage = (parseInt(this.selectedPage) + 1);
+                    var updates = {};
+                    updates['/briefcaseDraft/' + this.agentKey + '/' + this.transactionKey] = data;
+                    updates["/buyers/" + this.buyerKey] = buyerdetails;
 
-                        if (this.selectedPage === 2) {
-                            //change color and icon here
-                            Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "background: green;");
-                            Polymer.dom(this.root).querySelector("#favright").setAttribute("icon", "my-icons:done");
-                        }
-                        if (parseInt(this.selectedPage) === 3) {
-                            this.favlefthide = true;
-                        }
-                    }
-
-
+                    firebase.database().ref().update(updates);
+                    this.MSG = 'Application updated successfully as a draft with a reference key';
+                    this.briefcaseRef = data.reference;
                 }
-                else {
-                    this.selectedPage = 0;
-                    this.favlefthide = true;
-                    this.favrighthide = false;
-                }
+            },
 
+            _formatLot(block, lot, level) {
+                if (level) return "Block " + block + " Lot " + lot + " Level " + level;
+                else return "Block " + block + " Lot " + lot;
             },
-            _rdChanged(newData, oldData) {
-                this.fromRD = true;
+
+            _formatName(fname, mname, lname, suffix) {
+                if (suffix) return fname + ' ' + mname + ' ' + lname + ' ' + suffix;
+                else return fname + ' ' + mname + ' ' + lname;
             },
-            _ldChanged(newData, oldData) {
-                this.fromLD = true;
+
+            _check(e) {
+                if (e) return e;
+                else return 'none';
             },
-            s4: function () {
-                return Math.floor((1 + Math.random()) * 0x10000)
-                    .toString(16)
-                    .substring(1);
+
+            _openDeleteDialog() {
+                this.$.deleteDialog.open();
             },
-            guid: function () {
-                var uid = new ShortUniqueId();
-                return uid.randomUUID(8);
+
+            _deleteThis() {
+                this.$.transactionFire.ref.remove();
+                window.location = 'briefcase';
+                // var updates = {};
+                // updates['/notificationsUser/' + this.agentKey + '/' + this.transactionKey] = null;
+                // firebase.database().ref().update(updates);
             },
         })
     </script>

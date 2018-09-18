@@ -74,8 +74,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       app-header {
-        color: #000000;
-        background-color: var(--app-primary-color);
+        background-image: url("../images/headerBG.png");
+        background-size: cover;
+        color: white;
       }
 
 
@@ -215,7 +216,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       .avatar-container {
         position: relative;
-        border: 2px solid #00AA8D;
+        border: 2px solid white;
         border-radius: 50%;
         height: 90px;
         padding: 2px;
@@ -234,7 +235,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .contact-info {
         margin: 0 20px;
         padding-bottom: 20px;
-        border-bottom: 1px solid #CCC;
+        /* border-bottom: 1px solid #CCC; */
         text-align: center;
       }
 
@@ -243,7 +244,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .contact-info .email {
-        color: #999;
+        color: white;
       }
 
       .upload-btn-wrapper {
@@ -281,11 +282,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
     </style>
 
-    <app-location route="{{route}}" url-space-regex="^[[rootPath]]">
-    </app-location>
-
-    <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}">
-    </app-route>
+    <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
+    <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route>
 
     <!-- NOTICE!!! -->
 
@@ -320,8 +318,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <template is="dom-if" if="{{_alreadySignedIn(user,statusKnown)}}">
       <!-- <app-location route="{{route}}" url-space-regex="^[[rootPath]]"></app-location>
       <app-route route="{{route}}" pattern="[[rootPath]]:page" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
-      <firebase-query id="query" path="/accountlist" data="{{myaccount}}" order-by-child="uid" equal-to="{{user.uid}}">
-      </firebase-query>
+      <firebase-query id="query" path="/accountlist" data="{{myaccount}}" order-by-child="uid" equal-to="{{user.uid}}"></firebase-query>
 
       <template is="dom-if" if="{{!user.emailVerified}}">
         <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
@@ -351,29 +348,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <template is="dom-if" if="{{isActive}}">
             <app-drawer-layout fullbleed narrow="{{narrow}}" id="drawerLayout">
               <app-drawer id="drawerMain" slot="drawer" swipe-open="[[narrow]]">
-
-                <!-- <div style="height: 100%; overflow: auto;"> -->
-                <!-- <app-header fixed>
-                    <app-toolbar>
-                      <div hidden$="{{!user.photoURL}}">
-                        <iron-image class="avatar" sizing="contain" src="[[user.photoURL]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
-                      </div>
-                      <div hidden$="{{user.photoURL}}">
-                        <iron-image class="avatar" sizing="contain" src="../images/user.png" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></iron-image>
-                      </div>
-                      <div class="pad">
-
-                        <div class="shortText" on-tap="openChangeEmail" style="cursor:pointer" title="Change email">[[user.email]]</div>
-                        <div class="shortText">{{_roleAcc(myaccount)}}</div>
-
-                      </div>
-                    </app-toolbar>
-                  </app-header> -->
                 <app-header-layout has-scrolling-region>
                   <app-header fixed slot="header">
                     <div class="avatar-container">
                       <div class="image">
-                        <img class="image" src="[[_photo(user.photoURL)]]" on-tap="openPhotoUrl" style="cursor:pointer" title="Change profile picture"></img>
+                        <img class="image" src="[[_photo(user.photoURL)]]" on-tap="openPhotoUrl" style="cursor:pointer"
+                          title="Change profile picture"></img>
                       </div>
                     </div>
                     <div class="contact-info">
@@ -401,12 +381,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         <span>Galleries</span>
                       </paper-icon-item>
                     </a>
-                    <a style$="{{access(annAccess)}}" name="announcement" href="[[rootPath]]announcement">
+                    <!-- <a style$="{{access(annAccess)}}" name="announcement" href="[[rootPath]]announcement">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:announcement" slot="item-icon"></iron-icon>
                         <span>Announcements</span>
                       </paper-icon-item>
-                    </a>
+                    </a> -->
                     <a style$="{{access(appAccess)}}" name="applications" href="[[rootPath]]applications">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:folder-open" slot="item-icon"></iron-icon>
@@ -416,19 +396,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <a style$="{{access(briefcaseAccess)}}" name="briefcase" href="[[rootPath]]briefcase">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:work" slot="item-icon"></iron-icon>
-                        <span>Briefcase
-                          <span style="display: inline-block; font-weight: bold; font-size: 12px; background:#B71C1C; border-radius: 2px; color: white; padding-left: 4px;padding-right: 4px;">
-                            BETA
-                          </span>
-                        </span>
-                      </paper-icon-item>
-                    </a>
-                    <hr>
-                    <a style$="{{access(accountAccess)}}" name="accountlist" href="[[rootPath]]accountlist">
-                      <paper-icon-item toggles="true" class="menuSelected">
-                        <iron-icon icon="my-icons:perm-identity" slot="item-icon"></iron-icon>
-                        <span>Accounts
-                        </span>
+                        <span>Briefcase</span>
                       </paper-icon-item>
                     </a>
                     <a style$="{{access(groupAccess)}}" name="group" href="[[rootPath]]group">
@@ -438,6 +406,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         </span>
                       </paper-icon-item>
                     </a>
+                    <a style$="{{access(accountAccess)}}" name="accountlist" href="[[rootPath]]accountlist">
+                      <paper-icon-item toggles="true" class="menuSelected">
+                        <iron-icon icon="my-icons:perm-identity" slot="item-icon"></iron-icon>
+                        <span>Accounts
+                        </span>
+                      </paper-icon-item>
+                    </a>
+                    <hr>
                     <a name="account" href="[[rootPath]]account">
                       <paper-icon-item toggles="true" class="menuSelected">
                         <iron-icon icon="my-icons:account-circle" slot="item-icon"></iron-icon>
@@ -453,21 +429,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                   </iron-selector>
 
                   <footer>
-                    <p>HOPE inventory & reservation system</p>
-                    <p>v0.1.0 Beta</p>
+                    <p>v2.0.0 Beta</p>
                   </footer>
 
                 </app-header-layout>
               </app-drawer>
 
               <iron-pages selected="[[page]]" attr-for-selected="name" fallback-selection="view404" role="main">
-                <my-dashboard name="dashboard" access="{{dashAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-dashboard>
+                <my-dashboard name="dashboard" access="{{dashAccess}}" route="[[subroute]]" account="{{myaccount}}"
+                  user="{{user}}"></my-dashboard>
                 <my-map name="map" status-known="{{statusKnown}}" user="{{user}}"></my-map>
                 <my-galleries name="galleries"></my-galleries>
                 <my-announcement name="announcement" access="{{annAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-announcement>
-                <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-applications>
-                <my-briefcase name="briefcase" access="{{briefcaseAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-briefcase>
-                <my-account name="account" status-known="{{statusKnown}}" user="{{user}}"></my-account>
+                <my-applications name="applications" access="{{appAccess}}" route="[[subroute]]" account="{{myaccount}}"
+                  user="{{user}}"></my-applications>
+                <my-briefcase name="briefcase" access="{{briefcaseAccess}}" route="[[subroute]]" user="{{user}}"
+                  account="{{myaccount}}"></my-briefcase>
+                <my-account name="account" status-known="{{statusKnown}}" user="{{user}}" account="{{myaccount}}"></my-account>
                 <my-accountlist name="accountlist" access="{{accountAccess}}" route="[[subroute]]"></my-accountlist>
                 <my-group name="group" access="{{groupAccess}}" route="[[subroute]]" account="{{myaccount}}"></my-group>
                 <my-view404 name="view404"></my-view404>
@@ -648,24 +626,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           if (this.myaccount[0].active == true) {
             this.isActive = true;
             // if (this.myaccount[0].role) {
-              if (this.myaccount[0].access.dashboard == true) {
-                this.dashAccess = true;
-              }
-              if (this.myaccount[0].access.announcement == true) {
-                this.annAccess = true;
-              }
-              if (this.myaccount[0].access.applications == true) {
-                this.appAccess = true;
-              }
-              if (this.myaccount[0].access.accountlist == true) {
-                this.accountAccess = true;
-              }
-              if (this.myaccount[0].access.group == true) {
-                this.groupAccess = true;
-              }
-              if (this.myaccount[0].access.briefcase == true) {
-                this.briefcaseAccess = true;
-              }
+            if (this.myaccount[0].access.dashboard == true) {
+              this.dashAccess = true;
+            }
+            if (this.myaccount[0].access.announcement == true) {
+              this.annAccess = true;
+            }
+            if (this.myaccount[0].access.applications == true) {
+              this.appAccess = true;
+            }
+            if (this.myaccount[0].access.accountlist == true) {
+              this.accountAccess = true;
+            }
+            if (this.myaccount[0].access.groups == true) {
+              this.groupAccess = true;
+            }
+            if (this.myaccount[0].access.briefcase == true) {
+              this.briefcaseAccess = true;
+            }
             // }
           }
           else {
@@ -788,7 +766,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _needToSignIn(e, f) {
         if (f === true) {
           return e === null;
-
         }
         else {
           return false;
@@ -798,7 +775,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _alreadySignedIn(e, f) {
         if (f === true) {
           return e !== null;
-
         }
         else {
           return false;

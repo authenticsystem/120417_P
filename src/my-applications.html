@@ -1,1015 +1,631 @@
-Skip to content This repository Search Pull requests Issues Marketplace Explore @justsimplepedro Sign out Watch 0 Star 0
-Fork 0 authenticsystem/120417_P Code Issues 7 Pull requests 0 Projects 2 Wiki Insights Tree: 4ab25674e9 Find file Copy path120417_P/src/my-applications.html
-4ab2567 29 minutes ago @justsimplepedro justsimplepedro sasdsasd 4 contributors @tigerlegab @arethey @hectorsantillan @justsimplepedro
-RawBlameHistory 645 lines (561 sloc) 23.2 KB
-<!--
-@license
-Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
-This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
-The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
-The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
-Code distributed by Google as part of the polymer project is also
-subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
--->
-
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../bower_components/polymer/polymer-element.html">
-<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/iron-image/iron-image.html">
-<link rel="import" href="../bower_components/iron-list/iron-list.html">
-<link rel="import" href="../bower_components/paper-card/paper-card.html">
-<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
-<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
-<link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
-<link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
-<link rel="import" href="my-icons.html">
-<link rel="import" href="shared-styles.html">
+<link rel="import" href="../bower_components/paper-search/paper-search-bar.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
-<link rel="import" href="../bower_components/paper-badge/paper-badge.html">
-
-<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/polymerfire/firebase-query.html">
+<link rel="import" href="../bower_components/polymerfire/firebase-document.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/neon-animation/web-animations.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/iron-list/iron-list.html">
+<link rel="import" href="../bower_components/iron-scroll-threshold/iron-scroll-threshold.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/salte-dialog/salte-dialog.html">
 
-<link rel="import" href="search-bar.html">
+<link rel="import" href="shared-styles.html">
+<link rel="import" href="time-element.html">
 <link rel="import" href="my-application-card.html">
 <link rel="import" href="my-application-new.html">
 <link rel="import" href="my-application-detail.html">
 <link rel="import" href="my-application-edit.html">
-<link rel="import" href="my-applied-card.html">
-<link rel="import" href="my-applied-view.html">
-
-<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
-
-<link rel="import" href="time-element.html">
-<!-- <script src="../bower_components/time-elements/time-elements.js"></script> -->
-
-<link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
-
 
 <dom-module id="my-applications">
-  <template>
-    <style include="shared-styles">
-      :host {
-        height: 100vh;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-      }
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+                /* overflow: hidden; */
+            }
 
-      .avatar {
-        height: 40px;
-        width: 40px;
-        border-radius: 20px;
-        box-sizing: border-box;
-        background-color: #DDD;
-      }
+            app-header {
+                color: rgb(255, 255, 255);
+                background-color: #388E3C;
+            }
 
-      .pad {
-        padding: 0 16px;
-        @apply --layout-flex;
-        @apply --layout-vertical;
-      }
+            paper-item {
+                font-size: 12px;
+                cursor: pointer;
+            }
 
-      .primary {
-        font-size: 18px;
-        text-transform: capitalize;
-      }
+            paper-button {
+                height: 32px;
+                font-size: 12px;
+                font-weight: 400;
+                color: #1976d2;
+            }
 
-      .shortText,
-      .longText {
-        font-size: 12px;
-      }
+            paper-fab.fab-menu {
+                position: fixed;
+                right: 32px;
+                bottom: 32px;
+            }
 
-      .longText {
-        color: gray;
-        margin-bottom: -0.5em;
-      }
+            a {
+                text-decoration: none;
+                color: black;
+            }
+        </style>
 
-      .spacer {
-        @apply --layout-flex;
-      }
-
-      @media (max-width: 768px) {
-        iron-list {
-          margin: 16px;
-          /* margin-top: 16px; */
-          display: flex;
-          height: 100vh;
-          flex-direction: column;
-          border-radius: 3px;
-          /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
-        }
-        paper-search-bar {
-          margin-left: 80px;
-          width: 50%;
-          color: black;
-        }
-      }
-
-      @media (min-width: 768px) {
-        iron-list {
-          width: 765px;
-          margin: 16px auto;
-          /* margin-top: 16px; */
-          height: 100vh;
-          border-radius: 3px;
-          /* box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2); */
-        }
-        paper-search-bar {
-          margin-left: 50px;
-          width: 50%;
-          color: black;
-        }
-      }
-
-      #tool1 {
-        color: rgb(255, 255, 255);
-        background-color: #388E3C;
-      }
-
-      #tool2 {
-        background-color: white;
-      }
-
-      #btn-arrow {
-        position: absolute;
-        color: black;
-      }
-
-      #btn-menu {
-        color: gray;
-        position: fixed;
-        right: 40px;
-      }
-
-      #btn-clear {
-        position: fixed;
-        right: 80px;
-        color: gray;
-      }
-
-      paper-fab.fab-menu {
-        position: fixed;
-        right: 32px;
-        bottom: 32px;
-      }
-
-      paper-fab.fab-search {
-        position: fixed;
-        right: 40px;
-        bottom: 104px;
-      }
-
-      paper-icon-button.menu {
-        margin-right: 16px;
-      }
-
-      .item {
-        @apply --layout-horizontal;
-        /* padding: 20px; */
-        background-color: white;
-        border-bottom: 1px solid #ddd;
-        cursor: pointer;
-        margin-bottom: 10px;
-        box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 1px 5px 0 rgba(0, 0, 0, 0.12), 0 3px 1px -2px rgba(0, 0, 0, 0.2);
-      }
-
-      .loader {
-        background-color: #ddffdd;
-        border-left: 6px solid #4CAF50;
-        text-align: center;
-        max-width: 800px;
-        margin: 16px auto 0 auto;
-        padding: 10px;
-      }
-
-      .loadingIndicator {
-        text-align: center;
-        height: 40px;
-      }
-
-      paper-badge {
-        --paper-badge-margin-left: -23px;
-        --paper-badge-margin-bottom: -30px;
-      }
-    </style>
-
-    <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
-    <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
-    <app-route route="{{route}}" pattern="/view/:key" tail="{{viewRoute}}" data="{{viewData}}" active="{{viewActive}}"></app-route>
-    <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
-
-    <!-- <app-route route="{{route}}" pattern="/:action" data="{{routeData}}" tail="{{subroute}}"></app-route> -->
-    <div hidden$="{{!applicationActive}}">
-      <!-- <template is="dom-if" if="{{_checkIfApplicationActive(applicationActive)}}"> -->
-      <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
-        <div name="">
-          <app-header-layout fullbleed has-scrolling-region>
-            <app-header fixed effects="waterfall" slot="header">
-              <template is="dom-if" if="{{openSearch}}">
-                <app-toolbar primary id="tool2">
-                  <paper-icon-button id="btn-arrow" icon="my-icons:arrow-back" drawer-toggle on-tap="toggleReturn"></paper-icon-button>
-                  <paper-search-bar id="search" query="{{search}}" disable-filter-button></paper-search-bar>
-                  <template is="dom-if" if="{{search}}">
-                    <paper-icon-button id="btn-clear" icon="my-icons:close" drawer-toggle on-tap="toggleClear"></paper-icon-button>
-                  </template>
-                  <paper-menu-button id="btn-menu" horizontal-align="right">
-                    <paper-icon-button slot="dropdown-trigger" icon="my-icons:tune"></paper-icon-button>
-                    <paper-listbox style="cursor:pointer" slot="dropdown-content" selected="{{filterBy}}">
-                      <paper-item style="display:none;">Filter By</paper-item>
-                      <paper-item>By Reference</paper-item>
-                      <paper-item>By Lot</paper-item>
-                      <paper-item>By Status</paper-item>
-                      <paper-item>By Buyer Lastname</paper-item>
-                      <paper-item>By Agent Lastname</paper-item>
-                    </paper-listbox>
-                  </paper-menu-button>
-                </app-toolbar>
-              </template>
-              <template is="dom-if" if="{{!openSearch}}">
-                <app-toolbar primary id="tool1">
-                  <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
-                  <div main-title hidden$="{{!access}}">Applications</div>
-                  <div main-title hidden$="{{access}}">Opps!</div>
-                  <paper-icon-button class="menu" icon="my-icons:search" drawer-toggle on-tap="toggleSearch"></paper-icon-button>
-                </app-toolbar>
-
-                <paper-tabs selected="{{selectedPage}}" scrollable id="tool1">
-                  <paper-tab>
-                    <div style="display:inline-block">
-                      <span style="margin-right:30px">New</span>
-                      <paper-badge label="{{countAppNew}}"></paper-badge>
-                    </div>
-                  </paper-tab>
-                  <paper-tab>Approved
-                  </paper-tab>
-                </paper-tabs>
-              </template>
-            </app-header>
-
-            <neon-animated-pages selected="{{selectedPage}}" entry-animation="{{entryanimation}}" exit-animation="{{exitanimation}}">
-
-              <neon-animatable>
-
-                <firebase-query id="query" path="/applicationsNew" data="{{applicationsNew}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
-                  end-at="{{typeValue}}" limit-to-last="50">
-                </firebase-query>
-
-                <template is="dom-if" if="{{!access}}">
-                  <div class="card">
+        <template is="dom-if" if="{{!access}}">
+            <app-header-layout fullbleed has-scrolling-region>
+                <app-header fixed slot="header">
+                    <app-toolbar primary>
+                        <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                        <div main-title>Opps!</div>
+                    </app-toolbar>
+                </app-header>
+                <div class="card">
                     <h3>Sorry!</h3>
                     <div>You're not allowed to access this content.</div>
-                  </div>
-                </template>
-
-                <template is="dom-if" if="{{access}}">
-                  <iron-list items="[[applicationsNew2]]" as="item" scroll-target="threshold">
-                    <!-- <div style="text-align:center">{{msg}}</div>
-                    <paper-toast id="toast" text="" duration="0"></paper-toast> -->
-                    <template>
-                      <div class="divSeparator">
-                        <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
-
-                          <my-applied-card item="{{item}}"></my-applied-card>
-
-                          <div tabindex="0">
-                            <a href$="{{_getViewAppLink(item.$key)}}" tabindex="-1">
-                              <paper-icon-button id="{{item.$key}}" noink on-tap="_viewThis" data-args="{{item.$key}}" icon="my-icons::open-in-new" alt="{{item.$key}}"
-                                style="display:inline-block;position: absolute;  right: 10px; color: white; top:8px;"></paper-icon-button>
-                              <paper-tooltip for="{{item.$key}}" position="bottom">View</paper-tooltip>
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    </template>
-
-                    <div class="loader" id="loader">{{loadingMessage}}</div>
-                  </iron-list>
-                </template>
-
-                <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold"></iron-scroll-threshold>
-
-                <paper-dialog id="approvedApp">
-                  <div hidden id="timeStamp" style="background-color: whitesmoke; margin-top: 16px; padding-left: 10px; display: none">
-                    <div id="start">
-                      <iron-icon icon="my-icons:event" style="margin-right: 8px; padding-top: 10px; display: inline-block;"></iron-icon>
-                      <paper-input readonly id="startDateTimeValueV" auto-validate="true" min="{{minStartDateTime}}" max="{{maxStartDateTime}}"
-                        type="datetime-local" no-label-float="true" value="{{startDateTimeValue}}" invalid="{{isStartDateTimeInvalid}}"></paper-input>
-                    </div>
-                  </div>
-
-                  <div id="expiry" style="position: relative; padding-top: 16px;">
-                    <iron-icon icon="my-icons:alarm" style="margin-right: 8px; color: rgba(255, 5, 5, 0.774); "></iron-icon>
-                    <span style="color: rgba(255, 5, 5, 0.774); margin-right: 5px;">expires in</span>
-                    <paper-input no-label-float type="number" value="{{expiryHoursDaysValue}}" style="position: absolute; display: inline-block; top: 0px; width: 40px; text-align: center;"></paper-input>
-                    <span style="color: rgba(255, 5, 5, 0.774); display: inline-block; margin-left: 45px;">&nbsp;{{expiryHoursDaysLabel}}</span>
-                    <span style="color: rgba(255, 5, 5, 0.774); padding-left: 3px;">/&nbsp;{{expiryHoursDaysComputedValue}}</span>
-                  </div>
-                  <div class="buttons">
-                    <paper-button dialog-dismiss>Cancel</paper-button>
-                    <paper-button hidden$="{{!expiryHoursDaysValue}}" autofocus on-tap="_approveApp">Approve</paper-button>
-                  </div>
-                </paper-dialog>
-
-              </neon-animatable>
-
-              <neon-animatable>
-
-                <firebase-query id="query" path="/applications" data="{{applications}}" order-by-child="{{selectedType}}" start-at="{{typeValue}}"
-                  end-at="{{typeValue}}" limit-to-last="50">
-                </firebase-query>
-
-                <template is="dom-if" if="{{!access}}">
-                  <div class="card">
-                    <h3>Sorry!</h3>
-                    <div>You're not allowed to access this content.</div>
-                  </div>
-                </template>
-
-                <template is="dom-if" if="{{access}}">
-                  <iron-list items="[[applications2]]" as="item" scroll-target="threshold">
-                    <!-- <div style="text-align:center">{{msg}}</div>
-                    <paper-toast id="toast" text="" duration="0"></paper-toast> -->
-                    <template>
-
-                      <div class="divSeparator">
-                        <div class$="[[getClassForItem(item, selected)]]" tabindex$="[[item.$key]]" style="width: 100%;">
-                          <my-application-card item="{{item}}"></my-application-card>
-
-                          <div tabindex="0">
-                            <a id="openAppEdit" tabindex="-1" alt="{{item.$key}}"></a>
-                            <paper-icon-button id="{{item.$key}}" noink on-tap="editDetails" item=[[item]] data-args="{{item.$key}}" icon="my-icons:edit"
-                              alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 48px; color: white; top:8px;"></paper-icon-button>
-                            <paper-tooltip for="{{item.$key}}" position="bottom">edit</paper-tooltip>
-                            <!-- </a> -->
-                          </div>
-
-                          <div tabindex="1">
-                            <a href$="{{_getViewDetailsLink(item.$key)}}" tabindex="-1">
-                              <paper-icon-button id="openDetailButton" noink on-tap="viewDetails" data-args="{{item.$key}}" icon="my-icons:open-in-new"
-                                alt="{{item.$key}}" style="display:inline-block;position: absolute;  right: 8px; color: white; top:8px;"></paper-icon-button>
-                              <paper-tooltip position="left">view details</paper-tooltip>
-                            </a>
-                          </div>
-
-                        </div>
-                      </div>
-
-                    </template>
-                    <div class="loader" id="loader">{{loadingMessage}}</div>
-                  </iron-list>
-                  <paper-dialog id="checkAgentDetails">
-                    <div style="color: red; font-size: 16px; padding: 10px">
-                      <iron-icon icon="my-icons:icons:error-outline"></iron-icon> Edit application failed.
-                    </div>
-                  </paper-dialog>
-                </template>
-                <iron-scroll-threshold on-lower-threshold="loadMoreData" id="threshold"></iron-scroll-threshold>
-
-                <template is="dom-if" if="{{access}}">
-                  <a href="/applications/new" style="text-decoration: none;">
-                    <paper-fab noink class="fab-menu" on-tap="_appsnew" icon="my-icons:add"></paper-fab>
-                  </a>
-                </template>
-
-              </neon-animatable>
-
-            </neon-animated-pages>
-
-          </app-header-layout>
-          <!-- <template is="dom-if" if="{{access}}">
-            <a href="/applications/new" style="text-decoration: none;">
-              <paper-fab noink class="fab-menu" on-tap="_appsnew" icon="my-icons:add"></paper-fab>
-            </a>
-          </template> -->
-        </div>
-
-        <template is="dom-if" if="{{access}}">
-          <div name="/new">
-            <div id="appnew"></div>
-            <my-application-new id="d23" path="" myname="{{myname}}" prev-route="{{route.prefix}}"></my-application-new>
-          </div>
+                </div>
+            </app-header-layout>
         </template>
 
-        <div name="view404">Not found.</div>
+        <template is="dom-if" if="{{access}}">
+            <app-route route="{{route}}" pattern="" active="{{applicationActive}}"></app-route>
+            <app-route route="{{route}}" pattern="/detail/:key" tail="{{detailRoute}}" data="{{detailData}}" active="{{detailActive}}"></app-route>
+            <app-route route="{{route}}" pattern="/edit/:key" tail="{{editRoute}}" data="{{editData}}" active="{{editActive}}"></app-route>
 
-      </iron-pages>
-      <!-- </template> -->
-    </div>
+            <div hidden$="{{!applicationActive}}">
+                <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
+                    <div name="">
+                        <app-header-layout fullbleed has-scrolling-region>
+                            <app-header fixed slot="header">
+                                <template is="dom-if" if="{{!searchToolbar}}">
+                                    <app-toolbar primary>
+                                        <paper-icon-button class="menu" icon="my-icons:menu" drawer-toggle on-tap="toggleDrawer"></paper-icon-button>
+                                        <div main-title>Applications</div>
+                                        <paper-icon-button class="menu" icon="my-icons:search" on-tap="_openSearchToolbar"></paper-icon-button>
+                                    </app-toolbar>
+                                </template>
+                                <template is="dom-if" if="{{searchToolbar}}">
+                                    <app-toolbar primary style="background-color: white; color: black">
+                                        <div>
+                                            <paper-icon-button class="menu" icon="my-icons:arrow-back" on-tap="_closeSearchToolbar"></paper-icon-button>
+                                        </div>
+                                        <div style="width: 100%">
+                                            <paper-search-bar query="{{query}}" placeholder="Search.."
+                                                hide-filter-button></paper-search-bar>
+                                        </div>
+                                        <paper-menu-button vertical-align="top" horizontal-align="right">
+                                            <paper-icon-button icon="my-icons:tune" slot="dropdown-trigger" alt="menu"></paper-icon-button>
+                                            <paper-listbox slot="dropdown-content" attr-for-selected="name" selected="{{filterBy}}">
+                                                <paper-item name="reference">By Reference</paper-item>
+                                                <paper-item name="lot">By Lot</paper-item>
+                                                <paper-item name="type">By Status</paper-item>
+                                                <paper-item name="buyerdetails/lastname">By Buyer Lastname</paper-item>
+                                                <paper-item name="agentdetails/lastname">By Agent Lastname</paper-item>
+                                            </paper-listbox>
+                                        </paper-menu-button>
+                                    </app-toolbar>
+                                </template>
+                                <paper-tabs attr-for-selected="name" selected="{{applicationsTab}}">
+                                    <paper-tab name="applicationsNew">New</paper-tab>
+                                    <paper-tab name="applications">Approved</paper-tab>
+                                </paper-tabs>
+                            </app-header>
 
-    <template is="dom-if" if="{{access}}">
-      <div hidden$="{{!detailActive}}">
-        <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
-        <div id="appdetail"></div>
-        <my-application-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"></my-application-detail>
-        <!-- [[detailData.key]] -->
-        <!-- </template> -->
-      </div>
+                            <firebase-query id="applicationsQuery" path="{{applicationsTab}}" data="{{applicationsData}}"
+                                limit-to-last="50"></firebase-query>
 
-      <div hidden$="{{!editActive}}">
-        <!-- <template is="dom-if" if="{{_checkIfEditActive(editActive)}}"> -->
-        <div id="appedit"></div>
-        <my-application-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}" myname="{{myname}}"></my-application-edit>
-        <!-- </template> -->
-      </div>
+                            <iron-pages attr-for-selected="name" selected="{{applicationsTab}}">
+                                <div name="applicationsNew">
+                                    <template is="dom-if" if="{{!hasApplicationsData}}">
+                                        <div style="max-width: 900px; margin: 16px auto;">
+                                            <paper-card style="width: 100%">
+                                                <div style="text-align: center; padding: 16px;">Loading..</div>
+                                            </paper-card>
+                                        </div>
+                                    </template>
+                                    <template is="dom-if" if="{{hasApplicationsData}}">
+                                        <div style="max-width: 900px; margin: 16px auto">
+                                            <iron-list id="list" items="[[applicationsData]]" as="item">
+                                                <template>
+                                                    <div>
+                                                        <a href$="[[_getViewDetailsLink(item.$key)]]" on-tap="viewDetails"
+                                                            item="[[item]]">
+                                                            <paper-card style="width: 100%; margin-bottom: 16px;">
+                                                                <my-application-card item="[[item]]"></my-application-card>
+                                                                <!-- <div class="card-actions">
+                                                                <span style="float: right; margin-bottom: 4px;">
+                                                                    <paper-button on-tap="_openApprovedDialog" item="{{item}}">Approved</paper-button>
+                                                                    <paper-button on-tap="_openDisApprovedDialog" item="{{item}}">Disapproved</paper-button>
+                                                                </span>
+                                                            </div> -->
+                                                            </paper-card>
+                                                        </a>
+                                                    </div>
+                                                </template>
+                                            </iron-list>
+                                        </div>
+                                    </template>
+                                </div>
+                                <div name="applications">
+                                    <template is="dom-if" if="{{!hasApplicationsData}}">
+                                        <div style="max-width: 900px; margin: 16px auto;">
+                                            <paper-card style="width: 100%">
+                                                <div style="text-align: center; padding: 16px;">Loading..</div>
+                                            </paper-card>
+                                        </div>
+                                    </template>
 
-      <div hidden$="{{!viewActive}}">
-        <!-- <template is="dom-if" if="{{_checkIfDetailActive(detailActive)}}"> -->
-        <div id="appview"></div>
-        <my-applied-view id="d26" transaction-key='{{viewData.key}}' prev-route="{{route.prefix}}" accountkey="{{accountkey}}" myname="{{myname}}"></my-applied-view>
-        <!-- [[detailData.key]] -->
-        <!-- </template> -->
-      </div>
+                                    <template is="dom-if" if="{{hasApplicationsData}}">
+                                        <div style="max-width: 900px; margin: 16px auto">
+                                            <iron-list id="list" items="[[applicationsData]]" as="item">
+                                                <template>
+                                                    <div>
+                                                        <paper-card style="width: 100%; margin-bottom: 16px;">
+                                                            <my-application-card item="{{item}}"></my-application-card>
+                                                            <div class="card-actions">
+                                                                <a href$="{{_getEditDetailsLink(item.$key)}}" on-tap="editDetails"
+                                                                    item="{{item}}">
+                                                                    <paper-button>Edit</paper-button>
+                                                                </a>
+                                                                <a href$="{{_getViewDetailsLink(item.$key)}}" on-tap="viewDetails"
+                                                                    item="{{item}}">
+                                                                    <paper-button>View</paper-button>
+                                                                </a>
+                                                            </div>
+                                                        </paper-card>
+                                                    </div>
+                                                </template>
+                                            </iron-list>
+                                        </div>
+                                    </template>
+
+                                    <a href="/applications/new" style="text-decoration: none;">
+                                        <paper-fab noink class="fab-menu" on-tap="_appsnew" icon="my-icons:add"></paper-fab>
+                                    </a>
+
+                                </div>
+                            </iron-pages>
+
+                            <paper-dialog id="approvedDialog">
+                                <p>Approve application request? </p>
+                                <div class="buttons">
+                                    <paper-button dialog-dismiss>Cancel</paper-button>
+                                    <paper-button dialog-confirm autofocus on-tap="_approvedRequest">Approved</paper-button>
+                                </div>
+                            </paper-dialog>
+
+                            <paper-dialog id="successDialog" no-cancel-on-outside-click>
+                                <p>Application request successfully approved!</p>
+                                <div class="buttons">
+                                    <paper-button dialog-dismiss>OK</paper-button>
+                                </div>
+                            </paper-dialog>
+
+                            <paper-dialog id="approvedDialogError" no-cancel-on-outside-click>
+                                <p>ERROR! Application request can't be process this lot is already
+                                    {{dialogDataStatus}}.</p>
+                                <div class="buttons">
+                                    <paper-button dialog-dismiss>OK</paper-button>
+                                </div>
+                            </paper-dialog>
+
+                            <salte-dialog id="disApprovedDialog" no-auto-fullscreen>
+                                <h2 style$="background-color: {{disApprovedData.lotdetails.maprenderdetails.type_bg_color}}; color: {{disApprovedData.lotdetails.maprenderdetails.type_fore_color}}">
+                                    <div>
+                                        {{_formatLot(disApprovedData.lotdetails.block, disApprovedData.lotdetails.lot,
+                                        disApprovedData.lotdetails.level)}}
+                                    </div>
+                                    <div style="font-size: 12px">Reference key: {{disApprovedData.reference}}</div>
+                                </h2>
+                                <div style="color: red">{{msg}}</div>
+                                <paper-input label="Reason" always-float-label value="{{reason}}"></paper-input>
+                                <div class="buttons">
+                                    <paper-button dialog-dismiss>Cancel</paper-button>
+                                    <paper-button on-tap="_sudmitDisApproved">Submit</paper-button>
+                                </div>
+                            </salte-dialog>
+
+                        </app-header-layout>
+                    </div>
+
+                    <div name="/new">
+                        <div id="appnew"></div>
+                        <my-application-new id="d23" path="" myname="{{myname}}" prev-route="{{route.prefix}}"></my-application-new>
+                    </div>
+
+                    <div name="view404">Not found.</div>
+
+                </iron-pages>
+            </div>
+
+            <div hidden$="{{!detailActive}}">
+                <div id="appdetail"></div>
+                <my-application-detail id="d24" transaction-key='{{detailData.key}}' prev-route="{{route.prefix}}"
+                    path-link="{{applicationsTab}}" myname="{{myname}}" user="{{user}}"></my-application-detail>
+            </div>
+
+            <div hidden$="{{!editActive}}">
+                <div id="appedit"></div>
+                <my-application-edit id="d25" transaction-key='{{editData.key}}' prev-route="{{route.prefix}}" myname="{{myname}}"></my-application-edit>
+            </div>
+        </template>
+
 
     </template>
+    <script>
+        Polymer({
+            is: 'my-applications',
 
-  </template>
+            properties: {
+                user: Object,
+                account: Object,
+                route: Object,
+                searchToolbar: {
+                    type: Boolean,
+                    value: false
+                },
+                applicationsTab: {
+                    type: String,
+                    value: 'applicationsNew'
+                },
+                filterBy: {
+                    type: String,
+                    value: 'lot'
+                },
+                applicationsData: Object
+            },
 
-  <script>
-    Polymer({
-      is: 'my-applications',
-      properties: {
-        items: {
-          type: Array,
-          value: function () {
-            return [];
-          }
-        },
-        narrow: {
-          type: Boolean,
-          notify: true
-        },
-        applications: Object,
-        applicationsNew: Object,
-        selectedType: {
-          type: String,
-          value: ''
-        },
-        selectedPage: Number,
-        entryanimation: {
-          type: String,
-          value: "slide-from-right-animation"
-        },
-        exitanimation: {
-          type: String,
-          value: "slide-from-left-animation"
-        },
-        filterBy: {
-          type: Number,
-          value: 2
-        },
-        access: {
-          type: Boolean,
-          value: false
-        },
-        openSearch: {
-          type: Boolean,
-          value: false,
-          notify: true
-        },
-        isStartDateTimeInvalidGlobal: Boolean,
-        // selectedLabel: {
-        //   type: String,
-        //   value: 'By Lot'
-        // },
-        search: {
-          type: String,
-          value: '',
-        },
-        route: Object,
-        routeData: Object,
-        account: Object,
-        // limit: {
-        //   type: Number,
-        //   value: 50
-        // }
-      },
-      observers: [
-        '_searchChanged(filterBy, search)',
-        '_applicationChanged(applications.*)',
-        '_applicationsNewChanged(applicationsNew.*)',
-        'startDateTimeValueChanged(startDateTimeValue,expiryHoursDaysValue)',
-        'selectedPageChanged(selectedPage)',
-        'accountChanged(account)'
-      ],
-      ready() {
-        this.selectedPage = 0;
+            observers: [
+                '_accountChanged(account)',
+                '_applicationsDataChanged(applicationsData.*)',
+                '_queryChanged(query, applicationsTab, filterBy, applicationsData)'
+            ],
 
-      },
-      accountChanged(e) {
-        this.accountkey = e[0].accountkey;
-        this.fname = e[0].name.firstname;
-        this.mname = e[0].name.middlename;
-        this.lname = e[0].name.lastname;
-        this.myname = this.fname + ' ' + this.mname + ' ' + this.lname;
-      },
-      selectedPageChanged(e) {
-        if (e == 0) {
-          this.entryanimation = "slide-from-left-animation";
-          this.exitanimation = "slide-right-animation";
-        }
-        else {
-          this.entryanimation = "slide-from-right-animation";
-          this.exitanimation = "slide-left-animation";
-        }
-        this.loadMoreData();
-      },
-      _applicationChanged(e) {
-        this.countApp = e.base.length;
-        if (this.search) {
-          if (this.countApp == 0) {
-            this.msg = 'No result found.';
-          }
-          else {
-            this.msg = '';
-          }
-        }
-        var applications2 = [];
-        e.base.forEach(element => {
-          applications2.push(element);
-        });
-        this.applications2 = this._descending(applications2);
-      },
-      _applicationsNewChanged(e) {
-        this.countAppNew = e.base.length;
-        if (this.search) {
-          if (this.countAppNew == 0) {
-            this.msg = 'No result found.';
-          }
-          else {
-            this.msg = '';
-          }
-        }
-        var applicationsNew2 = [];
-        e.base.forEach(element => {
-          applicationsNew2.push(element);
-        });
-        this.applicationsNew2 = this._descending(applicationsNew2);
-      },
-      toggleSearch() {
-        this.openSearch = true;
-        // this.limit = 0;
-      },
-      toggleReturn() {
-        this.openSearch = false;
-        // this.limit = 50;
-        this.search = '';
-      },
-      toggleClear() {
-        this.search = '';
-      },
-      _searchChanged(g, e) {
-        if (g) {
-          if (g == 1) {
-            // this.selectedLabel = 'by reference';
-            if (e) {
-              this.selectedType = 'reference';
-            }
-          }
-          else if (g == 2) {
-            // this.selectedLabel = 'by lot';
-            if (e) {
-              this.selectedType = 'lot';
-            }
-          }
-          else if (g == 3) {
-            // this.selectedLabel = 'by type';
-            if (e) {
-              this.selectedType = 'type';
-              e = e.charAt(0).toUpperCase() + e.slice(1);
-            }
-          }
-          else if (g == 4) {
-            // this.selectedLabel = 'by buyer lastname';
-            if (e) {
-              this.selectedType = 'buyerdetails/lastname';
-            }
-          }
-          else {
-            // this.selectedLabel = 'by agent lastname';
-            if (e) {
-              this.selectedType = 'agentdetails/lastname';
-            }
-          }
-        }
-        if (e) {
-          this.typeValue = e;
-        }
-        else {
-          this.selectedType = '';
-          this.typeValue = '';
-          this.msg = '';
-        }
-      },
-      iconForItem(item) {
-        return item ? (item.integer < 50 ? 'my-icons:star-border' : 'my-icons:star') : '';
-      },
-      getClassForItem(item, selected) {
-        // this.colorSelected = item.type;
-        // console.log(this.colorSelected);
-        return selected ? 'item expanded' : 'item';
-      },
-      toggleDrawer() {
-        this.dispatchEvent(new CustomEvent('toggleDrawer', {
-          bubbles: true, composed: true, detail: {
-            narrow: this.$.narrow
-          }
-        }));
-        this.$.narrow = !this.$.narrow;
-      },
+            _accountChanged(e) {
+                if (e.length > 0) {
+                    this.myname = e[0].name.firstname + ' ' + e[0].name.middlename + ' ' + e[0].name.lastname;
+                }
+            },
 
-      _appsnew() {
-        var node = Polymer.dom(this.root).querySelector("#appnew");
-        if (node) {
-          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
-          if (oldDiv) {
-            Polymer.dom(node.parentNode).removeChild(oldDiv);
-          }
-          var newDiv = document.createElement("my-application-new");
-          newDiv.setAttribute("id", "d23");
-          newDiv.setAttribute("prev-route", this.route.prefix);
-          newDiv.setAttribute("myname", this.myname);
-          // newDiv.setAttribute("block", "3")
-          //if open existing
-          var currentDiv = document.getElementById("appnew");
-          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-        }
-      },
-      _getViewDetailsLink(e) {
-        return '/applications/detail/' + e.toString();
-      },
-      _getEditAppLink(e) {
-        return '/applications/edit/' + e.toString();
-      },
-      _getViewAppLink(e) {
-        return '/applications/view/' + e.toString();
-      },
-      viewDetails(e) {
-        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-        var node = Polymer.dom(this.root).querySelector("#appdetail");
-        if (node) {
-          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
-          if (oldDiv) {
-            Polymer.dom(node.parentNode).removeChild(oldDiv);
-          }
-          var newDiv = document.createElement("my-application-detail");
-          newDiv.setAttribute("id", "d24")
-          newDiv.setAttribute("transaction-key", data_args)
-          newDiv.setAttribute("prev-route", this.route.prefix);
-          //if open existing
-          var currentDiv = document.getElementById("appdetail");
-          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-        }
-      },
-      editDetails(e) {
-        var datas = e.currentTarget.item;
-        if (!datas.agentdetails.type) {
-          Polymer.dom(this.root).querySelector("#checkAgentDetails").open();
-        } else {
-          var href = "/applications/edit/" + datas.$key;
-          // console.log(href);
-          var editApp = Polymer.dom(this.root).querySelector("#openAppEdit");
-          editApp.href = href;
-          editApp.click();
+            _queryChanged(query, applicationsTab, filterBy, applicationsData) {
+                var self = this;
+                if (query) {
+                    firebase.database().ref(applicationsTab).orderByChild(filterBy).equalTo(query).limitToFirst(50).on('value', function (data) {
+                        data.val() ? self.applicationsData = Object.values(data.val()) : self.applicationsData = [];
+                    });
+                } else {
+                    if (applicationsTab === 'applications') {
+                        this.applicationsData = this.applicationsData.reverse();
+                    }
+                }
+            },
 
-          var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-          var node = Polymer.dom(this.root).querySelector("#appedit");
-          if (node) {
-            var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
-            if (oldDiv) {
-              Polymer.dom(node.parentNode).removeChild(oldDiv);
-            }
-            var newDiv = document.createElement("my-application-edit");
-            newDiv.setAttribute("id", "d25")
-            newDiv.setAttribute("transaction-key", data_args)
-            newDiv.setAttribute("myname", this.myname);
-            newDiv.setAttribute("prev-route", this.route.prefix);
-            //if open existing
-            var currentDiv = document.getElementById("appedit");
-            Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-          }
-        }
-      },
-      _viewThis(e) {
-        var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
-        var node = Polymer.dom(this.root).querySelector("#appview");
-        if (node) {
-          var oldDiv = Polymer.dom(node.parentNode).querySelector("#d26");
-          if (oldDiv) {
-            Polymer.dom(node.parentNode).removeChild(oldDiv);
-          }
-          var newDiv = document.createElement("my-applied-view");
-          newDiv.setAttribute("id", "d26");
-          newDiv.setAttribute("transaction-key", data_args);
-          newDiv.setAttribute("myname", this.myname);
-          newDiv.setAttribute("prev-route", this.route.prefix);
-          // window.location = '/applications/view/' + data_args;
-          //if open existing
-          var currentDiv = document.getElementById("appview");
-          Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
-        }
-      },
+            _applicationsDataChanged(e) {
+                if (e.base.length > 0) {
+                    this.hasApplicationsData = true;
+                }
+                else { this.hasApplicationsData = false; }
+            },
 
-      _openApproveApp(e) {
-        this.$.approvedApp.open();
-        var transkey = Polymer.dom(e).rootTarget.getAttribute("alt");
-        data = JSON.parse(transkey);
+            _openSearchToolbar() {
+                this.searchToolbar = true;
+                Polymer.dom(this.root).querySelector("#applicationsQuery").disabled = true;
+            },
 
-        this.startDateTimeValue = new Date();
-        this.expiryDate = data.expiry;
-      },
-      startDateTimeValueChanged() {
-        var xdate = new Date(this.$.startDateTimeValueV.value);
-        xdate.setHours(xdate.getHours() + Number(this.expiryHoursDaysValue));
-        this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
-        this.expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
-          + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
-        if (this.maxStartDateTime) {
-          var maxSDate = new Date(this.maxStartDateTime);
-          if (xdate <= maxSDate) {
-            this.isStartDateTimeInvalid = false;
-          }
-          else {
-            this.isStartDateTimeInvalid = true;
-          }
-        }
-      },
-      _approveApp() {
-        var transTypeCorrespondingColorRef = this.$.fdColor.db.ref('statuscolor/hold');
-        transTypeCorrespondingColorRef.on('value', snapshot => {
-          if (snapshot.exists()) {
-            this.transTypeCorrespondingColor = snapshot.val()
-          }
-        });
-        if (this.transTypeCorrespondingColor) {
-          if (this.isStartDateTimeInvalidGlobal == true) {
-            var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-            this.saveErrorDetails = "Start date conflict, please change the start date accordingly.";
-            saveFailed.setAttribute("style", "display: block; color: red;");
-          }
-          else {
-            // this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
-            this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
-            var draftdata = {
-              agent: this.agentKey,
-              agentdetails: {
-                firstname: this.draftdata_agentdetails_firstname,
-                middlename: this.draftdata_agentdetails_middlename,
-                lastname: this.draftdata_agentdetails_lastname,
-                suffix: this.draftdata_agentdetails_suffix,
-                email: this.draftdata_agentdetails_email,
-                cellphone: this.draftdata_agentdetails_cellphone
-              },
-              buyer: this.buyerKey,
-              buyerdetails: {
-                firstname: this.draftdata_buyerdetails_firstname,
-                middlename: this.draftdata_buyerdetails_middlename,
-                lastname: this.draftdata_buyerdetails_lastname,
-                suffix: this.draftdata_buyerdetails_suffix,
-                cellphone: this.draftdata_buyerdetails_cellphone,
-                email: this.draftdata_buyerdetails_email
-              },
-              expiry: this.expiryDate,
-              isdraft: false,
-              isapproved: true,
-              isserved: 'false',
-              lot: this.fullLot,
-              lotdetails: this.fullLotData,
-              processed: '',
-              processordetails: '',
-              served: '',
-              start: this.startDateTimeValue,
-              status: 'Approved',
-              timestamp: { ".sv": "timestamp" },
-              type: this.draftdata_type,
-              reference: this.applicationKey
-            };
-            var draftBuyer = {
-              firstname: this.draftdata_buyerdetails_firstname,
-              middlename: this.draftdata_buyerdetails_middlename,
-              lastname: this.draftdata_buyerdetails_lastname,
-              suffix: this.draftdata_buyerdetails_suffix,
-              cellphone: this.draftdata_buyerdetails_cellphone,
-              email: this.draftdata_buyerdetails_email
-            };
-            var draftAgent = {
-              firstname: this.draftdata_agentdetails_firstname,
-              middlename: this.draftdata_agentdetails_middlename,
-              lastname: this.draftdata_agentdetails_lastname,
-              suffix: this.draftdata_agentdetails_suffix,
-              email: this.draftdata_agentdetails_email,
-              cellphone: this.draftdata_agentdetails_cellphone
-            };
-            var firebaseDb = this.$.idd.db;
-            var firebaseDbRef = firebaseDb.ref();
-            var firebaseUpdate = {};
-            var transactionPush = firebaseDbRef.child('applications').push();
-            // this.transactionKey = transactionPush.key;
-            if (this.transactionKey) {
-              // console.log(this.transactionKey);
-              //save to /applications/{id}
-              firebaseUpdate["/applications/" + this.transactionKey] = draftdata;
-              firebaseUpdate["/briefcase/" + this.agentKey + "/" + this.transactionKey] = draftdata;
-              //this.path
-              if (this.buyerKey) {
-                //save to /buyers/{new id}
-                firebaseUpdate["/buyers/" + this.buyerKey] = draftBuyer;
-              }
-              else {
-                this.saveErrorDetails = "Buyer Key is empty.";
-                saveSuccess.setAttribute("style", "display: none; color: green;");
-                saveFailed.setAttribute("style", "display: block; color: red;");
-              }
-              if (this.agentKey) {
-                //save to /agents/{new id}
-                firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
-              }
-              else {
-                this.saveErrorDetails = "Agent Key is empty.";
-                saveSuccess.setAttribute("style", "display: none; color: green;");
-                saveFailed.setAttribute("style", "display: block; color: red;");
-              }
-              //how to get last two reservation with iscurrent and not iscurrent
-              //what if there is no iscurrent but there is a reservation???
-              //--- no need to get the current iscurrent=true, we just need the last-reservation to check if we can set the current reservation as iscurrent
-              // applications filter
-              // edit
-              // save to application and conditionally to Reservations & Lot Details Reservation
-              // ---check for applications in-line and determine the start date and time
-              // ---save to reservation will be after checking of docs approval
-              // midnight update
-              //will be transferred later, when docs checking and approval are up
-              //save to /reservations/{new id}
-              var isCurrentReservation = false;
-              if (this.lastReservation) {
-                if (this.lastReservation.length > 0) {
-                  //check if this.lastReservation is expired, check for previous reservation --done thru query
-                  isCurrentReservation = false;
+            _closeSearchToolbar() {
+                this.searchToolbar = false;
+                Polymer.dom(this.root).querySelector("#applicationsQuery").disabled = false;
+            },
+
+            _appsnew() {
+                var node = Polymer.dom(this.root).querySelector("#appnew");
+                if (node) {
+                    var oldDiv = Polymer.dom(node.parentNode).querySelector("#d23");
+                    if (oldDiv) {
+                        Polymer.dom(node.parentNode).removeChild(oldDiv);
+                    }
+                    var newDiv = document.createElement("my-application-new");
+                    newDiv.setAttribute("id", "d23");
+                    newDiv.setAttribute("prev-route", this.route.prefix);
+                    newDiv.setAttribute("myname", this.myname);
+                    // newDiv.setAttribute("block", "3")
+                    //if open existing
+                    var currentDiv = document.getElementById("appnew");
+                    Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+                }
+            },
+
+            _getViewDetailsLink(e) {
+                if (e) return '/applications/detail/' + e.toString();
+            },
+
+            _getEditDetailsLink(e) {
+                if (e) return '/applications/edit/' + e.toString();
+            },
+
+            viewDetails(e) {
+                // var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+                var data_args = e.currentTarget.item.$key;
+                var node = Polymer.dom(this.root).querySelector("#appdetail");
+                if (node) {
+                    var oldDiv = Polymer.dom(node.parentNode).querySelector("#d24");
+                    if (oldDiv) {
+                        Polymer.dom(node.parentNode).removeChild(oldDiv);
+                    }
+                    var newDiv = document.createElement("my-application-detail");
+                    newDiv.setAttribute("id", "d24")
+                    newDiv.setAttribute("transaction-key", data_args)
+                    newDiv.setAttribute("prev-route", this.route.prefix);
+                    newDiv.setAttribute("path-link", this.applicationsTab);
+                    newDiv.setAttribute("myname", this.myname);
+                    newDiv.setAttribute("user", JSON.stringify(this.user));
+                    //if open existing
+                    var currentDiv = document.getElementById("appdetail");
+                    Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+                }
+            },
+
+            editDetails(e) {
+                // var data_args = Polymer.dom(e).rootTarget.getAttribute("alt");
+                var data_args = e.currentTarget.item.$key;
+                var node = Polymer.dom(this.root).querySelector("#appedit");
+                if (node) {
+                    var oldDiv = Polymer.dom(node.parentNode).querySelector("#d25");
+                    if (oldDiv) {
+                        Polymer.dom(node.parentNode).removeChild(oldDiv);
+                    }
+                    var newDiv = document.createElement("my-application-edit");
+                    newDiv.setAttribute("id", "d25")
+                    newDiv.setAttribute("transaction-key", data_args)
+                    newDiv.setAttribute("prev-route", this.route.prefix);
+                    newDiv.setAttribute("myname", this.myname);
+                    //if open existing
+                    var currentDiv = document.getElementById("appedit");
+                    Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+                }
+            },
+
+            toggleDrawer() {
+                this.dispatchEvent(new CustomEvent('toggleDrawer', {
+                    bubbles: true, composed: true, detail: {
+                        narrow: this.$.narrow
+                    }
+                }));
+                this.$.narrow = !this.$.narrow;
+            },
+
+            _openApprovedDialog(e) {
+                this.approvedData = e.currentTarget.item;
+                var lot = this.approvedData.lot;
+                var type = this.approvedData.lotdetails.type + '_available_yes';
+                var successDialog = Polymer.dom(this.root).querySelector('#approvedDialog');
+                var errorDialog = Polymer.dom(this.root).querySelector('#approvedDialogError');
+                var self = this;
+
+                firebase.database().ref('/lots/' + lot).once('value', function (data) {
+                    if (data.val().type_status_inventoriable === type) {
+                        successDialog.open();
+                    } else {
+                        self.dialogDataStatus = data.val().status;
+                        errorDialog.open();
+                    }
+                });
+            },
+
+            _approvedRequest() {
+                var ddate = new Date();
+                var startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                    + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+                this.expiryHoursDaysLabel = "hours";
+                this.expiryHoursDaysValue = 24;
+                var xdate = new Date(startDateTimeValue);
+                xdate.setHours(xdate.getHours() + this.expiryHoursDaysValue);
+                this.expiryHoursDaysComputedValue = xdate.toDateString() + ' ' + xdate.toLocaleTimeString();
+
+                var expiryDate = xdate.getFullYear() + "-" + ("0" + (xdate.getMonth() + 1)).slice(-2) + "-" + ("0" + xdate.getDate()).slice(-2)
+                    + "T" + ("0" + xdate.getHours()).slice(-2) + ":" + ("0" + xdate.getMinutes()).slice(-2);
+
+                var dataForApplications = {
+                    agent: this.approvedData.agent,
+                    agentdetails: this.approvedData.agentdetails,
+                    buyer: this.approvedData.buyer,
+                    buyerdetails: this.approvedData.buyerdetails,
+                    lot: this.approvedData.lot,
+                    lotdetails: this.approvedData.lotdetails,
+                    expiry: expiryDate,
+                    isexpired: false,
+                    start: startDateTimeValue,
+                    timestamp: { ".sv": "timestamp" },
+                    type: this.approvedData.type,
+                    reference: this.approvedData.reference,
+                    briefcasedetails: {
+                        status: 'Approved',
+                        dateCreated: this.approvedData.briefcasedetails.dateCreated,
+                        isUpdated: this.approvedData.briefcasedetails.isUpdated,
+                        dateSendRequest: this.approvedData.briefcasedetails.dateSendRequest,
+                        processedBy: this.isMe,
+                        dateProcessed: startDateTimeValue,
+                    },
+                }
+
+                var notificationData = {
+                    isRead: false,
+                    date: startDateTimeValue,
+                    href: '/dashboard/detail/' + this.approvedData.$key,
+                    message: this.isMe.name.lastname + ' ' + this.isMe.name.firstname + ' approved your request',
+                    agentdetails: this.approvedData.agentdetails,
+                    lotdetails: this.approvedData.lotdetails,
+                    userPhoto: this.user.photoURL
+                }
+
+                var newPostKey = firebase.database().ref().child('briefcase').push().key;
+
+                var updates = {};
+
+                updates["/briefcase/" + this.approvedData.agent + "/" + newPostKey] = dataForApplications;
+                updates["/applications/" + newPostKey] = dataForApplications;
+                updates["/briefcaseDraft/" + this.approvedData.agent + "/" + this.approvedData.$key] = null;
+                updates["/applicationsNew/" + this.approvedData.$key] = null;
+
+                updates['/notificationsUser/' + this.approvedData.agent + '/' + newPostKey] = notificationData;
+                // updates['/notifications/' + this.approvedData.$key] = null;
+
+                var isCurrentReservation = false;
+                if (this.lastReservation) {
+                    if (this.lastReservation.length > 0) {
+                        isCurrentReservation = false;
+                    }
+                    else {
+                        isCurrentReservation = true;
+                    }
                 }
                 else {
-                  isCurrentReservation = true;
+                    isCurrentReservation = true;
                 }
-              }
-              else {
-                isCurrentReservation = true;
-              }
-              // console.log(this.lastReservation);
-              var dataForReservation = {
-                agent: this.agentKey,
-                agentdetails: {
-                  firstname: this.draftdata_agentdetails_firstname,
-                  middlename: this.draftdata_agentdetails_middlename,
-                  lastname: this.draftdata_agentdetails_lastname,
-                  suffix: this.draftdata_agentdetails_suffix,
-                  email: this.draftdata_agentdetails_email,
-                  cellphone: this.draftdata_agentdetails_cellphone
-                },
-                buyer: this.buyerKey,
-                buyerdetails: {
-                  firstname: this.draftdata_buyerdetails_firstname,
-                  middlename: this.draftdata_buyerdetails_middlename,
-                  lastname: this.draftdata_buyerdetails_lastname,
-                  suffix: this.draftdata_buyerdetails_suffix,
-                  cellphone: this.draftdata_buyerdetails_cellphone,
-                  email: this.draftdata_buyerdetails_email
-                },
-                expiry: this.expiryDate,
-                isexpired: false,
-                start: this.startDateTimeValue,
-                timestamp: { ".sv": "timestamp" },
-                iscurrent: isCurrentReservation,
-                type: (this.draftdata_type === 'Reserve' ? 'reserved' :
-                  this.draftdata_type === 'Hold' ? 'hold' :
-                    this.draftdata_type === 'Buy' ? 'sold' : ''),
-                reference: this.applicationKey
-              };
-              firebaseUpdate["/reservations/" + this.fullLot + "/" + this.transactionKey] = dataForReservation;
-              if (isCurrentReservation == true) {
-                // console.log(selectedTransType);
-                var selectedTransType = (this.draftdata_type === 'Reserve' ? 'reserved' : this.draftdata_type === 'Hold' ? 'hold' : this.draftdata_type === 'Buy' ? 'sold' : '');
-                firebaseUpdate["/lots/" + this.fullLot + "/reservation"] = this.transactionKey;
-                firebaseUpdate["/lots/" + this.fullLot + "/reservationdetails"] = dataForReservation;
-                firebaseUpdate["/lots/" + this.fullLot + "/status"] = selectedTransType
-                firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/status_name"] = this.transTypeCorrespondingColor.name;
-                firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/bg_color"] = this.transTypeCorrespondingColor.bg_color;
-                firebaseUpdate["/lots/" + this.fullLot + "/maprenderdetails/fore_color"] = this.transTypeCorrespondingColor.fore_color;
-                firebaseUpdate["/lots/" + this.fullLot + "/type_status_inventoriable"] = this.fullLotData.type + '_' + (this.draftdata_type === 'Reserve' ? 'reserved' : this.draftdata_type === 'Hold' ? 'hold' : this.draftdata_type === 'Buy' ? 'sold' : '') + '_' + this.fullLotData.inventoriable;
-                //shb 01/04
-                //for lots with level/map_lot: check other lots by map_lot, compare and get winning map_lot status
-                //get lots thru map_lot
-                if (this.fullLotData.level) {
-                  var otherLotsRef = this.$.fdColor.db.ref('lots');
-                  var otherLotMapLot = 'block' + this.fullLotData.block + 'lot' + this.fullLotData.lot;
-                  otherLotsRef.orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
-                    if (snap.exists()) {
-                      var winningValStat = 0;
-                      snap.forEach(element => {
-                        var valStat = 0;
-                        var stat = element.val().status;
-                        if (stat) {
-                          if (stat === 'available') valStat = 5;
-                          else if (stat === 'hold') valStat = 4;
-                          else if (stat === 'reserved') valStat = 3;
-                          else if (stat === 'soldlacking') valStat = 2;
-                          else if (stat === 'sold') valStat = 1;
-                          else valStat = 0; //notyetavailable
-                        }
-                        if (valStat > winningValStat) {
-                          winningValStat = valStat;
-                        }
-                      });
-                      var winningColor;
-                      if (winningValStat == 5) winningColor = 'available';
-                      else if (winningValStat == 4) winningColor = 'hold';
-                      else if (winningValStat == 3) winningColor = 'reserved';
-                      else if (winningValStat == 2) winningColor = 'soldlacking';
-                      else if (winningValStat == 1) winningColor = 'sold';
-                      else winningColor = 'notyetavailable';
-                      var corresStatusColorRef = this.$.fdColor.db.ref('statuscolor/' + winningColor);
-                      transTypeCorrespondingColorRef.on('value', statusColor => {
-                        if (statusColor.exists()) {
-                          corresStatusColor = statusColor.val()
-                          firebaseUpdate["/lots/" + otherLotMapLot + "/status"] = winningColor;
-                          firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
-                          firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
-                          firebaseUpdate["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
-                          firebaseUpdate["/lots/" + otherLotMapLot + "/type_status_inventoriable"] = this.fullLotData.type + '_' + winningColor + '_' + this.fullLotData.inventoriable;
-                        }
-                      });
+
+                var dataForReservation = {
+                    agent: this.approvedData.agent,
+                    agentdetails: this.approvedData.agentdetails,
+                    buyer: this.approvedData.buyer,
+                    buyerdetails: this.approvedData.buyerdetails,
+                    expiry: expiryDate,
+                    isexpired: false,
+                    start: startDateTimeValue,
+                    timestamp: { ".sv": "timestamp" },
+                    iscurrent: isCurrentReservation,
+                    type: this.approvedData.type,
+                    reference: this.approvedData.reference
+                }
+
+                updates["/reservations/" + this.approvedData.lot + "/" + newPostKey] = dataForReservation;
+
+                if (isCurrentReservation == true) {
+                    updates["/lots/" + this.approvedData.lot + "/reservation"] = this.approvedData.$key;
+                    updates["/lots/" + this.approvedData.lot + "/reservationdetails"] = dataForReservation;
+                    updates["/lots/" + this.approvedData.lot + "/status"] = 'hold';
+                    updates["/lots/" + this.approvedData.lot + "/maprenderdetails/status_name"] = 'Hold';
+                    updates["/lots/" + this.approvedData.lot + "/maprenderdetails/bg_color"] = '#E65100';
+                    updates["/lots/" + this.approvedData.lot + "/maprenderdetails/fore_color"] = 'white';
+                    updates["/lots/" + this.approvedData.lot + "/type_status_inventoriable"] = this.approvedData.lotdetails.type + '_hold_' + this.approvedData.lotdetails.inventoriable;
+                    //shb 01/04
+                    //for lots with level/map_lot: check other lots by map_lot, compare and get winning map_lot status
+                    //get lots thru map_lot
+                    if (this.approvedData.lotdetails.level) {
+                        var otherLotsRef = firebase.database().ref('lots');
+                        var otherLotMapLot = this.approvedData.lot;
+                        otherLotsRef.orderByChild('map_lot').equalTo(otherLotMapLot).on('value', snap => {
+                            if (snap.exists()) {
+                                var winningValStat = 0;
+                                snap.forEach(element => {
+                                    var valStat = 0;
+                                    var stat = element.val().status;
+                                    if (stat) {
+                                        if (stat === 'available') valStat = 5;
+                                        else if (stat === 'hold') valStat = 4;
+                                        else if (stat === 'reserved') valStat = 3;
+                                        else if (stat === 'soldlacking') valStat = 2;
+                                        else if (stat === 'sold') valStat = 1;
+                                        else valStat = 0; //notyetavailable
+                                    }
+                                    if (valStat > winningValStat) {
+                                        winningValStat = valStat;
+                                    }
+                                });
+
+                                var winningColor;
+                                if (winningValStat == 5) winningColor = 'available';
+                                else if (winningValStat == 4) winningColor = 'hold';
+                                else if (winningValStat == 3) winningColor = 'reserved';
+                                else if (winningValStat == 2) winningColor = 'soldlacking';
+                                else if (winningValStat == 1) winningColor = 'sold';
+                                else winningColor = 'notyetavailable';
+
+                                var corresStatusColorRef = firebase.database().ref('statuscolor/' + winningColor);
+                                // this.$.fdColor.db.ref('statuscolor/' + winningColor);
+                                var transTypeCorrespondingColorRef = firebase.database().ref('statuscolor/hold');
+                                transTypeCorrespondingColorRef.on('value', statusColor => {
+                                    if (statusColor.exists()) {
+                                        corresStatusColor = statusColor.val()
+                                        updates["/lots/" + otherLotMapLot + "/status"] = winningColor;
+                                        updates["/lots/" + otherLotMapLot + "/maprenderdetails/status_name"] = statusColor.name;
+                                        updates["/lots/" + otherLotMapLot + "/maprenderdetails/bg_color"] = statusColor.bg_color;
+                                        updates["/lots/" + otherLotMapLot + "/maprenderdetails/fore_color"] = statusColor.fore_color;
+                                        updates["/lots/" + otherLotMapLot + "/type_status_inventoriable"] = this.approvedData.type + '_' + winningColor + '_' + 'no';
+
+                                    }
+                                });
+                            }
+                        });
                     }
-                  });
+
                 }
-              }
-              //if ok, update bg_color, status_name
-              //check reservations if current is expired, then check if there is prior reservation, then iscurrent=false
-              var saveSuccess = Polymer.dom(this.root).querySelector("#saveSuccess");
-              var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-              // var favRightVar = Polymer.dom(this.root).querySelector("#favright");
-              if (this.fullLotData.status != 'available') {
-                this.saveErrorDetails = 'Lot status has changed. Please check the status of the lot.';
-                saveSuccess.setAttribute("style", "display: none; color: green;");
-                saveFailed.setAttribute("style", "display: block; color: red;");
-              }
-              else {
-                // console.log(firebaseUpdate);
-                firebaseDbRef.update(firebaseUpdate, function (error) {
-                  if (error) {
-                    console.log("Error approving application:", error);
-                    this.saveErrorDetails = error;
-                    saveSuccess.setAttribute("style", "display: none; color: green;");
-                    saveFailed.setAttribute("style", "display: block; color: red;");
-                    // this.favlefthide = false;
-                    // this.favrighthide = true;
-                    // console.log('1');
-                  }
-                  else {
-                    this.saveErrorDetails = "";
-                    saveSuccess.setAttribute("style", "display: block; color: green;");
-                    saveFailed.setAttribute("style", "display: none; color: red;");
-                    // this.favlefthide = true;
-                    // this.favrighthide = true;
-                    // favRightVar.setAttribute("style", "display: none; background: #1976d2;");
-                    // console.log('2');
-                  }
-                });
-              }
-            }
-            else {
-              //transactionKey is missing
-              var saveFailed = Polymer.dom(this.root).querySelector("#saveFailed");
-              this.saveErrorDetails = "Transaction Key is missing.";
-              saveFailed.setAttribute("style", "display: block; color: red;");
-            }
+                //if ok, update bg_color, status_name
+                //check reservations if current is expired, then check if there is prior reservation, then iscurrent=false
+                firebase.database().ref().update(updates);
+                Polymer.dom(this.root).querySelector('#approvedDialog').close();
+                Polymer.dom(this.root).querySelector('#successDialog').open();
+            },
 
-          }
-          Polymer.dom(this.root).querySelector("#favright").setAttribute("style", "display:none");
-          // this.favlefthide = true;
-          // this.favrighthide = true;
-          var applicationsNew = firebase.database().ref().child("applicationsNew").child(this.transactionKey).remove();
-          window.location = "/applications";
-        }
-      },
+            _openDisApprovedDialog(e) {
+                this.disApprovedData = e.currentTarget.item;
+                this.reason = null;
+                Polymer.dom(this.root).querySelector('#disApprovedDialog').open();
+            },
 
-      _descending(e) {
-        return e.reverse();
-      },
+            _formatLot(block, lot, level) {
+                if (level) return 'Block ' + block + ' Lot ' + lot + ' Level ' + level;
+                else return 'Block ' + block + ' Lot ' + lot;
+            },
 
-      loadMoreData() {
-        this.loadingMessage = 'Loading....';
-        setTimeout((e) => {
-          this.loadingMessage = 'No record..';
-          this.$.threshold.clearTriggers();
-        }, 3000);
-      },
-    })
-  </script>
+            _sudmitDisApproved() {
+                if (this.reason) {
+                    this.msg = '';
+
+                    var ddate = new Date();
+                    var startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                        + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
+                    var notificationData = {
+                        isRead: false,
+                        date: startDateTimeValue,
+                        href: '/dashboard/detail/' + this.disApprovedData.$key,
+                        message: this.isMe.name.lastname + ' ' + this.isMe.name.firstname + ' disapproved your request',
+                        agentdetails: this.disApprovedData.agentdetails,
+                        lotdetails: this.disApprovedData.lotdetails,
+                        userPhoto: this.user.photoURL
+                    }
+
+                    var updates = {};
+
+                    updates["/briefcaseDraft/" + this.disApprovedData.agent + "/" + this.disApprovedData.$key + '/briefcasedetails/status'] = 'Disapproved';
+                    updates["/briefcaseDraft/" + this.disApprovedData.agent + "/" + this.disApprovedData.$key + '/briefcasedetails/processedBy'] = this.isMe;
+                    updates["/briefcaseDraft/" + this.disApprovedData.agent + "/" + this.disApprovedData.$key + '/briefcasedetails/dateProcessed'] = startDateTimeValue;
+                    updates["/briefcaseDraft/" + this.disApprovedData.agent + "/" + this.disApprovedData.$key + '/briefcasedetails/reason'] = this.reason;
+                    updates["/applicationsNew/" + this.disApprovedData.$key] = null;
+
+                    updates['/notificationsUser/' + this.disApprovedData.agent + '/' + this.disApprovedData.$key] = notificationData;
+                    // updates['/notifications/' + this.disApprovedData.$key] = null;
+
+                    firebase.database().ref().update(updates);
+                    Polymer.dom(this.root).querySelector('#disApprovedDialog').close();
+                } else {
+                    this.msg = 'Please provide reason';
+                }
+            },
+        })
+    </script>
 </dom-module>

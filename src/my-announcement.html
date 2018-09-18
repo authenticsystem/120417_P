@@ -230,7 +230,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <br>
                                 <firebase-query id="query" path="/user-announcements/{{myaccountKey}}" data="{{myAnnouncement}}"></firebase-query>
 
-                                <template is="dom-repeat" items="[[reverseMyAnnouncement]]">
+                                <template is="dom-repeat" items="[[myAnnouncement]]">
                                     <div class="announcementDiv">
                                         <div class="item">
                                             <iron-image class="avatar" sizing="contain" src="[[_photo(item.photo)]]"></iron-image>
@@ -343,7 +343,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     e.base.forEach(element => {
                         reverseMyAnnouncement.push(element);
                     });
-                    this.reverseMyAnnouncement = this._descending(reverseMyAnnouncement);
+                    this.reverseMyAnnouncement = e.base.reverse();
                 }
             },
 
@@ -414,13 +414,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         photo: firebase.auth().currentUser.photoURL,
                         isUpdate: false
                     };
+
+                    var ddate = new Date();
+                    var startDateTimeValue = ddate.getFullYear() + "-" + ("0" + (ddate.getMonth() + 1)).slice(-2) + "-" + ("0" + ddate.getDate()).slice(-2)
+                        + "T" + ("0" + (ddate.getHours())).slice(-2) + ":" + ("0" + ddate.getMinutes()).slice(-2);
+
+                    var notificationData = {
+                        isRead: false,
+                        date: startDateTimeValue,
+                        href: '/dashboard',
+                        message: this.myaccountName + " publish new announcement",
+                        userPhoto: firebase.auth().currentUser.photoURL,
+                    }
+
                     var newPostKey = firebase.database().ref().child('announcements').push().key;
                     var updates = {};
                     updates['/announcements/' + newPostKey] = postData;
                     updates['/user-announcements/' + this.myaccountKey + '/' + newPostKey] = postData;
+                    updates['/notifications/' + newPostKey] = notificationData;
                     firebase.database().ref().update(updates);
                     this.announcement = null;
-                    this.notification();
+
                     if (this.fileImg) {
                         Polymer.dom(this.root).querySelector("#errMsg").style.display = 'block';
                         this.msg = 'Posting..';
@@ -459,26 +473,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 });
             },
 
-            notification() {
-                var ref = firebase.database().ref("notifications");
-                ref.push({
-                    title: 'Announcement',
-                    click: "/dashboard",
-                    message: "post new announcement",
-                    photo: firebase.auth().currentUser.photoURL,
-                    isread: false,
-                    sender: this.myaccountName,
-                    timestamp: { ".sv": "timestamp" },
-                    source: 'announcement',
-                    recipient: {
-                        staff: true,
-                        manager: true,
-                        agent: true,
-                        owner: true,
-                        recipient_accountCode: ''
-                    },
-                });
-            },
+            // notification() {
+            //     var ref = firebase.database().ref("notifications");
+            //     ref.push({
+            //         title: 'Announcement',
+            //         click: "/dashboard",
+            //         message: "post new announcement",
+            //         photo: firebase.auth().currentUser.photoURL,
+            //         isread: false,
+            //         sender: this.myaccountName,
+            //         timestamp: { ".sv": "timestamp" },
+            //         source: 'announcement',
+            //         recipient: {
+            //             staff: true,
+            //             manager: true,
+            //             agent: true,
+            //             owner: true,
+            //             recipient_accountCode: ''
+            //         },
+            //     });
+            // },
 
             openDeleteDialog(e) {
                 this.announcementKEY = e.currentTarget.item.$key;
@@ -488,7 +502,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             deleteDialog() {
                 var updates = {};
                 updates['/announcements/' + this.announcementKEY] = null;
-                updates['/user-announcements/' + this.myaccountKey + '/' + this.announcementKEY] = null;
+                updates['/user-announcements/' + this.myaccountName + '/' + this.announcementKEY] = null;
                 firebase.database().ref().update(updates);
                 Polymer.dom(this.root).querySelector("#deletemodal").open();
                 window.location = "/announcement";
