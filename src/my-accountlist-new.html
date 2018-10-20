@@ -126,15 +126,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <paper-checkbox checked="{{agents}}">All Agents</paper-checkbox>
                             </div>
                             <div>
-                                <paper-dropdown-menu label="Type" vertical-align="top" horizontal-align="left"
-                                    vertical-offset="60" required>
+                                <paper-dropdown-menu label="Type" required>
                                     <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{selectedType}}">
                                         <paper-item value="inhouse">In-House</paper-item>
                                         <paper-item value="broker">Broker</paper-item>
+                                        <paper-item value="corporate">Corporate</paper-item>
                                     </paper-listbox>
                                 </paper-dropdown-menu>
-                                <paper-dropdown-menu label="Group" vertical-align="top" horizontal-align="left"
-                                    vertical-offset="60" required>
+                                <paper-dropdown-menu label="Group" required>
                                     <paper-listbox slot="dropdown-content" attr-for-selected="value" selected="{{selectedGroup}}">
                                         <firebase-query path="/group/{{selectedType}}" data="{{groupData}}"></firebase-query>
                                         <template is="dom-repeat" items="[[groupData]]">

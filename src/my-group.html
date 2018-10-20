@@ -22,6 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
 <link rel="import" href="../bower_components/paper-dropdown-menu/paper-dropdown-menu.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
 
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 <link rel="import" href="../bower_components/neon-animation/web-animations.html">
@@ -112,6 +113,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 <app-route route="{{route}}" pattern="" active="{{groupActive}}"></app-route>
                 <app-route route="{{route}}" pattern="/inhouse/view/:key" active="{{inhouseGroupActive}}"></app-route>
                 <app-route route="{{route}}" pattern="/broker/view/:key" active="{{brokerGroupActive}}"></app-route>
+                <app-route route="{{route}}" pattern="/corporate/view/:key" active="{{corporateGroupActive}}"></app-route>
 
                 <div hidden$="{{!groupActive}}">
                     <iron-pages selected="[[route.path]]" attr-for-selected="name" fallback-selection="view404" role="main">
@@ -124,6 +126,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <paper-tabs selected="{{selectedAgentType}}">
                                     <paper-tab>In-House</paper-tab>
                                     <paper-tab>Broker</paper-tab>
+                                    <paper-tab>Corporate</paper-tab>
                                 </paper-tabs>
                             </app-header>
 
@@ -131,11 +134,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <!-- in-house -->
                                 <div style="margin-top: 16px">
                                     <div class="container">
-                                        <div style="background-color: #E0E0E0; padding: 16px; display: flex">
-                                            <paper-input label="Search" placeholder="Group name" value="{{searchGroupName}}" style="width: 100%">
+                                        <div style="background-color: #E0E0E0; padding: 16px;">
+                                            <!-- <paper-input label="Search" placeholder="Group name" value="{{searchInhouse}}" style="width: 100%">
                                                 <iron-icon icon="my-icons:search" slot="prefix"></iron-icon>
-                                            </paper-input>
-                                            <paper-button raised style="margin-top: 16px; margin-left: 16px" on-tap="_createInhouse" class="submit">create</paper-button>
+                                            </paper-input> -->
+                                            <span style="float: right; color: green">{{successMSG}}</span>
+                                            <iron-form id="iron-form">
+                                                <form>
+                                                    <paper-input required label="In-House" placeholder="Group name"
+                                                        value="{{inhouseName}}"></paper-input>
+                                                </form>
+                                            </iron-form>
+                                            <paper-button raised on-tap="_inhouseSubmit" class="submit">create</paper-button>
                                         </div>
                                         <firebase-query id="inhouseQuery" path="/group/inhouse" data={{inhouseData}}></firebase-query>
                                         <template is="dom-repeat" items=[[inhouseData]]>
@@ -146,21 +156,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                                     <!-- <div secondary>No of users</div> -->
                                                 </paper-item-body>
                                                 <paper-icon-button icon="my-icons:edit" on-tap="_editInhouse" item="[[item]]"></paper-icon-button>
-                                                <paper-icon-button icon="my-icons:delete-forever" on-tap="_deleteInhouse" item="[[item]]"></paper-icon-button>
+                                                <paper-icon-button icon="my-icons:delete-forever" on-tap="_deleteInhouse"
+                                                    item="[[item]]"></paper-icon-button>
                                                 <a href$="{{_getViewInhouseGroupLink(item.$key)}}" style="color: black; text-decoration: none">
-                                                    <paper-icon-button icon="my-icons:account-circle" on-tap="_viewInhouseGroup" item="[[item]]"></paper-icon-button>
+                                                    <paper-icon-button icon="my-icons:account-circle" on-tap="_viewInhouseGroup"
+                                                        item="[[item]]"></paper-icon-button>
                                                 </a>
                                             </paper-icon-item>
                                         </template>
                                     </div>
-                                    <paper-dialog id="createInhouseDialog">
+                                    <!-- <paper-dialog id="createInhouseDialog">
                                         <h2>Create Group</h2>
                                         <paper-input label="In-House" placeholder="Group name" value="{{inhouseName}}"></paper-input>
                                         <div class="buttons">
                                             <paper-button dialog-dismiss>Cancel</paper-button>
                                             <paper-button dialog-confirm autofocus on-tap="_inhouseSubmit">Create</paper-button>
                                         </div>
-                                    </paper-dialog>
+                                    </paper-dialog> -->
                                     <paper-dialog id="deleteInhouseDialog">
                                         <h2>Delete this group?</h2>
                                         <div class="buttons">
@@ -181,11 +193,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                 <!-- broker -->
                                 <div style="margin-top: 16px">
                                     <div class="container">
-                                        <div style="background-color: #E0E0E0; padding: 16px; display: flex">
-                                            <paper-input label="Search" placeholder="Group name" value="{{searchGroupName}}" style="width: 100%">
+                                        <div style="background-color: #E0E0E0; padding: 16px">
+                                            <!-- <paper-input label="Search" placeholder="Group name" value="{{searchGroupName}}" style="width: 100%">
                                                 <iron-icon icon="my-icons:search" slot="prefix"></iron-icon>
-                                            </paper-input>
-                                            <paper-button raised style="margin-top: 16px; margin-left: 16px" on-tap="_createBroker" class="submit">create</paper-button>
+                                            </paper-input> -->
+                                            <span style="float: right; color: green">{{successMSG}}</span>
+                                            <iron-form id="broker-form">
+                                                <form>
+                                                    <paper-input required label="Broker" placeholder="Group name" value="{{brokerName}}"></paper-input>
+                                                </form>
+                                            </iron-form>
+                                            <paper-button raised on-tap="_brokerSubmit" class="submit">create</paper-button>
                                         </div>
                                         <firebase-query id="brokerQuery" path="/group/broker" data={{brokerData}}></firebase-query>
                                         <template is="dom-repeat" items=[[brokerData]]>
@@ -196,21 +214,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                                     <!-- <div secondary>No of users</div> -->
                                                 </paper-item-body>
                                                 <paper-icon-button icon="my-icons:edit" on-tap="_editBroker" item="[[item]]"></paper-icon-button>
-                                                <paper-icon-button icon="my-icons:delete-forever" on-tap="_deleteBroker" item="[[item]]"></paper-icon-button>
+                                                <paper-icon-button icon="my-icons:delete-forever" on-tap="_deleteBroker"
+                                                    item="[[item]]"></paper-icon-button>
                                                 <a href$="{{_getViewBrokerGroupLink(item.$key)}}" style="color: black; text-decoration: none">
-                                                    <paper-icon-button icon="my-icons:account-circle" on-tap="_viewBrokerGroup" item="[[item]]"></paper-icon-button>
+                                                    <paper-icon-button icon="my-icons:account-circle" on-tap="_viewBrokerGroup"
+                                                        item="[[item]]"></paper-icon-button>
                                                 </a>
                                             </paper-icon-item>
                                         </template>
                                     </div>
-                                    <paper-dialog id="createBrokerDialog">
+                                    <!-- <paper-dialog id="createBrokerDialog">
                                         <h2>Create Group</h2>
                                         <paper-input label="Broker" placeholder="Group name" value="{{brokerName}}"></paper-input>
                                         <div class="buttons">
                                             <paper-button dialog-dismiss>Cancel</paper-button>
                                             <paper-button dialog-confirm autofocus on-tap="_brokerSubmit">Create</paper-button>
                                         </div>
-                                    </paper-dialog>
+                                    </paper-dialog> -->
                                     <paper-dialog id="deleteBrokerDialog">
                                         <h2>Delete this group?</h2>
                                         <div class="buttons">
@@ -224,6 +244,64 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                         <div class="buttons">
                                             <paper-button dialog-dismiss>Cancel</paper-button>
                                             <paper-button dialog-confirm autofocus on-tap="_brokerUpdate">Update</paper-button>
+                                        </div>
+                                    </paper-dialog>
+                                </div>
+
+                                <!-- corporate -->
+                                <div style="margin-top: 16px">
+                                    <div class="container">
+                                        <div style="background-color: #E0E0E0; padding: 16px;">
+                                            <!-- <paper-input label="Search" placeholder="Group name" value="{{searchGroupName}}" style="width: 100%">
+                                                <iron-icon icon="my-icons:search" slot="prefix"></iron-icon>
+                                            </paper-input> -->
+                                            <span style="float: right; color: green">{{successMSG}}</span>
+                                            <iron-form id="corporate-form">
+                                                <form>
+                                                    <paper-input required label="Corporate" placeholder="Corporate name" value="{{corporateName}}"></paper-input>
+                                                </form>
+                                            </iron-form>
+                                            <paper-button raised on-tap="_corporateSubmit" class="submit">create</paper-button>
+                                        </div>
+                                        <firebase-query id="corporateQuery" path="/group/corporate" data={{corporateData}}></firebase-query>
+                                        <template is="dom-repeat" items=[[corporateData]]>
+                                            <paper-icon-item>
+                                                <!-- <div class="avatar blue" slot="item-icon"></div> -->
+                                                <paper-item-body two-line>
+                                                    <div>[[item.name]]</div>
+                                                    <!-- <div secondary>No of users</div> -->
+                                                </paper-item-body>
+                                                <paper-icon-button icon="my-icons:edit" on-tap="_editCorporate" item="[[item]]"></paper-icon-button>
+                                                <paper-icon-button icon="my-icons:delete-forever" on-tap="_deleteCorporate"
+                                                    item="[[item]]"></paper-icon-button>
+                                                <a href$="{{_getViewCorporateGroupLink(item.$key)}}" style="color: black; text-decoration: none">
+                                                    <paper-icon-button icon="my-icons:account-circle" on-tap="_viewCorporateGroup"
+                                                        item="[[item]]"></paper-icon-button>
+                                                </a>
+                                            </paper-icon-item>
+                                        </template>
+                                    </div>
+                                    <!-- <paper-dialog id="createCorporateDialog">
+                                        <h2>Create Group</h2>
+                                        <paper-input label="Corporate" placeholder="Corporate name" value="{{corporateName}}"></paper-input>
+                                        <div class="buttons">
+                                            <paper-button dialog-dismiss>Cancel</paper-button>
+                                            <paper-button dialog-confirm autofocus on-tap="_corporateSubmit">Create</paper-button>
+                                        </div>
+                                    </paper-dialog> -->
+                                    <paper-dialog id="deleteCorporateDialog">
+                                        <h2>Delete this group?</h2>
+                                        <div class="buttons">
+                                            <paper-button dialog-dismiss>Cancel</paper-button>
+                                            <paper-button dialog-confirm autofocus on-tap="_corporateDelete">Delete</paper-button>
+                                        </div>
+                                    </paper-dialog>
+                                    <paper-dialog id="editCorporateDialog">
+                                        <h2>Edit Group</h2>
+                                        <paper-input label="Corporate" placeholder="Group name" value="{{updateCorporateName}}"></paper-input>
+                                        <div class="buttons">
+                                            <paper-button dialog-dismiss>Cancel</paper-button>
+                                            <paper-button dialog-confirm autofocus on-tap="_corporateUpdate">Update</paper-button>
                                         </div>
                                     </paper-dialog>
                                 </div>
@@ -245,6 +323,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     <my-view-group id="d26" prev-route="{{route.prefix}}"></my-view-group>
                 </div>
 
+                <div hidden$="{{!corporateGroupActive}}">
+                    <div id="corporateGroup"></div>
+                    <my-view-group id="d27" prev-route="{{route.prefix}}"></my-view-group>
+                </div>
+
             </app-header-layout>
         </template>
 
@@ -261,7 +344,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             },
             observers: [
-                'selectedAgentTypeChanged(selectedAgentType)'
+                '_inhouseNameChanged(inhouseName)',
+                '_brokerNameChanged(brokerName)',
+                '_corporateNameChanged(corporateName)',
             ],
 
             toggleDrawer() {
@@ -273,21 +358,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 this.$.narrow = !this.$.narrow;
             },
 
-            selectedAgentTypeChanged(e) {
-                if (e == 0) {
-                    this.inhouseErrMSG = null;
-                } else {
-                    this.brokerErrMSG = null;
-                }
+            // IN-HOUSE
+            _inhouseNameChanged(e) {
+                if (e) this.successMSG = '';
             },
 
-            // IN-HOUSE
             _createInhouse() {
                 Polymer.dom(this.root).querySelector("#createInhouseDialog").open();
                 this.inhouseName = null;
             },
 
             _inhouseSubmit() {
+                Polymer.dom(this.root).querySelector('#iron-form').submit();
                 if (this.inhouseName) {
                     var groupID = this.guid();
                     var inhouseQuery = Polymer.dom(this.root).querySelector("#inhouseQuery");
@@ -295,6 +377,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         name: this.inhouseName,
                         groupID: groupID
                     });
+                    this.inhouseName = null;
+                    this.successMSG = 'Added successfully!'
                 }
             },
 
@@ -354,12 +438,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
 
             // BROKER
+            _brokerNameChanged(e) {
+                if (e) this.successMSG = '';
+            },
+
             _createBroker() {
                 Polymer.dom(this.root).querySelector("#createBrokerDialog").open();
                 this.brokerName = null;
             },
 
             _brokerSubmit() {
+                Polymer.dom(this.root).querySelector('#broker-form').submit();
                 if (this.brokerName) {
                     var groupID = this.guid();
                     var brokerQuery = Polymer.dom(this.root).querySelector("#brokerQuery");
@@ -367,6 +456,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         name: this.brokerName,
                         groupID: groupID
                     });
+                    this.brokerName = null;
+                    this.successMSG = 'Added successfully!'
                 }
             },
 
@@ -421,6 +512,85 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     newDiv.setAttribute("prev-route", this.route.prefix);
                     //if open existings
                     var currentDiv = document.getElementById("brokerGroup");
+                    Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+                }
+            },
+
+            // CORPORATE
+            _corporateNameChanged(e) {
+                if (e) this.successMSG = '';
+            },
+
+            _createCorporate() {
+                Polymer.dom(this.root).querySelector("#createCorporateDialog").open();
+                this.corporateName = null;
+            },
+
+            _corporateSubmit() {
+                Polymer.dom(this.root).querySelector('#corporate-form').submit();
+                if (this.corporateName) {
+                    var corporateID = this.guid();
+                    var corporateQuery = Polymer.dom(this.root).querySelector("#corporateQuery");
+                    corporateQuery.ref.push({
+                        name: this.corporateName,
+                        groupID: corporateID
+                    });
+                    this.corporateName = null;
+                    this.successMSG = 'Added successfully!'
+                }
+            },
+
+            _deleteCorporate(e) {
+                this.corporateKey = e.currentTarget.item.$key;
+                Polymer.dom(this.root).querySelector("#deleteCorporateDialog").open();
+            },
+
+            _corporateDelete() {
+                Polymer.dom(this.root).querySelector("#corporateQuery").ref.child(this.corporateKey).remove();
+            },
+
+            _editCorporate(e) {
+                this.corporateKey = e.currentTarget.item.$key;
+                this.updateCorporateName = e.currentTarget.item.name;
+                Polymer.dom(this.root).querySelector("#editCorporateDialog").open();
+            },
+
+            _corporateUpdate() {
+                if (this.updateCorporateName) {
+                    var corporateQuery = Polymer.dom(this.root).querySelector("#corporateQuery")
+                    corporateQuery.ref.child(this.corporateKey).update({
+                        name: this.updateCorporateName
+                    });
+                    this.updateCorporateName = null;
+                }
+            },
+
+            _getViewCorporateGroupLink(e) {
+                return '/group/corporate/view/' + e.toString();
+            },
+
+            _viewCorporateGroup(e) {
+                // var data_args = Polymer.dom(e).rootTarget.getAttribute("id");
+                var data_args = e.currentTarget.item.$key;
+                var type = 'corporate';
+                var corporateGroupName = e.currentTarget.item.name;
+                var corporateGroupID = e.currentTarget.item.groupID;
+                var node = Polymer.dom(this.root).querySelector("#corporateGroup");
+                if (node) {
+                    var oldDiv = Polymer.dom(node.parentNode).querySelector("#d27");
+                    if (oldDiv) {
+                        Polymer.dom(node.parentNode).removeChild(oldDiv);
+                    }
+                    var newDiv = document.createElement("my-view-group");
+                    newDiv.setAttribute("id", "d27");
+
+                    newDiv.setAttribute("transaction-key", data_args);
+                    newDiv.setAttribute("group-name", corporateGroupName);
+                    newDiv.setAttribute("group-id", corporateGroupID);
+                    newDiv.setAttribute("type", type);
+                    newDiv.setAttribute("prev-route", this.route.prefix);
+                    //if open existings
+                    var currentDiv = document.getElementById("corporateGroup");
                     Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
                 }
             },

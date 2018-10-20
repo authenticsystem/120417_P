@@ -332,13 +332,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
 
       deactivate() {
-        var newDiv = document.createElement("my-accountlist-new");
-        newDiv.setAttribute("id", "d23");
-        newDiv.setAttribute("prev-route", this.route.prefix);
-        // newDiv.setAttribute("block", "3")
-        //if open existing
-        var currentDiv = document.getElementById("appnew");
-        Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
+        if (this.selectedItems.length > 0) {
+          var ref = firebase.database().ref('/accountlist');
+          for (var i = 0; i < this.selectedItems.length; ++i) {
+            ref.child(this.selectedItems[i].$key).update({ active: false });
+          }
+          window.location.reload();
+        }
+        // var newDiv = document.createElement("my-accountlist-new");
+        // newDiv.setAttribute("id", "d23");
+        // newDiv.setAttribute("prev-route", this.route.prefix);
+        // // newDiv.setAttribute("block", "3")
+        // //if open existing
+        // var currentDiv = document.getElementById("appnew");
+        // Polymer.dom(node.parentNode).insertBefore(newDiv, currentDiv);
 
       },
       editDetails(e) {

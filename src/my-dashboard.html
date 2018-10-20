@@ -930,6 +930,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                                     if (x === "agentType") {
                                         if (itemKey === 'inhouse') { return "In House"; }
                                         else if (itemKey === 'broker') { return "Broker"; }
+                                        else if (itemKey === 'corporate') { return "Corporate"; }
                                     } else if (x === 'agentGroup') {
                                         for (var i = 0; i < groupData.length; i++) {
                                             if (groupData[i].groupID === itemKey) { return groupData[i].name; }

@@ -353,14 +353,14 @@
                     </neon-animatable>
 
                     <neon-animatable>
-                        <!-- <firebase-query path="/agents" order-by-child="cellphone" equal-to='{{draftdata_agentdetails_cellphone}}' limit-to-first=1
-                            data="{{agentsList}}"></firebase-query> -->
-                        <firebase-query path="/agents" order-by-child="{{filterAgent}}" start-at='{{searchAgent}}'
-                            limit-to-first=5 data="{{agentsList}}"></firebase-query>
+                        <firebase-query path="/agents" order-by-child="cellphone" equal-to='{{draftdata_agentdetails_cellphone}}'
+                            limit-to-first=1 data="{{agentsList}}"></firebase-query>
+                        <!-- <firebase-query path="/agents" order-by-child="{{filterAgent}}" start-at='{{searchAgent}}'
+                            limit-to-first=5 data="{{agentsList}}"></firebase-query> -->
                         <div class="docu">
                             <div class="docu-header">3. Agent's Information</div>
                             <div class="detais">
-                                <template is="dom-if" if="{{!agentDetailsCard}}">
+                                <!-- <template is="dom-if" if="{{!agentDetailsCard}}">
                                     <div style="display: flex;">
                                         <paper-input label="{{search}}" value="{{searchAgent}}" style="margin-right: 8px; width: 100%">
                                             <iron-icon icon="my-icons:search" slot="prefix"></iron-icon>
@@ -397,15 +397,18 @@
                                             <paper-button on-tap="_cancelAgentDetails">Cancel</paper-button>
                                         </div>
                                     </paper-card>
-                                </template>
+                                </template> -->
 
-                                <!-- <paper-input always-float-label="true" required="true" auto-validate="true" type="number" label="Cellphone No."
-                                    value="{{draftdata_agentdetails_cellphone}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name" value="{{draftdata_agentdetails_firstname}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name" value="{{draftdata_agentdetails_middlename}}"></paper-input>
-                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name" value="{{draftdata_agentdetails_lastname}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" type="number"
+                                    label="Cellphone No." value="{{draftdata_agentdetails_cellphone}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="First Name"
+                                    value="{{draftdata_agentdetails_firstname}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Middle Name"
+                                    value="{{draftdata_agentdetails_middlename}}"></paper-input>
+                                <paper-input always-float-label="true" required="true" auto-validate="true" label="Last Name"
+                                    value="{{draftdata_agentdetails_lastname}}"></paper-input>
                                 <paper-input always-float-label="true" label="Suffix" value="{{draftdata_agentdetails_suffix}}"></paper-input>
-                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input> -->
+                                <paper-input always-float-label="true" type="email" label="Email" value="{{draftdata_agentdetails_email}}"></paper-input>
                             </div>
                         </div>
                     </neon-animatable>
@@ -451,17 +454,17 @@
                                         <div style="font-size: 12px;">Agent Details</div>
                                         <div style="color: black">
                                             <iron-icon icon="my-icons:person"></iron-icon>
-                                            {{_getFullname(draftData_agentdetails.firstname,
-                                            draftData_agentdetails.middlename, draftData_agentdetails.lastname,
+                                            {{_getFullname(draftdata_agentdetails_firstname,
+                                            draftdata_agentdetails_middlename, draftdata_agentdetails_lastname,
                                             draftdata_buyerdetails_suffix)}}
                                         </div>
                                         <div style="color: black">
                                             <iron-icon icon="my-icons:phone"></iron-icon>
-                                            {{draftData_agentdetails.cellphone}}
+                                            {{draftdata_agentdetails_cellphone}}
                                         </div>
                                         <div style="color: black">
                                             <iron-icon icon="my-icons:email"></iron-icon>
-                                            {{draftData_agentdetails.email}}
+                                            {{draftdata_agentdetails_email}}
                                         </div>
                                     </div>
                                 </paper-card>
@@ -587,7 +590,7 @@
                 agentsList: {
                     type: Object,
                     value: null,
-                    // observer: 'agentsListChanged'
+                    observer: 'agentsListChanged'
                 },
                 buyerKey: {
                     type: String,
@@ -619,11 +622,11 @@
                 'draftdatatypeChanged(draftdata_type.*)',
                 'startDateTimeValueChanged(startDateTimeValue,expiryHoursDaysValue)',
                 'draftdata_buyerdetails_cellphoneChanged(draftdata_buyerdetails_cellphone,draftdata_buyerdetails_firstname,draftdata_buyerdetails_middlename,draftdata_buyerdetails_lastname)',
-                'draftdata_agentdetails_cellphoneChanged(draftData_agentdetails)',
+                'draftdata_agentdetails_cellphoneChanged(draftdata_agentdetails_cellphone, draftdata_agentdetails_firstname, draftdata_agentdetails_middlename, draftdata_agentdetails_lastname)',
                 // 'draftdata_agentdetails_accountkeyChanged(draftdata_agentdetails_cellphone,draftdata_agentdetails_firstname,draftdata_agentdetails_middlename,draftdata_agentdetails_lastname)',
                 'lastApplicationChanged(lastApplication.*)',
                 'isStartDateTimeInvalidChanged(isStartDateTimeInvalid.*)',
-                '_searchChanged(filterAgent, searchAgent)'
+                // '_searchChanged(filterAgent, searchAgent)'
             ],
 
             // attached() {
@@ -687,19 +690,19 @@
                 }
             },
 
-            draftdata_agentdetails_cellphoneChanged(e) {
-                if (e) {
-                    this.favrighthide = false;
-                }
-                else {
-                    this.favrighthide = true;
-                }
-                // if (this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
+            draftdata_agentdetails_cellphoneChanged() {
+                // if (e) {
                 //     this.favrighthide = false;
                 // }
                 // else {
                 //     this.favrighthide = true;
                 // }
+                if (this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
+                    this.favrighthide = false;
+                }
+                else {
+                    this.favrighthide = true;
+                }
             },
 
             startDateTimeValueChanged() {
@@ -768,24 +771,24 @@
                 }
             },
 
-            // agentsListChanged(e) {
-            //     if (e) {
-            //         if (e.length > 0) {
-            //             this.agentKey = e[0].$key;
-            //             this.draftdata_agentdetails_firstname = e[0].firstname;
-            //             this.draftdata_agentdetails_middlename = e[0].middlename;
-            //             this.draftdata_agentdetails_lastname = e[0].lastname;
-            //             this.draftdata_agentdetails_suffix = e[0].suffix;
-            //             this.draftdata_agentdetails_email = e[0].email;
-            //         }
-            //         else {
-            //             this.agentKey = '';
-            //         }
-            //     }
-            //     else {
-            //         this.agentKey = '';
-            //     }
-            // },
+            agentsListChanged(e) {
+                if (e) {
+                    if (e.length > 0) {
+                        this.agentKey = e[0].$key;
+                        this.draftdata_agentdetails_firstname = e[0].firstname;
+                        this.draftdata_agentdetails_middlename = e[0].middlename;
+                        this.draftdata_agentdetails_lastname = e[0].lastname;
+                        this.draftdata_agentdetails_suffix = e[0].suffix;
+                        this.draftdata_agentdetails_email = e[0].email;
+                    }
+                    else {
+                        this.agentKey = '';
+                    }
+                }
+                else {
+                    this.agentKey = '';
+                }
+            },
 
             selectReserve() {
                 var showStartExpiry = Polymer.dom(this.root).querySelector("#timeStamp");
@@ -1093,13 +1096,13 @@
                 this.draftdata_buyerdetails_email = '';
                 this.draftdata_buyerdetails_cellphone = '';
 
-                // this.draftdata_agentdetails_cellphone = '';
-                // this.draftdata_agentdetails_firstname = '';
-                // this.draftdata_agentdetails_middlename = '';
-                // this.draftdata_agentdetails_lastname = '';
-                // this.draftdata_agentdetails_suffix = '';
-                // this.draftdata_agentdetails_email = '';
-                // this.agentKey = '';
+                this.draftdata_agentdetails_cellphone = '';
+                this.draftdata_agentdetails_firstname = '';
+                this.draftdata_agentdetails_middlename = '';
+                this.draftdata_agentdetails_lastname = '';
+                this.draftdata_agentdetails_suffix = '';
+                this.draftdata_agentdetails_email = '';
+                this.agentKey = '';
 
                 this.minStartDateTime = '';
                 this.saveErrorDetails = '...';
@@ -1150,25 +1153,25 @@
                             }
                             else {
 
-                                // this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
+                                this.agentKey = this.agentKey != '' ? this.agentKey : this.guid();
                                 this.buyerKey = this.buyerKey != '' ? this.buyerKey : this.guid();
 
                                 var draftdata = {
                                     agent: this.agentKey,
-                                    agentdetails: this.draftData_agentdetails,
-                                    // agentdetails: {
-                                    //     firstname: this.draftdata_agentdetails_firstname,
-                                    //     middlename: this.draftdata_agentdetails_middlename,
-                                    //     lastname: this.draftdata_agentdetails_lastname,
-                                    //     suffix: this.draftdata_agentdetails_suffix,
-                                    //     email: this.draftdata_agentdetails_email,
-                                    //     cellphone: this.draftdata_agentdetails_cellphone,
+                                    // agentdetails: this.draftData_agentdetails,
+                                    agentdetails: {
+                                        firstname: this.draftdata_agentdetails_firstname,
+                                        middlename: this.draftdata_agentdetails_middlename,
+                                        lastname: this.draftdata_agentdetails_lastname,
+                                        suffix: this.draftdata_agentdetails_suffix,
+                                        email: this.draftdata_agentdetails_email,
+                                        cellphone: this.draftdata_agentdetails_cellphone,
 
-                                    //     type: this.draftdata_agentdetails_type,
-                                    //     group: this.draftdata_agentdetails_group,
-                                    //     designation: this.draftdata_agentdetails_designation,
-                                    //     type_group: this.draftdata_agentdetails_type_group
-                                    // },
+                                        type: this.draftdata_agentdetails_type ? this.draftdata_agentdetails_type : 'No type',
+                                        group: this.draftdata_agentdetails_group ? this.draftdata_agentdetails_group : 'No group',
+                                        designation: this.draftdata_agentdetails_designation ? this.draftdata_agentdetails_designation : 'No designation',
+                                        type_group: this.draftdata_agentdetails_type_group ? this.draftdata_agentdetails_type_group : 'No type_group'
+                                    },
                                     buyer: this.buyerKey,
                                     buyerdetails: {
                                         firstname: this.draftdata_buyerdetails_firstname,
@@ -1203,19 +1206,19 @@
                                 };
 
 
-                                // var draftAgent = {
-                                //     firstname: this.draftdata_agentdetails_firstname,
-                                //     middlename: this.draftdata_agentdetails_middlename,
-                                //     lastname: this.draftdata_agentdetails_lastname,
-                                //     suffix: this.draftdata_agentdetails_suffix,
-                                //     email: this.draftdata_agentdetails_email,
-                                //     cellphone: this.draftdata_agentdetails_cellphone,
+                                var draftAgent = {
+                                    firstname: this.draftdata_agentdetails_firstname,
+                                    middlename: this.draftdata_agentdetails_middlename,
+                                    lastname: this.draftdata_agentdetails_lastname,
+                                    suffix: this.draftdata_agentdetails_suffix,
+                                    email: this.draftdata_agentdetails_email,
+                                    cellphone: this.draftdata_agentdetails_cellphone,
 
-                                //     type: this.draftdata_agentdetails_type,
-                                //     group: this.draftdata_agentdetails_group,
-                                //     designation: this.draftdata_agentdetails_designation,
-                                //     type_group: this.draftdata_agentdetails_type_group
-                                // };
+                                    // type: this.draftdata_agentdetails_type ? this.draftdata_agentdetails_type : 'No type',
+                                    // group: this.draftdata_agentdetails_group ? this.draftdata_agentdetails_group : 'No group',
+                                    // designation: this.draftdata_agentdetails_designation ? this.draftdata_agentdetails_designation : 'No designation',
+                                    // type_group: this.draftdata_agentdetails_type_group ? this.draftdata_agentdetails_type_group : 'No type_group'
+                                };
 
                                 // var firebaseDb = this.$.idd.db;
                                 // var firebaseDbRef = firebaseDb.ref();
@@ -1246,15 +1249,15 @@
                                         saveFailed.setAttribute("style", "display: block; color: red;");
                                     }
 
-                                    // if (this.agentKey) {
-                                    //     //save to /agents/{new id}
-                                    //     firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
-                                    // }
-                                    // else {
-                                    //     this.saveErrorDetails = "Agent Key is empty.";
-                                    //     saveSuccess.setAttribute("style", "display: none; color: green;");
-                                    //     saveFailed.setAttribute("style", "display: block; color: red;");
-                                    // }
+                                    if (this.agentKey) {
+                                        //save to /agents/{new id}
+                                        firebaseUpdate["/agents/" + this.agentKey] = draftAgent;
+                                    }
+                                    else {
+                                        this.saveErrorDetails = "Agent Key is empty.";
+                                        saveSuccess.setAttribute("style", "display: none; color: green;");
+                                        saveFailed.setAttribute("style", "display: block; color: red;");
+                                    }
 
 
 
@@ -1293,15 +1296,15 @@
 
                                     var dataForReservation = {
                                         agent: this.agentKey,
-                                        agentdetails: this.draftData_agentdetails,
-                                        // agentdetails: {
-                                        //     firstname: this.draftdata_agentdetails_firstname,
-                                        //     middlename: this.draftdata_agentdetails_middlename,
-                                        //     lastname: this.draftdata_agentdetails_lastname,
-                                        //     suffix: this.draftdata_agentdetails_suffix,
-                                        //     email: this.draftdata_agentdetails_email,
-                                        //     cellphone: this.draftdata_agentdetails_cellphone
-                                        // },
+                                        // agentdetails: this.draftData_agentdetails,
+                                        agentdetails: {
+                                            firstname: this.draftdata_agentdetails_firstname,
+                                            middlename: this.draftdata_agentdetails_middlename,
+                                            lastname: this.draftdata_agentdetails_lastname,
+                                            suffix: this.draftdata_agentdetails_suffix,
+                                            email: this.draftdata_agentdetails_email,
+                                            cellphone: this.draftdata_agentdetails_cellphone
+                                        },
                                         buyer: this.buyerKey,
                                         buyerdetails: {
                                             firstname: this.draftdata_buyerdetails_firstname,
@@ -1450,7 +1453,7 @@
                         this.favrighthide = false;
 
                         if (this.draftdata_buyerdetails_cellphone && this.draftdata_buyerdetails_firstname && this.draftdata_buyerdetails_middlename && this.draftdata_buyerdetails_lastname
-                            && this.draftData_agentdetails) {
+                            && this.draftdata_agentdetails_cellphone && this.draftdata_agentdetails_firstname && this.draftdata_agentdetails_middlename && this.draftdata_agentdetails_lastname) {
                             this.favrighthide = false;
                         }
                         else {
@@ -1544,51 +1547,51 @@
             //     this.draftdata_agentdetails_type_group = agentdetails.type_group;
             // },
 
-            _searchChanged(e, f) {
-                if (e) {
-                    this.search = 'Search by ' + e;
-                    if (f) {
-                        this.searchAgent = this._capitalFirstLetter(f);
-                        this.searchResult = true;
-                    } else {
-                        this.searchAgent = null;
-                        this.searchResult = false;
-                    }
-                    this.search = 'Search by ' + e;
-                }
-                else { this.search = 'No filter'; }
-            },
+            // _searchChanged(e, f) {
+            //     if (e) {
+            //         this.search = 'Search by ' + e;
+            //         if (f) {
+            //             this.searchAgent = this._capitalFirstLetter(f);
+            //             this.searchResult = true;
+            //         } else {
+            //             this.searchAgent = null;
+            //             this.searchResult = false;
+            //         }
+            //         this.search = 'Search by ' + e;
+            //     }
+            //     else { this.search = 'No filter'; }
+            // },
 
-            _capitalFirstLetter(string) {
-                return string.charAt(0).toUpperCase() + string.slice(1);
-            },
+            // _capitalFirstLetter(string) {
+            //     return string.charAt(0).toUpperCase() + string.slice(1);
+            // },
 
             _getFullname(fname, mname, lname, suffix) {
                 if (suffix) return fname + ' ' + mname + ' ' + lname + ' ' + suffix;
                 else return fname + ' ' + mname + ' ' + lname;
             },
 
-            _selectAgentDetails(e) {
-                var data = e.currentTarget.item;
-                this.agentKey = data.$key;
-                this.draftData_agentdetails = {
-                    cellphone: data.cellphone,
-                    email: data.email,
-                    firstname: data.firstname,
-                    middlename: data.middlename,
-                    lastname: data.lastname,
-                    suffix: data.suffix,
-                    type: data.type,
-                    group: data.group
-                };
-                this.agentDetailsCard = true;
-            },
+            // _selectAgentDetails(e) {
+            //     var data = e.currentTarget.item;
+            //     this.agentKey = data.$key;
+            //     this.draftData_agentdetails = {
+            //         cellphone: data.cellphone,
+            //         email: data.email,
+            //         firstname: data.firstname,
+            //         middlename: data.middlename,
+            //         lastname: data.lastname,
+            //         suffix: data.suffix,
+            //         type: data.type,
+            //         group: data.group
+            //     };
+            //     this.agentDetailsCard = true;
+            // },
 
-            _cancelAgentDetails() {
-                this.agentDetailsCard = false;
-                this.draftData_agentdetails = null;
-                this.searchAgent = null;
-            },
+            // _cancelAgentDetails() {
+            //     this.agentDetailsCard = false;
+            //     this.draftData_agentdetails = null;
+            //     this.searchAgent = null;
+            // },
 
             _formatLOT(block, lot, level) {
                 if (level) return "Block " + block + " Lot " + lot + " Level " + level;
